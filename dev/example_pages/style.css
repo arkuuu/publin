@@ -11,6 +11,8 @@ body {
   font-family: Tahoma, Helvetica,Arial,sans-serif;
 }
 
+
+/* The left design stripe */
 div#left {
   width: 25px;
   height: auto;
@@ -21,6 +23,8 @@ div#left {
 
 }
 
+
+/* The menu bar with it's contents */
 div#menu {
   width: 250px;
   height: auto;
@@ -28,7 +32,7 @@ div#menu {
   top: 0; left: 25px; bottom: 0;
   padding: 20px 0;
   background-color: white;
-  /*border-right: 1px solid #004b5a;*/
+  color: #004b5a;
 }
 
 div#menu #logo {  
@@ -39,11 +43,29 @@ div#menu #logo {
   background-position: center;
 }
 
-div#menu p {
-  color: #004b5a;
+div#menu h1, div#menu p, div#menu ul {
   padding: 0 25px 0;
 }
 
+div#menu h1 {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+div#menu li {
+  padding-top: 15px;
+  list-style-type: none;
+}
+
+div#menu li ul li {
+  padding-top: 5px;
+  color: black;
+  font-size: 15px;
+  list-style-type: none;
+}
+
+
+/* The right box with it's contents */
 div#right {
   width: auto;
   min-width: 250px;
@@ -51,13 +73,31 @@ div#right {
   top: 0; left: 275px; right: 0;
   height: auto;
   padding: 120px 0;
-  /*background-color: #e4e4e4;*/
+  font-size: 15px;
   background-color: #D6DFE4;  
 }
 
-div#right p {
-  max-width: 550px;
+div#right h1, div#right h2, div#right p, div#right ul {
+  max-width: 600px;
   min-width: 250px; /* bei div#right auch ändern! */
   padding: 0 25px 0;
+}
+
+div#right h1 {
+  color: #004b5a;
+  font-size: 20px;
+}
+
+div#right h2 {
+  color: #004b5a;
+  font-size: 16px;
+  padding-top: 30px;
+}
+
+div#right p {
   color: black;
+}
+
+div#right ul {
+  padding-left: 50px;
 }
