@@ -18,13 +18,13 @@
 		$journal = htmlspecialchars($_POST['journal'], ENT_QUOTES);
 		$volume = htmlspecialchars($_POST['volume'], ENT_QUOTES);
 	} else {
-		$type = '&nbsp;';
-		$citeKey = '&nbsp;';
-		$author = '&nbsp;';
-		$title = '&nbsp;';
-		$year = '&nbsp;';
-		$journal = '&nbsp;';
-		$volume = '&nbsp;';
+		$type = '';
+		$citeKey = '';
+		$author = '';
+		$title = '';
+		$year = '';
+		$journal = '';
+		$volume = '';
 	}
 	?>
 
