@@ -44,8 +44,7 @@ class Publication {
 
 
 	/**
-	 * Returns the type. At the first call the data must be queried from the
-	 * database and is then stored in a class variable for later use.
+	 * Returns the type.
 	 *
 	 * @return string
 	 */
@@ -53,11 +52,11 @@ class Publication {
 
 		if (!isset($this -> type)) {
 
-			$result = $this -> db -> query('	SELECT `name`
+			$data = $this -> db -> getData('	SELECT `name`
 												FROM `list_types`
 												WHERE `id` LIKE '.$this -> type_id);
 
-			$this -> type = $result[0]['name'];
+			$this -> type = $data[0]['name'];
 		}
 
 		return $this -> type;
@@ -65,8 +64,7 @@ class Publication {
 
 
 	/**
-	 * Returns the field of study. At the first call the data must be queried
-	 * from the database and is then stored in a class variable for later use.
+	 * Returns the field of study.
 	 *
 	 * @return string
 	 */
@@ -74,11 +72,11 @@ class Publication {
 
 		if (!isset($this -> study_field)) {
 
-			$result = $this -> db -> query('	SELECT `name`
+			$data = $this -> db -> getData('	SELECT `name`
 												FROM `list_study_fields`
 												WHERE `id` LIKE '.$this -> study_field_id);
 
-			$this -> study_field = $result[0]['name'];
+			$this -> study_field = $data[0]['name'];
 		}
 
 		return $this -> study_field;
@@ -96,9 +94,7 @@ class Publication {
 
 
 	/**
-	 * Returns an array with all authors ids and names sorted by their priority. At the first call
-	 * the data must be queried from the database and is then stored in a class variable
-	 * for later use.
+	 * Returns an array with all authors ids and names sorted by their priority.
 	 *
 	 * @return array
 	 */
@@ -108,7 +104,7 @@ class Publication {
 			
 			$this -> authors = array();
 
-			$result = $this -> db -> query('	SELECT a.`id`, a.`last_name`,
+			$data = $this -> db -> getData('	SELECT a.`id`, a.`last_name`,
 													a.`first_name`, a.`academic_title`
 												FROM `list_authors` a
 												JOIN `rel_publ_to_authors` r
@@ -117,7 +113,7 @@ class Publication {
 													LIKE '.$this -> id.'
 												ORDER BY r.`priority` ASC');
 
-			$this -> authors = $result;
+			$this -> authors = $data;
 		}
 
 		return $this -> authors;
@@ -185,9 +181,7 @@ class Publication {
 
 
 	/**
-	 * Returns an array with all key term's ids and names. At the first call
-	 * the data must be queried from the database and is then stored in a class variable
-	 * for later use.
+	 * Returns an array with all key terms' ids and names.
 	 *
 	 * @return array
 	 */
@@ -197,7 +191,7 @@ class Publication {
 			
 			$this -> key_terms = array();
 
-			$result = $this -> db -> query('	SELECT k.`id`, k.`name`
+			$data = $this -> db -> getData('	SELECT k.`id`, k.`name`
 												FROM `list_key_terms` k
 												JOIN `rel_publ_to_key_terms` r
 													ON (r.`key_term_id` = k.`id`)
@@ -205,7 +199,7 @@ class Publication {
 													LIKE '.$this -> id.'
 												ORDER BY k.`name` ASC');
 
-			$this -> key_terms = $result;
+			$this -> key_terms = $data;
 		}
 
 		return $this -> key_terms;

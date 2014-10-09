@@ -9,7 +9,8 @@ class Database extends mysqli {
 	private $charset = 'utf8';
 
 	private $num_entries;
-
+	private $last_data;
+	private $last_query;
 
 	/**
 	 * Creates a new database connection. Uses the constructor of mysqli class.
@@ -35,26 +36,52 @@ class Database extends mysqli {
 	/**
 	 * Returns data from query. Returns an array (rows) with arrays (columns) inside if
 	 * multiple entries were found or an array (columns) if a single entry was found.
+	 * The last fetched data can be recovered using getLastData().
+	 * The last executed query can be recovered using getLastQuery().
 	 *
 	 * @param string	$query	the sql query
 	 * @return array
 	 */
-	public function query($query) {
+	public function getData($query) {
 
-		$return = array();
+		$this -> last_data = array();
+		$this -> last_query = $query;
+
 		$result = parent::query($query);
 		$this -> num_entries = $result -> num_rows;
 
 		while ($entry = $result -> fetch_assoc()) {
-			$return[] = $entry;
+			$this -> last_data[] = $entry;
 		}
 
-		return $return;
+		// $this -> last_data = $data;
+
+		return $this -> last_data;
 	}
 
 
 	/**
-	 * Returns the number of entries found or affected by last action.
+	 * Returns the last fetched data
+	 *
+	 * @return array
+	 */
+	public function getLastData() {
+		return $this -> last_data;
+	}
+
+
+	/**
+	 * Returns the last executed query.
+	 *
+	 * @return string
+	 */
+	public function getLastQuery() {
+		return $this -> last_query;
+	}
+
+
+	/**
+	 * Returns the number of entries found or affected by last query.
 	 *
 	 * @return int
 	 */
