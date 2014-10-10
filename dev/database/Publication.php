@@ -19,17 +19,18 @@ class Publication {
 	private $key_terms_string;
 
 
-	public function __construct(array $values, Database $db) {
+	public function __construct(array $data, Database $db) {	// TODO input validation, exception
 
 			$this -> db = $db;
-			$this -> id = (int)$values['id'];
-			$this -> type_id = (int)$values['type_id'];
-			$this -> study_field_id = (int)$values['study_field_id'];
-			$this -> title = $values['title'];
-			$this -> abstract = $values['abstract'];
-			$this -> year = (int)$values['year'];
-			$this -> month = (int)$values['month'];
-			$this -> date_added = $values['date_added'];
+
+			$this -> id = (int)$data['id'];
+			$this -> type_id = (int)$data['type_id'];
+			$this -> study_field_id = (int)$data['study_field_id'];
+			$this -> title = $data['title'];
+			$this -> abstract = $data['abstract'];
+			$this -> year = (int)$data['year'];
+			$this -> month = (int)$data['month'];
+			$this -> date_added = $data['date_added'];
 	} 
 	
 

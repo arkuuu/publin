@@ -8,7 +8,7 @@ class Database extends mysqli {
 	private $database = 'dev';
 	private $charset = 'utf8';
 
-	private $num_entries;
+	private $num_data;
 	private $last_data;
 	private $last_query;
 
@@ -48,7 +48,7 @@ class Database extends mysqli {
 		$this -> last_query = $query;
 
 		$result = parent::query($query);
-		$this -> num_entries = $result -> num_rows;
+		$this -> num_data = $result -> num_rows;
 
 		while ($entry = $result -> fetch_assoc()) {
 			$this -> last_data[] = $entry;
@@ -81,12 +81,12 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns the number of entries found or affected by last query.
+	 * Returns the number of data entries found or affected by last query.
 	 *
 	 * @return int
 	 */
-	public function getNumEntries() {
-		return $this -> num_entries;
+	public function getNumData() {
+		return $this -> num_data;
 	}
 
 
