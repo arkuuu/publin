@@ -44,6 +44,7 @@ class Database extends mysqli {
 	 */
 	public function getData($query) {
 
+		// TODO: Input validation!!, Exception if wrong query
 		$this -> last_data = array();
 		$this -> last_query = $query;
 
@@ -54,7 +55,13 @@ class Database extends mysqli {
 			$this -> last_data[] = $entry;
 		}
 
-		// $this -> last_data = $data;
+		// DEV: write query to log
+		$query = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+		$msg = str_replace("\t", '', $query);
+		$file = fopen('sql.log', 'a');
+		fwrite($file, '[SQL '.date('d.m.Y H:i:s').']['.$this -> num_data.' FOUND] '
+						.$msg."\n");
+		fclose($file);
 
 		return $this -> last_data;
 	}
