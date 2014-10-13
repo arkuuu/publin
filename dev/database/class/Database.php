@@ -3,8 +3,8 @@
 class Database extends mysqli {
 	
 	private $host = 'localhost';
-	private $user = 'root';
-	private $password = 'root';
+	private $user = 'readonly';
+	private $password = 'readonly';
 	private $database = 'dev';
 	private $charset = 'utf8';
 
