@@ -26,6 +26,8 @@ class Author {
 		$this -> webpage = $data['webpage'];
 		$this -> contact = $data['contact'];
 		$this -> text = $data['text'];
+
+		// TODO: require less data in constructor, get missing data from database if needed
 	}
 
 	public function getId() {

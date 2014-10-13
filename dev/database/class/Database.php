@@ -143,7 +143,7 @@ class Database extends mysqli {
 	 *
 	 * @return	array
 	 */
-	public function getKeyTerms($filter = array()) {
+	public function getKeyTerms(array $filter = array()) {
 
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
@@ -255,7 +255,7 @@ class Database extends mysqli {
 	 *
 	 * @return	array
 	 */
-	public function getAuthors($filter = array()) {
+	public function getAuthors(array $filter = array()) {
 	
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
@@ -307,7 +307,7 @@ class Database extends mysqli {
 	 *
 	 * @return	array
 	 */
-	public function getPublications($filter = array()) {
+	public function getPublications(array $filter = array()) {
 
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
