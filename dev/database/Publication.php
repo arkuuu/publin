@@ -31,6 +31,8 @@ class Publication {
 			$this -> year = (int)$data['year'];
 			$this -> month = (int)$data['month'];
 			$this -> date_added = $data['date_added'];
+
+			// TODO: require less data in constructor, get missing data from database if needed
 	} 
 	
 
@@ -53,9 +55,7 @@ class Publication {
 
 		if (!isset($this -> type)) {
 
-			$data = $this -> db -> getData('	SELECT `name`
-												FROM `list_types`
-												WHERE `id` LIKE '.$this -> type_id);
+			$data = $this -> db -> getTypes($this -> type_id);
 
 			$this -> type = $data[0]['name'];
 		}
@@ -73,9 +73,7 @@ class Publication {
 
 		if (!isset($this -> study_field)) {
 
-			$data = $this -> db -> getData('	SELECT `name`
-												FROM `list_study_fields`
-												WHERE `id` LIKE '.$this -> study_field_id);
+			$data = $this -> db -> getStudyFields($this -> study_field_id);
 
 			$this -> study_field = $data[0]['name'];
 		}
@@ -105,14 +103,7 @@ class Publication {
 			
 			$this -> authors = array();
 
-			$data = $this -> db -> getData('	SELECT a.`id`, a.`last_name`,
-													a.`first_name`, a.`academic_title`
-												FROM `list_authors` a
-												JOIN `rel_publ_to_authors` r
-													ON (r.`author_id` = a.`id`)
-												WHERE r.`publication_id`
-													LIKE '.$this -> id.'
-												ORDER BY r.`priority` ASC');
+			$data = $this -> db -> getAuthors(array('publication_id' => $this -> id));
 
 			$this -> authors = $data;
 		}
@@ -192,13 +183,7 @@ class Publication {
 			
 			$this -> key_terms = array();
 
-			$data = $this -> db -> getData('	SELECT k.`id`, k.`name`
-												FROM `list_key_terms` k
-												JOIN `rel_publ_to_key_terms` r
-													ON (r.`key_term_id` = k.`id`)
-												WHERE r.`publication_id`
-													LIKE '.$this -> id.'
-												ORDER BY k.`name` ASC');
+			$data = $this -> db -> getKeyTerms(array('publication_id' => $this -> id));
 
 			$this -> key_terms = $data;
 		}
