@@ -17,7 +17,7 @@ class Publication {
 	private $key_terms;
 	private $key_terms_string;
 
-	private $metadata_complete
+	private $metadata_complete;
 
 
 	public function __construct(array $data, Database $db) {	// TODO input validation, exception
@@ -164,7 +164,7 @@ class Publication {
 	public function getAbstract() {
 
 		/* Checks if missing metadata was loaded already */
-		if (!$this -> metadata_complete)) {
+		if (!$this -> metadata_complete) {
 			$this -> getMissingData();
 		}
 		return $this -> abstract;
