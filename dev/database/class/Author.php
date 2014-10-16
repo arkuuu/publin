@@ -60,15 +60,8 @@ class Author {
 	}
 
 
-	public function getName($url = '') {
-
-		if ($url != '') {
-			return '<a href="'.$url.'?id='.$this -> id.'">'
-					.$this -> academic_title.' '.$this -> first_name.' '.$this -> last_name.'</a>';
-		}
-		else {
-			return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
-		}
+	public function getName() {
+		return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
 	}
 
 
@@ -139,6 +132,24 @@ class Author {
 	}
 
 
+	public function getBibLink($service) {
+
+		switch ($service) {
+			case 'google':
+				return 'http://scholar.google.com/scholar?q='
+						.urlencode('"'.$this -> getFirstName().' '.$this -> getLastName().'"');
+				break;
+			
+			case 'base':
+				return 'http://www.base-search.net/Search/Results?type0[]=aut&lookfor0[]='
+						.urlencode('"'.$this -> getFirstName().' '.$this -> getLastName().'"');
+				break;
+
+			default:
+				return '';
+				break;
+		}
+	}
 }
 
 ?>

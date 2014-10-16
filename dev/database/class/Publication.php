@@ -101,14 +101,8 @@ class Publication {
 	 *
 	 * @return string
 	 */
-	public function getTitle($url = '') {
-
-		if ($url != '') {
-			return '<a href="'.$url.'?id='.$this -> id.'">'.$this -> title.'</a>';
-		}
-		else {
-			return $this -> title;
-		}
+	public function getTitle() {
+		return $this -> title;
 	}
 
 
@@ -141,13 +135,13 @@ class Publication {
 	 *
 	 * @return string
 	 */
-	public function getAuthorsString($url = '', $separator = ' and ') {
+	public function getAuthorsString($separator = ' and ') {
 
 		if (!isset($this -> authors_string)) {
 			$temp = '';
 
 			foreach ($this -> getAuthors() as $author) {
-				$temp .= $author -> getName($url).$separator;
+				$temp .= $author -> getName().$separator;
 			}
 
 			$this -> authors_string = substr($temp, 0, -(strlen($separator)));
@@ -236,7 +230,7 @@ class Publication {
 		return $this -> key_terms_string;
 	}	
 
-	
+
 }
 
 ?>
