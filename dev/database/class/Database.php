@@ -3,8 +3,10 @@
 class Database extends mysqli {
 	
 	private $host = 'localhost';
-	private $user = 'readonly';
-	private $password = 'readonly';
+	private $readonly_user = 'readonly';
+	private $readonly_password = 'readonly';
+	private $writeonly_user = '';
+	private $writeonly_password = '';
 	private $database = 'dev';
 	private $charset = 'utf8';
 
@@ -23,7 +25,10 @@ class Database extends mysqli {
 	public function __construct() {
 
 		/* Calls the constructor of mysqli and creates a connection */
-		parent::__construct($this -> host, $this -> user, $this -> password, $this -> database);
+		parent::__construct($this -> host,
+							$this -> readonly_user,
+							$this -> readonly_password,
+							$this -> database);
 
 		/* Stops if the connection cannot be established */
 		if ($this -> connect_errno) {
@@ -60,7 +65,7 @@ class Database extends mysqli {
 		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
 		$msg = str_replace("\t", '', $msg);
 		$file = fopen('sql.log', 'a');
-		fwrite($file, '[SQL '.date('d.m.Y H:i:s').']['.$this -> num_data.' FOUND] '
+		fwrite($file, '[SQL '.date('d.m.Y H:i:s').'] '
 						.$msg."\n");
 		fclose($file);
 
@@ -107,7 +112,6 @@ class Database extends mysqli {
 	public function getNumData() {
 		return $this -> num_data;
 	}
-
 
 
 	/**
@@ -257,50 +261,57 @@ class Database extends mysqli {
 	 */
 	public function getAuthors(array $filter = array()) {
 	
+		$select = 'SELECT a.*';
+		$from = 'FROM `list_authors` a';
+		$join = '';
+		$where = '';
+		$order = 'ORDER BY `last_name` ASC';
+
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
 
-			/* Checks if joining a table is needed */
-			$join_publications = array_key_exists('publication_id', $filter);
+			/* Creates the SELECT clause */
+			if (array_key_exists('select', $filter)) {
+				$select = 'SELECT';
 
-			/* Creates SQL query if joining a table is needed */
-			if ($join_publications) {
-				$query = 'SELECT a.*
-							FROM `rel_publ_to_authors` r
-							JOIN `list_authors` a ON (r.`author_id` = a.`id`)
-							WHERE r.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
+				foreach ($filter['select'] as $key => $value) {
+					$select .= ' a.`'.$value.'`,';
+				}
+				$select = substr($select, 0, -1);
+				unset($filter['select']);
+			}
 
-				unset($filter['publication_id']);
-			}
-			else {
-				$query = 'SELECT a.*
-							FROM `list_authors` a
-							WHERE';
-			}
-			
-			/* Creates the WHERE clause from filter array */
-			foreach ($filter as $key => $value) {
-				$query .= ' a.`'.$key.'` LIKE "'.$value.'" AND';
-			}
-			$query = substr($query, 0, -3);
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
 
-			/* Sets the order of the results */
-			$query .= 'ORDER BY `last_name` ASC';
+				/* Creates the JOIN clause if needed */
+				if (array_key_exists('publication_id', $filter)) {
+					$from = 'FROM `rel_publ_to_authors` rb';	// Better SQL performance this way
+					$join .= ' JOIN `list_authors` a ON (rb.`author_id` = a.`id`)';
+					$where .= ' rb.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
+					$order = 'ORDER BY `priority` ASC';
+					unset($filter['publication_id']);
+				}
+				
+				/* Creates the WHERE clause from the rest of the filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' a.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
 		}
-		else {
+		unset($filter);
 
-			/* Gets all data */
-			$query = 'SELECT * 
-						FROM `list_authors` 
-						ORDER BY `last_name` ASC';
-		}
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.';';
 
-		return $this -> getData($query);
+		return $this -> getData($query);	// TODO: Return Author objects instead?
 	}
 
 
 	/**
-	 * Returns an array with publications. All Columns are returned.
+	 * Returns an array with publications.
 	 * A filter can be specified with the optional parameter $filter.
 	 *
 	 * @param	array	$filter		Optional filter array
@@ -309,67 +320,55 @@ class Database extends mysqli {
 	 */
 	public function getPublications(array $filter = array()) {
 
+		$select = 'SELECT p.*';
+		$from = 'FROM `list_publications` p';
+		$join = '';
+		$where = '';
+		$order = 'ORDER BY `date_added` ASC';
+
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
 
-			/* Checks if joining one or more tables is needed */
-			$join_authors = array_key_exists('author_id', $filter);
-			$join_key_terms = array_key_exists('key_term_id', $filter);
+			/* Creates the SELECT clause */
+			if (array_key_exists('select', $filter)) {
+				$select = 'SELECT';
 
-			/* Creates SQL query if joining one or more tables is needed */
-			if ($join_authors && $join_key_terms) {
-				$query = 'SELECT p.* 
-							FROM `list_publications` p
-							JOIN `rel_publ_to_authors` ra ON (ra.`publication_id` = p.`id`)
-							JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)
-							WHERE ra.`author_id` LIKE "'.$filter['author_id'].'" AND
-								rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
-
-				unset($filter['author_id']);
-				unset($filter['key_term_id']);
-			}
-			else if ($join_authors) {
-
-				$query = 'SELECT p.* 
-							FROM `list_publications` p
-							JOIN `rel_publ_to_authors` r ON (r.`publication_id` = p.`id`)
-							WHERE r.`author_id` LIKE "'.$filter['author_id'].'" AND';
-
-				unset($filter['author_id']);
-			}
-			else if ($join_key_terms) {
-
-				$query = 'SELECT p.* 
-							FROM `list_publications` p
-							JOIN `rel_publ_to_key_terms` r ON (r.`publication_id` = p.`id`)
-							WHERE r.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
-
-				unset($filter['key_term_id']);
-			}
-			else {
-				$query = 'SELECT *
-							FROM `list_publications` p
-							WHERE ';
+				foreach ($filter['select'] as $key => $value) {
+					$select .= ' p.`'.$value.'`,';
+				}
+				$select = substr($select, 0, -1);
+				unset($filter['select']);
 			}
 
-			/* Creates the WHERE clause from filter array */
-			foreach ($filter as $key => $value) {
-				$query .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
-			}
-			$query = substr($query, 0, -3);
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
 
-			/* Sets the order of the results */
-			$query .= 'ORDER BY `date_added` DESC';
+				/* Creates the JOIN clause if needed */
+				if (array_key_exists('author_id', $filter)) {
+					$join .= ' JOIN `rel_publ_to_authors` ra ON (ra.`publication_id` = p.`id`)';
+					$where .= ' ra.`author_id` LIKE "'.$filter['author_id'].'" AND';
+					unset($filter['author_id']);
+				}
+				if (array_key_exists('key_term_id', $filter)) {
+					$join .= ' JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)';
+					$where .= ' rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
+					unset($filter['key_term_id']);
+				}
+
+				/* Creates the WHERE clause from the rest of filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
 		}
-		else {			
+		unset($filter);
 
-			/* Gets all data */
-			$query = 'SELECT *
-						FROM `list_publications`
-						ORDER BY `date_added` DESC';	
-		}
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.';';
 
-		return $this -> getData($query);	// TODO: maybe already return Publication objects?
+		return $this -> getData($query);	// TODO: Return Publication objects instead of that?
 	}
 
 
