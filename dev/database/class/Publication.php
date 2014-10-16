@@ -101,13 +101,19 @@ class Publication {
 	 *
 	 * @return string
 	 */
-	public function getTitle() {
-		return $this -> title;
+	public function getTitle($url = '') {
+
+		if ($url != '') {
+			return '<a href="'.$url.'?id='.$this -> id.'">'.$this -> title.'</a>';
+		}
+		else {
+			return $this -> title;
+		}
 	}
 
 
 	/**
-	 * Returns an array with all authors ids and names sorted by their priority.
+	 * Returns an array with all authors as Author object sorted by their priority.
 	 *
 	 * @return array
 	 */
@@ -115,11 +121,12 @@ class Publication {
 
 		if (!isset($this -> authors)) {
 			
-			$this -> authors = array();
-
 			$data = $this -> db -> getAuthors(array('publication_id' => $this -> id));
 
-			$this -> authors = $data;
+			foreach ($data as $value) {
+				$author = new Author($value, $this -> db);
+				$this -> authors[] = $author;
+			}
 		}
 
 		return $this -> authors;
@@ -134,19 +141,13 @@ class Publication {
 	 *
 	 * @return string
 	 */
-	public function getAuthorsString($separator = ' and ') {
+	public function getAuthorsString($url = '', $separator = ' and ') {
 
 		if (!isset($this -> authors_string)) {
-			
 			$temp = '';
 
-			foreach ($this -> getAuthors() as $key => $value) {
-
-				if (!empty($value['academic_title'])) {
-					$temp .= $value['academic_title'].' ';
-				}
-
-				$temp .= $value['first_name'].' '.$value['last_name'].$separator;
+			foreach ($this -> getAuthors() as $author) {
+				$temp .= $author -> getName($url).$separator;
 			}
 
 			$this -> authors_string = substr($temp, 0, -(strlen($separator)));
@@ -234,6 +235,8 @@ class Publication {
 
 		return $this -> key_terms_string;
 	}	
+
+	
 }
 
 ?>

@@ -60,8 +60,15 @@ class Author {
 	}
 
 
-	public function getName() {
-		return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
+	public function getName($url = '') {
+
+		if ($url != '') {
+			return '<a href="'.$url.'?id='.$this -> id.'">'
+					.$this -> academic_title.' '.$this -> first_name.' '.$this -> last_name.'</a>';
+		}
+		else {
+			return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
+		}
 	}
 
 
@@ -84,10 +91,16 @@ class Author {
 
 		/* Checks if publication data was loaded already */
 		if (!isset($this -> publications)) {
+			$this -> publications = array();
 
 			/* Gets publication data */
 			$data = $this -> db -> getPublications(array('author_id' => $this -> id));
-			$this -> publications = $data;
+
+			/* Creates the Publication objects and puts them in array */
+			foreach ($data as $value) {
+				$publication = new Publication($value, $this -> db);
+				$this -> publications[] = $publication;
+			}
 		}
 
 		return $this -> publications;
@@ -127,9 +140,5 @@ class Author {
 
 
 }
-
-
-
-
 
 ?>
