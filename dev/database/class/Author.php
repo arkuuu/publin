@@ -13,6 +13,8 @@ class Author {
 	private $contact;
 	private $text;
 
+	private $metadata_complete;
+
 
 	public function __construct(array $data, Database $db) {
 
@@ -23,21 +25,28 @@ class Author {
 		$this -> last_name = $data['last_name'];
 		$this -> first_name = $data['first_name'];
 		$this -> academic_title = $data['academic_title'];
+		$this -> metadata_complete = false;
 	}
 
 
 	/**
-	 * Fetches additional data from the database.
+	 * Loads additional metadata from the database. Additional metadata is the data
+	 * which is only needed for the author pages and thus should not be loaded everytime.
 	 *
 	 * @return	void
 	 */
 	private function getMissingData() {
 
+		/* Gets missing meta data */
 		$data = $this -> db -> getAuthors(array(
 										'select' => array('webpage', 'contact', 'text'),
 										'id' => $this -> id));
+		$this -> webpage = $data[0]['webpage'];
+		$this -> contact = $data[0]['contact'];
+		$this -> text = $data[0]['text'];
 
-		$this -> abstract = $data[0]['abstract'];
+		/* Determines that all metadata is loaded */
+		$this -> metadata_complete = true;
 	}
 
 
@@ -52,7 +61,6 @@ class Author {
 
 
 	public function getName() {
-
 		return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
 	}
 
@@ -74,7 +82,10 @@ class Author {
 
 	public function getPublications() {
 
+		/* Checks if publication data was loaded already */
 		if (!isset($this -> publications)) {
+
+			/* Gets publication data */
 			$data = $this -> db -> getPublications(array('author_id' => $this -> id));
 			$this -> publications = $data;
 		}
@@ -84,16 +95,33 @@ class Author {
 
 
 	public function getWebpage() {
+
+		/* Checks if missing metadata was loaded already */
+		if (!$this -> metadata_complete) {
+			$this -> getMissingData();
+		}
+
 		return $this -> webpage;
 	}
 
 
 	public function getContact() {
+
+		/* Checks if missing metadata was loaded already */
+		if (!$this -> metadata_complete) {
+			$this -> getMissingData();
+		}
+
 		return $this -> contact;
 	}
 
 
 	public function getText() {
+
+		/* Checks if missing metadata was loaded already */
+		if (!$this -> metadata_complete) {
+			$this -> getMissingData();
+		}
 		return $this -> text;
 	}
 

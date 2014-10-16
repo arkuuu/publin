@@ -17,6 +17,8 @@ class Publication {
 	private $key_terms;
 	private $key_terms_string;
 
+	private $metadata_complete
+
 
 	public function __construct(array $data, Database $db) {	// TODO input validation, exception
 
@@ -28,11 +30,13 @@ class Publication {
 			$this -> title = $data['title'];
 			$this -> year = (int)$data['year'];
 			$this -> month = (int)$data['month'];
+			$this -> metadata_complete = false;
 	} 
 	
 
 	/**
-	 * Fetches additional data from the database.
+	 * Loads additional metadata from the database. Additional metadata is the data
+	 * which is only needed for the publication pages and thus should not be loaded everytime.
 	 *
 	 * @return	void
 	 */
@@ -43,6 +47,7 @@ class Publication {
 										'id' => $this -> id));
 
 		$this -> abstract = $data[0]['abstract'];
+		$this -> metadata_complete = true;
 	}
 
 	/**
@@ -158,7 +163,8 @@ class Publication {
 	 */
 	public function getAbstract() {
 
-		if (!isset($this -> abstract)) {
+		/* Checks if missing metadata was loaded already */
+		if (!$this -> metadata_complete)) {
 			$this -> getMissingData();
 		}
 		return $this -> abstract;
