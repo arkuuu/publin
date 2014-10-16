@@ -14,7 +14,6 @@ class Publication {
 	private $abstract;	
 	private $year;
 	private $month;
-	private $date_added;	// TODO really needed outside the database (sorting)?
 	private $key_terms;
 	private $key_terms_string;
 
@@ -27,14 +26,24 @@ class Publication {
 			$this -> type_id = (int)$data['type_id'];
 			$this -> study_field_id = (int)$data['study_field_id'];
 			$this -> title = $data['title'];
-			$this -> abstract = $data['abstract'];
 			$this -> year = (int)$data['year'];
 			$this -> month = (int)$data['month'];
-			$this -> date_added = $data['date_added'];
-
-			// TODO: require less data in constructor, get missing data from database if needed
 	} 
 	
+
+	/**
+	 * Fetches additional data from the database.
+	 *
+	 * @return	void
+	 */
+	private function getMissingData() {
+
+		$data = $this -> db -> getPublications(array(
+										'select' => array('abstract'),
+										'id' => $this -> id));
+
+		$this -> abstract = $data[0]['abstract'];
+	}
 
 	/**
 	 * Returns the id.
@@ -148,6 +157,10 @@ class Publication {
 	 * @return string
 	 */
 	public function getAbstract() {
+
+		if (!isset($this -> abstract)) {
+			$this -> getMissingData();
+		}
 		return $this -> abstract;
 	}
 

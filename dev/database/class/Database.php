@@ -261,7 +261,7 @@ class Database extends mysqli {
 	 */
 	public function getAuthors(array $filter = array()) {
 	
-		$select = 'SELECT a.*';
+		$select = 'SELECT a.`id`, a.`user_id`, a.`last_name`, a.`first_name`, a.`academic_title`';
 		$from = 'FROM `list_authors` a';
 		$join = '';
 		$where = '';
@@ -320,7 +320,7 @@ class Database extends mysqli {
 	 */
 	public function getPublications(array $filter = array()) {
 
-		$select = 'SELECT p.*';
+		$select = 'SELECT p.`id`, p.`type_id`, p.`study_field_id`, p.`title`, p.`year`, p.`month`';
 		$from = 'FROM `list_publications` p';
 		$join = '';
 		$where = '';

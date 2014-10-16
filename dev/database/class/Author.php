@@ -23,12 +23,23 @@ class Author {
 		$this -> last_name = $data['last_name'];
 		$this -> first_name = $data['first_name'];
 		$this -> academic_title = $data['academic_title'];
-		$this -> webpage = $data['webpage'];
-		$this -> contact = $data['contact'];
-		$this -> text = $data['text'];
-
-		// TODO: require less data in constructor, get missing data from database if needed
 	}
+
+
+	/**
+	 * Fetches additional data from the database.
+	 *
+	 * @return	void
+	 */
+	private function getMissingData() {
+
+		$data = $this -> db -> getAuthors(array(
+										'select' => array('webpage', 'contact', 'text'),
+										'id' => $this -> id));
+
+		$this -> abstract = $data[0]['abstract'];
+	}
+
 
 	public function getId() {
 		return $this -> id;
