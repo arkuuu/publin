@@ -39,7 +39,7 @@ $page_title = $publ -> getTitle().' | publin';
 		<br/> <?php echo $publ -> getMonth().'.'.$publ -> getYear(); ?></p>
 
 	<h2>Abstract</h2>
-	<p><?php echo $publ -> getAbstract(); ?></p>
+	<p><?php echo $publ -> getAbstractText(); ?></p>
 
 	<h2>References</h2>
 	<ul>

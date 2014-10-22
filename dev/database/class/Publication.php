@@ -11,7 +11,7 @@ class Publication {
 	private $title;
 	private $authors;
 	private $authors_string;
-	private $abstract;	
+	private $abstract_text;
 	private $year;
 	private $month;
 	private $key_terms;
@@ -20,6 +20,12 @@ class Publication {
 	private $metadata_complete;
 
 
+	/**
+	 * Constructor.
+	 *
+	 * @param array    $data	data from database
+	 * @param Database $db		database connection
+	 */
 	public function __construct(array $data, Database $db) {	// TODO input validation, exception
 
 			$this -> db = $db;
@@ -31,8 +37,8 @@ class Publication {
 			$this -> year = (int)$data['year'];
 			$this -> month = (int)$data['month'];
 			$this -> metadata_complete = false;
-	} 
-	
+	}
+
 
 	/**
 	 * Loads additional metadata from the database. Additional metadata is the data
@@ -46,7 +52,7 @@ class Publication {
 										'select' => array('abstract'),
 										'id' => $this -> id));
 
-		$this -> abstract = $data[0]['abstract'];
+		$this -> abstract_text = $data[0]['abstract'];
 		$this -> metadata_complete = true;
 	}
 
@@ -114,7 +120,7 @@ class Publication {
 	public function getAuthors() {
 
 		if (!isset($this -> authors)) {
-			
+
 			$data = $this -> db -> getAuthors(array('publication_id' => $this -> id));
 
 			foreach ($data as $value) {
@@ -156,13 +162,13 @@ class Publication {
 	 *
 	 * @return string
 	 */
-	public function getAbstract() {
+	public function getAbstractText() {
 
 		/* Checks if missing metadata was loaded already */
 		if (!$this -> metadata_complete) {
 			$this -> getMissingData();
 		}
-		return $this -> abstract;
+		return $this -> abstract_text;
 	}
 
 
@@ -194,7 +200,7 @@ class Publication {
 	public function getKeyTerms() {
 
 		if (!isset($this -> key_terms)) {
-			
+
 			$this -> key_terms = array();
 
 			$data = $this -> db -> getKeyTerms(array('publication_id' => $this -> id));
@@ -217,7 +223,7 @@ class Publication {
 	public function getKeyTermsString($separator = ', ') {
 
 		if (!isset($this -> key_terms_string)) {
-			
+
 			$temp = '';
 
 			foreach ($this -> getKeyTerms() as $key => $value) {
@@ -228,7 +234,7 @@ class Publication {
 		}
 
 		return $this -> key_terms_string;
-	}	
+	}
 
 
 }
