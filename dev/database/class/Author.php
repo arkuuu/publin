@@ -9,7 +9,7 @@ class Author {
 	private $first_name;
 	private $academic_title;
 	private $publications;
-	private $webpage;
+	private $website;
 	private $contact;
 	private $text;
 
@@ -30,8 +30,9 @@ class Author {
 
 
 	/**
-	 * Loads additional metadata from the database. Additional metadata is the data
-	 * which is only needed for the author pages and thus should not be loaded everytime.
+	 * Loads additional metadata from the database.
+	 * Additional metadata is the data which is only needed for the author pages
+	 * and thus should not be loaded every time. This method must not be used directly.
 	 *
 	 * @return	void
 	 */
@@ -39,9 +40,9 @@ class Author {
 
 		/* Gets missing meta data */
 		$data = $this -> db -> getAuthors(array(
-										'select' => array('webpage', 'contact', 'text'),
+										'select' => array('website', 'contact', 'text'),
 										'id' => $this -> id));
-		$this -> webpage = $data[0]['webpage'];
+		$this -> website = $data[0]['website'];
 		$this -> contact = $data[0]['contact'];
 		$this -> text = $data[0]['text'];
 
@@ -50,37 +51,77 @@ class Author {
 	}
 
 
-	public function getId() {
+    /**
+     * Returns the id.
+     *
+     * @return int
+     */
+    public function getId() {
 		return $this -> id;
 	}
 
 
-	public function getUserId() {
-		return $this -> user_id;
+    /**
+     * Returns the user id or 0, if there is no user id.
+     *
+     * @return int
+     */
+    public function getUserId() {
+    	if (isset($this -> user_id)) {
+    		return $this -> user_id;
+    	}
+    	else {
+    		return 0;
+    	}
 	}
 
 
-	public function getName() {
+    /**
+     * Returns the full name, consisting of academic title, first name and last name.
+     *
+     * @return string
+     */
+    public function getName() {
 		return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
 	}
 
 
-	public function getLastName() {
+    /**
+     * Returns the last name.
+     *
+     * @return string
+     */
+    public function getLastName() {
 		return $this -> last_name;
 	}
 
 
-	public function getFirstName() {
+    /**
+     * Returns the first name.
+     *
+     * @return string
+     */
+    public function getFirstName() {
 		return $this -> first_name;
 	}
 
 
-	public function getAcademicTitle() {
+    /**
+     * Returns the academic title.
+     *
+     * @return string
+     */
+    public function getAcademicTitle() {
 		return $this -> academic_title;
 	}
 
 
-	public function getPublications() {
+    /**
+     * Returns an array with all Publication objects of this author.
+     *
+     * @return array
+     */
+    public function getPublications() {
 
 		/* Checks if publication data was loaded already */
 		if (!isset($this -> publications)) {
@@ -100,18 +141,28 @@ class Author {
 	}
 
 
-	public function getWebpage() {
+    /**
+     * Returns the website.
+     *
+     * @return string
+     */
+    public function getWebsite() {
 
 		/* Checks if missing metadata was loaded already */
 		if (!$this -> metadata_complete) {
 			$this -> getMissingData();
 		}
 
-		return $this -> webpage;
+		return $this -> website;
 	}
 
 
-	public function getContact() {
+    /**
+     * Returns the contact info.
+     *
+     * @return string
+     */
+    public function getContact() {
 
 		/* Checks if missing metadata was loaded already */
 		if (!$this -> metadata_complete) {
@@ -122,7 +173,12 @@ class Author {
 	}
 
 
-	public function getText() {
+    /**
+     * Returns the author's text.
+     *
+     * @return string
+     */
+    public function getText() {
 
 		/* Checks if missing metadata was loaded already */
 		if (!$this -> metadata_complete) {
@@ -132,14 +188,21 @@ class Author {
 	}
 
 
-	public function getBibLink($service) {
+    /**
+     * Returns a search string for a specified service.
+     *
+     * @param string	$service	service for which the link should be returned
+     *
+     * @return string
+     */
+    public function getBibLink($service) {
 
 		switch ($service) {
 			case 'google':
 				return 'http://scholar.google.com/scholar?q='
 						.urlencode('"'.$this -> getFirstName().' '.$this -> getLastName().'"');
 				break;
-			
+
 			case 'base':
 				return 'http://www.base-search.net/Search/Results?type0[]=aut&lookfor0[]='
 						.urlencode('"'.$this -> getFirstName().' '.$this -> getLastName().'"');

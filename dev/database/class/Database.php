@@ -30,12 +30,13 @@ class Database extends mysqli {
 							$this -> readonly_password,
 							$this -> database);
 
+
 		/* Stops if the connection cannot be established */
 		if ($this -> connect_errno) {
 			die('NO CONNECTION TO DATABASE');	// TODO don't use die!
 		}
 		/* Sets the charset used for transmission */
-		$this -> set_charset($this -> charset);
+		parent::set_charset($this -> charset);
 	}
 
 
