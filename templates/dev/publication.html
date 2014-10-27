@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title><?php echo $this -> viewPageTitle() ?></title>
+</head>
+<body>
+
+	<p><a href="index.php">back</a></p>
+	<h1><?php echo $this -> viewTitle() ?></h1>
+	<p>by: <?php echo $this -> viewAuthors(', ') ?>
+		<br/>in: TODO JOURNAL
+		<br/>published: <?php echo $this -> viewPublishDate() ?>
+		<br/>type: <?php echo $this -> viewType() ?></p>
+
+	<h2>Abstract</h2>
+	<p><?php echo $this -> viewAbstract() ?></p>
+
+	<h2>References</h2>
+	<ul><?php echo $this -> viewReferences() ?></ul>
+
+	<h2>Key Terms</h2>
+	<p><?php echo $this -> viewKeyTerms() ?></p>
+
+	<h2>Search this publication in</h2>
+	<ul><?php echo $this -> viewBibLinks() ?></ul>
+
+	<h2>Export to</h2>
+	<ul><?php echo $this -> viewExport() ?></ul>
+
+</body>
+</html>
