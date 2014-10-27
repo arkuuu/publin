@@ -7,7 +7,6 @@ class KeyTerm {
 
 
 	public function __construct($data) {
-
 		$this -> id = $data['id'];
 		$this -> name = $data['name'];
 	}

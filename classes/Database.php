@@ -140,6 +140,14 @@ class Database extends mysqli {
 	}
 
 
+	public function fetchKeyTerms() {
+
+		$query = 'SELECT `id`, `name`
+					FROM `list_key_terms`
+					ORDER BY `name` ASC';
+
+		return $this -> getData($query);
+	}
 	/**
 	 * Returns an array with key terms. All Columns are returned.
 	 * A filter can be specified with the optional parameter $filter.
@@ -319,58 +327,58 @@ class Database extends mysqli {
 	 *
 	 * @return	array
 	 */
-	// public function fetchPublications(array $filter = array()) {
+	public function fetchPublications(array $filter = array()) {
 
-	// 	$select = 'SELECT p.`id`, p.`type_id`, p.`study_field_id`, p.`title`, p.`year`, p.`month`';
-	// 	$from = 'FROM `list_publications` p';
-	// 	$join = '';
-	// 	$where = '';
-	// 	$order = 'ORDER BY `date_added` ASC';
+		$select = 'SELECT p.`id`, p.`title`, p.`year`, p.`month`';
+		$from = 'FROM `list_publications` p';
+		$join = '';
+		$where = '';
+		$order = 'ORDER BY `date_added` ASC';
 
-	// 	/* Checks if any filter is set */
-	// 	if (!empty($filter)) {
+		/* Checks if any filter is set */
+		if (!empty($filter)) {
 
-	// 		/* Creates the SELECT clause */
-	// 		if (array_key_exists('select', $filter)) {
-	// 			$select = 'SELECT';
+			// /* Creates the SELECT clause */
+			// if (array_key_exists('select', $filter)) {
+			// 	$select = 'SELECT';
 
-	// 			foreach ($filter['select'] as $key => $value) {
-	// 				$select .= ' p.`'.$value.'`,';
-	// 			}
-	// 			$select = substr($select, 0, -1);
-	// 			unset($filter['select']);
-	// 		}
+			// 	foreach ($filter['select'] as $key => $value) {
+			// 		$select .= ' p.`'.$value.'`,';
+			// 	}
+			// 	$select = substr($select, 0, -1);
+			// 	unset($filter['select']);
+			// }
 
-	// 		/* Checks if filter is still not empty */
-	// 		if (!empty($filter)) {
-	// 			$where = 'WHERE';
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
 
-	// 			/* Creates the JOIN clause if needed */
-	// 			if (array_key_exists('author_id', $filter)) {
-	// 				$join .= ' JOIN `rel_publ_to_authors` ra ON (ra.`publication_id` = p.`id`)';
-	// 				$where .= ' ra.`author_id` LIKE "'.$filter['author_id'].'" AND';
-	// 				unset($filter['author_id']);
-	// 			}
-	// 			if (array_key_exists('key_term_id', $filter)) {
-	// 				$join .= ' JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)';
-	// 				$where .= ' rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
-	// 				unset($filter['key_term_id']);
-	// 			}
+				/* Creates the JOIN clause if needed */
+				if (array_key_exists('author_id', $filter)) {
+					$join .= ' JOIN `rel_publ_to_authors` ra ON (ra.`publication_id` = p.`id`)';
+					$where .= ' ra.`author_id` LIKE "'.$filter['author_id'].'" AND';
+					unset($filter['author_id']);
+				}
+				if (array_key_exists('key_term_id', $filter)) {
+					$join .= ' JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)';
+					$where .= ' rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
+					unset($filter['key_term_id']);
+				}
 
-	// 			/* Creates the WHERE clause from the rest of filter array */
-	// 			foreach ($filter as $key => $value) {
-	// 				$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
-	// 			}
-	// 			$where = substr($where, 0, -3);
-	// 		}
-	// 	}
-	// 	unset($filter);
+				/* Creates the WHERE clause from the rest of filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
+		}
+		unset($filter);
 
-	// 	/* Combines everything to the complete query */
-	// 	$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.';';
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.';';
 
-	// 	return $this -> getData($query);	// TODO: Return Publication objects instead of that?
-	// }
+		return $this -> getData($query);	// TODO: Return Publication objects instead of that?
+	}
 
 
 	public function fetchSinglePublication($publication_id) {
@@ -409,6 +417,15 @@ class Database extends mysqli {
 	}
 
 
+	public function fetchAuthors() {
+		$query = 'SELECT a.`id`, a.`first_name`, a.`last_name`, a.`academic_title`
+					FROM `list_authors` a
+					ORDER BY a.`last_name` ASC;';
+
+		return $this -> getData($query);
+	}
+
+
 	public function fetchSingleAuthor($author_id) {
 
 		$query = 'SELECT a.*
@@ -417,6 +434,7 @@ class Database extends mysqli {
 
 		return $this -> getData($query);
 	}
+
 
 	public function fetchPublicationsOfAuthor($author_id) {
 

@@ -5,7 +5,7 @@ require_once 'BibLink.php';
 class AuthorView implements View {
 
 	private $author;
-	private $template = './templates/author.html';
+	private $template;
 
 
 	public function __construct(Author $author, $template = 'dev') {
