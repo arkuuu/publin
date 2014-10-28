@@ -1,5 +1,6 @@
 <?php
 
+require_once 'MetaTags.php';
 require_once 'BibLink.php';
 require_once 'Export.php';
 
@@ -20,6 +21,18 @@ class PublicationView implements View {
 	}
 
 
+	private function viewMetaTags() {
+
+		$tags_string = '';
+
+		foreach (MetaTags::getStyles() as $style) {
+			$tags_string .= MetaTags::getPublicationsMetaTags($this -> publication, $style);
+		}
+
+		return $tags_string;
+	}
+
+
 	private function viewTitle() {
 		return $this -> publication -> getTitle();
 	}
@@ -34,6 +47,7 @@ class PublicationView implements View {
 			$authors_string .= '<a href ="'.$url.$author -> getId().'">'
 							.$author -> getName().'</a>'.$separator;
 		}
+
 		return substr($authors_string, 0, -(strlen($separator)));			
 
 	}
@@ -81,6 +95,7 @@ class PublicationView implements View {
 		foreach (BibLink::getServices() as $service) {
 			$bib_links_string .= '<li><a href="'.BibLink::getPublicationsLink($this -> publication, $service).'" target="_blank">'.$service.'</a></li>';
 		}
+
 		return $bib_links_string;
 	}
 
