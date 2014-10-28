@@ -2,12 +2,13 @@
 
 require_once 'Author.php';
 require_once 'KeyTerm.php';
+require_once 'StudyField.php';
 require_once 'Publication.php';
 
 class BrowseModel {
 
 	private $db;
-	private $allowed_types = array('author', 'key_term', 'study_field', 'year', 'year:month');
+	private $allowed_types = array('author', 'key_term', 'study_field');	// TODO: use this!
 	private $browse_type;
 	private $browse_list = array();
 	private $browse_result = array();
@@ -142,15 +143,22 @@ class BrowseModel {
 	private function fetchKeyTerms() {
 		$data = $this -> db -> fetchKeyTerms();
 
-		return $data;
+		foreach ($data as $key => $value) {
+			$key_terms[] = new KeyTerm($value);
+		}
+
+		return $key_terms;
 	}
 
 
 	private function fetchStudyFields() {
 		$data = $this -> db -> fetchStudyFields();
 
-		return $data;
+		foreach ($data as $key => $value) {
+			$study_fields[] = new StudyField($value);
+		}
 
+		return $study_fields;
 	}
 
 
@@ -164,13 +172,6 @@ class BrowseModel {
 
 	private function fetchMonths() {
 		$data = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-
-		return $data;
-	}
-
-
-	private function fetchTypes() {
-		$data = $this -> db -> fetchTypes();
 
 		return $data;
 	}

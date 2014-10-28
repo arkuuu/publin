@@ -128,23 +128,30 @@ class Database extends mysqli {
 		if ($id != 0) {
 			$query = 'SELECT `id`, `name`
 						FROM `list_types`
-						WHERE `id` LIKE "'.$id.'"';
+						WHERE `id` LIKE "'.$id.'";';
 		}
 		else {
 			$query = 'SELECT `id`, `name`
 						FROM `list_types`
-						ORDER BY `name` ASC';
+						ORDER BY `name` ASC;';
 		}
 
 		return $this -> getData($query);
 	}
 
 
-	public function fetchKeyTerms() {
+	public function fetchKeyTerms($id = 0) {
 
-		$query = 'SELECT `id`, `name`
-					FROM `list_key_terms`
-					ORDER BY `name` ASC';
+		if ($id != 0) {
+			$query = 'SELECT `id`, `name`
+						FROM `list_key_terms`
+						WHERE `id` LIKE "'.$id.'";';
+		}
+		else {
+			$query = 'SELECT `id`, `name`
+						FROM `list_key_terms`
+						ORDER BY `name` ASC;';
+		}
 
 		return $this -> getData($query);
 	}
