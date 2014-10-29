@@ -71,6 +71,7 @@ class PublicationModel {
 	 * @return	void
 	 */
 	private function fetchKeyTerms() {
+		$key_terms = array();
 		$data = $this -> db -> fetchKeyTermsOfPublication($this -> id);
 
 		foreach ($data as $key => $value) {
