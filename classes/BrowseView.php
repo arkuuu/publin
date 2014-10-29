@@ -1,26 +1,32 @@
 <?php
 
-class BrowseView implements View {
+class BrowseView extends View {
 
-	private $template = './templates/browse.html';
+	private $template;
 	private $model;
 
 
 	public function __construct(BrowseModel $model, $template = 'dev') {
 
-		$this -> template = './templates/'.$template.'/browse.html';
 		$this -> model = $model;
+		$this -> template = './templates/'.$template.'/browse.html';
 	}
 
 
-	private function viewPageTitle() {
-		return 'publin | Browse by '.$this -> viewBrowseType();
+	public function getContent() {
+		return parent::getContent($this -> template);
 	}
 
 
-	private function viewBrowseType() {
+	public function viewPageTitle() {
+		return 'Browse by '.$this -> viewBrowseType();
+	}
+
+
+	public function viewBrowseType() {
 
 		$string = array(
+							'' => '',
 							'author' => 'author',
 							'key_term' => 'key term',
 							'study_field' => 'field of study',
@@ -30,35 +36,46 @@ class BrowseView implements View {
 	}
 
 
-	private function viewBrowseNum() {
+	public function viewBrowseNum() {
 		return $this -> model -> getBrowseNum();
 	}
 
 
-	private function viewBrowseList() {
+	public function viewBrowseList() {
+
 		$string = '';
 		$url = array(
-						'author' => './autpage.php?id=',
-						'key_term' => './browsepage.php?by=key_term&amp;id=',
-						'study_field' => './browsepage.php?by=study_field&amp;id=',
+						'author' => './?p=author&amp;id=',
+						'key_term' => './?p=browse&amp;by=key_term&amp;id=',	// TODO: change
+						'study_field' => './?p=browse&amp;by=study_field&amp;id=',	// TODO: change
 					);
+		$browse_list = $this -> model -> getBrowseList();
 
-		foreach ($this -> model -> getBrowseList() as $object) {
-			$string .= '<li><a href="'.$url[$this -> model -> getBrowseType()].$object -> getId().'">'.$object -> getName().'</a></li>';
+		if (!empty($browse_list)) {
+			foreach ($browse_list as $object) {
+				$string .= '<li><a href="'.$url[$this -> model -> getBrowseType()].$object -> getId().'">'.$object -> getName().'</a></li>'."\n";
+			}
 		}
+		else {
+			$string = '<li><a href="?p=browse&amp;by=author">Author</a></li>'."\n"
+						.'<li><a href="?p=browse&amp;by=study_field">Field of Study</a></li>'."\n"
+						.'<li><a href="?p=browse&amp;by=key_term">Key Term</a></li>'."\n";
+		}
+
 
 		return $string;
 	}
 
 
-	private function isBrowseResult() {
+	public function isBrowseResult() {
 		return $this -> model -> isBrowseResult();
 	}
 
 
-	private function viewBrowseResult() {
+	public function viewBrowseResult() {
+
 		$string = '';
-		$url = './publpage.php?id=';
+		$url = './?p=publication&amp;id=';
 
 		foreach ($this -> model -> getBrowseResult() as $publication) {
 			$string .= '<li><a href="'.$url.$publication -> getId().'">'.$publication -> getTitle().'</a> by ';
@@ -69,23 +86,6 @@ class BrowseView implements View {
 		}
 
 		return $string;
-	}
-
-	public function display() {
-		$file = $this -> template;
-
-		if (file_exists($file)) {
-			
-			ob_start();
-			include $file;
-			$output = ob_get_contents();
-			ob_end_clean();
-
-			return $output;
-		}
-		else {
-			return 'Could not find template';
-		}
 	}
 	
 }

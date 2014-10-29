@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<?php echo $this -> viewMetaTags() ?>
-	<title><?php echo $this -> viewPageTitle() ?></title>
-</head>
-<body>
 
-	<p><a href="index.php">back</a></p>
 	<h1><?php echo $this -> viewTitle() ?></h1>
 	<p>by: <?php echo $this -> viewAuthors(', ') ?>
 		<br/>in: TODO JOURNAL
@@ -28,6 +19,3 @@
 
 	<h2>Export to</h2>
 	<ul><?php echo $this -> viewExport() ?></ul>
-
-</body>
-</html>

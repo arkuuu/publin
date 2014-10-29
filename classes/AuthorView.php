@@ -2,87 +2,75 @@
 
 require_once 'BibLink.php';
 
-class AuthorView implements View {
+class AuthorView extends View {
 
 	private $author;
 	private $template;
 
 
-	public function __construct(Author $author, $template = 'dev') {
-		$this -> author = $author;
+	public function __construct(AuthorModel $model, $template = 'dev') {
+		
+		$this -> author = $model -> getAuthor();
 		$this -> template = './templates/'.$template.'/author.html';
 	}
 
 
-	private function viewPageTitle() {
-		return 'publin | '.$this -> author -> getName();
+	public function getContent() {
+		return parent::getContent($this -> template);
 	}
 
 
-	private function viewName() {
+	public function viewPageTitle() {
 		return $this -> author -> getName();
 	}
 
 
-	private function viewWebsite() {
+	public function viewName() {
+		return $this -> author -> getName();
+	}
+
+
+	public function viewWebsite() {
 		return '<a href="http://'.$this -> author -> getWebsite().'" target="_blank">'.$this -> author -> getWebsite().'</a>';
 	}
 
 
-	private function viewContact() {
+	public function viewContact() {
 		return $this -> author -> getContact();
 	}
 
 
-	private function viewText() {
+	public function viewText() {
 		return $this -> author -> getText();
 	}
 
 
-	private function viewPublications() {
+	public function viewPublications() {
 
-		$publications_string = '';
+		$string = '';
+		$url = '?p=publication&amp;id=';
 
 		foreach ($this -> author -> getPublications() as $publ) {
-			$publications_string .= '<li><a href="publpage.php?id='.$publ -> getId().'">'.$publ -> getTitle().'</a> by ';
+			$string .= '<li><a href="'.$url.$publ -> getId().'">'.$publ -> getTitle().'</a> by ';
 			foreach ($publ -> getAuthors() as $author) {
-				$publications_string .= $author -> getName().', ';
+				$string .= $author -> getName().', ';
 			}
 
-			$publications_string .= $publ -> getMonth().'.'.$publ -> getYear().'</li>'."\n";
+			$string .= $publ -> getMonth().'.'.$publ -> getYear().'</li>'."\n";
 		}
 
-		return $publications_string;
+		return $string;
 	}
 
 
-	private function viewBibLinks() {
+	public function viewBibLinks() {
 
-		$bib_links_string = '';
+		$string = '';
 
 		foreach (BibLink::getServices() as $service) {
-			$bib_links_string .= '<li><a href="'.BibLink::getAuthorsLink($this -> author, $service).'" target="_blank">'.$service.'</a></li>';
+			$string .= '<li><a href="'.BibLink::getAuthorsLink($this -> author, $service).'" target="_blank">'.$service.'</a></li>';
 		}
-		return $bib_links_string;
-	}
-
-
-	public function display() {
-		
-		$file = $this -> template;
-
-		if (file_exists($file)) {
-			
-			ob_start();
-			include $file;
-			$output = ob_get_contents();
-			ob_end_clean();
-
-			return $output;
-		}
-		else {
-			return 'Could not find template';
-		}
+		return $string;
 	}
 
 }

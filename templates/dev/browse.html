@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title><?php echo $this -> viewPageTitle() ?></title>
-</head>
-<body>
 
-<p><a href="index.php">back</a></p>
-			<h2>Browse by <?php echo $this -> viewBrowseType() ?></h2>
-					<ul>
-						<?php echo $this -> viewBrowseList() ?>
-					</ul>
-				<?php if ($this -> isBrowseResult()) { ?>					
-					<p>Found <?php echo $this -> viewBrowseNum() ?> entries: </p>
-					<ul>
-						<?php echo $this -> viewBrowseResult() ?>
-					</ul>
-				<?php } ?>
-
-</body>
-</html>
+	<h2>Browse by <?php echo $this -> viewBrowseType() ?></h2>
+	<?php if (!($this -> isBrowseResult())) { ?>					
+		<ul>
+			<?php echo $this -> viewBrowseList() ?>
+		</ul>
+	<?php } ?>
+	<?php if ($this -> isBrowseResult()) { ?>					
+		<p>Found <?php echo $this -> viewBrowseNum() ?> entries: </p>
+		<ul>
+			<?php echo $this -> viewBrowseResult() ?>
+		</ul>
+	<?php } ?>
