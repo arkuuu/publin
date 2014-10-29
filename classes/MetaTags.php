@@ -3,12 +3,12 @@
 abstract class MetaTags {
 
 
-	public function getStyles() {
+	public static function getStyles() {
 		return array('highwire');
 	}
 
 
-	public function getPublicationsMetaTags(Publication $publication, $type) {
+	public static function getPublicationsMetaTags(Publication $publication, $type) {
 		// TODO: Implementation
 		switch ($type) {
 			case 'highwire':

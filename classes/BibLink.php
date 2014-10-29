@@ -6,12 +6,12 @@ require_once 'Publication.php';
 abstract class BibLink {
 	
 
-	public function getServices() {
+	public static function getServices() {
 		return array('Google', 'Base');
 	}
 	
 
-	public function getAuthorsLink(Author $author, $service) {
+	public static function getAuthorsLink(Author $author, $service) {
 
 		switch ($service) {
 			case 'Google':
@@ -31,7 +31,7 @@ abstract class BibLink {
 	}
 
 
-	public function getPublicationsLink(Publication $publication, $service) {
+	public static function getPublicationsLink(Publication $publication, $service) {
 
 		switch ($service) {
 			case 'Google':
