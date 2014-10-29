@@ -12,6 +12,7 @@ class BrowseModel {
 	private $browse_type;
 	private $browse_list = array();
 	private $browse_result = array();
+	private $is_result = false;
 	private $browse_num;
 
 
@@ -31,6 +32,7 @@ class BrowseModel {
 			case 'key_term':
 
 				if ($id > 0) {
+					$this -> is_result = true;
 					$this -> fetchPublications(array('key_term_id' => $id));
 					$this -> browse_num = $this -> db -> getNumData();
 					if ($this -> browse_num > 0) {
@@ -46,6 +48,7 @@ class BrowseModel {
 			case 'study_field':
 				
 				if ($id > 0) {
+					$this -> is_result = true;
 					$this -> fetchPublications(array('study_field_id' => $id));
 					$this -> browse_num = $this -> db -> getNumData();
 					if ($this -> browse_num > 0) {
@@ -121,12 +124,7 @@ class BrowseModel {
 
 
 	public function isBrowseResult() {
-		if (empty($this -> browse_result)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return $this -> is_result;
 	}
 
 	private function fetchAuthors() {
