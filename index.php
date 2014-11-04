@@ -3,7 +3,7 @@
 require_once 'classes/Controller.php';
 
 if (!isset($_GET['p'])) {
-	$p = 'about';
+	$p = 'start';
 }
 else {
 	$p = $_GET['p'];
