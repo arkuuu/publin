@@ -69,7 +69,14 @@ class PublicationView extends View {
 
 
 	public function viewAbstract() {
-		return $this -> publication -> getAbstract();
+		$string = $this -> publication -> getAbstract();
+
+		if (!empty($string)) {
+			return $string;
+		}
+		else {
+			return 'no abstract given';
+		}
 	}
 
 
@@ -80,16 +87,26 @@ class PublicationView extends View {
 
 
 	public function viewKeyTerms($separator = ', ') {
+		$key_terms = $this -> publication -> getKeyTerms();
 
-		$string = '';
-		$url = '?p=browse&amp;by=key_term&amp;id=';
+		if (!empty($key_terms)) {
 
-		foreach ($this -> publication -> getKeyTerms() as $key_term) {
-			$string .= '<a href="'.$url.$key_term -> getId().'">'
-								.$key_term -> getName().'</a>'.$separator;
+			$string = '';
+			$url = '?p=browse&amp;by=key_term&amp;id=';
+
+			foreach ($this -> publication -> getKeyTerms() as $key_term) {
+				$string .= '<a href="'.$url.$key_term -> getId().'">'
+									.$key_term -> getName().'</a>'.$separator;
+			}
+
+			return substr($string, 0, -(strlen($separator)));
+		}
+		else {
+
+			return 'no key terms assigned';
 		}
 
-		return substr($string, 0, -(strlen($separator)));
+
 	}
 
 
