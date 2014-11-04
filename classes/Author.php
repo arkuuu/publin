@@ -1,18 +1,66 @@
 <?php
 
+/**
+ * Handles author data.
+ *
+ * TODO: comment
+ */
 class Author {
 
+	/**
+	 * @var	string
+	 */
 	private $id;
+
+	/**
+	 * Id of the user this author belongs to
+	 * @var	string
+	 */
 	private $user_id;
+
+	/**
+	 * @var	string
+	 */
 	private $last_name;
+
+	/**
+	 * @var	string
+	 */
 	private $first_name;
+
+	/**
+	 * @var	string
+	 */
 	private $academic_title;
+
+	/**
+	 * @var	string
+	 */
 	private $website;
+
+	/**
+	 * @var	string
+	 */
 	private $contact;
+
+	/**
+	 * @var	string
+	 */
 	private $text;
+
+	/**
+	 * Array with publications of this author
+	 * @var	array
+	 */
 	private $publications;
 
 
+
+	/**
+	 * Constructs an author object.
+	 *
+	 * @param	array	$data	author data from database
+	 */
 	public function __construct(array $data) {
 
 		foreach ($data as $key => $value) {
@@ -27,7 +75,7 @@ class Author {
 	 * @return int
 	 */
 	public function getId() {
-		return $this -> id;
+		return (int)$this -> id;
 	}
 
 
@@ -38,7 +86,7 @@ class Author {
 	 */
 	public function getUserId() {
 		if (isset($this -> user_id)) {
-			return $this -> user_id;
+			return (int)$this -> user_id;
 		}
 		else {
 			return 0;
@@ -123,7 +171,6 @@ class Author {
 
 	/**
 	 * Returns an array with publications of this authors.
-	 * The array consists of Publication objects.
 	 *
 	 * @return	array
 	 */

@@ -1,21 +1,21 @@
 
-	<h1><?php echo $this -> viewTitle() ?></h1>
-	<p>by: <?php echo $this -> viewAuthors(', ') ?>
+	<h1><?php echo $this -> showTitle() ?></h1>
+	<p>by: <?php echo $this -> showAuthors(', ') ?>
 		<br/>in: TODO JOURNAL
-		<br/>published: <?php echo $this -> viewPublishDate() ?>
-		<br/>type: <?php echo $this -> viewType() ?></p>
+		<br/>published: <?php echo $this -> showPublishDate() ?>
+		<br/>type: <?php echo $this -> showType() ?></p>
 
 	<h2>Abstract</h2>
-	<p><?php echo $this -> viewAbstract() ?></p>
+	<p><?php echo $this -> showAbstract() ?></p>
 
 	<h2>References</h2>
-	<ul><?php echo $this -> viewReferences() ?></ul>
+	<ul><?php echo $this -> showReferences() ?></ul>
 
 	<h2>Key Terms</h2>
-	<p><?php echo $this -> viewKeyTerms() ?></p>
+	<p><?php echo $this -> showKeyTerms() ?></p>
 
 	<h2>Search this publication in</h2>
-	<ul><?php echo $this -> viewBibLinks() ?></ul>
+	<ul><?php echo $this -> showBibLinks() ?></ul>
 
 	<h2>Export to</h2>
-	<ul><?php echo $this -> viewExport() ?></ul>
+	<ul><?php echo $this -> showExport() ?></ul>

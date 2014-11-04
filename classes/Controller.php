@@ -11,12 +11,29 @@ require_once 'classes/AuthorView.php';
 require_once 'classes/PublicationView.php';
 require_once 'classes/GenericView.php';
 
+/**
+ * Controls everything.
+ *
+ * TODO: comment
+ */
 class Controller {
 
 	private $view;
 	private $model;
 	private $template = 'dev';
 
+
+
+	/**
+	 * Constructs the controller and the needed Model and View.
+	 *
+	 * TODO: change parameters to one array with all parameters
+	 *
+	 * @param	string	$page	The page that was requested
+	 * @param	int		$id		The given Id paramater
+	 * @param	string	$by		The given by parameter
+	 *
+	 */
 	public function __construct($page, $id, $by) {
 
 		$db = new Database();
@@ -44,6 +61,13 @@ class Controller {
 	}
 
 
+	/**
+	 * Displays the page.
+	 *
+	 * TODO: comment
+	 *
+	 * @return	string
+	 */
 	public function display() {
 		$header = './templates/'.$this -> template.'/header.html';
 		$menu = './templates/'.$this -> template.'/menu.html';
@@ -68,13 +92,23 @@ class Controller {
 	}
 
 
-	private function viewPageTitle() {
-		return $this -> view -> viewPageTitle();
+	/**
+	 * Shows the page title by calling the method of View class.
+	 *
+	 * @return	string
+	 */
+	private function showPageTitle() {
+		return $this -> view -> showPageTitle();
 	}
 
 
-	private function viewMetaTags() {
-		return $this -> view -> viewMetaTags();
+	/**
+	 * Shows the page meta tags by calling the method of View class.
+	 *
+	 * @return	string
+	 */
+	private function showMetaTags() {
+		return $this -> view -> showMetaTags();
 	}
 	
 }

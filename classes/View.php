@@ -1,8 +1,19 @@
 <?php
 
+/**
+ * Parent class for all views
+ *
+ * TODO: comment
+ */
 abstract class View {
 
-
+	/**
+	 * Returns the content of the template file.
+	 *
+	 * @param	string	$file	The file path
+	 *
+	 * @return	string
+	 */
 	public function getContent($file) {
 
 		if (file_exists($file)) {
@@ -20,12 +31,22 @@ abstract class View {
 	}
 	
 
-	public function viewPageTitle() {
+	/**
+	 * Shows emtpy page title and must be overwritten by child class.
+	 *
+	 * @return	string
+	 */
+	public function showPageTitle() {
 		return 'TITLE MISSING';
 	}
 
 
-	public function viewMetaTags() {
+	/**
+	 * Shows empty meta tags and should be overwritten by child class if needed.
+	 *
+	 * @return	string
+	 */
+	public function showMetaTags() {
 		return "\n";
 	}
 

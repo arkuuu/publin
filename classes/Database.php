@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * Handles all database communication.
+ *
+ * TODO: comment
+ */
 class Database extends mysqli {
 	
+	// TODO: get these from a config file
 	private $host = 'localhost';
 	private $readonly_user = 'readonly';
 	private $readonly_password = 'readonly';
@@ -16,11 +22,10 @@ class Database extends mysqli {
 
 
 	/**
-	 * Creates a new database connection. Uses the constructor of mysqli class.
-	 * Stops the script if connection cannot be established. Sets the charset used
-	 * for transmission.
+	 * Constructs a new database connection.
 	 *
-	 * @return void
+	 * Uses the constructor of mysqli class. Stops the script if connection cannot be
+	 * established. Sets the charset used for transmission.
 	 */
 	public function __construct() {
 
@@ -420,6 +425,7 @@ class Database extends mysqli {
 	}
 
 
+	// TODO: merge this with the old fetchAuthors() method
 	public function fetchAuthors() {
 		$query = 'SELECT a.`id`, a.`first_name`, a.`last_name`, a.`academic_title`
 					FROM `list_authors` a

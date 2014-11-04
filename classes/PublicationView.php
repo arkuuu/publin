@@ -4,12 +4,32 @@ require_once 'MetaTags.php';
 require_once 'BibLink.php';
 require_once 'Export.php';
 
+/**
+ * View for publication page
+ *
+ * TODO: comment
+ */
 class PublicationView extends View {
-	
+
+	/**
+	 * @var	Publication
+	 */	
 	private $publication;
+
+	/**
+	 * The path to the template file
+	 * @var	string
+	 */
 	private $template;
 
 
+
+	/**
+	 * Constructs the publication view.
+	 *
+	 * @param	PublicationModel	$model		The publication model
+	 * @param	string				$template	The template folder
+	 */
 	public function __construct(PublicationModel $model, $template = 'dev') {
 
 		$this -> publication = $model -> getPublication();
@@ -17,17 +37,31 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * Returns the content of the template file using parent method.
+	 *
+	 * @return	string
+	 */
 	public function getContent() {
 		return parent::getContent($this -> template);
 	}
 
 
-	public function viewPageTitle() {
+	/**
+	 * Shows the page title.
+	 *
+	 * @return	string
+	 */
+	public function showPageTitle() {
 		return $this -> publication -> getTitle();
 	}
 
-
-	public function viewMetaTags() {
+	/**
+	 * Shows the meta tags.
+	 *
+	 * @return	string
+	 */
+	public function showMetaTags() {
 
 		$string = '';
 
@@ -39,12 +73,24 @@ class PublicationView extends View {
 	}
 
 
-	public function viewTitle() {
+	/**
+	 * Shows the publication's title.
+	 *
+	 * @return	string
+	 */
+	public function showTitle() {
 		return $this -> publication -> getTitle();
 	}
 
 
-	public function viewAuthors($separator = ' and ') {
+	/**
+	 * Shows the publication's authors.
+	 *
+	 * @param	string	$separator	Optional separator between authors
+	 *
+	 * @return	string
+	 */
+	public function showAuthors($separator = ' and ') {
 
 		$string = '';
 		$url = '?p=author&amp;id=';
@@ -58,35 +104,62 @@ class PublicationView extends View {
 	}
 
 
-	public function viewPublishDate() {
+	/**
+	 * Shows the publication's publish date.
+	 *
+	 * @return	string
+	 */
+	public function showPublishDate() {
 		return $this -> publication -> getMonth().'.'.$this -> publication -> getYear();
 	}
 
 
-	public function viewType() {
+	/**
+	 * Shows the publication's type.
+	 *
+	 * @return	string
+	 */
+	public function showType() {
 		return $this -> publication -> getType();
 	}
 
 
-	public function viewAbstract() {
+	/**
+	 * Shows the publication's abstract.
+	 *
+	 * @return	string
+	 */
+	public function showAbstract() {
 		$string = $this -> publication -> getAbstract();
 
 		if (!empty($string)) {
 			return $string;
 		}
 		else {
-			return 'no abstract given';
+			return 'No abstract given';
 		}
 	}
 
-
-	public function viewReferences() {
-		// TODO: Implementation
+	/**
+	 * Shows the publication's references.
+	 *
+	 * TODO: implement
+	 *
+	 * @return	string
+	 */
+	public function showReferences() {
 		return 'TODO';
 	}
 
 
-	public function viewKeyTerms($separator = ', ') {
+	/**
+	 * Shows the publication's key terms.
+	 *
+	 * @param	string	$separator	Optional separator between key terms
+	 *
+	 * @return	string
+	 */
+	public function showKeyTerms($separator = ', ') {
 		$key_terms = $this -> publication -> getKeyTerms();
 
 		if (!empty($key_terms)) {
@@ -103,14 +176,17 @@ class PublicationView extends View {
 		}
 		else {
 
-			return 'no key terms assigned';
+			return 'No key terms assigned';
 		}
-
-
 	}
 
 
-	public function viewBibLinks() {
+	/**
+	 * Shows links to other bibliographic indexes for this publication.
+	 *
+	 * @return	string
+	 */
+	public function showBibLinks() {
 
 		$string = '';
 
@@ -122,11 +198,16 @@ class PublicationView extends View {
 	}
 
 
-	public function viewExport() {
+	/**
+	 * Shows links to export formats.
+	 *
+	 * @return	string
+	 */
+	public function showExport() {
 		$string = '';
 
-		foreach (Export::getStyles() as $style) {
-			$string .= '<li><a href="'.Export::getPublicationsExport($this -> publication, $style).'" target="_blank">'.$style.' (TODO)</a></li>';
+		foreach (Export::getFormats() as $format) {
+			$string .= '<li><a href="'.Export::getPublicationsExport($this -> publication, $format).'" target="_blank">'.$format.' (TODO)</a></li>';
 		}
 
 		return $string;

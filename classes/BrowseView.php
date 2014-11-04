@@ -1,11 +1,31 @@
 <?php
 
+/**
+ * View for browse page
+ *
+ * TODO: comment
+ */
 class BrowseView extends View {
 
-	private $template;
+	/**
+	 * @var	BrowseModel
+	 */
 	private $model;
 
+	/**
+	 * The path to the template file
+	 * @var	string
+	 */
+	private $template;
 
+
+
+	/**
+	 * Constructs the browse view.
+	 *
+	 * @param	BrowseModel		$model		The browse model
+	 * @param	string			$template	The template folder
+	 */
 	public function __construct(BrowseModel $model, $template = 'dev') {
 
 		$this -> model = $model;
@@ -13,17 +33,32 @@ class BrowseView extends View {
 	}
 
 
+	/**
+	 * Returns the content of the template file using parent method.
+	 *
+	 * @return	string
+	 */
 	public function getContent() {
 		return parent::getContent($this -> template);
 	}
 
 
-	public function viewPageTitle() {
-		return 'Browse by '.$this -> viewBrowseType();
+	/**
+	 * Shows the page title.
+	 *
+	 * @return	string
+	 */
+	public function showPageTitle() {
+		return 'Browse by '.$this -> showBrowseType();
 	}
 
 
-	public function viewBrowseType() {
+	/**
+	 * Shows the browse.
+	 *
+	 * @return	string
+	 */
+	public function showBrowseType() {
 
 		$string = array(
 							'' => '',
@@ -36,13 +71,22 @@ class BrowseView extends View {
 		return $string[$this -> model -> getBrowseType()];	// TODO: Error when not in array!
 	}
 
-
-	public function viewBrowseNum() {
+	/**
+	 * Shows the number of found entries.
+	 *
+	 * @return	int
+	 */
+	public function showBrowseNum() {
 		return $this -> model -> getBrowseNum();
 	}
 
 
-	public function viewBrowseList() {
+	/**
+	 * Shows the browse list.
+	 *
+	 * @return	string
+	 */
+	public function showBrowseList() {
 
 		$string = '';
 		$url = array(
@@ -70,12 +114,25 @@ class BrowseView extends View {
 	}
 
 
+	/**
+	 * Returns true if there is a browse result.
+	 *
+	 * This is used to determine whether the result list or the browse list should be shown,
+	 * so this returns true even if the browse result is empty.
+	 *
+	 * @return	boolean
+	 */
 	public function isBrowseResult() {
 		return $this -> model -> isBrowseResult();
 	}
 
 
-	public function viewBrowseResult() {
+	/**
+	 * Shows the browse results.
+	 *
+	 * @return	string
+	 */
+	public function showBrowseResult() {
 
 		$string = '';
 		$url = './?p=publication&amp;id=';

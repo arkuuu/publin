@@ -1,19 +1,70 @@
 <?php
 
+/**
+ * Handles publication data.
+ *
+ * TODO: comment
+ */
 class Publication {
 
+	/**
+	 * @var	string
+	 */
 	private $id;
+
+	/**
+	 * @var	string
+	 */
 	private $type;
+
+	/**
+	 * @var	string
+	 */
 	private $study_field;
+
+	/**
+	 * @var	string
+	 */
 	private $title;
-	private $abstract;	
+
+	/**
+	 * @var	string
+	 */
+	private $abstract;
+
+	/**
+	 * @var	string
+	 */	
 	private $year;
+
+	/**
+	 * @var	string
+	 */
 	private $month;
+
+	/**
+	 * @var	string
+	 */
+	private $date_added;
+
+	/**
+	 * @var	array
+	 */
 	private $authors;
+
+	/**
+	 * @var	array
+	 */
 	private $key_terms;
 
 
-	public function __construct(array $data) {	// TODO input validation, exception
+
+	/**
+	 * Constructs an publication object.
+	 *
+	 * @param	array	$data	publication data from database
+	 */
+	public function __construct(array $data) {
 
 		foreach ($data as $key => $value) {
 			$this -> $key = $value;
@@ -88,6 +139,27 @@ class Publication {
 	 */
 	public function getMonth() {
 		return $this -> month;
+	}
+
+
+	/**
+	 * Returns the date added.
+	 *
+	 * TODO: implementation
+	 * TODO: comment
+	 *
+	 * @param	boolean		$raw	TODO: description
+	 *
+	 * @return	string
+	 */
+	public function getDateAdded($raw = false) {
+
+		if ($raw == false) {
+			// TODO: Format timestamp
+		}
+		else {
+			return $this -> date_added;
+		}
 	}
 	
 

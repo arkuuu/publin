@@ -1,27 +1,43 @@
 <?php
 
+/**
+ * Handles citation styles.
+ *
+ * TODO: comment
+ * TODO: implement
+ */
 abstract class CitationStyle {
 
-
-	public function getStyles() {
+	/**
+	 * Returns an array with all supported styles.
+	 *
+	 * @return	array
+	 */
+	public static function getStyles() {
 		return array();
 	}
 
 
-	public function getCitation(Publication $publication, $style = '') {
-
-		$citation = '';
+	/**
+	 * Returns the citation for given publication and given style.
+	 *
+	 * @param	Publication		$publication	The publication
+	 * @param	string			$style		The style
+	 *
+	 * @return	string
+	 */	
+	public static function getCitation(Publication $publication, $style = '') {
 
 		switch ($style) {
 			case 'value':
-				# code...
+				// TODO: implement
 				break;
 			
 			default:
-				$citation .= $publication -> getTitle().' by ';
+				$citation = $publication -> getTitle().' by ';
 
 				foreach ($publication -> getAuthors() as $author) {
-				 	$citation .= $author -> getName().', '
+				 	$citation .= $author -> getName().', ';
 				}
 				
 				$citation .= $publication -> getMonth().'.'.$publication -> getYear();

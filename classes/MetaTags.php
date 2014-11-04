@@ -1,16 +1,33 @@
 <?php
 
+/**
+ * Handles the meta tags.
+ *
+ * TODO: comment
+ */
 abstract class MetaTags {
 
-
+	/**
+	 * Returns an array with all supported styles.
+	 *
+	 * @return	array
+	 */
 	public static function getStyles() {
 		return array('highwire');
 	}
 
 
-	public static function getPublicationsMetaTags(Publication $publication, $type) {
-		// TODO: Implementation
-		switch ($type) {
+	/**
+	 * Returns the meta tags for given publication and given style.
+	 *
+	 * @param	Publication		$publication	The publication
+	 * @param	string			$style		The style
+	 *
+	 * @return	string
+	 */	
+	public static function getPublicationsMetaTags(Publication $publication, $style) {
+
+		switch ($style) {
 			case 'highwire':
 				$tags = 
 					'<meta name="citation_title" content="'.$publication -> getTitle().'" />'."\n\t".

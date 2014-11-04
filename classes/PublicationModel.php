@@ -4,13 +4,39 @@ require_once 'Publication.php';
 require_once 'Author.php';
 require_once 'KeyTerm.php';
 
+/**
+ * Model for publication page
+ *
+ * TODO: comment
+ */
 class PublicationModel {
 	
+	/**
+	 * @var	Database
+	 */
 	private $db;
+
+	/**
+	 * @var	int
+	 */
 	private $id;
+
+	/**
+	 * @var	Publication
+	 */
 	private $publication;
 
 	
+
+	/**
+	 * Constructs the model and gets all data needed for publication page.
+	 *
+	 * Fetches the publication, the publications authors and key terms and adds
+	 * everything to the publication object.
+	 *
+	 * @param	int			$id		Id of the publication
+	 * @param	Database	$db		Database connection
+	 */
 	public function __construct($id, Database $db) {
 
 		$this -> db = $db;

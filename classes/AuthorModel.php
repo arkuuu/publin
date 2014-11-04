@@ -3,13 +3,39 @@
 require_once 'Author.php';
 require_once 'Publication.php';
 
+/**
+ * Model for author page
+ *
+ * TODO: comment
+ */
 class AuthorModel {
 	
+	/**
+	 * @var	Database
+	 */
 	private $db;
+
+	/**
+	 * @var	int
+	 */
 	private $id;
+
+	/**
+	 * @var	Author
+	 */
 	private $author;
 
 
+
+	/**
+	 * Constructs the model and gets all data needed for author page.
+	 *
+	 * Fetches the author, the author's publications and the authors of these
+	 * publications and adds everything to the author object.
+	 *
+	 * @param	int			$id		Id of the author
+	 * @param	Database	$db		Database connection
+	 */
 	public function __construct($id, Database $db) {
 
 		$this -> db = $db;
