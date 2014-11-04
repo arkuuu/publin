@@ -23,6 +23,15 @@ class BrowseModel {
 
 		switch ($this -> browse_type) {
 
+			case 'recent':
+				$this -> is_result = true;
+				$this -> fetchPublications(array('limit' => '0,10'));
+				$this -> browse_num = $this -> db -> getNumData();
+				if ($this -> browse_num > 0) {
+					$this -> fetchPublicationsAuthors();
+				}
+				break;
+
 			case 'author':
 
 				$this -> browse_list = $this -> fetchAuthors();
@@ -113,19 +122,20 @@ class BrowseModel {
 	}
 
 
-	public function getBrowseResult() {
-		return $this -> browse_result;
+	public function getBrowseNum() {
+		return $this -> browse_num;
 	}
 
 
-	public function getBrowseNum() {
-		return $this -> browse_num;
+	public function getBrowseResult() {
+		return $this -> browse_result;
 	}
 
 
 	public function isBrowseResult() {
 		return $this -> is_result;
 	}
+
 
 	private function fetchAuthors() {
 		$data = $this -> db -> fetchAuthors();

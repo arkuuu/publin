@@ -27,12 +27,13 @@ class BrowseView extends View {
 
 		$string = array(
 							'' => '',
+							'recent' => 'recent',
 							'author' => 'author',
 							'key_term' => 'key term',
 							'study_field' => 'field of study',
 						);
 
-		return $string[$this -> model -> getBrowseType()];
+		return $string[$this -> model -> getBrowseType()];	// TODO: Error when not in array!
 	}
 
 
@@ -46,8 +47,9 @@ class BrowseView extends View {
 		$string = '';
 		$url = array(
 						'author' => './?p=author&amp;id=',
-						'key_term' => './?p=browse&amp;by=key_term&amp;id=',	// TODO: change
-						'study_field' => './?p=browse&amp;by=study_field&amp;id=',	// TODO: change
+						'recent' => './?p=publication&amp;id=',
+						'key_term' => './?p=browse&amp;by=key_term&amp;id=',
+						'study_field' => './?p=browse&amp;by=study_field&amp;id=',
 					);
 		$browse_list = $this -> model -> getBrowseList();
 
@@ -57,7 +59,8 @@ class BrowseView extends View {
 			}
 		}
 		else {
-			$string = '<li><a href="?p=browse&amp;by=author">Author</a></li>'."\n"
+			$string = '<li><a href="?p=browse&amp;by=recent">Recent</a></li>'."\n"
+						.'<li><a href="?p=browse&amp;by=author">Author</a></li>'."\n"
 						.'<li><a href="?p=browse&amp;by=study_field">Field of Study</a></li>'."\n"
 						.'<li><a href="?p=browse&amp;by=key_term">Key Term</a></li>'."\n";
 		}
