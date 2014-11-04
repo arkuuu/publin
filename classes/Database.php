@@ -336,25 +336,21 @@ class Database extends mysqli {
 	 */
 	public function fetchPublications(array $filter = array()) {
 
-		$select = 'SELECT p.`id`, p.`title`, p.`year`, p.`month`';
+		$select = 'SELECT p.`id`, p.`title`, p.`year`, p.`month`, p. `date_added`';
 		$from = 'FROM `list_publications` p';
 		$join = '';
 		$where = '';
 		$order = 'ORDER BY `date_added` ASC';
+		$limit = '';
 
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
 
-			// /* Creates the SELECT clause */
-			// if (array_key_exists('select', $filter)) {
-			// 	$select = 'SELECT';
-
-			// 	foreach ($filter['select'] as $key => $value) {
-			// 		$select .= ' p.`'.$value.'`,';
-			// 	}
-			// 	$select = substr($select, 0, -1);
-			// 	unset($filter['select']);
-			// }
+			/* Creates the LIMIT clause */
+			if (array_key_exists('limit', $filter)) {
+				$limit = 'LIMIT '.$filter['limit'];
+				unset($filter['limit']);
+			}
 
 			/* Checks if filter is still not empty */
 			if (!empty($filter)) {
@@ -382,7 +378,7 @@ class Database extends mysqli {
 		unset($filter);
 
 		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.';';
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
 		return $this -> getData($query);	// TODO: Return Publication objects instead of that?
 	}
