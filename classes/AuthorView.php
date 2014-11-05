@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Citation.php';
 require_once 'BibLink.php';
 
 /**
@@ -100,18 +101,14 @@ class AuthorView extends View {
 	 *
 	 * @return	string
 	 */
-	public function showPublications() {
+	public function showPublications($style = '') {
 
 		$string = '';
 		$url = '?p=publication&amp;id=';
 
-		foreach ($this -> author -> getPublications() as $publ) {
-			$string .= '<li><a href="'.$url.$publ -> getId().'">'.$publ -> getTitle().'</a> by ';
-			foreach ($publ -> getAuthors() as $author) {
-				$string .= $author -> getName().', ';
-			}
-
-			$string .= $publ -> getMonth().'.'.$publ -> getYear().'</li>'."\n";
+		foreach ($this -> author -> getPublications() as $publication) {
+			$string .= '<li>'.Citation::getCitation($publication, $style)
+					.' - <a href="'.$url.$publication -> getId().'">show</a></li>'."\n";
 		}
 
 		if (!empty($string)) {

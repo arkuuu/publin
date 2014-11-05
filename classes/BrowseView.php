@@ -132,17 +132,14 @@ class BrowseView extends View {
 	 *
 	 * @return	string
 	 */
-	public function showBrowseResult() {
+	public function showBrowseResult($style = 'apa') {
 
 		$string = '';
 		$url = './?p=publication&amp;id=';
 
 		foreach ($this -> model -> getBrowseResult() as $publication) {
-			$string .= '<li><a href="'.$url.$publication -> getId().'">'.$publication -> getTitle().'</a> by ';
-			foreach ($publication -> getAuthors() as $author) {
-				$string .= $author -> getName().', ';
-			}
-			$string .= $publication -> getMonth().'.'.$publication -> getYear().'</li>'."\n";
+			$string .= '<li>'.Citation::getCitation($publication, $style)
+					.' - <a href="'.$url.$publication -> getId().'">show</a></li>'."\n";
 		}
 
 		return $string;
