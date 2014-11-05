@@ -48,7 +48,7 @@ class GenericView extends View {
 	 *
 	 * @return	string
 	 */
-	public function viewPageTitle() {
+	public function showPageTitle() {
 		return $this -> page;
 	}
 
