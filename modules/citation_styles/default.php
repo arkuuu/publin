@@ -1,27 +1,41 @@
 <?php
 
+/* create list of authors */
 $authors = $publication -> getAuthors();
 $num = count($authors);
 
 if ($num < 1) {
-	$citation .= 'unknown author, ';
+	$citation .= 'unknown author';
 }
 else {
-	$citation .= $authors[0] -> getFirstName(true).' '
-		 			.$authors[0] -> getLastName();
-
-	for ($i=1; $i < $num; $i++) { 
-		if ($i == $num - 1) {
-			$citation .= ' and '.$authors[$num-1] -> getFirstName(true).' '
-		 				.$authors[$num-1] -> getLastName();
+	$i = 1;
+	foreach ($authors as $author) {
+		if ($i == 1) {
+			/* first author */
+			$citation .= $author -> getFirstName(true).' '
+			 			.$author -> getLastName();
 		}
+		else if ($i > 5) {
+			/* break with "et al." if too many authors */
+			$citation .= ' et al.';
+			break;
+		}
+		else if ($i == $num) {
+			/* last author */
+			$citation .= ' and '.$author -> getFirstName(true).' '
+	 	 				.$author -> getLastName();
+		}
+
 		else {
-			$citation .= ', '.$authors[$i] -> getFirstName(true).' '
-	 	 				.$authors[$i] -> getLastName();
-	 	}
+			/* all other authors */
+			$citation .= ', '.$author -> getFirstName(true).' '
+	 	 				.$author -> getLastName();
+		}
+		$i++;
 	}
 }
 
+/* the rest */
 $citation .= ', <i>"'.$publication -> getTitle().'"</i>, '
 			.$publication -> getMonth().'.'
 			.$publication -> getYear();
