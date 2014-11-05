@@ -341,9 +341,9 @@ class Database extends mysqli {
 	 */
 	public function fetchPublications(array $filter = array()) {
 
-		$select = 'SELECT p.`id`, p.`title`, p.`year`, p.`month`, p. `date_added`';
+		$select = 'SELECT t.`name` AS `type`, p.*';
 		$from = 'FROM `list_publications` p';
-		$join = '';
+		$join = 'JOIN `list_types` t ON (t.`id` = p.`type_id`)';
 		$where = '';
 		$order = 'ORDER BY `date_added` ASC';
 		$limit = '';
@@ -447,9 +447,10 @@ class Database extends mysqli {
 
 	public function fetchPublicationsOfAuthor($author_id) {
 
-		$query = 'SELECT p.*
+		$query = 'SELECT t.`name` AS `type`, p.*
 					FROM `rel_publ_to_authors` r
 					JOIN `list_publications` p ON (r.`publication_id` = p.`id`)
+					JOIN `list_types` t ON (t.`id` = p.`type_id`)
 					WHERE r.`author_id` = '.$author_id.';';
 
 		return $this -> getData($query);
