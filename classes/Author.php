@@ -72,7 +72,7 @@ class Author {
 	/**
 	 * Returns the id.
 	 *
-	 * @return int
+	 * @return 	int
 	 */
 	public function getId() {
 		return (int)$this -> id;
@@ -82,7 +82,7 @@ class Author {
 	/**
 	 * Returns the user id or 0, if there is no user id.
 	 *
-	 * @return int
+	 * @return 	int
 	 */
 	public function getUserId() {
 		if (isset($this -> user_id)) {
@@ -97,7 +97,7 @@ class Author {
 	/**
 	 * Returns the full name, consisting of academic title, first name and last name.
 	 *
-	 * @return string
+	 * @return 	string
 	 */
 	public function getName() {
 		if (empty($this -> academic_title)) {
@@ -112,7 +112,7 @@ class Author {
 	/**
 	 * Returns the last name.
 	 *
-	 * @return string
+	 * @return 	string
 	 */
 	public function getLastName() {
 		return $this -> last_name;
@@ -122,17 +122,32 @@ class Author {
 	/**
 	 * Returns the first name.
 	 *
-	 * @return string
+	 * @param	$short		boolean		Set true for first letters only (optional)
+	 *
+	 * @return 	string
 	 */
-	public function getFirstName() {
-		return $this -> first_name;
+	public function getFirstName($short = false) {
+
+		if ($short === true) {
+
+			$first_names = preg_split("/\s+/", $this -> first_name);
+			$string = '';
+			foreach ($first_names as $name) {
+				$string .= mb_substr($name, 0, 1).'.';
+			}
+
+			return $string;
+		}
+		else {
+			return $this -> first_name;
+		}
 	}
 
 
 	/**
 	 * Returns the academic title.
 	 *
-	 * @return string
+	 * @return 	string
 	 */
 	public function getAcademicTitle() {
 		return $this -> academic_title;
@@ -142,7 +157,7 @@ class Author {
 	/**
 	 * Returns the website.
 	 *
-	 * @return string
+	 * @return 	string
 	 */
 	public function getWebsite() {
 		return $this -> website;
@@ -152,7 +167,7 @@ class Author {
 	/**
 	 * Returns the contact info.
 	 *
-	 * @return string
+	 * @return 	string
 	 */
 	public function getContact() {
 		return $this -> contact;
@@ -162,7 +177,7 @@ class Author {
 	/**
 	 * Returns the author's text.
 	 *
-	 * @return string
+	 * @return 	string
 	 */
 	public function getText() {
 		return $this -> text;

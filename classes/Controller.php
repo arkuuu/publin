@@ -37,6 +37,7 @@ class Controller {
 	public function __construct($page, $id, $by) {
 
 		$db = new Database();
+		mb_internal_encoding('utf8');
 
 		switch ($page) {
 			case 'browse':
