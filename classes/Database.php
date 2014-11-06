@@ -71,12 +71,16 @@ class Database extends mysqli {
 		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
 		$msg = str_replace("\t", '', $msg);
 		$file = fopen('./logs/sql.log', 'a');
-		fwrite($file, '[SQL '.date('d.m.Y H:i:s').'] '
+		fwrite($file, '['.date('d.m.Y H:i:s').'] '
 						.$msg."\n");
 		fclose($file);
 
 		/* Sends query to database */
 		$result = parent::query($query);
+
+		if (!is_object($result)) {
+			die('ERROR IN SQL SYNTAX, CHECK SQL LOG');
+		}
 
 		/* Gets number of affected rows */
 		$this -> num_data = $result -> num_rows;
@@ -447,7 +451,7 @@ class Database extends mysqli {
 
 	public function fetchPublicationsOfAuthor($author_id) {
 
-		$query = 'SELECT t.`name` AS `type`, p.*
+		$query = 'SELECT t.`name` AS `type`, p.`id`, p.`title`, p.`date_published`
 					FROM `rel_publ_to_authors` r
 					JOIN `list_publications` p ON (r.`publication_id` = p.`id`)
 					JOIN `list_types` t ON (t.`id` = p.`type_id`)

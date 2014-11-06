@@ -26,8 +26,14 @@ abstract class Object {
 	 */
 	public function __construct(array $data) {
 
-		$this -> id = $data['id'];
-		$this -> name = $data['name'];
+		foreach ($data as $key => $value) {
+			if (property_exists($this, $key)) {
+				$this -> $key = $value;
+			}
+			else {
+				// TODO: print error to log
+			}
+		}
 	}
 
 

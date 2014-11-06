@@ -102,6 +102,21 @@ class BrowseModel {
 				}
 				break;
 
+			// case 'type':
+			// 	if ($id > 0) {
+			// 		$this -> is_result = true;
+			// 		$this -> fetchPublications(array('type_id' => $id));
+			// 		$this -> browse_num = $this -> db -> getNumData();
+			// 		if ($this -> browse_num > 0) {
+			// 			$this -> fetchAuthorsOfPublications();
+			// 		}
+			// 	}
+			// 	else {
+			// 		$this -> browse_list = $this -> fetchTypes();
+			// 		$this -> browse_num = $this -> db -> getNumData();
+			// 	}
+			// 	break;
+
 			// case 'year':
 			// 	if ($id > 0) {
 

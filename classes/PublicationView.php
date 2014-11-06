@@ -132,7 +132,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showDatePublished() {
-		return $this -> publication -> getDatePublished();
+		return $this -> publication -> getDatePublished('F Y');
 	}
 
 
