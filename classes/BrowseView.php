@@ -49,7 +49,13 @@ class BrowseView extends View {
 	 * @return	string
 	 */
 	public function showPageTitle() {
-		return 'Browse by '.$this -> showBrowseType();
+
+		if ($this -> model -> getBrowseType() == 'recent') {
+			return 'Recently added publications';
+		}
+		else {
+			return 'Browse by '.$this -> showBrowseType();
+		}
 	}
 
 
@@ -60,15 +66,21 @@ class BrowseView extends View {
 	 */
 	public function showBrowseType() {
 
-		$string = array(
-							'' => '',
-							'recent' => 'recent',
-							'author' => 'author',
-							'key_term' => 'key term',
-							'study_field' => 'field of study',
-						);
+		if ($this -> model -> getBrowseType() == 'recent') {
+			return 'Recently added publications';
+		}
+		else {
+			$string = array(
+								'' => '',
+								'recent' => 'recent',
+								'author' => 'author',
+								'key_term' => 'key term',
+								'study_field' => 'field of study',
+							);
 
-		return $string[$this -> model -> getBrowseType()];	// TODO: Error when not in array!
+			return 'Browse by '.$string[$this -> model -> getBrowseType()];
+			// TODO: Error when not in array!
+		}
 	}
 
 	/**
@@ -108,7 +120,6 @@ class BrowseView extends View {
 						.'<li><a href="?p=browse&amp;by=study_field">Field of Study</a></li>'."\n"
 						.'<li><a href="?p=browse&amp;by=key_term">Key Term</a></li>'."\n";
 		}
-
 
 		return $string;
 	}

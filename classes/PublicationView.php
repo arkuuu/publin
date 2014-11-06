@@ -90,17 +90,39 @@ class PublicationView extends View {
 	 *
 	 * @return	string
 	 */
-	public function showAuthors($separator = ' and ') {
+	public function showAuthors() {
 
 		$string = '';
 		$url = '?p=author&amp;id=';
+		$authors = $this -> publication -> getAuthors();
+		$num = count($authors);
 
-		foreach ($this -> publication -> getAuthors() as $author) {
-			$string .= '<a href ="'.$url.$author -> getId().'">'
-							.$author -> getName().'</a>'.$separator;
+		if ($num < 1) {
+			$string .= 'unknown author';
+		}
+		else {
+			$i = 1;
+			foreach ($authors as $author) {
+				if ($i == 1) {
+					/* first author */
+					$string .= '<a href="'.$url.$author -> getId().'">'
+					 			.$author -> getName().'</a>';
+				}
+				else if ($i == $num) {
+					/* last author */
+					$string .= ' and <a href="'.$url.$author -> getId().'">'
+			 	 				.$author -> getName().'</a>';
+				}
+				else {
+					/* all other authors */
+					$string .= ', <a href="'.$url.$author -> getId().'">'
+			 	 				.$author -> getName().'</a>';
+				}
+				$i++;
+			}
 		}
 
-		return substr($string, 0, -(strlen($separator)));	
+		return $string;	
 	}
 
 
@@ -136,7 +158,7 @@ class PublicationView extends View {
 			return $string;
 		}
 		else {
-			return 'No abstract given';
+			return 'no abstract given';
 		}
 	}
 
@@ -148,7 +170,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showReferences() {
-		return 'TODO';
+		return '<li>TODO</li>';
 	}
 
 
@@ -176,7 +198,7 @@ class PublicationView extends View {
 		}
 		else {
 
-			return 'No key terms assigned';
+			return 'no key terms assigned';
 		}
 	}
 

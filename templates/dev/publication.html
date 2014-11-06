@@ -1,7 +1,7 @@
 
 	<h1><?php echo $this -> showTitle() ?></h1>
-	<p>by: <?php echo $this -> showAuthors(', ') ?>
-		<br/>in: TODO JOURNAL
+	<p>by: <?php echo $this -> showAuthors() ?>
+		<br/>in: TODO very cool journal name
 		<br/>published: <?php echo $this -> showPublishDate() ?>
 		<br/>type: <?php echo $this -> showType() ?></p>
 
@@ -10,6 +10,7 @@
 
 	<h2>References</h2>
 	<ul><?php echo $this -> showReferences() ?></ul>
+
 
 	<h2>Key Terms</h2>
 	<p><?php echo $this -> showKeyTerms() ?></p>

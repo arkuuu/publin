@@ -1,16 +1,23 @@
 	<h1><?php echo $this -> showName() ?></h1>
-	<p>Personal webpage: <?php echo $this -> showWebsite() ?></p>
+	<?php if ($this -> showWebsite()) { ?>
+	<p><?php echo $this -> showWebsite() ?></p>
+	<?php } ?>
 
+	<?php if ($this -> showContact()) { ?>
 	<h2>Contact</h2>
 	<p><?php echo $this -> showContact() ?></p>
+	<?php } ?>
 
-	<h2>Text</h2>
+	<?php if ($this -> showText()) { ?>
+	<h2>About this author</h2>
 	<p><?php echo $this -> showText() ?></p>
+	<?php } ?>
 
 	<h2>Publications</h2>
 	<ul>
 		<?php echo $this -> showPublications() ?>
 	</ul>
+	<p>This list only represents our data and may be incomplete.</p>
 
 	<h2>Search this author in</h2>
 	<ul>

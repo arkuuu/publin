@@ -115,7 +115,7 @@ class AuthorView extends View {
 			return $string;
 		}
 		else {
-			return 'No publications assigned';
+			return '<li>no publications found</li>';
 		}
 	}
 
