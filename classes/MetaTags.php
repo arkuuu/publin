@@ -13,7 +13,7 @@ abstract class MetaTags {
 	 * @return	array
 	 */
 	public static function getStyles() {
-		return array('highwire');
+		return array();
 	}
 
 
@@ -27,6 +27,8 @@ abstract class MetaTags {
 	 */	
 	public static function getPublicationsMetaTags(Publication $publication, $style) {
 
+		$tags = '';
+
 		switch ($style) {
 			case 'highwire':
 				$tags = 
@@ -38,17 +40,19 @@ abstract class MetaTags {
 				}
 				$tags .= '<meta name="citation_pdf_url" content ="" />'."\n";
 
-				return $tags;
 				break;
 
 			case 'dublin_core':
-				// TODO
+				$tags = '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">'
+						.'<meta name="dc.title" content="'.$publication -> getTitle().'">';
 				break;
 			
 			default:
 				# code...
 				break;
 		}
+
+		return $tags;
 	}
 
 }
