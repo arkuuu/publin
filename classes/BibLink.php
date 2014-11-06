@@ -37,7 +37,7 @@ abstract class BibLink {
 				break;
 
 			case 'Base':
-				return 'http://www.base-search.net/Search/Results?type0[]=aut&lookfor0[]='
+				return 'http://www.base-search.net/Search/Results?lookfor=aut:'
 						.urlencode('"'.$author -> getFirstName().' '.$author -> getLastName().'"');
 				break;
 
