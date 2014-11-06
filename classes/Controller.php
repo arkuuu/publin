@@ -56,7 +56,7 @@ class Controller {
 				break;
 
 			default:
-				$this -> view = new GenericView($page);
+				$this -> view = new GenericView($page, $this -> template);
 				break;
 		}
 	}
