@@ -35,12 +35,7 @@ class Publication {
 	/**
 	 * @var	string
 	 */	
-	private $year;
-
-	/**
-	 * @var	string
-	 */
-	private $month;
+	private $date_published;
 
 	/**
 	 * @var	string
@@ -121,24 +116,9 @@ class Publication {
 		return $this -> abstract;
 	}
 
-
-	/**
-	 * Returns the year.
-	 *
-	 * @return int
-	 */
-	public function getYear() {
-		return $this -> year;
-	}
-
-
-	/**
-	 * Returns the month.
-	 *
-	 * @return int
-	 */
-	public function getMonth() {
-		return $this -> month;
+	// TODO: doc
+	public function getPublishDate($format = 'm.Y') {
+		return date($format, strtotime($this -> date_published));
 	}
 
 

@@ -25,7 +25,6 @@ else {
 			$citation .= ' and '.$author -> getFirstName(true).' '
 	 	 				.$author -> getLastName();
 		}
-
 		else {
 			/* all other authors */
 			$citation .= ', '.$author -> getFirstName(true).' '
@@ -37,5 +36,4 @@ else {
 
 /* the rest */
 $citation .= ', <i>"'.$publication -> getTitle().'"</i>, '
-			.$publication -> getMonth().'.'
-			.$publication -> getYear();
+			.$publication -> getPublishDate();

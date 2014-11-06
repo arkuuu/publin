@@ -132,7 +132,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showPublishDate() {
-		return $this -> publication -> getMonth().'.'.$this -> publication -> getYear();
+		return $this -> publication -> getPublishDate();
 	}
 
 
