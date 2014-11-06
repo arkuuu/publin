@@ -36,4 +36,4 @@ else {
 
 /* the rest */
 $citation .= ', <i>"'.$publication -> getTitle().'"</i>, '
-			.$publication -> getPublishDate();
+			.$publication -> getDatePublished();

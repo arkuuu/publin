@@ -116,30 +116,28 @@ class Publication {
 		return $this -> abstract;
 	}
 
-	// TODO: doc
-	public function getPublishDate($format = 'm.Y') {
+
+	/**
+	 * Returns the publish date.
+	 *
+	 * @param	string		$format		date format (optional)
+	 *
+	 * @return	string
+	 */
+	public function getDatePublished($format = 'm.Y') {
 		return date($format, strtotime($this -> date_published));
 	}
 
 
 	/**
-	 * Returns the date added.
+	 * Returns the date the publication was added.
 	 *
-	 * TODO: implementation
-	 * TODO: comment
-	 *
-	 * @param	boolean		$raw	TODO: description
+	 * @param	string		$format		date format (optional)
 	 *
 	 * @return	string
 	 */
-	public function getDateAdded($raw = false) {
-
-		if ($raw == false) {
-			// TODO: Format timestamp
-		}
-		else {
-			return $this -> date_added;
-		}
+	public function getDateAdded($format = 'd.m.Y') {
+		return date($format, strtotime($this -> date_added));
 	}
 	
 
