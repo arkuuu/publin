@@ -1,30 +1,31 @@
 <?php
 
 /**
- * Handles study field data.
+ * Parent class for all 'real' objects.
  *
  * TODO: comment
  */
-class StudyField {
+abstract class Object {
 
 	/**
 	 * @var	string
 	 */
-	private $id;
+	protected $id;
 
 	/**
 	 * @var	string
 	 */
-	 private $name;
+	protected $name;
 
 
 
 	/**
-	 * Constructs an StudyField object.
+	 * Constructs an object.
 	 *
-	 * @param	array	$data	study field data from database
+	 * @param	array	$data	type data from database
 	 */
 	public function __construct(array $data) {
+
 		$this -> id = $data['id'];
 		$this -> name = $data['name'];
 	}
@@ -36,7 +37,7 @@ class StudyField {
 	 * @return int
 	 */
 	public function getId() {
-		return $this -> id;
+		return (int)$this -> id;
 	}
 
 
