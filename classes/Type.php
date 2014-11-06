@@ -3,10 +3,10 @@
 require_once 'Object.php';
 
 /**
- * Handles key term data.
+ * Handles type data.
  *
  * TODO: comment
  */
-class KeyTerm extends Object {
-	
+class Type extends Object {
+
 }
