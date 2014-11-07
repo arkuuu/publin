@@ -3,6 +3,7 @@
 require_once 'Author.php';
 require_once 'KeyTerm.php';
 require_once 'StudyField.php';
+require_once 'Type.php';
 require_once 'Publication.php';
 
 /**
@@ -102,20 +103,20 @@ class BrowseModel {
 				}
 				break;
 
-			// case 'type':
-			// 	if ($id > 0) {
-			// 		$this -> is_result = true;
-			// 		$this -> fetchPublications(array('type_id' => $id));
-			// 		$this -> browse_num = $this -> db -> getNumData();
-			// 		if ($this -> browse_num > 0) {
-			// 			$this -> fetchAuthorsOfPublications();
-			// 		}
-			// 	}
-			// 	else {
-			// 		$this -> browse_list = $this -> fetchTypes();
-			// 		$this -> browse_num = $this -> db -> getNumData();
-			// 	}
-			// 	break;
+			case 'type':
+				if ($id > 0) {
+					$this -> is_result = true;
+					$this -> fetchPublications(array('type_id' => $id));
+					$this -> browse_num = $this -> db -> getNumData();
+					if ($this -> browse_num > 0) {
+						$this -> fetchAuthorsOfPublications();
+					}
+				}
+				else {
+					$this -> browse_list = $this -> fetchTypes();
+					$this -> browse_num = $this -> db -> getNumData();
+				}
+				break;
 
 			// case 'year':
 			// 	if ($id > 0) {
@@ -257,6 +258,22 @@ class BrowseModel {
 		}
 
 		return $study_fields;
+	}
+
+
+	/**
+	 * Returns an array with all Type objects from database.
+	 *
+	 * @return	array
+	 */
+	private function fetchTypes() {
+		$data = $this -> db -> fetchTypes();
+
+		foreach ($data as $key => $value) {
+			$types[] = new Type($value);
+		}
+
+		return $types;
 	}
 
 

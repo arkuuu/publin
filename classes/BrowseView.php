@@ -50,12 +50,7 @@ class BrowseView extends View {
 	 */
 	public function showPageTitle() {
 
-		if ($this -> model -> getBrowseType() == 'recent') {
-			return 'Recently added publications';
-		}
-		else {
-			return 'Browse by '.$this -> showBrowseType();
-		}
+		return $this -> showBrowseType();
 	}
 
 
@@ -76,6 +71,7 @@ class BrowseView extends View {
 								'author' => 'author',
 								'key_term' => 'key term',
 								'study_field' => 'field of study',
+								'type' => 'type',
 							);
 
 			return 'Browse by '.$string[$this -> model -> getBrowseType()];
@@ -106,6 +102,7 @@ class BrowseView extends View {
 						'recent' => './?p=publication&amp;id=',
 						'key_term' => './?p=browse&amp;by=key_term&amp;id=',
 						'study_field' => './?p=browse&amp;by=study_field&amp;id=',
+						'type' => './?p=browse&amp;by=type&amp;id=',
 					);
 		$browse_list = $this -> model -> getBrowseList();
 
@@ -118,7 +115,8 @@ class BrowseView extends View {
 			$string = '<li><a href="?p=browse&amp;by=recent">Recent</a></li>'."\n"
 						.'<li><a href="?p=browse&amp;by=author">Author</a></li>'."\n"
 						.'<li><a href="?p=browse&amp;by=study_field">Field of Study</a></li>'."\n"
-						.'<li><a href="?p=browse&amp;by=key_term">Key Term</a></li>'."\n";
+						.'<li><a href="?p=browse&amp;by=key_term">Key Term</a></li>'."\n"
+						.'<li><a href="?p=browse&amp;by=type">Type</a></li>'."\n";
 		}
 
 		return $string;
