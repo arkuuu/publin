@@ -30,6 +30,47 @@ class BrowseView extends View {
 
 		$this -> model = $model;
 		$this -> template = './templates/'.$template.'/browse.html';
+
+		$this -> browse_type_list = 
+			array(
+					'recent' => array(
+									'name' => 'Recent publications',
+									'text' => 'recent publications',
+									'url' => './?p=browse&amp;by=recent',
+									'result_url' =>  './?p=publication&amp;id='
+								),
+					'author' => array(
+									'name' => 'Authors',
+									'text' => 'authors',
+									'url' => './?p=browse&amp;by=author',
+									'result_url' =>  './?p=author&amp;id='
+								),
+					'key_term' => array(
+									'name' => 'Key Terms',
+									'text' => 'key terms',
+									'url' => './?p=browse&amp;by=key_term',
+									'result_url' =>  './?p=browse&amp;by=key_term&amp;id='
+								),
+					'study_field' => array(
+									'name' => 'Fields of Study',
+									'text' => 'fields of study',
+									'url' => './?p=browse&amp;by=study_field',
+									'result_url' =>  './?p=browse&amp;by=study_field&amp;id='
+								),
+					'type' => array(
+									'name' => 'Types',
+									'text' => 'types',
+									'url' => './?p=browse&amp;by=type',
+									'result_url' =>  './?p=browse&amp;by=type&amp;id='
+								),
+					);
+
+		if (!array_key_exists($this -> model -> getBrowseType(), $this -> browse_type_list)) {
+			$this -> browse_type = array('name' => '', 'text' => '');
+		}
+		else {
+			$this -> browse_type = $this -> browse_type_list[$this -> model -> getBrowseType()];			
+		}
 	}
 
 
@@ -60,23 +101,7 @@ class BrowseView extends View {
 	 * @return	string
 	 */
 	public function showBrowseType() {
-
-		if ($this -> model -> getBrowseType() == 'recent') {
-			return 'Recently added publications';
-		}
-		else {
-			$string = array(
-								'' => '',
-								'recent' => 'recent',
-								'author' => 'author',
-								'key_term' => 'key term',
-								'study_field' => 'field of study',
-								'type' => 'type',
-							);
-
-			return 'Browse by '.$string[$this -> model -> getBrowseType()];
-			// TODO: Error when not in array!
-		}
+		return 'Browse '.$this -> browse_type['text'];
 	}
 
 	/**
@@ -97,26 +122,17 @@ class BrowseView extends View {
 	public function showBrowseList() {
 
 		$string = '';
-		$url = array(
-						'author' => './?p=author&amp;id=',
-						'recent' => './?p=publication&amp;id=',
-						'key_term' => './?p=browse&amp;by=key_term&amp;id=',
-						'study_field' => './?p=browse&amp;by=study_field&amp;id=',
-						'type' => './?p=browse&amp;by=type&amp;id=',
-					);
 		$browse_list = $this -> model -> getBrowseList();
 
 		if (!empty($browse_list)) {
 			foreach ($browse_list as $object) {
-				$string .= '<li><a href="'.$url[$this -> model -> getBrowseType()].$object -> getId().'">'.$object -> getName().'</a></li>'."\n";
+				$string .= '<li><a href="'.$this -> browse_type['result_url'].$object -> getId().'">'.$object -> getName().'</a></li>'."\n";
 			}
 		}
 		else {
-			$string = '<li><a href="?p=browse&amp;by=recent">Recent</a></li>'."\n"
-						.'<li><a href="?p=browse&amp;by=author">Author</a></li>'."\n"
-						.'<li><a href="?p=browse&amp;by=study_field">Field of Study</a></li>'."\n"
-						.'<li><a href="?p=browse&amp;by=key_term">Key Term</a></li>'."\n"
-						.'<li><a href="?p=browse&amp;by=type">Type</a></li>'."\n";
+			foreach ($this -> browse_type_list as $browse_type) {
+				$string .= '<li><a href="'.$browse_type['url'].'">'.$browse_type['name'].'</a></li>'."\n";
+			}
 		}
 
 		return $string;
@@ -141,7 +157,7 @@ class BrowseView extends View {
 	 *
 	 * @return	string
 	 */
-	public function showBrowseResult($style = 'apa') {
+	public function showBrowseResult($style = 'default') {
 
 		$string = '';
 		$url = './?p=publication&amp;id=';
