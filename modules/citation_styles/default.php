@@ -5,7 +5,7 @@ $authors = $publication -> getAuthors();
 $num = count($authors);
 
 if ($num < 1) {
-	$citation .= 'unknown author';
+	$citation .= 'Unknown Author';
 }
 else {
 	$i = 1;

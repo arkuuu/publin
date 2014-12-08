@@ -19,4 +19,6 @@
 	<ul><?php echo $this -> showBibLinks() ?></ul>
 
 	<h2>Export to</h2>
-	<ul><?php echo $this -> showExport() ?></ul>
+	<ul>
+		<li>BibTeX: <?php echo $this -> showExport('bibtex') ?></li>
+	</ul>

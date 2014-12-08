@@ -20,7 +20,7 @@ abstract class Export {
 	 * @return	array
 	 */
 	public static function getFormats() {
-		return array('BibTeX', 'XML');
+		// TODO
 	}
 	
 	/**
@@ -33,19 +33,17 @@ abstract class Export {
 	 */	
 	public static function getPublicationsExport(Publication $publication, $format) {
 
-		switch ($format) {
-			case 'BibTeX':
-				return 'TODO';
-				break;
+		$file = './modules/export/'.$format.'.php';
+		$export = '';
 
-			case 'XML':
-				return 'TODO';
-				break;
-
-			default:
-				return 'unknown export format, not defined';
-				break;
+		if (file_exists($file)) {			
+			include $file;
 		}
-	}
-	
+		else {
+			// TODO: show error
+			$export = 'no export file for '.$format;
+		}
+
+		return $export;
+	}	
 }

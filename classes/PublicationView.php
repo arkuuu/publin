@@ -209,7 +209,6 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showBibLinks() {
-
 		$string = '';
 
 		foreach (BibLink::getServices() as $service) {
@@ -223,16 +222,12 @@ class PublicationView extends View {
 	/**
 	 * Shows links to export formats.
 	 *
+	 * @param	string	$format	The export format
+	 *
 	 * @return	string
 	 */
-	public function showExport() {
-		$string = '';
-
-		foreach (Export::getFormats() as $format) {
-			$string .= '<li><a href="'.Export::getPublicationsExport($this -> publication, $format).'" target="_blank">'.$format.' (TODO)</a></li>';
-		}
-
-		return $string;
+	public function showExport($format) {
+		return '<pre>'.Export::getPublicationsExport($this -> publication, $format).'</pre>';
 	}
 		
 }
