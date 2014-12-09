@@ -20,7 +20,7 @@ class Controller {
 
 	private $view;
 	private $model;
-	private $template = 'dev';
+	private $template = 'default';
 
 
 
