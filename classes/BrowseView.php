@@ -110,7 +110,7 @@ class BrowseView extends View {
 	 * @return	int
 	 */
 	public function showBrowseNum() {
-		return $this -> model -> getBrowseNum();
+		return $this -> model -> getNum();
 	}
 
 

@@ -1,22 +1,15 @@
 <?php
 
-require_once 'Author.php';
-require_once 'KeyTerm.php';
 require_once 'StudyField.php';
 require_once 'Type.php';
-require_once 'Publication.php';
+require_once 'Model.php';
 
 /**
  * Model for browse page
  *
  * TODO: comment
  */
-class BrowseModel {
-
-	/**
-	 * @var	Database
-	 */
-	private $db;
+class BrowseModel extends Model {
 
 	/**
 	 * @var	string
@@ -26,22 +19,17 @@ class BrowseModel {
 	/**
 	 * @var	array
 	 */
-	private $browse_list = array();
+	private $list = array();
 
 	/**
 	 * @var	array
 	 */
-	private $browse_result = array();
+	private $result = array();
 
 	/**
 	 * @var	boolean
 	 */
 	private $is_result = false;
-
-	/**
-	 * @var	int
-	 */
-	private $browse_num;
 
 
 
@@ -54,67 +42,48 @@ class BrowseModel {
 	 */
 	public function __construct($type, $id, Database $db) {
 
-		$this -> db = $db;
+		parent::__construct($db);
 		$this -> browse_type = $type;
 
 		switch ($this -> browse_type) {
 
 			case 'recent':
 				$this -> is_result = true;
-				$this -> fetchPublications(array('limit' => '0,10'));
-				$this -> browse_num = $this -> db -> getNumData();
-				if ($this -> browse_num > 0) {
-					$this -> fetchAuthorsOfPublications();
-				}
+				$this -> result = $this -> createPublications(false, array('limit' => '0,10'));
 				break;
 
 			case 'author':
-				$this -> browse_list = $this -> fetchAuthors();
-				$this -> browse_num = $this -> db -> getNumData();
+				$this -> list = $this -> createAuthors(false);
 				break;
 
 			case 'key_term':
 				if ($id > 0) {
 					$this -> is_result = true;
-					$this -> fetchPublications(array('key_term_id' => $id));
-					$this -> browse_num = $this -> db -> getNumData();
-					if ($this -> browse_num > 0) {
-						$this -> fetchAuthorsOfPublications();
-					}
+					$this -> result = $this -> createPublications(false, array('key_term_id' => $id));
 				}
 				else {
-					$this -> browse_list = $this -> fetchKeyTerms();
-					$this -> browse_num = $this -> db -> getNumData();
+					$this -> list = $this -> createKeyTerms();
 				}
 				break;
 			
 			case 'study_field':				
 				if ($id > 0) {
 					$this -> is_result = true;
-					$this -> fetchPublications(array('study_field_id' => $id));
-					$this -> browse_num = $this -> db -> getNumData();
-					if ($this -> browse_num > 0) {
-						$this -> fetchAuthorsOfPublications();
-					}
+					$this -> result = $this -> createPublications(false, array('study_field_id' => $id));
 				}
 				else {
-					$this -> browse_list = $this -> fetchStudyFields();
-					$this -> browse_num = $this -> db -> getNumData();
+					$this -> list = $this -> fetchStudyFields();
+					$this -> num = $this -> getNum();
 				}
 				break;
 
 			case 'type':
 				if ($id > 0) {
 					$this -> is_result = true;
-					$this -> fetchPublications(array('type_id' => $id));
-					$this -> browse_num = $this -> db -> getNumData();
-					if ($this -> browse_num > 0) {
-						$this -> fetchAuthorsOfPublications();
-					}
+					$this -> result = $this -> createPublications(false, array('type_id' => $id));
 				}
 				else {
-					$this -> browse_list = $this -> fetchTypes();
-					$this -> browse_num = $this -> db -> getNumData();
+					$this -> list = $this -> fetchTypes();
 				}
 				break;
 
@@ -171,22 +140,12 @@ class BrowseModel {
 
 
 	/**
-	 * Returns the number of found entries.
-	 *
-	 * @return	int
-	 */
-	public function getBrowseNum() {
-		return $this -> browse_num;
-	}
-
-
-	/**
 	 * Returns the browse list.
 	 *
 	 * @return	array
 	 */
 	public function getBrowseList() {
-		return $this -> browse_list;
+		return $this -> list;
 	}
 
 
@@ -196,7 +155,7 @@ class BrowseModel {
 	 * @return	array
 	 */
 	public function getBrowseResult() {
-		return $this -> browse_result;
+		return $this -> result;
 	}
 
 
@@ -213,36 +172,6 @@ class BrowseModel {
 	}
 
 
-	/**
-	 * Returns an array with all Author objects from database.
-	 *
-	 * @return	array
-	 */
-	private function fetchAuthors() {
-		$data = $this -> db -> fetchAuthors();
-
-		foreach ($data as $key => $value) {
-			$authors[] = new Author($value);
-		}
-
-		return $authors;
-	}
-
-
-	/**
-	 * Returns an array with all KeyTerm objects from database.
-	 *
-	 * @return	array
-	 */
-	private function fetchKeyTerms() {
-		$data = $this -> db -> fetchKeyTerms();
-
-		foreach ($data as $key => $value) {
-			$key_terms[] = new KeyTerm($value);
-		}
-
-		return $key_terms;
-	}
 
 
 	/**
@@ -252,6 +181,7 @@ class BrowseModel {
 	 */
 	private function fetchStudyFields() {
 		$data = $this -> db -> fetchStudyFields();
+		$this -> num = $this -> db -> getNumRows();
 
 		foreach ($data as $key => $value) {
 			$study_fields[] = new StudyField($value);
@@ -268,6 +198,7 @@ class BrowseModel {
 	 */
 	private function fetchTypes() {
 		$data = $this -> db -> fetchTypes();
+		$this -> num = $this -> db -> getNumRows();
 
 		foreach ($data as $key => $value) {
 			$types[] = new Type($value);
@@ -284,6 +215,7 @@ class BrowseModel {
 	 */
 	private function fetchYears() {
 		$data = $this -> db -> fetchYears();
+		$this -> num = $this -> db -> getNumRows();
 
 		return $data;
 
@@ -299,46 +231,6 @@ class BrowseModel {
 		$data = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
 		return $data;
-	}
-
-
-	/**
-	 * Fetches all Publications matching the filter.
-	 *
-	 * Adds every Publication object to the browse_result array.
-	 *
-	 * @param	array	$filter		The filter
-	 *
-	 * @return	void
-	 */
-	private function fetchPublications(array $filter) {
-		$data = $this -> db -> fetchPublications($filter);
-
-		foreach ($data as $key => $value) {
-			$this -> browse_result[] = new Publication($value);
-		}
-	}
-
-
-	/**
-	 * Fetches the authors to all publications.
-	 *
-	 * Adds the authors to every Publication object in the browse_result array.
-	 *
-	 * @return	void
-	 */
-	private function fetchAuthorsOfPublications() {
-
-		foreach ($this -> browse_result as $publication) {
-			$authors = array();
-			$data = $this -> db -> fetchAuthorsOfPublication($publication -> getId());
-
-			foreach ($data as $key => $value) {
-				$authors[] = new Author($value);
-			}
-
-			$publication -> setAuthors($authors);
-		}
 	}
 
 }
