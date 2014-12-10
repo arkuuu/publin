@@ -15,10 +15,12 @@
 	<h2>Key Terms</h2>
 	<p><?php echo $this -> showKeyTerms() ?></p>
 
+
+	<h2>Export this publication</h2>
+	<ul>
+		<li>BibTeX:<br/><textarea rows="6" cols="60" readonly><?php echo $this -> showExport('bibtex') ?></textarea></li>
+	</ul>
+
+
 	<h2>Search this publication in</h2>
 	<ul><?php echo $this -> showBibLinks() ?></ul>
-
-	<h2>Export to</h2>
-	<ul>
-		<li>BibTeX: <?php echo $this -> showExport('bibtex') ?></li>
-	</ul>

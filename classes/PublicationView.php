@@ -227,7 +227,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showExport($format) {
-		return '<pre>'.Export::getPublicationsExport($this -> publication, $format).'</pre>';
+		return Export::getPublicationsExport($this -> publication, $format);
 	}
 		
 }
