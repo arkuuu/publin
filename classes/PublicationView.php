@@ -16,12 +16,6 @@ class PublicationView extends View {
 	 */	
 	private $publication;
 
-	/**
-	 * The path to the template file
-	 * @var	string
-	 */
-	private $template;
-
 
 
 	/**
@@ -32,18 +26,8 @@ class PublicationView extends View {
 	 */
 	public function __construct(PublicationModel $model, $template = 'dev') {
 
+		parent::__construct($template.'/publication.html');
 		$this -> publication = $model -> getPublication();
-		$this -> template = './templates/'.$template.'/publication.html';
-	}
-
-
-	/**
-	 * Returns the content of the template file using parent method.
-	 *
-	 * @return	string
-	 */
-	public function getContent() {
-		return parent::getContent($this -> template);
 	}
 
 

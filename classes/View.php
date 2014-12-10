@@ -8,26 +8,46 @@
 abstract class View {
 
 	/**
+	 * The path to the template file
+	 * @var	string
+	 */
+	protected $template_file;
+
+
+
+	public function __construct($template_file) {
+		$this -> template_file = './templates/'.$template_file;
+	}
+
+
+	/**
 	 * Returns the content of the template file.
-	 *
-	 * @param	string	$file	The file path
 	 *
 	 * @return	string
 	 */
-	public function getContent($file) {
+	public function getContent() {
 
-		if (file_exists($file)) {
-			
-			ob_start();
-			include $file;
-			$output = ob_get_contents();
-			ob_end_clean();
+		if (isset($this -> template_file)) {
+			if (file_exists($this -> template_file)) {
+				
+				ob_start();
+				include $this -> template_file;
+				$output = ob_get_contents();
+				ob_end_clean();
 
-			return $output;
+				return $output;
+			}
+			else {
+				// TODO: error
+				return 'Could not find template '.$this -> template_file.'!';
+			}
 		}
 		else {
-			return 'Could not find template '.$file.'!';
+			// TODO: error
+			return 'No template was set!';
 		}
+
+
 	}
 	
 

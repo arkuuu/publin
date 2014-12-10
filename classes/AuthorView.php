@@ -15,12 +15,6 @@ class AuthorView extends View {
 	 */
 	private $author;
 
-	/**
-	 * The path to the template file
-	 * @var	string
-	 */
-	private $template;
-
 
 
 	/**
@@ -30,19 +24,9 @@ class AuthorView extends View {
 	 * @param	string			$template	The template folder
 	 */
 	public function __construct(AuthorModel $model, $template = 'dev') {
-		
+
+		parent::__construct($template.'/author.html');		
 		$this -> author = $model -> getAuthor();
-		$this -> template = './templates/'.$template.'/author.html';
-	}
-
-
-	/**
-	 * Returns the content of the template file using parent method.
-	 *
-	 * @return	string
-	 */
-	public function getContent() {
-		return parent::getContent($this -> template);
 	}
 
 

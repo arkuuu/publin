@@ -12,12 +12,6 @@ class GenericView extends View {
 	 */
 	private $page;
 
-	/**
-	 * The path to the template file
-	 * @var	string
-	 */
-	private $template;
-
 
 
 	/**
@@ -28,18 +22,8 @@ class GenericView extends View {
 	 */
 	public function __construct($page, $template = 'dev') {
 
+		parent::__construct($template.'/'.$page.'.html');
 		$this -> page = $page;
-		$this -> template = './templates/'.$template.'/'.$page.'.html';
-	}
-
-
-	/**
-	 * Returns the content of the template file using parent method.
-	 *
-	 * @return	string
-	 */
-	public function getContent() {
-		return parent::getContent($this -> template);
 	}
 
 

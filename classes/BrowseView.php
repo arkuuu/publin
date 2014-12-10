@@ -12,12 +12,6 @@ class BrowseView extends View {
 	 */
 	private $model;
 
-	/**
-	 * The path to the template file
-	 * @var	string
-	 */
-	private $template;
-
 
 
 	/**
@@ -28,8 +22,8 @@ class BrowseView extends View {
 	 */
 	public function __construct(BrowseModel $model, $template = 'dev') {
 
+		parent::__construct($template.'/browse.html');
 		$this -> model = $model;
-		$this -> template = './templates/'.$template.'/browse.html';
 
 		$this -> browse_type_list = 
 			array(
@@ -71,16 +65,6 @@ class BrowseView extends View {
 		else {
 			$this -> browse_type = $this -> browse_type_list[$this -> model -> getBrowseType()];			
 		}
-	}
-
-
-	/**
-	 * Returns the content of the template file using parent method.
-	 *
-	 * @return	string
-	 */
-	public function getContent() {
-		return parent::getContent($this -> template);
 	}
 
 
