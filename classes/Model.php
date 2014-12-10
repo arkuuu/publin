@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Database.php';
 require_once 'Publication.php';
 require_once 'Author.php';
 require_once 'KeyTerm.php';
@@ -11,13 +10,16 @@ abstract class Model {
 	protected $num;
 
 
+
 	public function __construct(Database $db) {
 		$this -> db = $db;
 	}
 
+
 	public function getNum() {
 		return $this -> num;
 	}
+
 
 	public function createPublications($mode, array $filter = array()) {
 
@@ -83,4 +85,5 @@ abstract class Model {
 
 		return $key_terms;
 	}
+
 }
