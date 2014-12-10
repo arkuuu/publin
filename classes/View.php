@@ -32,13 +32,11 @@ abstract class View {
 	
 
 	/**
-	 * Shows emtpy page title and must be overwritten by child class.
+	 * Shows page title.
 	 *
 	 * @return	string
 	 */
-	public function showPageTitle() {
-		return 'TITLE MISSING';
-	}
+	abstract public function showPageTitle();
 
 
 	/**
@@ -46,7 +44,7 @@ abstract class View {
 	 *
 	 * @return	string
 	 */
-	public function showMetaTags() {
+	public function showMetaTags() {	// TODO: make abstract
 		return "\n";
 	}
 
