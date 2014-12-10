@@ -49,7 +49,11 @@ class GenericView extends View {
 	 * @return	string
 	 */
 	public function showPageTitle() {
-		return $this -> page;
+		
+		$string = ucfirst($this -> page);	// TODO: doesn't work with non UTF chars
+		$string = str_replace('_', ' ', $string);
+
+		return $string;
 	}
 
 }
