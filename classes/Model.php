@@ -27,7 +27,7 @@ abstract class Model {
 
 		/* Gets the publications */
 		$data = $this -> db -> fetchPublications($filter);
-		$this -> num = $this -> db -> getNumRows();
+		$num = $this -> db -> getNumRows();
 
 		foreach ($data as $key => $value) {
 			$publication = new Publication($value);
@@ -45,6 +45,8 @@ abstract class Model {
 			$publications[] = $publication;
 		}
 
+		$this -> num = $num;
+
 		return $publications;
 	}
 
@@ -55,6 +57,7 @@ abstract class Model {
 
 		/* Gets the authors */
 		$data = $this -> db -> fetchAuthors($filter);
+		$num = $this -> db -> getNumRows();
 
 		foreach ($data as $key => $value) {
 			$author = new Author($value);
@@ -68,6 +71,8 @@ abstract class Model {
 			$authors[] = $author;
 		}
 
+		$this -> num = $num;
+
 		return $authors;
 	}
 
@@ -78,10 +83,13 @@ abstract class Model {
 
 		/* Gets the key terms */
 		$data = $this -> db -> fetchKeyTerms($filter);
+		$num = $this -> db -> getNumRows();
 
 		foreach ($data as $key => $value) {
 			$key_terms[] = new KeyTerm($value);
 		}
+
+		$this -> num = $num;
 
 		return $key_terms;
 	}
