@@ -5,7 +5,6 @@ require_once 'classes/Database.php';
 require_once 'classes/BrowseModel.php';
 require_once 'classes/AuthorModel.php';
 require_once 'classes/PublicationModel.php';
-require_once 'classes/View.php';
 require_once 'classes/BrowseView.php';
 require_once 'classes/AuthorView.php';
 require_once 'classes/PublicationView.php';
@@ -30,7 +29,7 @@ class Controller {
 	 * TODO: change parameters to one array with all parameters
 	 *
 	 * @param	string	$page	The page that was requested
-	 * @param	int		$id		The given Id paramater
+	 * @param	int		$id		The given Id parameter
 	 * @param	string	$by		The given by parameter
 	 *
 	 */

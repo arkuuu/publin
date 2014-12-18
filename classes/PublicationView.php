@@ -1,5 +1,6 @@
 <?php
 
+require_once 'View.php';
 require_once 'MetaTags.php';
 require_once 'BibLink.php';
 require_once 'Export.php';

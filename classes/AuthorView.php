@@ -1,5 +1,6 @@
 <?php
 
+require_once 'View.php';
 require_once 'Citation.php';
 require_once 'BibLink.php';
 
