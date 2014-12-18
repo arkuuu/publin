@@ -1,52 +1,13 @@
 <?php
 
+require_once 'Object.php';
+
 /**
  * Handles author data.
  *
  * TODO: comment
  */
-class Author {
-
-	/**
-	 * @var	string
-	 */
-	private $id;
-
-	/**
-	 * Id of the user this author belongs to
-	 * @var	string
-	 */
-	private $user_id;
-
-	/**
-	 * @var	string
-	 */
-	private $last_name;
-
-	/**
-	 * @var	string
-	 */
-	private $first_name;
-
-	/**
-	 * @var	string
-	 */
-	private $academic_title;
-
-	/**
-	 * @var	string
-	 */
-	private $website;
-
-	/**
-	 * @var	string
-	 */
-	private $contact;
-
-	/**
-	 * @var	string
-	 */
-	private $text;
+class Author extends Object {
 
 	/**
 	 * Array with publications of this author
@@ -57,41 +18,13 @@ class Author {
 
 
 	/**
-	 * Constructs an author object.
-	 *
-	 * @param	array	$data	author data from database
-	 */
-	public function __construct(array $data) {
-
-		foreach ($data as $key => $value) {
-			if (property_exists($this, $key)) {
-				$this -> $key = $value;
-			}
-			else {
-				// TODO: print error to log
-			}
-		}
-	}
-
-
-	/**
-	 * Returns the id.
-	 *
-	 * @return 	int
-	 */
-	public function getId() {
-		return (int)$this -> id;
-	}
-
-
-	/**
 	 * Returns the user id or 0, if there is no user id.
 	 *
 	 * @return 	int
 	 */
 	public function getUserId() {
-		if (isset($this -> user_id)) {
-			return (int)$this -> user_id;
+		if (isset($this -> data['user_id'])) {
+			return (int)$this -> data['user_id'];
 		}
 		else {
 			return 0;
@@ -105,11 +38,14 @@ class Author {
 	 * @return 	string
 	 */
 	public function getName() {
-		if (empty($this -> academic_title)) {
-			return $this -> first_name.' '.$this -> last_name;
+		if (empty($this -> data['academic_title'])) {
+			return $this -> data['first_name'].' '
+					.$this -> data['last_name'];
 		}
 		else {
-			return $this -> academic_title.' '.$this -> first_name.' '.$this -> last_name;
+			return $this -> data['academic_title'].' '
+					.$this -> data['first_name'].' '
+					.$this -> data['last_name'];
 		}
 	}
 
@@ -120,7 +56,7 @@ class Author {
 	 * @return 	string
 	 */
 	public function getLastName() {
-		return $this -> last_name;
+		return $this -> data['last_name'];
 	}
 
 
@@ -135,7 +71,7 @@ class Author {
 
 		if ($short === true) {
 
-			$first_names = preg_split("/\s+/", $this -> first_name);
+			$first_names = preg_split("/\s+/", $this -> data['first_name']);
 			$string = '';
 			foreach ($first_names as $name) {
 				$string .= mb_substr($name, 0, 1).'.';
@@ -144,7 +80,7 @@ class Author {
 			return $string;
 		}
 		else {
-			return $this -> first_name;
+			return $this -> data['first_name'];
 		}
 	}
 
@@ -155,7 +91,7 @@ class Author {
 	 * @return 	string
 	 */
 	public function getAcademicTitle() {
-		return $this -> academic_title;
+		return $this -> data['academic_title'];
 	}
 
 
@@ -165,7 +101,7 @@ class Author {
 	 * @return 	string
 	 */
 	public function getWebsite() {
-		return $this -> website;
+		return $this -> data['website'];
 	}
 
 
@@ -175,7 +111,7 @@ class Author {
 	 * @return 	string
 	 */
 	public function getContact() {
-		return $this -> contact;
+		return $this -> data['contact'];
 	}
 
 
@@ -185,7 +121,7 @@ class Author {
 	 * @return 	string
 	 */
 	public function getText() {
-		return $this -> text;
+		return $this -> data['text'];
 	}
 
 

@@ -1,46 +1,13 @@
 <?php
 
+require_once 'Object.php';
+
 /**
  * Handles publication data.
  *
  * TODO: comment
  */
-class Publication {
-
-	/**
-	 * @var	string
-	 */
-	private $id;
-
-	/**
-	 * @var	string
-	 */
-	private $type;
-
-	/**
-	 * @var	string
-	 */
-	private $study_field;
-
-	/**
-	 * @var	string
-	 */
-	private $title;
-
-	/**
-	 * @var	string
-	 */
-	private $abstract;
-
-	/**
-	 * @var	string
-	 */	
-	private $date_published;
-
-	/**
-	 * @var	string
-	 */
-	private $date_added;
+class Publication extends Object {
 
 	/**
 	 * @var	array
@@ -55,40 +22,12 @@ class Publication {
 
 
 	/**
-	 * Constructs an publication object.
-	 *
-	 * @param	array	$data	publication data from database
-	 */
-	public function __construct(array $data) {
-
-		foreach ($data as $key => $value) {
-			if (property_exists($this, $key)) {
-				$this -> $key = $value;
-			}
-			else {
-				// TODO: print error to log
-			}
-		}
-	} 
-
-
-	/**
-	 * Returns the id.
-	 *
-	 * @return int
-	 */
-	public function getId() {
-		return $this -> id;
-	}
-
-
-	/**
 	 * Returns the type.
 	 *
 	 * @return string
 	 */
 	public function getType() {
-		return $this -> type;
+		return $this -> data['type'];
 	}
 
 
@@ -98,7 +37,7 @@ class Publication {
 	 * @return string
 	 */
 	public function getStudyField() {
-		return $this -> study_field;
+		return $this -> data['study_field'];
 	}
 
 
@@ -108,7 +47,7 @@ class Publication {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this -> title;
+		return $this -> data['title'];
 	}
 
 
@@ -118,7 +57,31 @@ class Publication {
 	 * @return string
 	 */
 	public function getAbstract() {
-		return $this -> abstract;
+		return $this -> data['abstract'];
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getJournal() {
+		return $this -> data['journal'];
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getVolume() {
+		return $this -> data['volume'];
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getPages() {
+		return $this -> data['pages'];
 	}
 
 
@@ -130,7 +93,7 @@ class Publication {
 	 * @return	string
 	 */
 	public function getDatePublished($format = 'm.Y') {
-		return date($format, strtotime($this -> date_published));
+		return date($format, strtotime($this -> data['date_published']));
 	}
 
 
@@ -142,7 +105,7 @@ class Publication {
 	 * @return	string
 	 */
 	public function getDateAdded($format = 'd.m.Y') {
-		return date($format, strtotime($this -> date_added));
+		return date($format, strtotime($this -> data['date_added']));
 	}
 	
 

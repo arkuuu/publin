@@ -8,14 +8,9 @@
 abstract class Object {
 
 	/**
-	 * @var	string
+	 * @var	array
 	 */
-	protected $id;
-
-	/**
-	 * @var	string
-	 */
-	protected $name;
+	protected $data;
 
 
 
@@ -26,14 +21,8 @@ abstract class Object {
 	 */
 	public function __construct(array $data) {
 
-		foreach ($data as $key => $value) {
-			if (property_exists($this, $key)) {
-				$this -> $key = $value;
-			}
-			else {
-				// TODO: print error to log
-			}
-		}
+		// TODO: input validation
+		$this -> data = $data;
 	}
 
 
@@ -43,7 +32,7 @@ abstract class Object {
 	 * @return int
 	 */
 	public function getId() {
-		return (int)$this -> id;
+		return (int)$this -> data['id'];
 	}
 
 
@@ -53,7 +42,7 @@ abstract class Object {
 	 * @return string
 	 */
 	public function getName() {
-		return $this -> name;
+		return $this -> data['name'];
 	}
 
 }
