@@ -11,8 +11,8 @@ class Database extends mysqli {
 	private $host = 'localhost';
 	private $readonly_user = 'readonly';
 	private $readonly_password = 'readonly';
-	private $writeonly_user = '';
-	private $writeonly_password = '';
+	private $writeonly_user = 'root';	// TODO: change
+	private $writeonly_password = 'root';
 	private $database = 'dev';
 	private $charset = 'utf8';
 
@@ -77,11 +77,11 @@ class Database extends mysqli {
 
 		/* Sends query to database */
 		$result = parent::query($query);
-		$this -> num_rows = $result -> num_rows;
 
 		if (!is_object($result)) {
 			die('ERROR IN SQL SYNTAX, CHECK SQL LOG<br/>'.$this -> error);
 		}
+		$this -> num_rows = $result -> num_rows;
 
 		/* Fetches the results */
 		$data = array();
@@ -91,6 +91,40 @@ class Database extends mysqli {
 		$result -> free();
 
 		return $data;
+	}
+
+
+	//TODO: Doc
+	public function insertData($table, array $data) {
+
+		parent::change_user($this -> writeonly_user,
+							$this -> writeonly_password,
+							$this -> database);
+
+		$into = array_keys($data);
+		$values = array_values($data);
+		$query = 'INSERT INTO '.$table.'(';
+
+		foreach ($into as $field) {
+			$query .= '`'.$field.'`, ';
+		}
+		$query = substr($query, 0, -2);
+
+		$query .= ') VALUES (';
+
+		foreach ($values as $value) {
+			$query .= '"'.$value.'", ';
+		}
+		$query = substr($query, 0, -2);
+
+		$query .= ');';
+
+		print_r($query);
+		
+		parent::query($query);
+
+		return $this -> insert_id;
+
 	}
 
 
@@ -399,7 +433,7 @@ class Database extends mysqli {
 		$join = 'LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)';
 		$join .= ' LEFT JOIN `list_journals` j ON (j.`id` = p.`journal_id`)';
 		$where = '';
-		$order = 'ORDER BY `date_added` ASC';
+		$order = 'ORDER BY `date_added` DESC';
 		$limit = '';
 
 		/* Checks if any filter is set */
