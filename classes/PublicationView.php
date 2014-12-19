@@ -117,7 +117,14 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showDatePublished() {
-		return $this -> publication -> getDatePublished('F Y');
+		$string = $this -> publication -> getDatePublished('F Y');
+
+		if (!empty($string)) {
+			return $string;
+		}
+		else {
+			return 'unknown';
+		}
 	}
 
 
@@ -127,10 +134,17 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showJournal() {
-		$url = '?p=browse&amp;by=journal&amp;id=';
+		$string = $this -> publication -> getJournal();
 
-		return '<a href="'.$url.$this -> publication -> getJournalId().'">'
-				.$this -> publication -> getJournal().'</a>';
+		if (!empty($string)) {
+			$url = '?p=browse&amp;by=journal&amp;id=';
+
+			return '<a href="'.$url.$this -> publication -> getJournalId().'">'.$string.'</a>';
+		}
+		else {
+			return '';
+		}
+
 	}
 
 
@@ -140,7 +154,14 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showType() {
-		return $this -> publication -> getType();
+		$string = $this -> publication -> getType();
+
+		if (!empty($string)) {
+			return $string;
+		}
+		else {
+			return 'unknown';
+		}
 	}
 
 

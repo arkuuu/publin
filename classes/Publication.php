@@ -97,8 +97,13 @@ class Publication extends Object {
 	 *
 	 * @return	string
 	 */
-	public function getDatePublished($format = 'm.Y') {
-		return date($format, strtotime($this -> data['date_published']));
+	public function getDatePublished($format) {
+		if (isset($this -> data['date_published'])) {
+			return date($format, strtotime($this -> data['date_published']));
+		}
+		else {
+			return '';
+		}
 	}
 
 
@@ -109,9 +114,13 @@ class Publication extends Object {
 	 *
 	 * @return	string
 	 */
-	public function getDateAdded($format = 'd.m.Y') {
-		return date($format, strtotime($this -> data['date_added']));
-	}
+	public function getDateAdded($format) {
+		if (isset($this -> data['date_added'])) {
+			return date($format, strtotime($this -> data['date_added']));
+		}
+		else {
+			return '';
+		}	}
 	
 
 	/**
