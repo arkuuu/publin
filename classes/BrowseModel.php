@@ -72,7 +72,7 @@ class BrowseModel extends Model {
 					$this -> result = $this -> createPublications(false, array('study_field_id' => $id));
 				}
 				else {
-					$this -> list = $this -> fetchStudyFields();
+					$this -> list = $this -> createStudyFields();
 					$this -> num = $this -> getNum();
 				}
 				break;
@@ -83,7 +83,17 @@ class BrowseModel extends Model {
 					$this -> result = $this -> createPublications(false, array('type_id' => $id));
 				}
 				else {
-					$this -> list = $this -> fetchTypes();
+					$this -> list = $this -> createTypes();
+				}
+				break;
+
+			case 'journal':
+				if ($id > 0) {
+					$this -> is_result = true;
+					$this -> result = $this -> createPublications(false, array('journal_id' => $id));
+				}
+				else {
+					$this -> list = $this -> createJournals();
 				}
 				break;
 
@@ -169,42 +179,6 @@ class BrowseModel extends Model {
 	 */
 	public function isBrowseResult() {
 		return $this -> is_result;
-	}
-
-
-
-
-	/**
-	 * Returns an array with all StudyField objects from database.
-	 *
-	 * @return	array
-	 */
-	private function fetchStudyFields() {
-		$data = $this -> db -> fetchStudyFields();
-		$this -> num = $this -> db -> getNumRows();
-
-		foreach ($data as $key => $value) {
-			$study_fields[] = new StudyField($value);
-		}
-
-		return $study_fields;
-	}
-
-
-	/**
-	 * Returns an array with all Type objects from database.
-	 *
-	 * @return	array
-	 */
-	private function fetchTypes() {
-		$data = $this -> db -> fetchTypes();
-		$this -> num = $this -> db -> getNumRows();
-
-		foreach ($data as $key => $value) {
-			$types[] = new Type($value);
-		}
-
-		return $types;
 	}
 
 

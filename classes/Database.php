@@ -95,25 +95,45 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with all types or with a specific type if $id is set.
-	 * All columns are returned.
+	 * Returns an array with types. All Columns are returned.
+	 * A filter can be specified with the optional parameter $filter.
 	 *
-	 * @param	int		$id		Optional id of the type
+	 * @param	array	$filter		Optional filter array
 	 *
 	 * @return	array
 	 */
-	public function fetchTypes($id = 0) {
+	public function fetchTypes(array $filter = array()) {
 
-		if ($id != 0) {
-			$query = 'SELECT `id`, `name`
-						FROM `list_types`
-						WHERE `id` LIKE "'.$id.'";';
+		$select = 'SELECT t.*';
+		$from = 'FROM `list_types` t';
+		$where = '';
+		$order = 'ORDER BY `name` ASC';
+		$limit = '';
+
+		/* Checks if any filter is set */
+		if (!empty($filter)) {
+
+			/* Creates the LIMIT clause */
+			if (array_key_exists('limit', $filter)) {
+				$limit = 'LIMIT '.$filter['limit'];
+				unset($filter['limit']);
+			}
+
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
+				
+				/* Creates the WHERE clause from the rest of the filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' t.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
 		}
-		else {
-			$query = 'SELECT `id`, `name`
-						FROM `list_types`
-						ORDER BY `name` ASC;';
-		}
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 
 		return $this -> getData($query);
 	}
@@ -174,25 +194,90 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with all fields of study or with a specific one if $id is set.
-	 * All columns are returned.
+	 * Returns an array with study fields. All Columns are returned.
+	 * A filter can be specified with the optional parameter $filter.
 	 *
-	 * @param	int		$id		optional id of the field of study
-	 * 
+	 * @param	array	$filter		Optional filter array
+	 *
 	 * @return	array
 	 */
-	public function fetchStudyFields($id = 0) {
+	public function fetchStudyFields(array $filter = array()) {
 
-		if ($id != 0) {
-			$query = 'SELECT `id`, `name` 
-						FROM `list_study_fields`
-						WHERE `id` LIKE "'.$id.'"';
+		$select = 'SELECT s.*';
+		$from = 'FROM `list_study_fields` s';
+		$where = '';
+		$order = 'ORDER BY `name` ASC';
+		$limit = '';
+
+		/* Checks if any filter is set */
+		if (!empty($filter)) {
+
+			/* Creates the LIMIT clause */
+			if (array_key_exists('limit', $filter)) {
+				$limit = 'LIMIT '.$filter['limit'];
+				unset($filter['limit']);
+			}
+
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
+				
+				/* Creates the WHERE clause from the rest of the filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' s.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
 		}
-		else {
-			$query = 'SELECT `id`, `name`
-						FROM `list_study_fields`
-						ORDER BY `name` ASC';
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
+		
+		return $this -> getData($query);
+	}
+
+
+	/**
+	 * Returns an array with journals. All Columns are returned.
+	 * A filter can be specified with the optional parameter $filter.
+	 *
+	 * @param	array	$filter		Optional filter array
+	 *
+	 * @return	array
+	 */
+	public function fetchJournals(array $filter = array()) {
+
+		$select = 'SELECT j.*';
+		$from = 'FROM `list_journals` j';
+		$where = '';
+		$order = 'ORDER BY `name` ASC';
+		$limit = '';
+
+		/* Checks if any filter is set */
+		if (!empty($filter)) {
+
+			/* Creates the LIMIT clause */
+			if (array_key_exists('limit', $filter)) {
+				$limit = 'LIMIT '.$filter['limit'];
+				unset($filter['limit']);
+			}
+
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
+				
+				/* Creates the WHERE clause from the rest of the filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' j.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
 		}
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 		
 		return $this -> getData($query);
 	}
@@ -309,9 +394,10 @@ class Database extends mysqli {
 	 */
 	public function fetchPublications(array $filter = array()) {
 
-		$select = 'SELECT t.`name` AS `type`, p.*';
+		$select = 'SELECT t.`name` AS `type`, j.`name` AS `journal`, p.*';
 		$from = 'FROM `list_publications` p';
-		$join = 'JOIN `list_types` t ON (t.`id` = p.`type_id`)';
+		$join = 'LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)';
+		$join .= ' LEFT JOIN `list_journals` j ON (j.`id` = p.`journal_id`)';
 		$where = '';
 		$order = 'ORDER BY `date_added` ASC';
 		$limit = '';

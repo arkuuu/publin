@@ -3,6 +3,7 @@
 require_once 'Publication.php';
 require_once 'Author.php';
 require_once 'KeyTerm.php';
+require_once 'Journal.php';
 
 abstract class Model {
 
@@ -11,7 +12,7 @@ abstract class Model {
 
 
 
-	public function __construct(Database $db) {
+	protected function __construct(Database $db) {
 		$this -> db = $db;
 	}
 
@@ -21,7 +22,7 @@ abstract class Model {
 	}
 
 
-	public function createPublications($mode, array $filter = array()) {
+	protected function createPublications($mode, array $filter = array()) {
 
 		$publications = array();
 
@@ -51,7 +52,7 @@ abstract class Model {
 	}
 
 
-	public function createAuthors($mode, array $filter = array()) {
+	protected function createAuthors($mode, array $filter = array()) {
 
 		$authors = array();
 
@@ -77,11 +78,10 @@ abstract class Model {
 	}
 
 
-	public function createKeyTerms(array $filter = array()) {
+	protected function createKeyTerms(array $filter = array()) {
 
 		$key_terms = array();
 
-		/* Gets the key terms */
 		$data = $this -> db -> fetchKeyTerms($filter);
 		$num = $this -> db -> getNumRows();
 
@@ -92,6 +92,57 @@ abstract class Model {
 		$this -> num = $num;
 
 		return $key_terms;
+	}
+
+
+	protected function createStudyFields(array $filter = array()) {
+
+		$study_fields = array();
+
+		$data = $this -> db -> fetchStudyFields($filter);
+		$num = $this -> db -> getNumRows();
+
+		foreach ($data as $key => $value) {
+			$study_fields[] = new StudyField($value);
+		}
+
+		$this -> num = $num;
+
+		return $study_fields;
+	}
+
+
+	protected function createTypes(array $filter = array()) {
+
+		$types = array();
+
+		$data = $this -> db -> fetchTypes($filter);
+		$num = $this -> db -> getNumRows();
+
+		foreach ($data as $key => $value) {
+			$types[] = new Type($value);
+		}
+
+		$this -> num = $num;
+
+		return $types;
+	}
+
+
+	protected function createJournals(array $filter = array()) {
+
+		$journals = array();
+
+		$data = $this -> db -> fetchJournals($filter);
+		$num = $this -> db -> getNumRows();
+
+		foreach ($data as $key => $value) {
+			$journals[] = new Journal($value);
+		}
+
+		$this -> num = $num;
+
+		return $journals;
 	}
 
 }

@@ -122,6 +122,19 @@ class PublicationView extends View {
 
 
 	/**
+	 * Shows the publication's journal name.
+	 *
+	 * @return	string
+	 */
+	public function showJournal() {
+		$url = '?p=browse&amp;by=journal&amp;id=';
+
+		return '<a href="'.$url.$this -> publication -> getJournalId().'">'
+				.$this -> publication -> getJournal().'</a>';
+	}
+
+
+	/**
 	 * Shows the publication's type.
 	 *
 	 * @return	string

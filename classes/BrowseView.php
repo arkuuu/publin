@@ -59,6 +59,12 @@ class BrowseView extends View {
 									'url' => './?p=browse&amp;by=type',
 									'result_url' =>  './?p=browse&amp;by=type&amp;id='
 								),
+					'journal' => array(
+									'name' => 'Journals',
+									'text' => 'journals',
+									'url' => './?p=browse&amp;by=journal',
+									'result_url' =>  './?p=browse&amp;by=journal&amp;id='
+								),
 					);
 
 		if (!array_key_exists($this -> model -> getBrowseType(), $this -> browse_type_list)) {

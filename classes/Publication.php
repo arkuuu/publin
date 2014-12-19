@@ -14,6 +14,7 @@ class Publication extends Object {
 	 */
 	private $authors;
 
+
 	/**
 	 * @var	array
 	 */
@@ -66,6 +67,10 @@ class Publication extends Object {
 	 */
 	public function getJournal() {
 		return $this -> data['journal'];
+	}
+	public function getJournalId() {
+		return $this -> data['journal_id'];
+
 	}
 
 
