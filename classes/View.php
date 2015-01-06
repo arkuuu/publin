@@ -15,7 +15,7 @@ abstract class View {
 
 
 
-	public function __construct($template_file) {
+	protected function __construct($template_file) {
 		$this -> template_file = './templates/'.$template_file;
 	}
 

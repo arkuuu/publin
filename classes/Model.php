@@ -3,6 +3,7 @@
 require_once 'Publication.php';
 require_once 'Author.php';
 require_once 'KeyTerm.php';
+require_once 'Type.php';
 require_once 'Journal.php';
 
 abstract class Model {
@@ -22,7 +23,7 @@ abstract class Model {
 	}
 
 
-	protected function createPublications($mode, array $filter = array()) {
+	public function createPublications($mode, array $filter = array()) {
 
 		$publications = array();
 
@@ -52,7 +53,7 @@ abstract class Model {
 	}
 
 
-	protected function createAuthors($mode, array $filter = array()) {
+	public function createAuthors($mode, array $filter = array()) {
 
 		$authors = array();
 
@@ -78,7 +79,7 @@ abstract class Model {
 	}
 
 
-	protected function createKeyTerms(array $filter = array()) {
+	public function createKeyTerms(array $filter = array()) {
 
 		$key_terms = array();
 
@@ -95,7 +96,7 @@ abstract class Model {
 	}
 
 
-	protected function createStudyFields(array $filter = array()) {
+	public function createStudyFields(array $filter = array()) {
 
 		$study_fields = array();
 
@@ -112,7 +113,7 @@ abstract class Model {
 	}
 
 
-	protected function createTypes(array $filter = array()) {
+	public function createTypes(array $filter = array()) {
 
 		$types = array();
 
@@ -129,7 +130,7 @@ abstract class Model {
 	}
 
 
-	protected function createJournals(array $filter = array()) {
+	public function createJournals(array $filter = array()) {
 
 		$journals = array();
 
