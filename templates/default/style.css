@@ -87,14 +87,15 @@ div#right {
 	top: 0; left: 275px; right: 0;
 	height: auto;
 	padding: 30px 0;
+	margin-left: 25px;
 	font-size: 15px;
 	background-color: #D6DFE4;  
 }
 
-div#right h1, div#right h2, div#right p, div#right ul {
+div#right h1, div#right h2, div#right p, div#right ul, div#right div {
 	max-width: 700px;
 	min-width: 250px; /* bei div#right auch ändern! */
-	padding: 0 25px 0;
+	/*padding: 0 25px 0;*/
 }
 
 div#right h1 {
@@ -118,7 +119,7 @@ div#right ul {
 }
 
 div#right li {
-	padding-top: 5px;
+	margin-bottom: 10px;
 }
 
 div#right a {
@@ -129,4 +130,28 @@ div#right a {
 div#right a:hover {
 	color: black;
 	text-decoration: underline;
+}
+
+div#right li input {
+	width: 200px;
+}	
+
+.form label, .form input
+{
+	display: block;
+	width: 200px;
+	float: left;
+	margin-bottom: 10px;
+}
+
+.form label
+{
+	width: 120px;
+	text-align: left;
+	padding-right: 10px;
+}
+
+.form br
+{
+	clear: left;
 }

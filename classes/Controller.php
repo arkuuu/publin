@@ -5,9 +5,11 @@ require_once 'classes/Database.php';
 require_once 'classes/BrowseModel.php';
 require_once 'classes/AuthorModel.php';
 require_once 'classes/PublicationModel.php';
+require_once 'classes/SubmitModel.php';
 require_once 'classes/BrowseView.php';
 require_once 'classes/AuthorView.php';
 require_once 'classes/PublicationView.php';
+require_once 'classes/SubmitView.php';
 require_once 'classes/GenericView.php';
 
 /**
@@ -52,6 +54,11 @@ class Controller {
 			case 'publication':
 				$this -> model = new PublicationModel($id, $db);
 				$this -> view = new PublicationView($this -> model, $this -> template);
+				break;
+
+			case 'submit':
+				$this -> model = new SubmitModel($db);
+				$this -> view = new SubmitView($this -> model, $this -> template);
 				break;
 
 			default:
