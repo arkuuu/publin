@@ -1,16 +1,16 @@
 <?php
 
 // TODO: use __autoload!
-require_once 'classes/Database.php';
-require_once 'classes/BrowseModel.php';
-require_once 'classes/AuthorModel.php';
-require_once 'classes/PublicationModel.php';
-require_once 'classes/SubmitModel.php';
-require_once 'classes/BrowseView.php';
-require_once 'classes/AuthorView.php';
-require_once 'classes/PublicationView.php';
-require_once 'classes/SubmitView.php';
-require_once 'classes/GenericView.php';
+require_once 'Database.php';
+require_once 'BrowseModel.php';
+require_once 'AuthorModel.php';
+require_once 'PublicationModel.php';
+require_once 'SubmitModel.php';
+require_once 'BrowseView.php';
+require_once 'AuthorView.php';
+require_once 'PublicationView.php';
+require_once 'SubmitView.php';
+require_once 'GenericView.php';
 
 /**
  * Controls everything.
