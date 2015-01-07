@@ -92,7 +92,7 @@ div#right {
 	background-color: #D6DFE4;  
 }
 
-div#right h1, div#right h2, div#right p, div#right ul, div#right div {
+div#right h1, div#right h2, div#right p, div#right ul, div#right div, div#right textarea {
 	max-width: 700px;
 	min-width: 250px; /* bei div#right auch ändern! */
 	/*padding: 0 25px 0;*/
@@ -136,6 +136,8 @@ div#right li input {
 	width: 200px;
 }	
 
+
+/*	Other stuff */
 .form label, .form input
 {
 	display: block;
@@ -146,7 +148,7 @@ div#right li input {
 
 .form label
 {
-	width: 120px;
+	width: 130px;
 	text-align: left;
 	padding-right: 10px;
 }
@@ -154,4 +156,16 @@ div#right li input {
 .form br
 {
 	clear: left;
+}
+
+div#right input[type=number] {
+	width: 50px;
+}
+div#right select {
+	width: 200px;
+}
+
+div#right textarea {
+	width: 500px;
+	height: 150px;
 }

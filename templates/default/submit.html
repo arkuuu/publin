@@ -1,191 +1,201 @@
-		<script type="text/javascript" src="./templates/default/jquery.js"></script>
-		<script type="text/javascript">
+	<script type="text/javascript" src="./templates/default/jquery.js"></script>
+	<script type="text/javascript">
 		$(document).ready(function() {
 
 			$('.multi-field-wrapper').each(function() {
 				var $wrapper = $('.multi-fields', this);
 				$('.add-field', $(this)).click(function(e) {
+					e.preventDefault();
 					$('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required').focus();
 				});
-				$('.multi-field .remove-field', $wrapper).click(function() {
+				$('.multi-field .remove-field', $wrapper).click(function(e) {
+					e.preventDefault();
 					if ($('.multi-field', $wrapper).length > 1)
 						$(this).parent('.multi-field').remove();
 				});
 			});
 
+			$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide();
+
 			$('.type-selector').change(function() {
 				var type = $('.type-selector').find(':selected').val();
+				var show_time = 400;
 
 				$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(200);
 
 				switch(type) {
 					case '1':
-						$('.article').show(500);
+						$('.article').show(show_time);
 						break;
 					case '2':
-						$('.book').show(500);
+						$('.book').show(show_time);
 						break;
 					case '4':
-						$('.incollection').show(500);
+						$('.incollection').show(show_time);
 						break;
 					case '3':
-						$('.inproceedings').show(500);
+						$('.inproceedings').show(show_time);
 						break;
 					case '6':
-						$('.masterthesis').show(500);
+						$('.masterthesis').show(show_time);
 						break;
 					case '9':
-						$('.misc').show(500);
+						$('.misc').show(show_time);
 						break;
 					case '7':
-						$('.phdthesis').show(500);
+						$('.phdthesis').show(show_time);
 						break;
 					case '5':
-						$('.techreport').show(500);
+						$('.techreport').show(show_time);
 						break;
 					case '8':
-						$('.unpublished').show(500);
+						$('.unpublished').show(show_time);
 						break;
 
 					default:
-						$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').show(500);
+						$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').show(show_time);
 						break;
 				}
-			});		
+			});				
 		});
-		</script>
+	</script>
 
-		<h1>Submit publication</h1>
-		<p>Here comes the great form.</p>
+	<h1>Submit publication</h1>
+	<p>Here comes the great form.</p>
+	
+	<form action="test_output.php" method="post" accept-charset="utf-8">
+
+	<h2>General</h2>
+	<p>More Information to come here.</p>
+
+	<div class="form">
+		<label for="type">Type:</label>
+		<select class="type-selector" name="type" id="type" size="1" required>
+				<option value selected disabled>&nbsp;</option>
+				<?php echo $this -> listTypeOptions() ?>
+		</select><br/>
+
+		<label for="study_field">Field of Study:</label>
+		<select name="study_field" id="study_field" size="1" required>
+				<option value selected disabled>&nbsp;</option>
+				<?php echo $this -> listStudyFieldOptions() ?>
+		</select><br/>
+
+		<div>
+			<label for="date_published">Publication Date:</label>
+			<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD" required/>
+			<br/>
+		</div>
+
+		<div>
+			<label for="title">Title:</label>
+			<input type="text" name="title" id="title" maxlength="200" required/>
+			<br/>
+		</div>
+
+		<div class="article">
+			<label for="journal">Journal:</label>
+			<input type="text" name="journal" id="journal" maxlength="200"/>
+			<br/>
+		</div>
 		
-		<form action="test_output.php" method="post" accept-charset="utf-8">
+		<div class="incollection inproceedings">
+			<label for="booktitle">Book Title:</label>
+			<input type="text" name="booktitle" id="booktitle" maxlength="200"/>
+			<br/>
+		</div>
 
-		<h2>General</h2>
-		<p>More Information to come here.</p>
+		<div class="book incollection inproceedings">
+			<label for="publisher">Publisher:</label>
+			<input type="text" name="publisher" id="publisher" maxlength="200"/>
+			<br/>
+		</div>
 
+		<div class="book">
+			<label for="edition">Edition:</label>
+			<input type="text" name="edition" id="edition" disabled/>
+			<br/>
+		</div>
 
-		<div class="form">
-			<label for="type">Type:</label>
-			<select class="type-selector" name="type" id="type" size="1" required>
-					<option value selected disabled>&nbsp;</option>
-					<?php echo $this -> listTypeOptions() ?>
-			</select><br/>
+		<div class="masterthesis phdthesis techreport">
+			<label for="institution">Institution:</label>
+			<input type="text" name="institution" id="institution" maxlength="200"/>
+			<br/>
+		</div>
 
-			<label for="study_field">Field of Study:</label>
-			<select name="study_field" id="study_field" size="1" required>
-					<option value selected disabled>&nbsp;</option>
-					<?php echo $this -> listStudyFieldOptions() ?>
-			</select></br>
+		<div class="misc">
+			<label for="howpublished">How published:</label>
+			<input type="text" name="howpublished" id="howpublished" maxlength="200" disabled/>
+			<br/>
+		</div>
 
+		<div class="incollection inproceedings">
+			<label for="pages_from">Pages:</label>
 			<div>
-				<label for="title">Title:</label>
-				<input type="text" name="title" id="title" maxlength="200" required/>
-				<br/>
+				<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12"/>
+				<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23" style="margin-left:10px"/>
 			</div>
-
-			<div class="article">
-				<label for="journal">Journal:</label>
-				<input type="text" name="journal" id="journal" maxlength="200"/>
-				<br/>
-			</div>
-
-			<div class="incollection inproceedings">
-				<label for="pages">Pages:</label>
-				<input type="text" name="pages" id="pages" placeholder="25--23"/>
-				<br/>
-			</div>
-
-			<div class="article book">
-				<label for="volume">Volume:</label>
-				<input type="number" name="volume" id="volume"/>
-				<br/>
-			</div>
-
-			<div class="article techreport">
-				<label for="number">Number:</label>
-				<input type="number" name="number" id="number"/>
-				<br/>
-			</div>
-
-			<div class="book incollection inproceedings">
-				<label for="publisher">Publisher:</label>
-				<input type="text" name="publisher" id="publisher" maxlength="200"/>
-				<br/>
-			</div>
-
-			<div class="book">
-				<label for="series">Series:</label>
-				<input type="number" name="series" id="series"/>
-				<br/>
-			</div>
-
-			<div class="book">
-				<label for="edition">Edition:</label>
-				<input type="text" name="edition" id="edition" disabled/>
-				<br/>
-			</div>
-
-			<div class="incollection inproceedings">
-				<label for="booktitle">Book title:</label>
-				<input type="text" name="booktitle" id="booktitle" maxlength="200"/>
-				<br/>
-			</div>
-
-			<div class="misc">
-				<label for="howpublished">How published:</label>
-				<input type="text" name="howpublished" id="howpublished" maxlength="200" disabled/>
-				<br/>
-			</div>
-
-			<div class="masterthesis phdthesis techreport">
-				<label for="institution">Institution:</label>
-				<input type="text" name="institution" id="institution" maxlength="200"/>
-				<br/>
-			</div>
-
-			<div>
-				<label for="date_published">Date:</label>
-				<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD" required/>
-				<br/>
-			</div>
+			<br/>
 		</div>
 
-
-		<h2>Authors</h2>
-		<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
-		<div class="multi-field-wrapper">
-			<ul class="multi-fields">
-				<li class="multi-field">
-					<input type="text" name="authors[]" required/>
-					<button type="button" class="remove-field">x</button>
-				</li>
-			  </ul>
-			<button type="button" class="add-field">Add field</button>
+		<div class="article book">
+			<label for="volume">Volume:</label>
+			<input type="number" name="volume" id="volume" min="0"/>
+			<br/>
 		</div>
 
+		<div class="article techreport">
+			<label for="number">Number:</label>
+			<input type="number" name="number" id="number" min="0"/>
+			<br/>
+		</div>	
 
-		<h2>Key Terms</h2>
-		<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
-		<div class="multi-field-wrapper">
-			<ul class="multi-fields">
-				<li class="multi-field">
-					<input type="text" name="key_terms[]" />
-					<button type="button" class="remove-field">x</button>
-				</li>
-			</ul>
-			<button type="button" class="add-field">Add field</button>
+		<div class="book">
+			<label for="series">Series:</label>
+			<input type="number" name="series" id="series" min="0"/>
+			<br/>
 		</div>
 
-
-		<h2>Abstract</h2>
-		<textarea></textarea>
+	</div>
 
 
-		<h2>References</h2>
-		<p>TODO</p>
+	<h2>Authors</h2>
+	<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
+	<div class="multi-field-wrapper">
+		<ul class="multi-fields">
+			<li class="multi-field">
+				<input type="text" name="authors[]" placeholder="Title Firstname Lastname" required/>
+				<button type="button" class="remove-field">x</button>
+			</li>
+		  </ul>
+		<button type="button" class="add-field">Add field</button>
+	</div>
 
 
-		<h2>Submit</h2>
-		<p>You can review your submission on the next page.</P>
-		<input type="submit" value="Submit"/>
-		</form>
+	<h2>Key Terms</h2>
+	<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
+	<div class="multi-field-wrapper">
+		<ul class="multi-fields">
+			<li class="multi-field">
+				<input type="text" name="key_terms[]" placeholder="Logizomechanophobia" />
+				<button type="button" class="remove-field">x</button>
+			</li>
+		</ul>
+		<button type="button" class="add-field">Add field</button>
+	</div>
+
+
+	<h2>Abstract</h2>
+	<p>More Information to come here.</p>
+	<textarea name ="abstract" rows="6" cols="60" placeholder="If there is no abstract, write something useful!"></textarea>
+
+
+	<h2>References</h2>
+	<p>More Information to come here.</p>
+	<p>TODO</p>
+
+
+	<h2>Submit</h2>
+	<p>You can review your submission on the next page.</P>
+	<input type="submit" value="Submit"/>
+	</form>

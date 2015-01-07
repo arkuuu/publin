@@ -1,4 +1,14 @@
-
+	<script type="text/javascript" src="./templates/default/jquery.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {		
+			$('.export textarea').hide();
+			$('.export a').click(function(e) {
+				e.preventDefault();
+				var textarea = $(this).attr('class');
+				$('textarea.'+textarea).toggle(400);
+			});
+		});
+	</script>
 	<h1><?php echo $this -> showTitle() ?></h1>
 	<p>by: <?php echo $this -> showAuthors() ?>
 		<br/>published: <?php echo $this -> showDatePublished() ?>
@@ -17,9 +27,22 @@
 
 
 	<h2>Export this publication</h2>
-	<ul>
-		<li>BibTeX:<br/><textarea rows="6" cols="60" readonly><?php echo $this -> showExport('bibtex') ?></textarea></li>
-	</ul>
+	<div class="export">
+		<ul>
+			<li>
+				<a href="#" class="bibtex">BibTeX</a><br/>
+				<textarea class="bibtex" rows="6" cols="60" readonly>
+					<?php echo $this -> showExport('bibtex') ?>
+				</textarea>
+			</li>
+			<li>
+				<a href="#" class="ris">RIS</a><br/>
+				<textarea class="ris" rows="6" cols="60" readonly>
+					<?php echo $this -> showExport('ris') ?>
+				</textarea>
+			</li>
+		</ul>
+	</div>
 
 
 	<h2>Search this publication in</h2>
