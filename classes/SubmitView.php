@@ -7,9 +7,9 @@ class SubmitView extends View {
 	private $model;
 
 
-	public function __construct(SubmitModel $model, $template = 'dev') {
+	public function __construct(SubmitModel $model, $template) {
 
-		parent::__construct($template.'/submit.html');
+		parent::__construct('submit', $template);
 		$this -> model = $model;
 	}
 

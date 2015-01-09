@@ -15,7 +15,7 @@
 				});
 			});
 
-			$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide();
+			// $('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide();
 
 			$('.type-selector').change(function() {
 				var type = $('.type-selector').find(':selected').val();
@@ -70,26 +70,26 @@
 
 	<div class="form">
 		<label for="type">Type:</label>
-		<select class="type-selector" name="type" id="type" size="1" required>
-				<option value selected disabled>&nbsp;</option>
+		<select class="type-selector" name="type_id" id="type" size="1" >
+				<option value selected disabled>Select...</option>
 				<?php echo $this -> listTypeOptions() ?>
 		</select><br/>
 
 		<label for="study_field">Field of Study:</label>
-		<select name="study_field" id="study_field" size="1" required>
-				<option value selected disabled>&nbsp;</option>
+		<select name="study_field_id" id="study_field" size="1" >
+				<option value selected disabled>Select...</option>
 				<?php echo $this -> listStudyFieldOptions() ?>
 		</select><br/>
 
 		<div>
 			<label for="date_published">Publication Date:</label>
-			<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD" required/>
+			<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD" />
 			<br/>
 		</div>
 
 		<div>
 			<label for="title">Title:</label>
-			<input type="text" name="title" id="title" maxlength="200" required/>
+			<input type="text" name="title" id="title" maxlength="200" />
 			<br/>
 		</div>
 
@@ -164,7 +164,9 @@
 	<div class="multi-field-wrapper">
 		<ul class="multi-fields">
 			<li class="multi-field">
-				<input type="text" name="authors[]" placeholder="Title Firstname Lastname" required/>
+				<input type="text" name="authors[titles][]" placeholder="Title(s)" style="width:60px"/>
+				<input type="text" name="authors[first_names][]" placeholder="Firstname(s)" />
+				<input type="text" name="authors[last_names][]" placeholder="Lastname(s)" />
 				<button type="button" class="remove-field">x</button>
 			</li>
 		  </ul>
