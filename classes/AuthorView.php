@@ -24,9 +24,9 @@ class AuthorView extends View {
 	 * @param	AuthorModel		$model		The author model
 	 * @param	string			$template	The template folder
 	 */
-	public function __construct(AuthorModel $model, $template = 'dev') {
+	public function __construct(AuthorModel $model, $template) {
 
-		parent::__construct($template.'/author.html');		
+		parent::__construct('author', $template);
 		$this -> author = $model -> getAuthor();
 	}
 

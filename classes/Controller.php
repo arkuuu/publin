@@ -1,7 +1,6 @@
 <?php
 
 // TODO: use __autoload!
-require_once 'Database.php';
 require_once 'BrowseModel.php';
 require_once 'AuthorModel.php';
 require_once 'PublicationModel.php';
@@ -35,36 +34,8 @@ class Controller {
 	 * @param	string	$by		The given by parameter
 	 *
 	 */
-	public function __construct($page, $id, $by) {
-
-		$db = new Database();
+	public function __construct() {
 		mb_internal_encoding('utf8');
-
-		switch ($page) {
-			case 'browse':
-				$this -> model = new BrowseModel($by, $id, $db);
-				$this -> view = new BrowseView($this -> model, $this -> template);
-				break;
-
-			case 'author':
-				$this -> model = new AuthorModel($id, $db);
-				$this -> view = new AuthorView($this -> model, $this -> template);
-				break;
-			
-			case 'publication':
-				$this -> model = new PublicationModel($id, $db);
-				$this -> view = new PublicationView($this -> model, $this -> template);
-				break;
-
-			case 'submit':
-				$this -> model = new SubmitModel($db);
-				$this -> view = new SubmitView($this -> model, $this -> template);
-				break;
-
-			default:
-				$this -> view = new GenericView($page, $this -> template);
-				break;
-		}
 	}
 
 
@@ -75,47 +46,35 @@ class Controller {
 	 *
 	 * @return	string
 	 */
-	public function display() {
-		$header = './templates/'.$this -> template.'/header.html';
-		$menu = './templates/'.$this -> template.'/menu.html';
-		$content = $this -> view -> getContent();
-		$footer = './templates/'.$this -> template.'/footer.html';
+	public function run($page, $id, $by) {
 
-		if (is_file($header) && is_file($menu) && is_file($footer)) {
+		switch ($page) {
+			case 'browse':
+				$this -> model = new BrowseModel($by, $id);
+				$this -> view = new BrowseView($this -> model, $this -> template);
+				break;
+
+			case 'author':
+				$this -> model = new AuthorModel($id);
+				$this -> view = new AuthorView($this -> model, $this -> template);
+				break;
 			
-			ob_start();
-			include $header;
-			include $menu;
-			echo $content;
-			include $footer;
-			$output = ob_get_contents();
-			ob_end_clean();
+			case 'publication':
+				$this -> model = new PublicationModel($id);
+				$this -> view = new PublicationView($this -> model, $this -> template);
+				break;
 
-			return $output;
+			case 'submit':
+				$this -> model = new SubmitModel();
+				$this -> view = new SubmitView($this -> model, $this -> template);
+				break;
+
+			default:
+				$this -> view = new GenericView($page, $this -> template);
+				break;
 		}
-		else {
-			return 'Error: Could not find master template!';
-		}
-	}
 
-
-	/**
-	 * Shows the page title by calling the method of View class.
-	 *
-	 * @return	string
-	 */
-	private function showPageTitle() {
-		return $this -> view -> showPageTitle();
-	}
-
-
-	/**
-	 * Shows the page meta tags by calling the method of View class.
-	 *
-	 * @return	string
-	 */
-	private function showMetaTags() {
-		return $this -> view -> showMetaTags();
+		return $this -> view -> display();
 	}
 	
 }

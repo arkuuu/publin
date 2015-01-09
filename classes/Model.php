@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Database.php';
 require_once 'Publication.php';
 require_once 'Author.php';
 require_once 'KeyTerm.php';
@@ -13,8 +14,8 @@ abstract class Model {
 
 
 
-	protected function __construct(Database $db) {
-		$this -> db = $db;
+	protected function __construct() {
+		$this -> db = new Database();
 	}
 
 

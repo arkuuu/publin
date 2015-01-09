@@ -25,9 +25,9 @@ class PublicationView extends View {
 	 * @param	PublicationModel	$model		The publication model
 	 * @param	string				$template	The template folder
 	 */
-	public function __construct(PublicationModel $model, $template = 'dev') {
+	public function __construct(PublicationModel $model, $template) {
 
-		parent::__construct($template.'/publication.html');
+		parent::__construct('publication', $template);
 		$this -> publication = $model -> getPublication();
 	}
 

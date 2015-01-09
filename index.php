@@ -23,7 +23,7 @@ else {
 	$by = $_GET['by'];
 }
 
-$controller = new Controller($p, $id, $by);
-echo $controller -> display();
+$controller = new Controller();
+echo $controller -> run($p, $id, $by);
 
 ?>

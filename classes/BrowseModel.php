@@ -40,9 +40,9 @@ class BrowseModel extends Model {
 	 * @param	int			$id		Id of browsing
 	 * @param	Database	$db		Database connection
 	 */
-	public function __construct($type, $id, Database $db) {
+	public function __construct($type, $id) {
 
-		parent::__construct($db);
+		parent::__construct();
 		$this -> browse_type = $type;
 
 		switch ($this -> browse_type) {

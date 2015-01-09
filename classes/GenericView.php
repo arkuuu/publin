@@ -22,9 +22,9 @@ class GenericView extends View {
 	 * @param	string		$page		The page (=template file)
 	 * @param	string		$template	The template folder
 	 */
-	public function __construct($page, $template = 'dev') {
+	public function __construct($page, $template) {
 
-		parent::__construct($template.'/'.$page.'.html');
+		parent::__construct($page, $template);
 		$this -> page = $page;
 	}
 

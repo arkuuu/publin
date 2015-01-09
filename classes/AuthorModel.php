@@ -25,9 +25,9 @@ class AuthorModel extends Model {
 	 * @param	int			$id		Id of the author
 	 * @param	Database	$db		Database connection
 	 */
-	public function __construct($id, Database $db) {
+	public function __construct($id) {
 
-		parent::__construct($db);
+		parent::__construct();
 
 		$authors = $this -> createAuthors(true, array('id' => $id));
 		// TODO: check if really only one was returned

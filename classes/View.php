@@ -11,27 +11,38 @@ abstract class View {
 	 * The path to the template file
 	 * @var	string
 	 */
-	protected $template_file;
+	protected $template;
+
+	protected $content;
 
 
 
-	protected function __construct($template_file) {
-		$this -> template_file = './templates/'.$template_file;
+	protected function __construct($content, $template) {
+
+		$this -> content = $content;
+		$this -> template = $template;
 	}
 
 
 	/**
-	 * Returns the content of the template file.
+	 * Returns the content of the page.
 	 *
 	 * @return	string
 	 */
-	public function getContent() {
+	public function display() {
+		$header = './templates/'.$this -> template.'/header.html';
+		$menu = './templates/'.$this -> template.'/menu.html';
+		$content = './templates/'.$this -> template.'/'.$this -> content.'.html';
+		$footer = './templates/'.$this -> template.'/footer.html';
 
-		if (isset($this -> template_file)) {
-			if (file_exists($this -> template_file)) {
+		if (file_exists($header) && file_exists($menu) && file_exists($footer)) {
+			if (file_exists($content)) {
 				
-				ob_start();
-				include $this -> template_file;
+				ob_start();			
+				include $header;
+				include $menu;
+				include $content;
+				include $footer;
 				$output = ob_get_contents();
 				ob_end_clean();
 
@@ -39,15 +50,13 @@ abstract class View {
 			}
 			else {
 				// TODO: error
-				return 'Could not find template '.$this -> template_file.'!';
+				return 'Could not find template '.$content.'!';
 			}
 		}
 		else {
 			// TODO: error
-			return 'No template was set!';
+			return 'Could not find master template!';
 		}
-
-
 	}
 	
 
