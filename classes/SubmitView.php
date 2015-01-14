@@ -5,17 +5,51 @@ require_once 'View.php';
 class SubmitView extends View {
 
 	private $model;
+	private $submit_mode = 'form';
 
 
-	public function __construct(SubmitModel $model, $template) {
+	public function __construct(SubmitModel $model, $submit_mode) {
 
-		parent::__construct('submit', $template);
+		if (in_array($submit_mode, array('start', 'form', 'preview'))) {
+			$this -> submit_mode = $submit_mode;
+		}
+
+		parent::__construct('submit');
 		$this -> model = $model;
+	}
+
+
+	public function isForm() {
+		if ($this -> submit_mode == 'form') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function isPreview() {
+		if ($this -> submit_mode == 'preview') {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 
 	public function showPageTitle() {
 		return 'Submit publication';
+	}
+
+
+	public function showPreview() {
+		$publication = $this -> model -> getPublication();
+
+		if (!empty($publication)) {
+			$sub_view = new PublicationView($publication);
+			return $sub_view -> displayContentOnly();
+		}
 	}
 
 
@@ -40,6 +74,23 @@ class SubmitView extends View {
 		}
 
 		return $string;
+	}
+
+
+	public function listErrors() {
+		$errors = $this -> model -> getErrors();
+
+		if (!empty($errors)) {
+			$string = '';
+			foreach ($errors as $error) {
+				$string .= '<li>'.$error.'</li>';
+			}
+
+			return $string;
+		}
+		else {
+			return false;
+		}
 	}
 
 }

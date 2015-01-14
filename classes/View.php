@@ -11,16 +11,34 @@ abstract class View {
 	 * The path to the template file
 	 * @var	string
 	 */
-	protected $template;
+	protected $template = 'default';
 
 	protected $content;
 
 
 
-	protected function __construct($content, $template) {
+	protected function __construct($content) {
 
 		$this -> content = $content;
-		$this -> template = $template;
+	}
+
+	protected function displayContentOnly() {
+
+		$content = './templates/'.$this -> template.'/'.$this -> content.'.html';
+
+		if (file_exists($content)) {
+				
+				ob_start();			
+				include $content;
+				$output = ob_get_contents();
+				ob_end_clean();
+
+				return $output;
+			}
+			else {
+				// TODO: error
+				return 'Could not find template '.$content.'!';
+			}
 	}
 
 
@@ -50,12 +68,14 @@ abstract class View {
 			}
 			else {
 				// TODO: error
-				return 'Could not find template '.$content.'!';
+				throw new Exception('Could not find template '.$content.'!');
+				
 			}
 		}
 		else {
 			// TODO: error
-			return 'Could not find master template!';
+			throw new Exception('Could not find master template!');
+			
 		}
 	}
 	
@@ -77,22 +97,5 @@ abstract class View {
 		return "\n";
 	}
 
-
-	// // Could be used to let a template safely call methods of an view.
-	// public function view($function, $param = null) {
-	// 	$function = 'view'.$function;
-
-	// 	if (is_callable(array($this, $function))) {
-	// 		if (isset($param)) {
-	// 			return $this -> $function($param);
-	// 		}
-	// 		else {
-	// 			return $this -> $function();
-	// 		}
-	// 	}
-	// 	else {
-	// 		return 'method '.$function.'('.$param.') not found in '.get_class($this).'!';
-	// 	}
-	// }
 	
 }

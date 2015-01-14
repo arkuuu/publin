@@ -9,10 +9,12 @@
 			});
 		});
 	</script>
+
 	<h1><?php echo $this -> showTitle() ?></h1>
 	<p>by: <?php echo $this -> showAuthors() ?>
 		<br/>published: <?php echo $this -> showDatePublished() ?>
-		<br/>in: <?php echo $this -> showJournal() ?>
+		<?php echo $this -> showJournal() ? '<br />in: '.$this -> showJournal() : '' ?>
+		<?php echo $this -> showPages() ? '<br />pages: '.$this -> showPages() : '' ?>
 		<br/>type: <?php echo $this -> showType() ?></p>
 
 	<h2>Abstract</h2>

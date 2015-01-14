@@ -27,8 +27,11 @@ class Publication extends Object {
 	 *
 	 * @return string
 	 */
-	public function getType() {
-		return $this -> data['type'];
+	public function getTypeName() {
+		return $this -> getData('type');
+	}
+	public function getTypeId() {
+		return $this -> getData('type_id');
 	}
 
 
@@ -38,7 +41,7 @@ class Publication extends Object {
 	 * @return string
 	 */
 	public function getStudyField() {
-		return $this -> data['study_field'];
+		return $this -> getData('study_field');
 	}
 
 
@@ -48,7 +51,7 @@ class Publication extends Object {
 	 * @return string
 	 */
 	public function getTitle() {
-		return $this -> data['title'];
+		return $this -> getData('title');
 	}
 
 
@@ -58,19 +61,20 @@ class Publication extends Object {
 	 * @return string
 	 */
 	public function getAbstract() {
-		return $this -> data['abstract'];
+		return $this -> getData('abstract');
 	}
 
 
 	/**
 	 * @return string
 	 */
-	public function getJournal() {
-		return $this -> data['journal'];
+	public function getJournalName() {
+		return $this -> getData('journal');
 	}
-	public function getJournalId() {
-		return $this -> data['journal_id'];
 
+
+	public function getJournalId() {
+		return $this -> getData('journal_id');
 	}
 
 
@@ -78,15 +82,23 @@ class Publication extends Object {
 	 * @return string
 	 */
 	public function getVolume() {
-		return $this -> data['volume'];
+		return $this -> getData('volume');
 	}
 
 
 	/**
 	 * @return string
 	 */
-	public function getPages() {
-		return $this -> data['pages'];
+	public function getPages($divider) {
+		$pages_from = $this -> getData('pages_from');
+		$pages_to = $this -> getData('pages_to');
+
+		if ($pages_from && $pages_to) {
+			return $pages_from.' '.$divider.' '.$pages_to;
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -98,11 +110,11 @@ class Publication extends Object {
 	 * @return	string
 	 */
 	public function getDatePublished($format) {
-		if (isset($this -> data['date_published'])) {
-			return date($format, strtotime($this -> data['date_published']));
+		if ($this -> getData('date_published')) {
+			return date($format, strtotime($this -> getData('date_published')));
 		}
 		else {
-			return '';
+			return false;
 		}
 	}
 
@@ -115,12 +127,13 @@ class Publication extends Object {
 	 * @return	string
 	 */
 	public function getDateAdded($format) {
-		if (isset($this -> data['date_added'])) {
-			return date($format, strtotime($this -> data['date_added']));
+		if ($this -> getData('date_added')) {
+			return date($format, strtotime($this -> getData('date_added')));
 		}
 		else {
-			return '';
-		}	}
+			return false;
+		}
+	}
 	
 
 	/**

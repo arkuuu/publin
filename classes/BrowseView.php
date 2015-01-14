@@ -22,9 +22,9 @@ class BrowseView extends View {
 	 * @param	BrowseModel		$model		The browse model
 	 * @param	string			$template	The template folder
 	 */
-	public function __construct(BrowseModel $model, $template) {
+	public function __construct(BrowseModel $model) {
 
-		parent::__construct('browse', $template);
+		parent::__construct('browse');
 		$this -> model = $model;
 
 		$this -> browse_type_list = 

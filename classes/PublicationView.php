@@ -25,10 +25,10 @@ class PublicationView extends View {
 	 * @param	PublicationModel	$model		The publication model
 	 * @param	string				$template	The template folder
 	 */
-	public function __construct(PublicationModel $model, $template) {
+	public function __construct(Publication $publication) {
 
-		parent::__construct('publication', $template);
-		$this -> publication = $model -> getPublication();
+		parent::__construct('publication');
+		$this -> publication = $publication;
 	}
 
 
@@ -38,8 +38,9 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showPageTitle() {
-		return $this -> publication -> getTitle();
+		return $this -> showTitle();
 	}
+
 
 	/**
 	 * Shows the meta tags.
@@ -64,44 +65,61 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showTitle() {
-		return $this -> publication -> getTitle();
+		$title = $this -> publication -> getTitle();
+
+		if ($title) {
+			return $title;
+		}
+		else {
+			throw new Exception('the publication with id '.$this -> publication -> getId().' has no title');
+		}
 	}
 
 
 	/**
 	 * Shows the publication's authors.
 	 *
-	 * @param	string	$separator	Optional separator between authors
-	 *
 	 * @return	string
 	 */
 	public function showAuthors() {
 
 		$string = '';
-		$url = '?p=author&amp;id=';
 		$authors = $this -> publication -> getAuthors();
 		$num = count($authors);
 
 		if ($num < 1) {
-			$string .= 'unknown author';
+			throw new Exception('the publication with id '.$this -> publication -> getId().' has no authors');
 		}
 		else {
 			$i = 1;
 			foreach ($authors as $author) {
+
+				$url = '?p=author&amp;id=';
+				$author_id = $author -> getId();
+				$author_name = $author -> getName();
+
+				if ($author_id && $author_name) {
+					$author = '<a href="'.$url.$author_id.'">'.$author_name.'</a>';
+				}
+				else if ($author_name) {
+					$author = $author_name;
+				}
+				else {
+					// $author = 'Unknown Author';
+					throw new Exception('the publication with id '.$this -> publication -> getId().' has an author with no name');
+				}
+
 				if ($i == 1) {
 					/* first author */
-					$string .= '<a href="'.$url.$author -> getId().'">'
-					 			.$author -> getName().'</a>';
+					$string .= $author;
 				}
 				else if ($i == $num) {
 					/* last author */
-					$string .= ' and <a href="'.$url.$author -> getId().'">'
-			 	 				.$author -> getName().'</a>';
+					$string .= ' and '.$author;
 				}
 				else {
 					/* all other authors */
-					$string .= ', <a href="'.$url.$author -> getId().'">'
-			 	 				.$author -> getName().'</a>';
+					$string .= ', '.$author;
 				}
 				$i++;
 			}
@@ -116,14 +134,41 @@ class PublicationView extends View {
 	 *
 	 * @return	string
 	 */
-	public function showDatePublished() {
-		$string = $this -> publication -> getDatePublished('F Y');
+	public function showDatePublished($format = 'F Y') {
+		$date = $this -> publication -> getDatePublished($format);
 
-		if (!empty($string)) {
-			return $string;
+		if (!empty($date)) {
+			return $date;
 		}
 		else {
-			return 'unknown';
+			throw new Exception('the publication with id '.$this -> publication -> getId().' has no publish date');
+		}
+	}
+
+
+	/**
+	 * Shows the publication's type.
+	 *
+	 * @return	string
+	 */
+	public function showType() {
+
+		$url = '?p=browse&amp;by=type&amp;id=';
+		$type_name = $this -> publication -> getTypeName();
+		$type_id = $this -> publication -> getTypeId();
+
+		if ($type_id && $type_name) {
+			return '<a href="'.$url.$type_id.'">'.$type_name.'</a>';
+		}
+		// TODO: change this to not only show number
+		else if ($type_id) {
+			return '<a href="'.$url.$type_id.'">'.$type_id.'</a>';
+		}
+		else if ($type_name) {
+			return $type_name;
+		}
+		else {
+			throw new Exception('the publication with id '.$this -> publication -> getId().' has no type');
 		}
 	}
 
@@ -134,36 +179,27 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showJournal() {
-		$string = $this -> publication -> getJournal();
 
-		if (!empty($string)) {
-			$url = '?p=browse&amp;by=journal&amp;id=';
+		$url = '?p=browse&amp;by=journal&amp;id=';
+		$journal_name = $this -> publication -> getJournalName();
+		$journal_id = $this -> publication -> getJournalId();
 
-			return '<a href="'.$url.$this -> publication -> getJournalId().'">'.$string.'</a>';
+		if ($journal_id && $journal_name) {
+			return '<a href="'.$url.$journal_id.'">'.$journal_name.'</a>';
+		}
+		else if ($journal_name) {
+			return $journal_name;
 		}
 		else {
-			return '';
-		}
+			return false;
 
+		}
 	}
 
 
-	/**
-	 * Shows the publication's type.
-	 *
-	 * @return	string
-	 */
-	public function showType() {
-		$string = $this -> publication -> getType();
-
-		if (!empty($string)) {
-			return $string;
-		}
-		else {
-			return 'unknown';
-		}
+	public function showPages($divider = '-') {
+		return $this -> publication -> getPages($divider);
 	}
-
 
 	/**
 	 * Shows the publication's abstract.
@@ -171,10 +207,10 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showAbstract() {
-		$string = $this -> publication -> getAbstract();
+		$abstract = $this -> publication -> getAbstract();
 
-		if (!empty($string)) {
-			return $string;
+		if (!empty($abstract)) {
+			return $abstract;
 		}
 		else {
 			return 'no abstract given';

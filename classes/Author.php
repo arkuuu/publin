@@ -23,12 +23,7 @@ class Author extends Object {
 	 * @return 	int
 	 */
 	public function getUserId() {
-		if (isset($this -> data['user_id'])) {
-			return (int)$this -> data['user_id'];
-		}
-		else {
-			return 0;
-		}
+		return $this -> getData('user_id');
 	}
 
 
@@ -38,14 +33,18 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getName() {
-		if (empty($this -> data['academic_title'])) {
-			return $this -> data['first_name'].' '
-					.$this -> data['last_name'];
+		$academic_title = $this -> getData('academic_title');
+		$first_name = $this -> getData('first_name');
+		$last_name = $this -> getData('last_name');
+
+		if ($academic_title && $first_name && $last_name) {
+			return $academic_title.' '.$first_name.' '.$last_name;
+		}
+		else if ($first_name && $last_name) {
+			return $first_name.' '.$last_name;
 		}
 		else {
-			return $this -> data['academic_title'].' '
-					.$this -> data['first_name'].' '
-					.$this -> data['last_name'];
+			return false;
 		}
 	}
 
@@ -56,7 +55,7 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getLastName() {
-		return $this -> data['last_name'];
+		return $this -> getData('last_name');
 	}
 
 
@@ -69,18 +68,20 @@ class Author extends Object {
 	 */
 	public function getFirstName($short = false) {
 
-		if ($short === true) {
-
+		if ($first_name = $this -> getData('first_name')
+				&& $short) {
 			$first_names = preg_split("/\s+/", $this -> data['first_name']);
 			$string = '';
 			foreach ($first_names as $name) {
 				$string .= mb_substr($name, 0, 1).'.';
 			}
-
 			return $string;
 		}
+		else if ($first_name = $this -> getData('first_name')) {
+			return $first_name;
+		}
 		else {
-			return $this -> data['first_name'];
+			return false;
 		}
 	}
 
@@ -91,7 +92,7 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getAcademicTitle() {
-		return $this -> data['academic_title'];
+		return $this -> getData('academic_title');
 	}
 
 
@@ -101,7 +102,7 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getWebsite() {
-		return $this -> data['website'];
+		return $this -> getData('website');
 	}
 
 
@@ -111,7 +112,7 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getContact() {
-		return $this -> data['contact'];
+		return $this -> getData('contact');
 	}
 
 
@@ -121,7 +122,7 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getText() {
-		return $this -> data['text'];
+		return $this -> getData('text');
 	}
 
 
@@ -143,6 +144,7 @@ class Author extends Object {
 	 * @return	void
 	 */
 	public function setPublications(array $publications) {
+		// TODO: input validation
 		$this -> publications = $publications;
 	}
 

@@ -5,6 +5,7 @@ require_once 'BrowseModel.php';
 require_once 'AuthorModel.php';
 require_once 'PublicationModel.php';
 require_once 'SubmitModel.php';
+require_once 'SubmitController.php';
 require_once 'BrowseView.php';
 require_once 'AuthorView.php';
 require_once 'PublicationView.php';
@@ -20,7 +21,6 @@ class Controller {
 
 	private $view;
 	private $model;
-	private $template = 'default';
 
 
 
@@ -29,9 +29,6 @@ class Controller {
 	 *
 	 * TODO: change parameters to one array with all parameters
 	 *
-	 * @param	string	$page	The page that was requested
-	 * @param	int		$id		The given Id parameter
-	 * @param	string	$by		The given by parameter
 	 *
 	 */
 	public function __construct() {
@@ -48,33 +45,47 @@ class Controller {
 	 */
 	public function run($page, $id, $by) {
 
-		switch ($page) {
-			case 'browse':
-				$this -> model = new BrowseModel($by, $id);
-				$this -> view = new BrowseView($this -> model, $this -> template);
-				break;
+		try {
+			switch ($page) {
+				case 'browse':
+					$model = new BrowseModel($by, $id);
+					$view = new BrowseView($model);
+					return $view -> display();
+					break;
 
-			case 'author':
-				$this -> model = new AuthorModel($id);
-				$this -> view = new AuthorView($this -> model, $this -> template);
-				break;
-			
-			case 'publication':
-				$this -> model = new PublicationModel($id);
-				$this -> view = new PublicationView($this -> model, $this -> template);
-				break;
+				case 'author':
+					$model = new AuthorModel($id);
+					$view = new AuthorView($model);
+					return $view -> display();
+					break;
+				
+				case 'publication':
+					$model = new PublicationModel($id);
+					$view = new PublicationView($model -> getPublication());
+					return $view -> display();
+					break;
 
-			case 'submit':
-				$this -> model = new SubmitModel();
-				$this -> view = new SubmitView($this -> model, $this -> template);
-				break;
+				case 'submit':
+					// $model = new SubmitModel();
+					// $view = new SubmitView($model, 'form');
+					$controller = new SubmitController();
+					return $controller -> run();
+					break;
 
-			default:
-				$this -> view = new GenericView($page, $this -> template);
-				break;
+				default:
+					$view = new GenericView($page);
+					return $view -> display();
+					break;
+			}
+
+			// return $view -> display();	
+		}
+		catch (Exception $e) {
+			ob_end_clean();
+			return 'Error: '.$e -> getMessage().'<br/>File: '.$e -> getFile();
 		}
 
-		return $this -> view -> display();
+		
 	}
 	
 }

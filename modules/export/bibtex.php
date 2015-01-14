@@ -30,7 +30,7 @@ $volume = 'todo';
 
 /* create BibTeX code */
 $export = 	
-	"@".$publication -> getType()."{".$citeKey.",
+	"@".$publication -> getTypeName()."{".$citeKey.",
 		author = {".$authors_string."},
 		title = {".$publication -> getTitle()."},
 		journal = {".$journal."},

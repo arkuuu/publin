@@ -25,6 +25,18 @@ abstract class Object {
 		$this -> data = $data;
 	}
 
+	// TODO: doc
+	public function getData($field = null) {
+		if (isset($field)) {
+			if (!empty($this -> data[$field])) {
+				return $this -> data[$field];
+			}
+			else {
+				return false;
+			}
+		}
+		return $this -> data;
+	}
 
 	/**
 	 * Returns the id.
@@ -32,7 +44,7 @@ abstract class Object {
 	 * @return int
 	 */
 	public function getId() {
-		return (int)$this -> data['id'];
+		return $this -> getData('id');
 	}
 
 
@@ -42,7 +54,7 @@ abstract class Object {
 	 * @return string
 	 */
 	public function getName() {
-		return $this -> data['name'];
+		return $this -> getData('name');
 	}
 
 }

@@ -1,3 +1,4 @@
+	<?php if ($this -> isForm()) { ?>
 	<script type="text/javascript" src="./templates/default/jquery.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -62,8 +63,9 @@
 
 	<h1>Submit publication</h1>
 	<p>Here comes the great form.</p>
+	<?php echo $this -> listErrors() ? '<p>Check these errors:</p><ul>'.$this -> listErrors().'</ul>' : '' ?>
 	
-	<form action="test_output.php" method="post" accept-charset="utf-8">
+	<form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
 
 	<h2>General</h2>
 	<p>More Information to come here.</p>
@@ -158,21 +160,19 @@
 
 	</div>
 
-
 	<h2>Authors</h2>
 	<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
 	<div class="multi-field-wrapper">
 		<ul class="multi-fields">
 			<li class="multi-field">
-				<input type="text" name="authors[titles][]" placeholder="Title(s)" style="width:60px"/>
-				<input type="text" name="authors[first_names][]" placeholder="Firstname(s)" />
-				<input type="text" name="authors[last_names][]" placeholder="Lastname(s)" />
+				<input type="text" name="authors[academic_title][]" placeholder="Title(s)" style="width:60px"/>
+				<input type="text" name="authors[first_name][]" placeholder="Firstname(s)" />
+				<input type="text" name="authors[last_name][]" placeholder="Lastname(s)" />
 				<button type="button" class="remove-field">x</button>
 			</li>
 		  </ul>
 		<button type="button" class="add-field">Add field</button>
 	</div>
-
 
 	<h2>Key Terms</h2>
 	<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
@@ -186,18 +186,29 @@
 		<button type="button" class="add-field">Add field</button>
 	</div>
 
-
 	<h2>Abstract</h2>
 	<p>More Information to come here.</p>
 	<textarea name ="abstract" rows="6" cols="60" placeholder="If there is no abstract, write something useful!"></textarea>
-
 
 	<h2>References</h2>
 	<p>More Information to come here.</p>
 	<p>TODO</p>
 
-
 	<h2>Submit</h2>
 	<p>You can review your submission on the next page.</P>
 	<input type="submit" value="Submit"/>
 	</form>
+
+
+	<?php } else if ($this -> isPreview()) { ?>
+	<h1>Preview of your submission</h1>
+	<p>Below you can see what you submission will look like and check it one last time.</p>
+	<p>TODO Reminder: I need to send the $_POST array in an hidden field again!</p>
+	<?php echo $this -> showPreview() ?>
+
+
+	<?php } else { ?>
+	<h1>Start</h1>
+	<p>Blabla</p>
+	<p><a href="?p=submit&amp;m=form">Go to form</a></p>
+	<?php } ?>

@@ -24,9 +24,9 @@ class AuthorView extends View {
 	 * @param	AuthorModel		$model		The author model
 	 * @param	string			$template	The template folder
 	 */
-	public function __construct(AuthorModel $model, $template) {
+	public function __construct(AuthorModel $model) {
 
-		parent::__construct('author', $template);
+		parent::__construct('author');
 		$this -> author = $model -> getAuthor();
 	}
 
@@ -37,7 +37,7 @@ class AuthorView extends View {
 	 * @return	string
 	 */
 	public function showPageTitle() {
-		return $this -> author -> getName();
+		return $this -> showName();
 	}
 
 
@@ -47,7 +47,14 @@ class AuthorView extends View {
 	 * @return	string
 	 */
 	public function showName() {
-		return $this -> author -> getName();
+		$name = $this -> author -> getName();
+
+		if ($name) {
+			return $name;
+		}
+		else {
+			throw new Exception('the author with id '.$this -> author -> getId().' has no name');
+		}
 	}
 
 
@@ -57,7 +64,15 @@ class AuthorView extends View {
 	 * @return	string
 	 */
 	public function showWebsite() {
-		return '<a href="http://'.$this -> author -> getWebsite().'" target="_blank">'.$this -> author -> getWebsite().'</a>';
+		$website = $this -> author -> getWebsite();
+
+		if ($website) {
+			return '<a href="http://'.$website.'" target="_blank">'.$website.'</a>';
+		}
+		else {
+			return false;
+		}
+		
 	}
 
 

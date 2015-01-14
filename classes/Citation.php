@@ -28,7 +28,7 @@ abstract class Citation {
 	 */	
 	public static function getCitation(Publication $publication, $style) {
 
-		$file = './modules/citation_styles/'.$style.'/'.$publication -> getType().'.php';
+		$file = './modules/citation_styles/'.$style.'/'.$publication -> getTypeName().'.php';
 		$file_fallback = './modules/citation_styles/default.php';
 		$citation = '';
 

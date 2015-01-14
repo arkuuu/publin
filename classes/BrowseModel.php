@@ -43,99 +43,105 @@ class BrowseModel extends Model {
 	public function __construct($type, $id) {
 
 		parent::__construct();
-		$this -> browse_type = $type;
 
-		switch ($this -> browse_type) {
+		if (!empty($type)) {
 
-			case 'recent':
-				$this -> is_result = true;
-				$this -> result = $this -> createPublications(false, array('limit' => '0,10'));
-				break;
+			$this -> browse_type = $type;
 
-			case 'author':
-				$this -> list = $this -> createAuthors(false);
-				break;
+			switch ($type) {
 
-			case 'key_term':
-				if ($id > 0) {
+				case 'recent':
 					$this -> is_result = true;
-					$this -> result = $this -> createPublications(false, array('key_term_id' => $id));
-				}
-				else {
-					$this -> list = $this -> createKeyTerms();
-				}
-				break;
-			
-			case 'study_field':				
-				if ($id > 0) {
-					$this -> is_result = true;
-					$this -> result = $this -> createPublications(false, array('study_field_id' => $id));
-				}
-				else {
-					$this -> list = $this -> createStudyFields();
-					$this -> num = $this -> getNum();
-				}
-				break;
+					$this -> result = $this -> createPublications(false, array('limit' => '0,10'));
+					break;
 
-			case 'type':
-				if ($id > 0) {
-					$this -> is_result = true;
-					$this -> result = $this -> createPublications(false, array('type_id' => $id));
-				}
-				else {
-					$this -> list = $this -> createTypes();
-				}
-				break;
+				case 'author':
+					$this -> list = $this -> createAuthors(false);
+					break;
 
-			case 'journal':
-				if ($id > 0) {
-					$this -> is_result = true;
-					$this -> result = $this -> createPublications(false, array('journal_id' => $id));
-				}
-				else {
-					$this -> list = $this -> createJournals();
-				}
-				break;
+				case 'key_term':
+					if ($id > 0) {
+						$this -> is_result = true;
+						$this -> result = $this -> createPublications(false, array('key_term_id' => $id));
+					}
+					else {
+						$this -> list = $this -> createKeyTerms();
+					}
+					break;
+				
+				case 'study_field':				
+					if ($id > 0) {
+						$this -> is_result = true;
+						$this -> result = $this -> createPublications(false, array('study_field_id' => $id));
+					}
+					else {
+						$this -> list = $this -> createStudyFields();
+						$this -> num = $this -> getNum();
+					}
+					break;
 
-			// case 'year':
-			// 	if ($id > 0) {
+				case 'type':
+					if ($id > 0) {
+						$this -> is_result = true;
+						$this -> result = $this -> createPublications(false, array('type_id' => $id));
+					}
+					else {
+						$this -> list = $this -> createTypes();
+					}
+					break;
 
-			// 		$this -> browse_list = $this -> fetchMonths();
-			// 		$this -> fetchPublications(array('year' => $id));
-			// 		$this -> browse_num = $this -> db -> getNumData();
-			// 		if ($this -> browse_num > 0) {
-			// 			$this -> fetchAuthorsOfPublications();
-			// 		}
-			// 	}
-			// 	else {
-			// 		$this -> browse_list = $this -> fetchYears();
-			// 		$this -> browse_num = $this -> db -> getNumData();
-			// 	}
-			// 	break;
+				case 'journal':
+					if ($id > 0) {
+						$this -> is_result = true;
+						$this -> result = $this -> createPublications(false, array('journal_id' => $id));
+					}
+					else {
+						$this -> list = $this -> createJournals();
+					}
+					break;
 
-			// case 'year:month':
-			// 	if ($id > 0) {
-			// 		$year = strtok($id, ':');
-			// 		$month = strtok(':');
+				// case 'year':
+				// 	if ($id > 0) {
 
-			// 		if (empty($month)) {
-			// 			$this -> browse_list = $this -> fetchMonths();
-			// 			$this -> fetchPublications(array('year' => $id));
-			// 		}
-			// 		else {
-			// 			$this -> fetchPublications(array('year' => $year, 'month' => $month));
-			// 		}
+				// 		$this -> browse_list = $this -> fetchMonths();
+				// 		$this -> fetchPublications(array('year' => $id));
+				// 		$this -> browse_num = $this -> db -> getNumData();
+				// 		if ($this -> browse_num > 0) {
+				// 			$this -> fetchAuthorsOfPublications();
+				// 		}
+				// 	}
+				// 	else {
+				// 		$this -> browse_list = $this -> fetchYears();
+				// 		$this -> browse_num = $this -> db -> getNumData();
+				// 	}
+				// 	break;
 
-			// 		$this -> browse_num = $this -> db -> getNumData();
-			// 		if ($this -> browse_num > 0) {
-			// 			$this -> fetchAuthorsOfPublications();
-			// 		}
-			// 	}
-			// 	break;
+				// case 'year:month':
+				// 	if ($id > 0) {
+				// 		$year = strtok($id, ':');
+				// 		$month = strtok(':');
 
-			default:
-				// TODO: what happens when browse type is invalid?
-				break;
+				// 		if (empty($month)) {
+				// 			$this -> browse_list = $this -> fetchMonths();
+				// 			$this -> fetchPublications(array('year' => $id));
+				// 		}
+				// 		else {
+				// 			$this -> fetchPublications(array('year' => $year, 'month' => $month));
+				// 		}
+
+				// 		$this -> browse_num = $this -> db -> getNumData();
+				// 		if ($this -> browse_num > 0) {
+				// 			$this -> fetchAuthorsOfPublications();
+				// 		}
+				// 	}
+				// 	break;
+
+
+				default:
+					throw new Exception('unknown browse type "'.$type.'"');
+					
+					break;
+			}
 		}
 	}
 
