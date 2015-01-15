@@ -1,6 +1,6 @@
 <?php
 
-require_once 'classes/Controller.php';
+require_once 'src/Controller.php';
 
 if (!isset($_GET['p'])) {
 	$p = 'start';
