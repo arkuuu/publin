@@ -1,4 +1,4 @@
-publin
+About publin
 ======
 
 This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. The name "publin" is a short term for "publication index" which is what all this mostly is about. More Information will follow.
