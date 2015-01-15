@@ -77,6 +77,19 @@ class Publication extends Object {
 		return $this -> getData('journal_id');
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getPublisherName() {
+		return $this -> getData('publisher');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPublisherId() {
+		return $this -> getData('publisher_id');
+	}
 
 	/**
 	 * @return string
@@ -85,6 +98,53 @@ class Publication extends Object {
 		return $this -> getData('volume');
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getNumber() {
+		return $this -> getData('number');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSeries() {
+		return $this -> getData('series');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNote() {
+		return $this -> getData('note');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIsbn() {
+		return $this -> getData('isbn');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDoi() {
+		return $this -> getData('doi');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBookName() {
+		return $this -> getData('book_name');
+	}
+	/**
+	 * @return string
+	 */
+	public function getBookId() {
+		return $this -> getData('book_id');
+	}
 
 	/**
 	 * @return string

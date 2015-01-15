@@ -6,6 +6,7 @@ require_once 'Author.php';
 require_once 'KeyTerm.php';
 require_once 'Type.php';
 require_once 'Journal.php';
+require_once 'Publisher.php';
 
 abstract class Model {
 
@@ -145,6 +146,23 @@ abstract class Model {
 		$this -> num = $num;
 
 		return $journals;
+	}
+
+
+	public function createPublishers(array $filter = array()) {
+
+		$publishers = array();
+
+		$data = $this -> db -> fetchPublishers($filter);
+		$num = $this -> db -> getNumRows();
+
+		foreach ($data as $key => $value) {
+			$publishers[] = new Publisher($value);
+		}
+
+		$this -> num = $num;
+
+		return $publishers;
 	}
 
 }

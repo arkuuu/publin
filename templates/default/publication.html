@@ -11,11 +11,12 @@
 	</script>
 
 	<h1><?php echo $this -> showTitle() ?></h1>
-	<p>by: <?php echo $this -> showAuthors() ?>
-		<br/>published: <?php echo $this -> showDatePublished() ?>
-		<?php echo $this -> showJournal() ? '<br />in: '.$this -> showJournal() : '' ?>
-		<?php echo $this -> showPages() ? '<br />pages: '.$this -> showPages() : '' ?>
-		<br/>type: <?php echo $this -> showType() ?></p>
+	<p>By: <?php echo $this -> showAuthors() ?>
+		<br/>Published in <?php echo $this -> showDatePublished() ?>
+		<?php echo $this -> showPublisher() ? ' by '.$this -> showPublisher() : '' ?>
+		<?php echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '' ?>
+		<?php echo $this -> showPages() ? '<br />Pages: '.$this -> showPages() : '' ?>
+		<br/>Type: <?php echo $this -> showType() ?></p>
 
 	<h2>Abstract</h2>
 	<p><?php echo $this -> showAbstract() ?></p>

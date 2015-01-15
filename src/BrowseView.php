@@ -65,6 +65,18 @@ class BrowseView extends View {
 									'url' => './?p=browse&amp;by=journal',
 									'result_url' =>  './?p=browse&amp;by=journal&amp;id='
 								),
+					'publisher' => array(
+									'name' => 'Publishers',
+									'text' => 'publishers',
+									'url' => './?p=browse&amp;by=publisher',
+									'result_url' =>  './?p=browse&amp;by=publisher&amp;id='
+								),
+					'year' => array(
+									'name' => 'Years',
+									'text' => 'years',
+									'url' => './?p=browse&amp;by=year',
+									'result_url' =>  './?p=browse&amp;by=year&amp;id='
+								),
 					);
 
 		if (!array_key_exists($this -> model -> getBrowseType(), $this -> browse_type_list)) {
@@ -115,11 +127,20 @@ class BrowseView extends View {
 
 		$string = '';
 		$browse_list = $this -> model -> getBrowseList();
+		$browse_type = $this -> model -> getBrowseType();
 
 		if (!empty($browse_list)) {
-			foreach ($browse_list as $object) {
-				$string .= '<li><a href="'.$this -> browse_type['result_url'].$object -> getId().'">'.$object -> getName().'</a></li>'."\n";
+			if ($browse_type == 'year') {
+				foreach ($browse_list as $year) {
+					$string .= '<li><a href="'.$this -> browse_type['result_url'].$year.'">'.$year.'</a></li>'."\n";
+				}
 			}
+			else {
+				foreach ($browse_list as $object) {
+					$string .= '<li><a href="'.$this -> browse_type['result_url'].$object -> getId().'">'.$object -> getName().'</a></li>'."\n";
+				}				
+			}
+
 		}
 		else {
 			foreach ($this -> browse_type_list as $browse_type) {

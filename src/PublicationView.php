@@ -201,6 +201,25 @@ class PublicationView extends View {
 		return $this -> publication -> getPages($divider);
 	}
 
+
+	public function showPublisher() {
+
+		$url = '?p=browse&amp;by=publisher&amp;id=';
+		$publisher_name = $this -> publication -> getPublisherName();
+		$publisher_id = $this -> publication -> getPublisherId();
+
+		if ($publisher_id && $publisher_name) {
+			return '<a href="'.$url.$publisher_id.'">'.$publisher_name.'</a>';
+		}
+		else if ($publisher_name) {
+			return $publisher_name;
+		}
+		else {
+			return false;
+
+		}
+	}
+
 	/**
 	 * Shows the publication's abstract.
 	 *

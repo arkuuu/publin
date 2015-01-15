@@ -100,21 +100,28 @@ class BrowseModel extends Model {
 					}
 					break;
 
-				// case 'year':
-				// 	if ($id > 0) {
+				case 'publisher':
+					if ($id > 0) {
+						$this -> is_result = true;
+						$this -> result = $this -> createPublications(false, array('publisher_id' => $id));
+					}
+					else {
+						$this -> list = $this -> createPublishers();
+					}
+					break;
 
-				// 		$this -> browse_list = $this -> fetchMonths();
-				// 		$this -> fetchPublications(array('year' => $id));
-				// 		$this -> browse_num = $this -> db -> getNumData();
-				// 		if ($this -> browse_num > 0) {
-				// 			$this -> fetchAuthorsOfPublications();
-				// 		}
-				// 	}
-				// 	else {
-				// 		$this -> browse_list = $this -> fetchYears();
-				// 		$this -> browse_num = $this -> db -> getNumData();
-				// 	}
-				// 	break;
+				case 'year':
+					if ($id > 0) {
+
+						// $this -> browse_list = $this -> fetchMonths();
+						$this -> is_result = true;
+						$this -> result = $this -> createPublications(false, array('year_published' => $id));
+
+					}
+					else {
+						$this -> list = $this -> fetchYears();
+					}
+					break;
 
 				// case 'year:month':
 				// 	if ($id > 0) {
@@ -197,7 +204,13 @@ class BrowseModel extends Model {
 		$data = $this -> db -> fetchYears();
 		$this -> num = $this -> db -> getNumRows();
 
-		return $data;
+		$years = array();
+
+		foreach ($data as $key => $value) {
+			$years[] = $value['year'];
+		}
+
+		return $years;
 
 	}
 

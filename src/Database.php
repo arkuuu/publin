@@ -317,6 +317,43 @@ class Database extends mysqli {
 	}
 
 
+	public function fetchPublishers(array $filter = array()) {
+
+		$select = 'SELECT p.*';
+		$from = 'FROM `list_publishers` p';
+		$where = '';
+		$order = 'ORDER BY `name` ASC';
+		$limit = '';
+
+		/* Checks if any filter is set */
+		if (!empty($filter)) {
+
+			/* Creates the LIMIT clause */
+			if (array_key_exists('limit', $filter)) {
+				$limit = 'LIMIT '.$filter['limit'];
+				unset($filter['limit']);
+			}
+
+			/* Checks if filter is still not empty */
+			if (!empty($filter)) {
+				$where = 'WHERE';
+				
+				/* Creates the WHERE clause from the rest of the filter array */
+				foreach ($filter as $key => $value) {
+					$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
+				}
+				$where = substr($where, 0, -3);
+			}
+		}
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
+		
+		return $this -> getData($query);
+	}
+
+
 	/**
 	 * Returns an array with all years.
 	 *
@@ -324,9 +361,8 @@ class Database extends mysqli {
 	 */
 	public function fetchYears() {
 
-		$query = 'SELECT `year`
+		$query = 'SELECT DISTINCT YEAR(`date_published`) AS `year`
 					FROM `list_publications`
-					GROUP BY `year`
 					ORDER BY `year` DESC';
 
 		return $this -> getData($query);
@@ -428,10 +464,13 @@ class Database extends mysqli {
 	 */
 	public function fetchPublications(array $filter = array()) {
 
-		$select = 'SELECT t.`name` AS `type`, j.`name` AS `journal`, p.*';
+		// TODO: SELECT `id` FROM `list_publications` WHERE YEAR(`date_published`) LIKE "2014" AND MONTH(`date_published`) LIKE "10"
+
+		$select = 'SELECT t.`name` AS `type`, j.`name` AS `journal`, pub.`name` AS `publisher`, p.*';
 		$from = 'FROM `list_publications` p';
 		$join = 'LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)';
 		$join .= ' LEFT JOIN `list_journals` j ON (j.`id` = p.`journal_id`)';
+		$join .= ' LEFT JOIN `list_publishers` pub ON (pub.`id` = p.`publisher_id`)';
 		$where = '';
 		$order = 'ORDER BY `date_added` DESC';
 		$limit = '';
@@ -459,6 +498,14 @@ class Database extends mysqli {
 					$join .= ' JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)';
 					$where .= ' rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
 					unset($filter['key_term_id']);
+				}
+				if (array_key_exists('year_published', $filter)) {
+					$where .= ' YEAR(p.`date_published`) LIKE "'.$filter['year_published'].'" AND';
+					unset($filter['year_published']);
+				}
+				if (array_key_exists('month_published', $filter)) {
+					$where .= ' MONTH(p.`date_published`) LIKE "'.$filter['month_published'].'" AND';
+					unset($filter['month_published']);
 				}
 
 				/* Creates the WHERE clause from the rest of filter array */
