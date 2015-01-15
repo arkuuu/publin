@@ -30,6 +30,7 @@ abstract class Citation {
 
 		$file = './modules/citation_styles/'.$style.'/'.$publication -> getTypeName().'.php';
 		$file_fallback = './modules/citation_styles/default.php';
+		$publication_url = './?p=publication&amp;id=';
 		$citation = '';
 
 		if (file_exists($file)) {			

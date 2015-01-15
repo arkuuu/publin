@@ -35,5 +35,11 @@ else {
 }
 
 /* the rest */
-$citation .= ', <i>"'.$publication -> getTitle().'"</i>, '
-			.$publication -> getDatePublished('m.Y');
+$citation .= ': <a href="'.$publication_url.$publication -> getId().'">'
+			.$publication -> getTitle().'</a>';
+
+if ($publication -> getJournalName()) {
+	$citation .= ', in: '.$publication -> getJournalName();
+}
+
+$citation .= ', '.$publication -> getDatePublished('Y, F');

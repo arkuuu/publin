@@ -104,11 +104,10 @@ class AuthorView extends View {
 	public function showPublications($style = '') {
 
 		$string = '';
-		$url = '?p=publication&amp;id=';
 
 		foreach ($this -> author -> getPublications() as $publication) {
 			$string .= '<li>'.Citation::getCitation($publication, $style)
-					.' - <a href="'.$url.$publication -> getId().'">show</a></li>'."\n";
+					.'</li>'."\n";
 		}
 
 		if (!empty($string)) {

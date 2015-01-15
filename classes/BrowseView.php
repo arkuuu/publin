@@ -152,11 +152,10 @@ class BrowseView extends View {
 	public function showBrowseResult($style = 'default') {
 
 		$string = '';
-		$url = './?p=publication&amp;id=';
 
 		foreach ($this -> model -> getBrowseResult() as $publication) {
 			$string .= '<li>'.Citation::getCitation($publication, $style)
-					.' - <a href="'.$url.$publication -> getId().'">show</a></li>'."\n";
+					.'</li>'."\n";
 		}
 
 		return $string;
