@@ -7,7 +7,7 @@
 				var $wrapper = $('.multi-fields', this);
 				$('.add-field', $(this)).click(function(e) {
 					e.preventDefault();
-					$('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required');
+					$('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required').focus();
 				});
 				$('.multi-field .remove-field', $wrapper).click(function(e) {
 					e.preventDefault();
@@ -16,7 +16,7 @@
 				});
 			});
 
-			// $('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide();
+			$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide();
 
 			$('.type-selector').change(function() {
 				var type = $('.type-selector').find(':selected').val();
@@ -115,7 +115,7 @@
 
 		<div class="book">
 			<label for="edition">Edition:</label>
-			<input type="text" name="edition" id="edition" disabled/>
+			<input type="text" name="edition" id="edition"/>
 			<br/>
 		</div>
 
@@ -127,7 +127,7 @@
 
 		<div class="misc">
 			<label for="howpublished">How published:</label>
-			<input type="text" name="howpublished" id="howpublished" maxlength="200" disabled/>
+			<input type="text" name="howpublished" id="howpublished" maxlength="200"/>
 			<br/>
 		</div>
 
@@ -179,7 +179,7 @@
 	<div class="multi-field-wrapper">
 		<ul class="multi-fields">
 			<li class="multi-field">
-				<input type="text" name="key_terms[]" placeholder="new" />
+				<input type="text" name="key_terms[]" placeholder="Logizomechanophobia" />
 				<button type="button" class="remove-field">x</button>
 			</li>
 		</ul>
@@ -188,7 +188,7 @@
 
 	<h2>Abstract</h2>
 	<p>More Information to come here.</p>
-	<textarea name ="abstract" rows="6" cols="60" placeholder="If there is no abstract, write something useful!"></textarea>
+	<textarea name ="abstract" rows="6" cols="60"></textarea>
 
 	<h2>References</h2>
 	<p>More Information to come here.</p>
@@ -200,27 +200,40 @@
 	</form>
 
 
+
+	<?php } else if ($this -> isBibtex()) { ?>
+	<h1>Submit publication</h1>
+	<p>Here you can input a single BibTeX entry. Data will be imported and can be checked and modified later.</p>
+	<form action="?p=submit&amp;m=preview" method="post" accept-charset="utf-8">
+		<textarea name="bibtex">THIS DOES NOT WORK YET</textarea><br/>
+		<input type="submit" value="Import">
+	</form>
+
+
+
 	<?php } else if ($this -> isPreview()) { ?>
 	<h1>Preview of your submission</h1>
-	<p>Below you can see what you submission will look like and check it one last time.</p>
+	<p>Below you can see what you submission will look like and check it one last time. You will not be able to make any changes after submitting without contacting an administrator.</p>
 
-	<form action="?p=submit&amp;m=submit" method="post" accept-charset="utf-8">
+	<form action="?p=submit&amp;m=done" method="post" accept-charset="utf-8">
 		<input type="checkbox" name="accept" id="accept" value="yes"/>
-		<label for="accept">I accept stuff and want to buy a washing machine.</label>
+		<label for="accept">I did proof-read my input and everything is correct.</label>
+		<br/><br/>
 		<input type="submit" value="Submit">
 	</form>
-	<br />
+	<br /><br/>
 	<?php echo $this -> showPreview() ?>
 
 
 
 	<?php } else if ($this -> isDone()) { ?>
-	<h1>Done</h1>
-	<p>You are cool.</p>
+	<h1>Submit publication</h1>
+	<p>Your submission was successfully added.</p>
 
 
 	<?php } else { ?>
-	<h1>Start</h1>
-	<p>Blabla</p>
-	<p><a href="?p=submit&amp;m=form">Go to form</a></p>
+	<h1>Submit publication</h1>
+	<p>Here you can submit a publication.</p>
+	<p><a href="?p=submit&amp;m=form">Submit via input form</a></p>
+	<p><a href="?p=submit&amp;m=bibtex">Submit via BibTeX</a></p>
 	<?php } ?>

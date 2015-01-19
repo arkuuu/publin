@@ -10,7 +10,7 @@ class SubmitView extends View {
 
 	public function __construct(SubmitModel $model, $submit_mode) {
 
-		if (in_array($submit_mode, array('start', 'form', 'preview', 'done', 'match'))) {
+		if (in_array($submit_mode, array('start', 'form', 'preview', 'done', 'bibtex'))) {
 			$this -> submit_mode = $submit_mode;
 		}
 
@@ -21,6 +21,15 @@ class SubmitView extends View {
 
 	public function isForm() {
 		if ($this -> submit_mode == 'form') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function isBibtex() {
+		if ($this -> submit_mode == 'bibtex') {
 			return true;
 		}
 		else {

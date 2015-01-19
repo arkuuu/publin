@@ -164,8 +164,7 @@ class SubmitModel extends Model {
 	}
 
 
-	// TODO: make private
-	public function validatePublication(array $input) {
+	private function validatePublication(array $input) {
 
 		$data = array();
 		
@@ -217,7 +216,7 @@ class SubmitModel extends Model {
 	}
 
 
-	public function validateAuthor(array $input) {
+	private function validateAuthor(array $input) {
 
 		$data = array();
 
@@ -253,18 +252,7 @@ class SubmitModel extends Model {
 	}
 
 
-	public function rewriteArray(array $input) {
 
-		$data = array();
-		$given_fields = array_keys($input);
-
-		foreach ($given_fields as $field) {
-			foreach ($input[$field] as $key => $value) {
-				$data[$key][$field] = $value;
-			}
-		}
-		return $data;
-	}
 
 
 
@@ -321,6 +309,20 @@ class SubmitModel extends Model {
 			return false;
 		}
 	}
+
+	private function rewriteArray(array $input) {
+
+		$data = array();
+		$given_fields = array_keys($input);
+
+		foreach ($given_fields as $field) {
+			foreach ($input[$field] as $key => $value) {
+				$data[$key][$field] = $value;
+			}
+		}
+		return $data;
+	}
+	
 
 	public function createKeyTermsFromSubmit(array $data) {
 

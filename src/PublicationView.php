@@ -162,7 +162,7 @@ class PublicationView extends View {
 		}
 		// TODO: change this to not only show number
 		else if ($type_id) {
-			return '<a href="'.$url.$type_id.'">'.$type_id.'</a>';
+			return $type_id;
 		}
 		else if ($type_name) {
 			return $type_name;
@@ -264,8 +264,16 @@ class PublicationView extends View {
 			$url = '?p=browse&amp;by=key_term&amp;id=';
 
 			foreach ($key_terms as $key_term) {
-				$string .= '<a href="'.$url.$key_term -> getId().'">'
-									.$key_term -> getName().'</a>'.$separator;
+
+				$key_term_id = $key_term -> getId();
+				$key_term_name = $key_term -> getName();
+
+				if ($key_term_id && $key_term_name) {
+					$string .= '<a href="'.$url.$key_term_id.'">'.$key_term_name.'</a>'.$separator;
+				}
+				else if ($key_term_name) {
+					$string .= $key_term_name.$separator;
+				}
 			}
 
 			return substr($string, 0, -(strlen($separator)));
