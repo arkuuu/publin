@@ -71,8 +71,6 @@ class Publication extends Object {
 	public function getJournalName() {
 		return $this -> getData('journal');
 	}
-
-
 	public function getJournalId() {
 		return $this -> getData('journal_id');
 	}
@@ -83,10 +81,6 @@ class Publication extends Object {
 	public function getPublisherName() {
 		return $this -> getData('publisher');
 	}
-
-	/**
-	 * @return string
-	 */
 	public function getPublisherId() {
 		return $this -> getData('publisher_id');
 	}
@@ -139,9 +133,6 @@ class Publication extends Object {
 	public function getBookName() {
 		return $this -> getData('book_name');
 	}
-	/**
-	 * @return string
-	 */
 	public function getBookId() {
 		return $this -> getData('book_id');
 	}

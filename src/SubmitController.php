@@ -3,6 +3,7 @@
 class SubmitController {
 
 	public function __construct() {
+		session_start();
 
 	}
 
@@ -14,22 +15,61 @@ class SubmitController {
 			$mode = 'start';
 		}
 
+		if (isset($_POST)) {
+			$_SESSION['post'] = $_POST;
+		}
+
+
 		$model = new SubmitModel;
 
-		if (!empty($_POST)) {
-			$model -> createPublicationFromSubmit($_POST);
-			$errors = $model -> getErrors();
+		switch ($mode) {
+			case 'start':
+				$view = new SubmitView($model, 'start');
+				break;
 
-			if (empty($errors)) {
-				$view = new SubmitView($model, 'preview');
-			}
-			else {
+			case 'form':
 				$view = new SubmitView($model, 'form');
-			}
+				break;
+
+			case 'preview':
+				if (!empty($_SESSION['post'])) {
+					$model -> createPublicationFromSubmit($_SESSION['post']);
+					$errors = $model -> getErrors();
+					// $matches = $model -> getMatches();
+
+					if (empty($errors)) {
+						$_SESSION['publication'] = $model -> getPublication();
+						$view = new SubmitView($model, 'preview');
+					}
+					else {
+						$view = new SubmitView($model, 'form');
+					}
+				}
+				else {
+					$view = new SubmitView($model, 'start');
+				}
+				break;
+
+			case 'submit':
+				if ($_POST['accept'] === 'yes' && isset($_SESSION['publication'])) {
+
+					$model -> storePublication($_SESSION['publication']);
+					$view = new SubmitView($model, 'done');
+
+					$_SESSION = array();
+					session_destroy();
+
+
+				}
+				break;
+			
+			default:
+				throw new Exception('Unknown mode for submit');
+				
+				break;
 		}
-		else {
-			$view = new SubmitView($model, $mode);
-		}
+
+		
 		return $view -> display();
 	}
 }

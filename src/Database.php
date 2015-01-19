@@ -117,9 +117,9 @@ class Database extends mysqli {
 		}
 		$query = substr($query, 0, -2);
 
-		$query .= ');';
+		$query .= ') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
 
-		print_r($query);
+		// print_r($query);
 		
 		parent::query($query);
 

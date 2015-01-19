@@ -10,7 +10,7 @@ class SubmitView extends View {
 
 	public function __construct(SubmitModel $model, $submit_mode) {
 
-		if (in_array($submit_mode, array('start', 'form', 'preview'))) {
+		if (in_array($submit_mode, array('start', 'form', 'preview', 'done', 'match'))) {
 			$this -> submit_mode = $submit_mode;
 		}
 
@@ -37,6 +37,15 @@ class SubmitView extends View {
 		}
 	}
 
+	public function isDone() {
+		if ($this -> submit_mode == 'done') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 
 	public function showPageTitle() {
 		return 'Submit publication';
@@ -51,6 +60,7 @@ class SubmitView extends View {
 			return $sub_view -> displayContentOnly();
 		}
 	}
+
 
 
 	public function listTypeOptions() {
@@ -75,6 +85,30 @@ class SubmitView extends View {
 
 		return $string;
 	}
+
+
+	// public function listAuthorOptions() {
+	// 	$string = '';
+	// 	$authors = $this -> model -> createAuthors(false);
+
+	// 	foreach ($authors as $author) {
+	// 		$string .= '<option value="'.$author -> getId().'">'.$author -> getLastName().', '.$author -> getAcademicTitle().' '.$author -> getFirstName().'</option>'; 
+	// 	}
+
+	// 	return $string;
+	// }
+
+
+	// public function listKeyTermOptions() {
+	// 	$string = '';
+	// 	$key_terms = $this -> model -> createKeyTerms();
+
+	// 	foreach ($key_terms as $key_term) {
+	// 		$string .= '<option value="'.$key_term -> getId().'">'.$key_term -> getName().'</option>'; 
+	// 	}
+
+	// 	return $string;
+	// }
 
 
 	public function listErrors() {

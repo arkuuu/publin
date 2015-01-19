@@ -7,7 +7,7 @@
 				var $wrapper = $('.multi-fields', this);
 				$('.add-field', $(this)).click(function(e) {
 					e.preventDefault();
-					$('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required').focus();
+					$('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required');
 				});
 				$('.multi-field .remove-field', $wrapper).click(function(e) {
 					e.preventDefault();
@@ -65,7 +65,7 @@
 	<p>Here comes the great form.</p>
 	<?php echo $this -> listErrors() ? '<p>Check these errors:</p><ul>'.$this -> listErrors().'</ul>' : '' ?>
 	
-	<form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
+	<form action="?p=submit&amp;m=preview" method="post" accept-charset="utf-8">
 
 	<h2>General</h2>
 	<p>More Information to come here.</p>
@@ -179,7 +179,7 @@
 	<div class="multi-field-wrapper">
 		<ul class="multi-fields">
 			<li class="multi-field">
-				<input type="text" name="key_terms[]" placeholder="Logizomechanophobia" />
+				<input type="text" name="key_terms[]" placeholder="new" />
 				<button type="button" class="remove-field">x</button>
 			</li>
 		</ul>
@@ -196,15 +196,27 @@
 
 	<h2>Submit</h2>
 	<p>You can review your submission on the next page.</P>
-	<input type="submit" value="Submit"/>
+	<input type="submit" value="Preview"/>
 	</form>
 
 
 	<?php } else if ($this -> isPreview()) { ?>
 	<h1>Preview of your submission</h1>
 	<p>Below you can see what you submission will look like and check it one last time.</p>
-	<p>TODO Reminder: I need to send the $_POST array in an hidden field again!</p>
+
+	<form action="?p=submit&amp;m=submit" method="post" accept-charset="utf-8">
+		<input type="checkbox" name="accept" id="accept" value="yes"/>
+		<label for="accept">I accept stuff and want to buy a washing machine.</label>
+		<input type="submit" value="Submit">
+	</form>
+	<br />
 	<?php echo $this -> showPreview() ?>
+
+
+
+	<?php } else if ($this -> isDone()) { ?>
+	<h1>Done</h1>
+	<p>You are cool.</p>
 
 
 	<?php } else { ?>

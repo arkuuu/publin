@@ -263,7 +263,7 @@ class PublicationView extends View {
 			$string = '';
 			$url = '?p=browse&amp;by=key_term&amp;id=';
 
-			foreach ($this -> publication -> getKeyTerms() as $key_term) {
+			foreach ($key_terms as $key_term) {
 				$string .= '<a href="'.$url.$key_term -> getId().'">'
 									.$key_term -> getName().'</a>'.$separator;
 			}

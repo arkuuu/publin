@@ -2,6 +2,10 @@
 
 require_once 'Model.php';
 require_once 'Publication.php';
+require_once 'Author.php';
+require_once 'Journal.php';
+require_once 'Publisher.php';
+require_once 'KeyTerm.php';
 
 class SubmitModel extends Model {
 
@@ -26,7 +30,8 @@ class SubmitModel extends Model {
 			'abstract' => 'text',
 			'academic_title' => 'text',
 			'first_name' => 'text',
-			'last_name' => 'text');
+			'last_name' => 'text',
+			'name' => 'text');
 
 	private $required_fields = array(
 			/* for all types */
@@ -78,6 +83,8 @@ class SubmitModel extends Model {
 
 	private $errors = array();
 
+	private $matches = array();
+
 	private $publication;
 
 
@@ -89,6 +96,10 @@ class SubmitModel extends Model {
 
 	public function getPublication() {
 		return $this -> publication;
+	}
+
+	public function getErrors() {
+		return $this -> errors;
 	}
 
 
@@ -193,7 +204,6 @@ class SubmitModel extends Model {
 
 			if (!empty($input[$field])) {
 				$input[$field] = $this -> validateInput($field, $input[$field]);
-				print_r($input[$field]);
 				if ($input[$field] || is_array($input[$field])) {
 					$data[$field] = $input[$field];
 				}
@@ -257,9 +267,7 @@ class SubmitModel extends Model {
 	}
 
 
-	public function getErrors() {
-		return $this -> errors;
-	}
+
 
 
 	public function createPublicationFromSubmit(array $data) {
@@ -275,7 +283,7 @@ class SubmitModel extends Model {
 			unset($data['authors']);
 		}
 		if (isset($data['key_terms'])) {
-			$key_terms = $data['key_terms'];
+			$key_terms = $this -> createKeyTermsFromSubmit($data['key_terms']);
 			unset($data['key_terms']);
 		}
 
@@ -312,32 +320,55 @@ class SubmitModel extends Model {
 			$this -> errors[] = 'empty or damaged array for authors';
 			return false;
 		}
+	}
 
+	public function createKeyTermsFromSubmit(array $data) {
+
+		if (!empty($data)) {
+			foreach ($data as $key_term) {
+				$key_term = $this -> validateInput('name', $key_term);
+				if ($key_term) {
+					$key_terms[] = new KeyTerm(array('name' => $key_term));
+				}
+				else {
+					$this -> errors[] = 'bad input for key term';
+					return false;
+				}
+			}
+			return $key_terms;
+		}
+		else {
+			$this -> errors[] = 'empty or damaged array for key terms';
+			return false;
+		}
 	}
 
 
 	public function storePublication(Publication $publication) {
 
+		$data = $publication -> getData();
 		$authors = $publication -> getAuthors();
 		$key_terms = $publication -> getKeyTerms();
 
 		$author_ids = array();
 		foreach ($authors as $author) {
-			$id = $this -> storeAuthor($author);
-			if ($id !== false) {
-				$author_ids[] = $id;
-			}
+			$author_ids[] = $this -> storeAuthor($author);
 		}
 
 		$key_term_ids = array();
-		// foreach ($key_terms as $key_term) {
-		// 	$id = $this -> storeKeyTerm($key_term);
-		// 	if ($id !== false) {
-		// 		$key_term_ids[] = $id;
-		// 	}
-		// }
+		foreach ($key_terms as $key_term) {
+			$key_term_ids[] = $this -> storeKeyTerm($key_term);
+		}
 
-		$data = $publication -> getData();
+		if (!empty($data['journal'])) {
+			$data['journal_id'] = $this -> storeJournal(new Journal(array('name' => $data['journal'])));
+			unset($data['journal']);
+		}
+		if (!empty($data['publisher'])) {
+			$data['publisher_id'] = $this -> storePublisher(new Publisher(array('name' => $data['publisher'])));
+			unset($data['publisher']);
+		}
+
 
 		$publication_id = $this -> db -> insertData('list_publications', $data);
 
@@ -353,8 +384,8 @@ class SubmitModel extends Model {
 				}
 			}
 			else {
-				$this -> errors[] = 'author_ids was empty';
-				return false;
+				throw new Exception('Error while inserting publication to DB, no authors given');
+
 			}
 
 			if (!empty($key_term_ids)) {
@@ -364,10 +395,12 @@ class SubmitModel extends Model {
 					$this -> db -> insertData('rel_publ_to_key_terms', $data);
 				}
 			}
+
+			return $publication_id;
 		}
 		else {
-			$this -> errors[] = 'publication_id was empty';
-			return false;
+			throw new Exception('Error while inserting publication to DB');
+			
 		}
 	}
 
@@ -381,7 +414,49 @@ class SubmitModel extends Model {
 			return $author_id;
 		}
 		else {
-			return false;
+			throw new Exception('Error while inserting author to DB');
+		}
+	}
+
+	public function storeKeyTerm(KeyTerm $key_term) {
+
+		$data = $key_term -> getData();
+		$key_term_id = $this -> db -> insertData('list_key_terms', $data);
+
+		if (!empty($key_term_id)) {
+			return $key_term_id;
+		}
+		else {
+			throw new Exception('Error while inserting key term to DB');
+			
+		}
+	}
+
+	public function storeJournal(Journal $journal) {
+
+		$data = $journal -> getData();
+		$journal_id = $this -> db -> insertData('list_journals', $data);
+
+		if (!empty($journal_id)) {
+			return $journal_id;
+		}
+		else {
+			throw new Exception('Error while inserting journal to DB');
+			
+		}
+	}
+
+	public function storePublisher(Publisher $publisher) {
+
+		$data = $publisher -> getData();
+		$publisher_id = $this -> db -> insertData('list_publishers', $data);
+
+		if (!empty($publisher_id)) {
+			return $publisher_id;
+		}
+		else {
+			throw new Exception('Error while inserting publisher to DB');
+			
 		}
 	}
 
