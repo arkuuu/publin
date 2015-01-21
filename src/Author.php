@@ -33,14 +33,11 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getName() {
-		$academic_title = $this -> getData('academic_title');
+		// $academic_title = $this -> getData('academic_title');
 		$first_name = $this -> getData('first_name');
 		$last_name = $this -> getData('last_name');
 
-		if ($academic_title && $first_name && $last_name) {
-			return $academic_title.' '.$first_name.' '.$last_name;
-		}
-		else if ($first_name && $last_name) {
+		if ($first_name && $last_name) {
 			return $first_name.' '.$last_name;
 		}
 		else {
