@@ -13,6 +13,7 @@ Planned features (WIP)
 * Support OAI-PMH, register as OAI Data Provider
 * Support various meta tag formats for getting indexed by search engines (e.g. DublinCore, HighwirePress Tags)
 * Support CSL styles for viewing and exporting citations
+* User authentification and authorization system with assignable roles and permissions
 * Template system for easy changing of the look and feel
 * Modular system for easy extending of export/import and meta tag formats
 * ...
