@@ -65,15 +65,15 @@ class Database extends mysqli {
 	 *
 	 * @return	array
 	 */
-	private function getData($query) {
+	public function getData($query) {
 
 		// DEV: write query to log
-		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-		$msg = str_replace("\t", '', $msg);
-		$file = fopen('./logs/sql.log', 'a');
-		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-						.$msg."\n");
-		fclose($file);
+		// $msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+		// $msg = str_replace("\t", '', $msg);
+		// $file = fopen('./logs/sql.log', 'a');
+		// fwrite($file, '['.date('d.m.Y H:i:s').'] '
+		// 				.$msg."\n");
+		// fclose($file);
 
 		/* Sends query to database */
 		$result = parent::query($query);
@@ -376,16 +376,16 @@ class Database extends mysqli {
 	 *
 	 * @return	array
 	 */
-	public function fetchMonths($year) {
+	// public function fetchMonths($year) {
 
-		$query = 'SELECT `month`
-					FROM `list_publications`
-					WHERE `year` LIKE '.$year.'
-					GROUP BY `month`
-					ORDER BY `month` DESC';
+	// 	$query = 'SELECT `month`
+	// 				FROM `list_publications`
+	// 				WHERE `year` LIKE '.$year.'
+	// 				GROUP BY `month`
+	// 				ORDER BY `month` DESC';
 
-		return $this -> getData($query);
-	}
+	// 	return $this -> getData($query);
+	// }
 
 
 	/**
@@ -464,8 +464,6 @@ class Database extends mysqli {
 	 */
 	public function fetchPublications(array $filter = array()) {
 
-		// TODO: SELECT `id` FROM `list_publications` WHERE YEAR(`date_published`) LIKE "2014" AND MONTH(`date_published`) LIKE "10"
-
 		$select = 'SELECT t.`name` AS `type`, j.`name` AS `journal`, pub.`name` AS `publisher`, p.*';
 		$from = 'FROM `list_publications` p';
 		$join = 'LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)';
@@ -514,6 +512,98 @@ class Database extends mysqli {
 				}
 				$where = substr($where, 0, -3);
 			}
+		}
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
+
+		return $this -> getData($query);
+	}
+
+
+	public function fetchRoles(array $filter = array()) {
+		$select = 'SELECT r.`id`, r.`name`';
+		$from = 'FROM `list_roles` r';
+		$join = '';
+		$where = '';
+		$order = 'ORDER BY r.`name` ASC';
+		$limit = '';
+
+		if (!empty($filter)) {
+			$where = 'WHERE';
+
+			if (array_key_exists('user_id', $filter)) {
+				$join .= ' JOIN `rel_user_roles` ru ON (ru.`role_id` = r.`id`)';
+				$where .= ' ru.`user_id` = '.$filter['user_id'].' AND';
+				unset($filter['user_id']);
+			}
+			foreach ($filter as $key => $value) {
+				$where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
+			}
+			$where = substr($where, 0, -3);
+
+		}
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
+
+		return $this -> getData($query);
+	}
+
+
+	public function fetchPermissions(array $filter = array()) {
+		$select = 'SELECT p.`id`, p.`name`';
+		$from = 'FROM `list_permissions` p';
+		$join = '';
+		$where = '';
+		$order = 'ORDER BY p.`name` ASC';
+		$limit = '';
+
+		if (!empty($filter)) {
+			$where = 'WHERE';
+
+			if (array_key_exists('role_id', $filter)) {
+				$join .= ' JOIN `rel_roles_permissions` rr ON (rr.`permission_id` = p.`id`)';
+				$where .= ' rr.`role_id` = '.$filter['role_id'].' AND';
+				unset($filter['role_id']);
+			}
+			foreach ($filter as $key => $value) {
+				$where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
+			}
+			$where = substr($where, 0, -3);
+
+		}
+		unset($filter);
+
+		/* Combines everything to the complete query */
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
+
+		return $this -> getData($query);
+	}
+
+	public function fetchUsers(array $filter = array()) {
+		$select = 'SELECT u.`id`, u.`name`';
+		$from = 'FROM `list_u` u';
+		$join = '';
+		$where = '';
+		$order = 'ORDER BY u.`name` ASC';
+		$limit = '';
+
+		if (!empty($filter)) {
+			$where = 'WHERE';
+
+			if (array_key_exists('role_id', $filter)) {
+				$join .= ' JOIN `rel_user_roles` rr ON (rr.`user_id` = p.`id`)';
+				$where .= ' rr.`role_id` = '.$filter['role_id'].' AND';
+				unset($filter['role_id']);
+			}
+			foreach ($filter as $key => $value) {
+				$where .= ' u.`'.$key.'` LIKE "'.$value.'" AND';
+			}
+			$where = substr($where, 0, -3);
+
 		}
 		unset($filter);
 
