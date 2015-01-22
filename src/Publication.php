@@ -252,7 +252,7 @@ class Publication extends Object {
 		$data['type'] = $this -> getTypeName();
 		$data['cite_key'] = 'todo';
 		$data['title'] = $this -> getTitle();
-		$data['author'] = $authors;
+		$data['authors'] = $authors;
 		$data['journal'] = $this -> getJournalName();
 		$data['booktitle'] = $this -> getBookName();
 		$data['publisher'] = $this -> getPublisherName();
@@ -268,7 +268,7 @@ class Publication extends Object {
 		$data['series'] = $this -> getSeries();
 		$data['abstract'] = $this -> getAbstract();
 		// some more missing
-		$data['keywords'] = $key_terms;
+		$data['key_terms'] = $key_terms;
 
 		return $data;
 	}

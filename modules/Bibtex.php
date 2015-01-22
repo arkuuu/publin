@@ -6,12 +6,16 @@ class Bibtex {
 	private $author_fields;
 	private $pages_fields;
 
-	
+
 
 	public function __construct() {
 
-		$fields = array(
-			'author' => 'author',
+		/* Map your fields here. You can change the order or leave out fields. */
+		$this -> fields = array(
+			/* bibtex field => your field */
+			'type' => 'type',
+			'cite_key' => 'cite_key',
+			'author' => 'authors',
 			'title' => 'title',
 			'journal' => 'journal',
 			'booktitle' => 'booktitle',
@@ -33,15 +37,17 @@ class Bibtex {
 			'address' => 'address',
 			'date-added' => 'date-added',
 			'date-modified' => 'date-modified',
-			'keywords' => 'keywords',
+			'keywords' => 'key_terms',
 			);
 
-		$author_fields = array(
+		$this -> author_fields = array(
+			/* parser field => your field */
 			'given' => 'given',
 			'family' => 'family',
 			);
 
-		$pages_fields = array(
+		$this -> pages_fields = array(
+			/* parser field => your field */
 			'from' => 'from',
 			'to' => 'to',
 			);
@@ -54,10 +60,14 @@ class Bibtex {
 	 *
 	 * @return	string
 	 */
-	public function export($data) {
+	public function export($input) {
 
-		/* Map your fields here. */
-		$fields = array('author', 'title', 'journal', 'booktitle', 'publisher', 'edition', 'institution', 'howpublished', 'year', 'month', 'volume', 'pages', 'number', 'series', 'abstract', 'bibsource', 'copyright', 'url', 'doi', 'address', 'date-added', 'date-modified', 'keywords');
+		/* Maps your fields to the BibTeX fields. */
+		foreach ($this -> fields as $bibtex_field => $your_field) {
+			if (isset($input[$your_field])) {
+				 $data[$bibtex_field] = $input[$your_field];
+			}
+		}
 
 		/* Gets the BibTeX type or returns false if there is no type given */
 		if (isset($data['type']) && !empty($data['type'])) {
@@ -71,20 +81,23 @@ class Bibtex {
 
 		/* Gets the cite key or generates one if there is none given */
 		if (!empty($data['cite_key'])) {
+
 			$cite_key = $data['cite_key'];
 			unset($data['cite_key']);
 		}
 		else {
-			// TODO: generate cite key
 			$cite_key = self::generateCiteKey($data);
 		}
 
 		/* Composes the authors string */
 		if (!empty($data['author'])) {
 			$string = '';
+			$given = $this -> author_fields['given'];
+			$family = $this -> author_fields['family'];
+
 			foreach ($data['author'] as $author) {
-				if (!empty($author['given']) && !empty($author['family'])) {
-					$string .= $author['given'].' '.$author['family'].' and ';
+				if (!empty($author[$given]) && !empty($author[$family])) {
+					$string .= $author[$given].' '.$author[$family].' and ';
 				}
 			}
 			$string = substr($string, 0, -5);
@@ -102,8 +115,11 @@ class Bibtex {
 		}
 
 		/* Composes the pages string */
-		if (!empty($data['pages']['from']) && !empty($data['pages']['to'])) {
-			$string = $data['pages']['from'].'--'.$data['pages']['to'];
+		$from = $this -> pages_fields['from'];
+		$to = $this -> pages_fields['to'];
+
+		if (!empty($data['pages'][$from]) && !empty($data['pages'][$to])) {
+			$string = $data['pages'][$from].'--'.$data['pages'][$to];
 			$data['pages'] = $string;
 		}
 
@@ -127,35 +143,32 @@ class Bibtex {
 	 *
 	 * @return	array
 	 */
-	public function import($bibtex) {
-
-		/* Map your fields here. */
-		$fields = array('author', 'title', 'journal', 'booktitle', 'publisher', 'edition', 'institution', 'howpublished', 'year', 'month', 'volume', 'pages', 'number', 'series', 'abstract', 'bibsource', 'copyright', 'url', 'doi', 'address', 'date-added', 'date-modified', 'keywords');
+	public function import($input) {
 
 		$result = array();
 
-		$bibtex = stripslashes($bibtex);
+		$input = stripslashes($input);
 
 		/* Gets rid of some special symbols. This needs to be extended further */
-		$bibtex = str_replace(array('\"u', '\"{u}', '{\"u}'), 'ü', $bibtex);
-		$bibtex = str_replace(array('\"a', '\"{a}', '{\"a}'), 'ä', $bibtex);
-		$bibtex = str_replace(array('\"o', '\"{o}', '{\"o}'), 'ö', $bibtex);
-		$bibtex = str_replace(array('\"U', '\"{U}', '{\"U}'), 'Ü', $bibtex);
-		$bibtex = str_replace(array('\"A', '\"{A}', '{\"A}'), 'Ä', $bibtex);
-		$bibtex = str_replace(array('\"O', '\"{O}', '{\"O}'), 'Ö', $bibtex);
+		$input = str_replace(array('\"u', '\"{u}', '{\"u}'), 'ü', $input);
+		$input = str_replace(array('\"a', '\"{a}', '{\"a}'), 'ä', $input);
+		$input = str_replace(array('\"o', '\"{o}', '{\"o}'), 'ö', $input);
+		$input = str_replace(array('\"U', '\"{U}', '{\"U}'), 'Ü', $input);
+		$input = str_replace(array('\"A', '\"{A}', '{\"A}'), 'Ä', $input);
+		$input = str_replace(array('\"O', '\"{O}', '{\"O}'), 'Ö', $input);
 
-		$bibtex = str_replace('\c{c}', 'ç', $bibtex);
-		$bibtex = str_replace('\c{C}', 'Ç', $bibtex);
+		$input = str_replace('\c{c}', 'ç', $input);
+		$input = str_replace('\c{C}', 'Ç', $input);
 
 		/* Gets the entry type and the cite key */
-		preg_match('/\@(article|book|incollection|inproceedings|masterthesis|misc|phdthesis|techreport|unpublished|inbook)\s?(\"|\{)([^\"\},]*),/i', $bibtex, $typeReg);
+		preg_match('/\@(article|book|incollection|inproceedings|masterthesis|misc|phdthesis|techreport|unpublished|inbook)\s?(\"|\{)([^\"\},]*),/i', $input, $typeReg);
 		$result['type'] = strtolower($typeReg[1]);
 		$result['cite_key'] = $typeReg[3];
 
 		/* Gets all other fields */
-		foreach ($fields as $field) {
-			$regex = '/\b'.$field.'\b\s*=\s*(.*)/i';
-			preg_match($regex, $bibtex, $reg_result);
+		foreach ($this -> fields as $bibtex_field => $your_field) {
+			$regex = '/\b'.$bibtex_field.'\b\s*=\s*(.*)/i';
+			preg_match($regex, $input, $reg_result);
 
 			if (!empty($reg_result[1])) {
 				$value = self::stripField($reg_result[1]);
@@ -163,29 +176,29 @@ class Bibtex {
 				if (!empty($value)) {
 
 					/* Extracts the authors with their given and family names */
-					if ($field == 'author') {
+					if ($bibtex_field == 'author') {
 						$author = self::extractAuthors($value);
 						if (!empty($author)) {
-							$result[$field] = $author;
+							$result[$your_field] = $author;
 						}						
 					}
 					/* Extracts the single keywords */
-					else if ($field == 'keywords') {
+					else if ($bibtex_field == 'keywords') {
 						$keywords = self::extractKeywords($value);
 						if (!empty($keywords)) {
-							$result[$field] = $keywords;
+							$result[$your_field] = $keywords;
 						}
 					}
 					/* Extracts the pages into from and to */
-					else if ($field == 'pages') {
+					else if ($bibtex_field == 'pages') {
 						$pages = self::extractPages($value);
 						if (!empty($pages)) {
-						 	$result[$field] = $pages;
+						 	$result[$your_field] = $pages;
 						 } 
 					}
 					/* The rest */
 					else {
-						$result[$field] = $value;					
+						$result[$your_field] = $value;					
 					}
 				}
 			}
@@ -278,8 +291,8 @@ class Bibtex {
 				$family = '';
 			}
 
-			$author['given'] = trim($given);
-			$author['family'] = trim($family);
+			$author[$this -> author_fields['given']] = trim($given);
+			$author[$this -> author_fields['family']] = trim($family);
 
 			$authors[] = $author;
 		}
@@ -324,8 +337,8 @@ class Bibtex {
 		$strings = explode('--', $string);
 
 		if (count($strings) == 2) {
-			$pages['from'] = trim($strings[0]);
-			$pages['to'] = trim($strings[1]);
+			$pages[$this -> pages_fields['from']] = trim($strings[0]);
+			$pages[$this -> pages_fields['to']] = trim($strings[1]);
 		}
 
 		return $pages;
