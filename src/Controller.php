@@ -33,6 +33,7 @@ class Controller {
 	 */
 	public function __construct() {
 		mb_internal_encoding('utf8');
+		header('Content-Type: text/html; charset=UTF-8');
 	}
 
 
