@@ -41,7 +41,7 @@
 		echo "<h1>Imported meta data:</h1>";
 		echo '<pre>';
 		print_r($result);	
-		echo '</pre><br/><br/>';	
+		echo '</pre><br/>';	
 
 		echo "<h1>Export of the imported meta data:</h1>";
 		echo '<textarea rows="15" cols="100" readonly>';

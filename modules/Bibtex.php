@@ -90,7 +90,7 @@ class Bibtex {
 		}
 
 		/* Composes the authors string */
-		if (!empty($data['author'])) {
+		if (isset($data['author'])) {
 			$string = '';
 			$given = $this -> author_fields['given'];
 			$family = $this -> author_fields['family'];
@@ -105,7 +105,7 @@ class Bibtex {
 		}
 
 		/* Composes the keywords string */
-		if (!empty($data['keywords'])) {
+		if (isset($data['keywords'])) {
 			$string = '';
 			foreach ($data['keywords'] as $keywords) {
 				$string .= $keywords.', ';
@@ -115,13 +115,17 @@ class Bibtex {
 		}
 
 		/* Composes the pages string */
-		$from = $this -> pages_fields['from'];
-		$to = $this -> pages_fields['to'];
+		if (isset($data['pages'])) {
+			$string = '';
+			$from = $this -> pages_fields['from'];
+			$to = $this -> pages_fields['to'];
 
-		if (!empty($data['pages'][$from]) && !empty($data['pages'][$to])) {
-			$string = $data['pages'][$from].'--'.$data['pages'][$to];
-			$data['pages'] = $string;
+			if (!empty($data['pages'][$from]) && !empty($data['pages'][$to])) {
+				$string = $data['pages'][$from].'--'.$data['pages'][$to];
+			}	
+			$data['pages'] = $string;	
 		}
+
 
 		/* Composes the BibTeX entry */
 		$result = '@'.$type.'{'.$cite_key;
@@ -173,26 +177,29 @@ class Bibtex {
 			if (!empty($reg_result[1])) {
 				$value = self::stripField($reg_result[1]);
 
-				if (!empty($value)) {
+				if ($value) {
 
 					/* Extracts the authors with their given and family names */
 					if ($bibtex_field == 'author') {
 						$author = self::extractAuthors($value);
-						if (!empty($author)) {
+
+						if ($author) {
 							$result[$your_field] = $author;
 						}						
 					}
 					/* Extracts the single keywords */
 					else if ($bibtex_field == 'keywords') {
 						$keywords = self::extractKeywords($value);
-						if (!empty($keywords)) {
+
+						if ($keywords) {
 							$result[$your_field] = $keywords;
 						}
 					}
 					/* Extracts the pages into from and to */
 					else if ($bibtex_field == 'pages') {
 						$pages = self::extractPages($value);
-						if (!empty($pages)) {
+
+						if ($pages) {
 						 	$result[$your_field] = $pages;
 						 } 
 					}
@@ -315,7 +322,8 @@ class Bibtex {
 
 		foreach ($strings as $string) {
 			$string = trim($string);
-			if (!empty($string)) {
+			
+			if ($string) {
 				$keywords[] = $string;
 			}
 		}
