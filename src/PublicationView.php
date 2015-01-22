@@ -3,7 +3,7 @@
 require_once 'View.php';
 require_once 'MetaTags.php';
 require_once 'BibLink.php';
-require_once 'Export.php';
+require_once 'FormatHandler.php';
 
 /**
  * View for publication page
@@ -309,7 +309,14 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showExport($format) {
-		return Export::getPublicationsExport($this -> publication, $format);
+		try {
+			$export = new FormatHandler($format);
+			return $export -> export($this -> publication -> toArray());
+		}
+		catch (Exception $e) {
+			return 'Error: '.$e -> getMessage();
+		}
+
 	}
 		
 }
