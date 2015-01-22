@@ -262,7 +262,8 @@ class Publication extends Object {
 		$data['year'] = $this -> getDatePublished('Y');
 		$data['month'] = $this -> getDatePublished('F');
 		$data['volume'] = $this -> getVolume();
-		$data['pages'] = $this -> getPages('--');
+		$data['pages']['from'] = $this -> getData('pages_from');
+		$data['pages']['to'] = $this -> getData('pages_to');
 		$data['number'] = $this -> getNumber();
 		$data['series'] = $this -> getSeries();
 		$data['abstract'] = $this -> getAbstract();

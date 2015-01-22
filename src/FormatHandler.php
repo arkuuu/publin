@@ -11,14 +11,13 @@
  */
 class FormatHandler {
 
-	private $module;
+	private $parser;
 
 
 	
 	public function __construct($format) {
-		$this -> module = $format;
 
-		$file = './modules/'.$this -> module.'.php';
+		$file = './modules/'.$format.'.php';
 
 		if (!file_exists($file)) {
 			throw new Exception('file '.$file.' not found');				
@@ -26,40 +25,32 @@ class FormatHandler {
 
 		include $file;
 
-		if (!class_exists($this -> module)) {
-			throw new Exception('module '.$this -> module.' not found in file '.$file);
+		if (!class_exists($format)) {
+			throw new Exception('parser for '.$format.' not found in file '.$file);
 		}
+
+		$this -> parser = new $format();
 	}
 
 
-	/**
-	 * Returns an array with all supported formats.
-	 *
-	 * @return	array
-	 */
-	public function getFormats() {
-		// TODO
-	}
-	
-
-	/**
-	 * TODO: comment
-	 *
-	 * @param	Publication		$publication	The publication
-	 * @param	string			$format			The format
-	 *
-	 * @return	string
-	 */	
 	public function export($data) {
 
-		if (!method_exists($this -> module, 'export')) {
-			throw new Exception('module '.$this -> module.' offers no export');
+		if (!method_exists($this -> parser, 'export')) {
+			throw new Exception('parser for '.get_class($this -> parser).' offers no export');
 		}
 
-		$module = $this -> module;
-		return $module::export($data);
-
-
+		return $this -> parser -> export($data);
 	}	
+
+
+	public function import($data) {
+
+		if (!method_exists($this -> parser, 'import')) {
+			throw new Exception('parser for '.get_class($this -> parser).' offers no import');
+		}
+
+		return $this -> parser -> import($data);
+	}
+
 
 }

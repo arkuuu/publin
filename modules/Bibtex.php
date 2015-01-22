@@ -2,6 +2,51 @@
 
 class Bibtex {
 
+	private $fields;
+	private $author_fields;
+	private $pages_fields;
+
+	
+
+	public function __construct() {
+
+		$fields = array(
+			'author' => 'author',
+			'title' => 'title',
+			'journal' => 'journal',
+			'booktitle' => 'booktitle',
+			'publisher' => 'publisher',
+			'edition' => 'edition',
+			'institution' => 'institution',
+			'howpublished' => 'howpublished',
+			'year' => 'year',
+			'month' => 'month',
+			'volume' => 'volume',
+			'pages' => 'pages',
+			'number' => 'number',
+			'series' => 'series',
+			'abstract' => 'abstract',
+			'bibsource' => 'bibsource',
+			'copyright' => 'copyright',
+			'url' => 'url',
+			'doi' => 'doi',
+			'address' => 'address',
+			'date-added' => 'date-added',
+			'date-modified' => 'date-modified',
+			'keywords' => 'keywords',
+			);
+
+		$author_fields = array(
+			'given' => 'given',
+			'family' => 'family',
+			);
+
+		$pages_fields = array(
+			'from' => 'from',
+			'to' => 'to',
+			);
+	}
+
 	/**
 	 * TODO: comment
 	 *
@@ -9,7 +54,7 @@ class Bibtex {
 	 *
 	 * @return	string
 	 */
-	public static function export($data) {
+	public function export($data) {
 
 		/* Map your fields here. */
 		$fields = array('author', 'title', 'journal', 'booktitle', 'publisher', 'edition', 'institution', 'howpublished', 'year', 'month', 'volume', 'pages', 'number', 'series', 'abstract', 'bibsource', 'copyright', 'url', 'doi', 'address', 'date-added', 'date-modified', 'keywords');
@@ -25,7 +70,7 @@ class Bibtex {
 		}
 
 		/* Gets the cite key or generates one if there is none given */
-		if (isset($data['cite_key']) && !empty($data['cite_key'])) {
+		if (!empty($data['cite_key'])) {
 			$cite_key = $data['cite_key'];
 			unset($data['cite_key']);
 		}
@@ -35,10 +80,10 @@ class Bibtex {
 		}
 
 		/* Composes the authors string */
-		if (isset($data['author'])) {
+		if (!empty($data['author'])) {
 			$string = '';
 			foreach ($data['author'] as $author) {
-				if (isset($author['given']) && isset($author['family'])) {
+				if (!empty($author['given']) && !empty($author['family'])) {
 					$string .= $author['given'].' '.$author['family'].' and ';
 				}
 			}
@@ -47,7 +92,7 @@ class Bibtex {
 		}
 
 		/* Composes the keywords string */
-		if (isset($data['keywords'])) {
+		if (!empty($data['keywords'])) {
 			$string = '';
 			foreach ($data['keywords'] as $keywords) {
 				$string .= $keywords.', ';
@@ -56,6 +101,11 @@ class Bibtex {
 			$data['keywords'] = $string;
 		}
 
+		/* Composes the pages string */
+		if (!empty($data['pages']['from']) && !empty($data['pages']['to'])) {
+			$string = $data['pages']['from'].'--'.$data['pages']['to'];
+			$data['pages'] = $string;
+		}
 
 		/* Composes the BibTeX entry */
 		$result = '@'.$type.'{'.$cite_key;
@@ -77,7 +127,7 @@ class Bibtex {
 	 *
 	 * @return	array
 	 */
-	public static function import($bibtex) {
+	public function import($bibtex) {
 
 		/* Map your fields here. */
 		$fields = array('author', 'title', 'journal', 'booktitle', 'publisher', 'edition', 'institution', 'howpublished', 'year', 'month', 'volume', 'pages', 'number', 'series', 'abstract', 'bibsource', 'copyright', 'url', 'doi', 'address', 'date-added', 'date-modified', 'keywords');
@@ -114,12 +164,26 @@ class Bibtex {
 
 					/* Extracts the authors with their given and family names */
 					if ($field == 'author') {
-						$result[$field] = self::extractAuthors($value);
+						$author = self::extractAuthors($value);
+						if (!empty($author)) {
+							$result[$field] = $author;
+						}						
 					}
-					/* Extracts the keywords */
+					/* Extracts the single keywords */
 					else if ($field == 'keywords') {
-						$result[$field] = self::extractKeywords($value);
+						$keywords = self::extractKeywords($value);
+						if (!empty($keywords)) {
+							$result[$field] = $keywords;
+						}
 					}
+					/* Extracts the pages into from and to */
+					else if ($field == 'pages') {
+						$pages = self::extractPages($value);
+						if (!empty($pages)) {
+						 	$result[$field] = $pages;
+						 } 
+					}
+					/* The rest */
 					else {
 						$result[$field] = $value;					
 					}
@@ -138,7 +202,7 @@ class Bibtex {
 	 *
 	 * @return	string
 	 */
-	private static function stripField($string) {
+	private function stripField($string) {
 
 		/* Determines the position of {} and "" which are used as delimiter */
 		$first_brace_pos = stripos($string, '{');
@@ -187,7 +251,7 @@ class Bibtex {
 	 *
 	 * @return	array
 	 */
-	private static function extractAuthors($string) {
+	private function extractAuthors($string) {
 
 		$authors = array();
 		$strings = explode(' and ', $string);
@@ -231,7 +295,7 @@ class Bibtex {
 	 *
 	 * @return	array
 	 */
-	private static function extractKeywords($string) {
+	private function extractKeywords($string) {
 
 		$keywords = array();
 		$strings = explode(',', $string);
@@ -250,11 +314,32 @@ class Bibtex {
 	/**
 	 * TODO: comment
 	 *
+	 * @param	string	$string	description
+	 *
+	 * @return	array
+	 */
+	private function extractPages($string) {
+
+		$pages = array();
+		$strings = explode('--', $string);
+
+		if (count($strings) == 2) {
+			$pages['from'] = trim($strings[0]);
+			$pages['to'] = trim($strings[1]);
+		}
+
+		return $pages;
+	}
+
+
+	/**
+	 * TODO: comment
+	 *
 	 * @param	array	$data	description
 	 *
 	 * @return	string
 	 */
-	private static function generateCiteKey($data) {
+	private function generateCiteKey($data) {
 
 		return 'todo';
 	}
