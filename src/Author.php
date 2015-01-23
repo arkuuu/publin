@@ -34,11 +34,11 @@ class Author extends Object {
 	 */
 	public function getName() {
 		// $academic_title = $this -> getData('academic_title');
-		$first_name = $this -> getData('first_name');
-		$last_name = $this -> getData('last_name');
+		$given = $this -> getData('given');
+		$family = $this -> getData('family');
 
-		if ($first_name && $last_name) {
-			return $first_name.' '.$last_name;
+		if ($given && $family) {
+			return $given.' '.$family;
 		}
 		else {
 			return false;
@@ -52,7 +52,7 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getLastName() {
-		return $this -> getData('last_name');
+		return $this -> getData('family');
 	}
 
 
@@ -64,18 +64,18 @@ class Author extends Object {
 	 * @return 	string
 	 */
 	public function getFirstName($short = false) {
+		$given = $this -> getData('given');
 
-		if ($first_name = $this -> getData('first_name')
-				&& $short) {
-			$first_names = preg_split("/\s+/", $this -> data['first_name']);
+		if ($given && $short) {
+			$names = preg_split("/\s+/", $given);
 			$string = '';
-			foreach ($first_names as $name) {
+			foreach ($names as $name) {
 				$string .= mb_substr($name, 0, 1).'.';
 			}
 			return $string;
 		}
-		else if ($first_name = $this -> getData('first_name')) {
-			return $first_name;
+		else if ($given) {
+			return $given;
 		}
 		else {
 			return false;

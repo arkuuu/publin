@@ -402,7 +402,7 @@ class Database extends mysqli {
 		$from = 'FROM `list_authors` a';
 		$join = '';
 		$where = '';
-		$order = 'ORDER BY `last_name` ASC';
+		$order = 'ORDER BY `family` ASC';
 		$limit = '';
 
 		/* Checks if any filter is set */
