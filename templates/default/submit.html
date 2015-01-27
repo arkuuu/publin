@@ -16,48 +16,28 @@
 				});
 			});
 
-			$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide();
+			var showFormFields = function(show_time) {
+				var type = $('.type-selector').find(':selected').val();
+	
+				if (type) {
+					$('.'+type).show(show_time);
+				};
+			};
+
+			var hideFormFields = function(hide_time) {
+				$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(hide_time);
+			};
+
+
+			hideFormFields(0);
+			showFormFields(0);
 
 			$('.type-selector').change(function() {
-				var type = $('.type-selector').find(':selected').val();
-				var show_time = 400;
-
-				$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(200);
-
-				switch(type) {
-					case '1':
-						$('.article').show(show_time);
-						break;
-					case '2':
-						$('.book').show(show_time);
-						break;
-					case '4':
-						$('.incollection').show(show_time);
-						break;
-					case '3':
-						$('.inproceedings').show(show_time);
-						break;
-					case '6':
-						$('.masterthesis').show(show_time);
-						break;
-					case '9':
-						$('.misc').show(show_time);
-						break;
-					case '7':
-						$('.phdthesis').show(show_time);
-						break;
-					case '5':
-						$('.techreport').show(show_time);
-						break;
-					case '8':
-						$('.unpublished').show(show_time);
-						break;
-
-					default:
-						$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').show(show_time);
-						break;
-				}
-			});				
+				hideFormFields(200);
+				showFormFields(400);
+			});
+	
+		
 		});
 	</script>
 
@@ -72,89 +52,87 @@
 
 	<div class="form">
 		<label for="type">Type:</label>
-		<select class="type-selector" name="type_id" id="type" size="1" >
-				<option value selected disabled>Select...</option>
+		<select class="type-selector" name="type" id="type" size="1" >
 				<?php echo $this -> listTypeOptions() ?>
 		</select><br/>
 
 		<label for="study_field">Field of Study:</label>
-		<select name="study_field_id" id="study_field" size="1" >
-				<option value selected disabled>Select...</option>
+		<select name="study_field" id="study_field" size="1" >
 				<?php echo $this -> listStudyFieldOptions() ?>
 		</select><br/>
 
 		<div>
 			<label for="date_published">Publication Date:</label>
-			<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD" />
+			<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD" value="<?php echo $this -> showPostValue('date_published') ?>"/>
 			<br/>
 		</div>
 
 		<div>
 			<label for="title">Title:</label>
-			<input type="text" name="title" id="title" maxlength="200" />
+			<input type="text" name="title" id="title" maxlength="200" value="<?php echo $this -> showPostValue('title') ?>"/>
 			<br/>
 		</div>
 
 		<div class="article">
 			<label for="journal">Journal:</label>
-			<input type="text" name="journal" id="journal" maxlength="200"/>
+			<input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this -> showPostValue('journal') ?>"/>
 			<br/>
 		</div>
 		
 		<div class="incollection inproceedings">
 			<label for="booktitle">Book Title:</label>
-			<input type="text" name="booktitle" id="booktitle" maxlength="200"/>
+			<input type="text" name="booktitle" id="booktitle" maxlength="200" value="<?php echo $this -> showPostValue('booktitle') ?>"/>
 			<br/>
 		</div>
 
-		<div class="book incollection inproceedings">
+		<div class="article book incollection inproceedings">
 			<label for="publisher">Publisher:</label>
-			<input type="text" name="publisher" id="publisher" maxlength="200"/>
+			<input type="text" name="publisher" id="publisher" maxlength="200" value="<?php echo $this -> showPostValue('publisher') ?>"/>
 			<br/>
 		</div>
 
 		<div class="book">
 			<label for="edition">Edition:</label>
-			<input type="text" name="edition" id="edition"/>
+			<input type="text" name="edition" id="edition" value="<?php echo $this -> showPostValue('edition') ?>"/>
 			<br/>
 		</div>
 
 		<div class="masterthesis phdthesis techreport">
 			<label for="institution">Institution:</label>
-			<input type="text" name="institution" id="institution" maxlength="200"/>
+			<input type="text" name="institution" id="institution" maxlength="200" value="<?php echo $this -> showPostValue('institution') ?>"/>
 			<br/>
 		</div>
 
 		<div class="misc">
 			<label for="howpublished">How published:</label>
-			<input type="text" name="howpublished" id="howpublished" maxlength="200"/>
+			<input type="text" name="howpublished" id="howpublished" maxlength="200" value="<?php echo $this -> showPostValue('howpublished') ?>"/>
 			<br/>
 		</div>
 
 		<div class="incollection inproceedings">
 			<label for="pages_from">Pages:</label>
 			<div>
-				<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12"/>
-				<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23" style="margin-left:10px"/>
+				<input type="number" name="pages[from]" id="pages_from" min="0" placeholder="12" value="<?php echo $this -> showPostValue('pages', 'from') ?>"/>
+				<input type="number" name="pages[to]" id="pages_to" min="0" placeholder="23" style="margin-left:10px" value="<?php echo $this -> showPostValue('pages', 'to') ?>"/>
 			</div>
 			<br/>
 		</div>
 
 		<div class="article book">
 			<label for="volume">Volume:</label>
-			<input type="number" name="volume" id="volume" min="0"/>
+			<input type="number" name="volume" id="volume" min="0" value="<?php echo $this -> showPostValue('volume') ?>"/>
 			<br/>
 		</div>
 
 		<div class="article techreport">
 			<label for="number">Number:</label>
-			<input type="number" name="number" id="number" min="0"/>
+			<input type="number" name="number" id="number" min="0" value="<?php echo $this -> showPostValue('number') ?>"/>
 			<br/>
 		</div>	
 
 		<div class="book">
 			<label for="series">Series:</label>
-			<input type="number" name="series" id="series" min="0"/>
+			<input type="number" name="series" id="series" min="0" value="<?php echo $this -> showPostValue('series') ?>"/>
 			<br/>
 		</div>
 
@@ -164,12 +142,7 @@
 	<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
 	<div class="multi-field-wrapper">
 		<ul class="multi-fields">
-			<li class="multi-field">
-				<input type="text" name="authors[academic_title][]" placeholder="Title(s)" style="width:60px"/>
-				<input type="text" name="authors[first_name][]" placeholder="Firstname(s)" />
-				<input type="text" name="authors[last_name][]" placeholder="Lastname(s)" />
-				<button type="button" class="remove-field">x</button>
-			</li>
+			<?php echo $this -> listAuthors() ?>
 		  </ul>
 		<button type="button" class="add-field">Add field</button>
 	</div>
@@ -178,17 +151,14 @@
 	<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
 	<div class="multi-field-wrapper">
 		<ul class="multi-fields">
-			<li class="multi-field">
-				<input type="text" name="key_terms[]" placeholder="Logizomechanophobia" />
-				<button type="button" class="remove-field">x</button>
-			</li>
+			<?php echo $this -> listKeyTerms() ?>
 		</ul>
 		<button type="button" class="add-field">Add field</button>
 	</div>
 
 	<h2>Abstract</h2>
 	<p>More Information to come here.</p>
-	<textarea name ="abstract" rows="6" cols="60"></textarea>
+	<textarea name ="abstract" rows="6" cols="60"><?php echo $this -> showPostValue('abstract') ?></textarea>
 
 	<h2>References</h2>
 	<p>More Information to come here.</p>
@@ -204,8 +174,8 @@
 	<?php } else if ($this -> isBibtex()) { ?>
 	<h1>Submit publication</h1>
 	<p>Here you can input a single BibTeX entry. Data will be imported and can be checked and modified later.</p>
-	<form action="?p=submit&amp;m=preview" method="post" accept-charset="utf-8">
-		<textarea name="bibtex">THIS DOES NOT WORK YET</textarea><br/>
+	<form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
+		<textarea name="bibtex"></textarea><br/>
 		<input type="submit" value="Import">
 	</form>
 
@@ -221,6 +191,9 @@
 		<br/><br/>
 		<input type="submit" value="Submit">
 	</form>
+	<form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
+		<input type="submit" value="Go back">
+	</form>
 	<br /><br/>
 	<?php echo $this -> showPreview() ?>
 
@@ -235,5 +208,5 @@
 	<h1>Submit publication</h1>
 	<p>Here you can submit a publication.</p>
 	<p><a href="?p=submit&amp;m=form">Submit via input form</a></p>
-	<p><a href="?p=submit&amp;m=bibtex">Submit via BibTeX</a></p>
+	<p><a href="?p=submit&amp;m=bibtex">Submit via BibTeX import</a></p>
 	<?php } ?>

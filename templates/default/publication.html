@@ -12,9 +12,9 @@
 
 	<h1><?php echo $this -> showTitle() ?></h1>
 	<p>By: <?php echo $this -> showAuthors() ?>
+		<?php echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '' ?>
 		<br/>Published in <?php echo $this -> showDatePublished() ?>
 		<?php echo $this -> showPublisher() ? ' by '.$this -> showPublisher() : '' ?>
-		<?php echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '' ?>
 		<?php echo $this -> showPages() ? '<br />Pages: '.$this -> showPages() : '' ?>
 		<br/>Type: <?php echo $this -> showType() ?></p>
 

@@ -1,9 +1,14 @@
 <?php
 
+require_once 'SubmitModel.php';
+
 class SubmitController {
 
 	public function __construct() {
+		// not if there is a session already
+		// session_destroy();
 		session_start();
+		// $_SESSION = array();
 
 	}
 
@@ -15,22 +20,32 @@ class SubmitController {
 			$mode = 'start';
 		}
 
-		if (isset($_POST)) {
-			$_SESSION['post'] = $_POST;
-		}
-
-
 		$model = new SubmitModel;
+
+		if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST)) {
+			if (!empty($_POST['bibtex'])) {
+				$_SESSION['input'] = $model -> formatImport($_POST['bibtex'], 'Bibtex');
+			}
+			else {
+				$_SESSION['input'] = $model -> formatPost($_POST);					
+			}
+		}
 
 		switch ($mode) {
 
-			case 'preview':
-				if (!empty($_SESSION['post'])) {
-					$model -> createPublicationFromSubmit($_SESSION['post']);
-					$errors = $model -> getErrors();
+			case 'form':
+				$view = new SubmitView($model, 'form');
+				break;
 
-					if (empty($errors)) {
-						$_SESSION['publication'] = $model -> getPublication();
+			case 'preview':
+				if (isset($_SESSION['input'])) {
+					print_r($_SESSION['input']);
+					$publication = $model -> createNewPublication($_SESSION['input']);
+					$errors = $model -> getErrors();
+					print_r($errors);
+
+					if (!$errors && $publication) {
+						$_SESSION['publication'] = $publication;
 						$view = new SubmitView($model, 'preview');
 					}
 					else {
@@ -38,7 +53,7 @@ class SubmitController {
 					}
 				}
 				else {
-					$view = new SubmitView($model, 'start');
+					$view = new SubmitView($model, 'form');	
 				}
 				break;
 
@@ -48,16 +63,16 @@ class SubmitController {
 					$model -> storePublication($_SESSION['publication']);
 					$view = new SubmitView($model, 'done');
 
-					$_SESSION = array();
-					session_destroy();
+					unset($_SESSION['publication']);
+					unset($_SESSION['post']);
 				}
 				// TODO: what happens if not?
-				// else if (!empty($_SESSION['publication'])) {
-				// 	$view = new SubmitView($model, 'preview');
-				// }
-				// else {
-				// 	$view = new SubmitView($model, 'form');			
-				// }
+				else if (!empty($_SESSION['publication'])) {
+					$view = new SubmitView($model, 'preview');
+				}
+				else {
+					$view = new SubmitView($model, 'form');			
+				}
 				break;
 			
 			default:

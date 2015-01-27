@@ -131,7 +131,7 @@ class Publication extends Object {
 	 * @return string
 	 */
 	public function getBookName() {
-		return $this -> getData('book_name');
+		return $this -> getData('book');
 	}
 	public function getBookId() {
 		return $this -> getData('book_id');
