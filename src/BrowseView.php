@@ -135,6 +135,11 @@ class BrowseView extends View {
 					$string .= '<li><a href="'.$this -> browse_type['result_url'].$year.'">'.$year.'</a></li>'."\n";
 				}
 			}
+			else if ($browse_type == 'author') {
+				foreach ($browse_list as $author) {
+					$string .= '<li><a href="'.$this -> browse_type['result_url'].$author -> getId().'">'.$author -> getLastName().', '.$author -> getFirstName().'</a></li>'."\n";
+				}
+			}
 			else {
 				foreach ($browse_list as $object) {
 					$string .= '<li><a href="'.$this -> browse_type['result_url'].$object -> getId().'">'.$object -> getName().'</a></li>'."\n";
