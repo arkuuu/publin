@@ -11,7 +11,7 @@ abstract class View {
 	 * The path to the template file
 	 * @var	string
 	 */
-	protected $template = 'default';
+	protected $template = 'modern';
 
 	protected $content;
 

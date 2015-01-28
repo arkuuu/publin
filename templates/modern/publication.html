@@ -1,0 +1,48 @@
+	<script type="text/javascript" src="./templates/default/jquery.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {		
+			$('.export textarea').hide();
+			$('.export a').click(function(e) {
+				e.preventDefault();
+				var textarea = $(this).attr('class');
+				$('textarea.'+textarea).toggle(400);
+			});
+		});
+	</script>
+
+	<h1><?php echo $this -> showTitle() ?></h1>
+	<p>By: <?php echo $this -> showAuthors() ?>
+		<?php echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '' ?>
+		<br/>Published in <?php echo $this -> showDatePublished() ?>
+		<?php echo $this -> showPublisher() ? ' by '.$this -> showPublisher() : '' ?>
+		<?php echo $this -> showPages() ? '<br />Pages: '.$this -> showPages() : '' ?>
+		<br/>Type: <?php echo $this -> showType() ?></p>
+
+	<h2>Abstract</h2>
+	<p><?php echo $this -> showAbstract() ?></p>
+
+	<h2>References</h2>
+	<ul><?php echo $this -> showReferences() ?></ul>
+
+
+	<h2>Key Terms</h2>
+	<p><?php echo $this -> showKeyTerms() ?></p>
+
+
+	<h2>Export this publication</h2>
+	<div class="export">
+		<ul>
+			<li>
+				<a href="#" class="bibtex">BibTeX</a><br/>
+				<textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this -> showExport('Bibtex') ?></textarea>
+			</li>
+			<li>
+				<a href="#" class="ris">RIS</a><br/>
+				<textarea class="ris" rows="10" cols="80" readonly><?php echo $this -> showExport('ris') ?></textarea>
+			</li>
+		</ul>
+	</div>
+
+
+	<h2>Search this publication in</h2>
+	<ul><?php echo $this -> showBibLinks() ?></ul>

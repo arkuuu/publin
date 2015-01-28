@@ -1,0 +1,178 @@
+/*
+Usable colors of the University of Lübeck's Corporate Design:
+
+Dark green: #004b5a
+Light green-grey: #D6DFE4
+Light grey: #e4e4e4
+*/
+
+* {
+	/*-moz-box-sizing: border-box;*/
+	/*-webkit-box-sizing: border-box;*/
+	box-sizing: border-box; 
+}
+
+
+body {
+	height: 100%;
+	font-family: Arial,sans-serif;
+	margin: 0;
+}
+
+div#top {
+	width: 100%;
+	height: auto;
+	/*padding-top: 50px;*/
+	background-color: #004b5a;
+		text-align: bottom;
+}
+div.clearBoth {
+	clear: both;
+}
+
+div.content {
+	width: auto;
+	min-width: 500px;
+	max-width: 800px;
+	/*width: 700px;*/
+	margin: auto;
+	/*padding: 5px;*/
+	/*background-color: red;*/
+	text-align: bottom;
+}
+div#nav {
+	float: left;
+	/*background-color: green;*/
+}
+div#login {
+	float: right;
+	/*background-color: red;*/
+}
+
+div#nav ul, div#login ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+div#nav li {
+    padding-right: 15px;
+    float: left;
+}
+div#login li {
+    padding-left: 15px;
+    float: left;
+}
+
+div#nav a, div#login a {
+    display: block;
+    padding: 5px;
+	color: white;
+	text-decoration: none;
+}
+div#nav a:hover, div#nav a.active, div#login a:hover, div#login a.active {
+	color: #004b5a;
+    background-color: white;
+}
+
+
+div#logo {  
+	height: 80px;
+	width: 209px;
+	background-image: url(logo.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	/*background-color: red;*/
+}
+
+
+
+/* The right box with it's contents */
+div#right {
+	width: 100%;
+	height: auto;
+	padding-top: 25px;
+	padding-bottom: 50px;
+	font-size: 15px;
+	/*background-color: red;  */
+}
+
+div#right h1, div#right h2, div#right p, div#right ul, div#right div, div#right textarea {
+/*	max-width: 700px;
+	min-width: 250px;*/ /* bei div#right auch ändern! */
+	/*padding: 0 25px 0;*/
+}
+
+div#right h1 {
+	/*border-bottom: 1px solid #e4e4e4;*/
+	color: #004b5a;
+	font-size: 20px;
+}
+
+div#right h2 {
+	color: #004b5a;
+	font-size: 16px;
+	padding-top: 25px;
+}
+
+div#right p {
+	color: black;
+}
+
+div#right ul {
+	padding-left: 45px;
+	list-style-type: circle;
+}
+
+div#right li {
+	margin-bottom: 10px;
+}
+
+div#right a {
+	color: #004b5a;
+	text-decoration: none;
+}
+
+div#right a:hover {
+	color: black;
+	text-decoration: underline;
+}
+
+div#right li input {
+	width: 200px;
+}	
+
+
+/*	Other stuff */
+.form label, .form input
+{
+	display: block;
+	width: 350px;
+	float: left;
+	margin-bottom: 10px;
+}
+
+.form label
+{
+	width: 130px;
+	text-align: left;
+	padding-right: 10px;
+}
+
+.form br
+{
+	clear: left;
+}
+
+.form input[type=number] {
+	width: 50px;
+}
+.form select {
+	width: 200px;
+}
+
+/*.form textarea {
+	width: 500px;
+	height: 150px;
+}*/
