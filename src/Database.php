@@ -68,12 +68,12 @@ class Database extends mysqli {
 	public function getData($query) {
 
 		// DEV: write query to log
-		// $msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-		// $msg = str_replace("\t", '', $msg);
-		// $file = fopen('./logs/sql.log', 'a');
-		// fwrite($file, '['.date('d.m.Y H:i:s').'] '
-		// 				.$msg."\n");
-		// fclose($file);
+		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+		$msg = str_replace("\t", '', $msg);
+		$file = fopen('./logs/sql.log', 'a');
+		fwrite($file, '['.date('d.m.Y H:i:s').'] '
+						.$msg."\n");
+		fclose($file);
 
 		/* Sends query to database */
 		$result = parent::query($query);
@@ -119,7 +119,13 @@ class Database extends mysqli {
 
 		$query .= ') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
 
-		// print_r($query);
+		// DEV: write query to log
+		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+		$msg = str_replace("\t", '', $msg);
+		$file = fopen('./logs/sql.log', 'a');
+		fwrite($file, '['.date('d.m.Y H:i:s').'] '
+						.$msg."\n");
+		fclose($file);
 		
 		parent::query($query);
 
