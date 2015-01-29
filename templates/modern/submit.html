@@ -44,13 +44,13 @@
 	<h1>Submit publication</h1>
 	<p>Here comes the great form.</p>
 	<?php echo $this -> listErrors() ? '<p>Check these errors:</p><ul>'.$this -> listErrors().'</ul>' : '' ?>
-	
-	<form action="?p=submit&amp;m=preview" method="post" accept-charset="utf-8">
-
-	<h2>General</h2>
-	<p>More Information to come here.</p>
-
 	<div class="form">
+		<form action="?p=submit&amp;m=preview" method="post" accept-charset="utf-8">
+
+		<h2>General</h2>
+		<p>More Information to come here.</p>
+
+
 		<label for="type">Type:</label>
 		<select class="type-selector" name="type" id="type" size="1" >
 				<?php echo $this -> listTypeOptions() ?>
@@ -136,39 +136,37 @@
 			<br/>
 		</div>
 
+		<h2>Authors</h2>
+		<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
+		<div class="multi-field-wrapper">
+			<ul class="multi-fields">
+				<?php echo $this -> listAuthors() ?>
+			  </ul>
+			<button type="button" class="add-field">Add field</button>
+		</div>
+
+		<h2>Key Terms</h2>
+		<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
+		<div class="multi-field-wrapper">
+			<ul class="multi-fields">
+				<?php echo $this -> listKeyTerms() ?>
+			</ul>
+			<button type="button" class="add-field">Add field</button>
+		</div>
+
+		<h2>Abstract</h2>
+		<p>More Information to come here.</p>
+		<textarea name ="abstract" rows="10" cols="80"><?php echo $this -> showPostValue('abstract') ?></textarea>
+
+		<h2>References</h2>
+		<p>More Information to come here.</p>
+		<p>TODO</p>
+
+		<h2>Submit</h2>
+		<p>You can review your submission on the next page.</P>
+		<input type="submit" value="Preview"/>
+		</form>
 	</div>
-
-	<h2>Authors</h2>
-	<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
-	<div class="multi-field-wrapper">
-		<ul class="multi-fields">
-			<?php echo $this -> listAuthors() ?>
-		  </ul>
-		<button type="button" class="add-field">Add field</button>
-	</div>
-
-	<h2>Key Terms</h2>
-	<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
-	<div class="multi-field-wrapper">
-		<ul class="multi-fields">
-			<?php echo $this -> listKeyTerms() ?>
-		</ul>
-		<button type="button" class="add-field">Add field</button>
-	</div>
-
-	<h2>Abstract</h2>
-	<p>More Information to come here.</p>
-	<textarea name ="abstract" rows="10" cols="80"><?php echo $this -> showPostValue('abstract') ?></textarea>
-
-	<h2>References</h2>
-	<p>More Information to come here.</p>
-	<p>TODO</p>
-
-	<h2>Submit</h2>
-	<p>You can review your submission on the next page.</P>
-	<input type="submit" value="Preview"/>
-	</form>
-
 
 
 	<?php } else if ($this -> isBibtex()) { ?>
