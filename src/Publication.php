@@ -88,6 +88,26 @@ class Publication extends Object {
 	/**
 	 * @return string
 	 */
+	public function getInstitution() {
+		return $this -> getData('institution');
+	}
+	/**
+	 * @return string
+	 */
+	public function getSchool() {
+		return $this -> getData('school');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getHowpublished() {
+		return $this -> getData('howpublished');
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getVolume() {
 		return $this -> getData('volume');
 	}
@@ -109,6 +129,13 @@ class Publication extends Object {
 	/**
 	 * @return string
 	 */
+	public function getEdition() {
+		return $this -> getData('edition');
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getNote() {
 		return $this -> getData('note');
 	}
@@ -125,6 +152,13 @@ class Publication extends Object {
 	 */
 	public function getDoi() {
 		return $this -> getData('doi');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAddress() {
+		return $this -> getData('address');
 	}
 
 	/**
@@ -256,9 +290,10 @@ class Publication extends Object {
 		$data['journal'] = $this -> getJournalName();
 		$data['booktitle'] = $this -> getBookName();
 		$data['publisher'] = $this -> getPublisherName();
-		// $data['edition'] = $this -> getEdition();
-		// $data['institution'] = $this -> getInstitutionName();
-		// $data['howpublished'] = $this -> getHowpublished();
+		$data['edition'] = $this -> getEdition();
+		$data['institution'] = $this -> getInstitution();
+		$data['school'] = $this -> getSchool();
+		$data['howpublished'] = $this -> getHowpublished();
 		$data['year'] = $this -> getDatePublished('Y');
 		$data['month'] = $this -> getDatePublished('F');
 		$data['volume'] = $this -> getVolume();
@@ -267,6 +302,8 @@ class Publication extends Object {
 		$data['number'] = $this -> getNumber();
 		$data['series'] = $this -> getSeries();
 		$data['abstract'] = $this -> getAbstract();
+		$data['note'] = $this -> getNote();
+		$data['address'] = $this -> getAddress();
 		// some more missing
 		$data['key_terms'] = $key_terms;
 

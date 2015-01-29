@@ -10,23 +10,40 @@
 		});
 	</script>
 
-	<h1><?php echo $this -> showTitle() ?></h1>
-	<p>By: <?php echo $this -> showAuthors() ?>
-		<?php echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '' ?>
-		<br/>Published in <?php echo $this -> showDatePublished() ?>
-		<?php echo $this -> showPublisher() ? ' by '.$this -> showPublisher() : '' ?>
-		<?php echo $this -> showPages() ? '<br />Pages: '.$this -> showPages() : '' ?>
-		<br/>Type: <?php echo $this -> showType() ?></p>
+	<h1><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h1>
+	<p>
+	<?php
+	echo $this -> showDatePublished() ? $this -> showDatePublished() : '';
+	echo $this -> showAuthors() ? '<br />By: '.$this -> showAuthors() : '';
+	echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '';
+	echo $this -> showBook() ? '<br />In: '.$this -> showBook() : '';	
+	echo $this -> showPublisher() ? '<br />Publisher: '.$this -> showPublisher() : '';
+	echo $this -> showInstitution() ? '<br />Institution: '.$this -> showInstitution() : '';
+	echo $this -> showSchool() ? '<br />School: '.$this -> showSchool() : '';
+	echo $this -> showPages() ? '<br />Pages: '.$this -> showPages() : '';
+	echo $this -> showVolume() ? '<br />Volume: '.$this -> showVolume() : '';
+	echo $this -> showNumber() ? '<br />Number: '.$this -> showNumber() : '';
+	echo $this -> showSeries() ? '<br />Series: '.$this -> showSeries() : '';
+	echo $this -> showEdition() ? '<br />Edition: '.$this -> showEdition() : '';
+	echo $this -> showHowpublished() ? '<br />How published: '.$this -> showHowpublished() : '';
+	echo $this -> showType() ? '<br />Type: '.$this -> showType() : '';
+	?>
+	</p>
 
+	<?php if ($this -> showAbstract()) { ?>
 	<h2>Abstract</h2>
 	<p><?php echo $this -> showAbstract() ?></p>
+	<?php } ?>
 
+	<?php if ($this -> showReferences()) { ?>
 	<h2>References</h2>
 	<ul><?php echo $this -> showReferences() ?></ul>
+	<?php } ?>
 
-
+	<?php if ($this -> showKeyTerms()) { ?>
 	<h2>Key Terms</h2>
 	<p><?php echo $this -> showKeyTerms() ?></p>
+	<?php } ?>
 
 
 	<h2>Export this publication</h2>

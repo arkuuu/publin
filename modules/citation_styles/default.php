@@ -4,10 +4,7 @@
 $authors = $publication -> getAuthors();
 $num = count($authors);
 
-if ($num < 1) {
-	$citation .= 'Unknown Author';
-}
-else {
+if ($num > 0) {
 	$i = 1;
 	foreach ($authors as $author) {
 		if ($i == 1) {
@@ -32,14 +29,23 @@ else {
 		}
 		$i++;
 	}
+	$citation .= ': ';
 }
 
-/* the rest */
-$citation .= ': <a href="'.$publication_url.$publication -> getId().'">'
+/* the title */
+$citation .= '<a href="'.$publication_url.$publication -> getId().'">'
 			.$publication -> getTitle().'</a>';
 
+/* show journal or booktitle */
 if ($publication -> getJournalName()) {
-	$citation .= ', in: '.$publication -> getJournalName();
+	$citation .= ', in: <i>'.$publication -> getJournalName().'</i>';
+}
+else if ($publication -> getBookName()) {
+	$citation .= ', in: <i>'.$publication -> getBookName().'</i>';
 }
 
-$citation .= ', '.$publication -> getDatePublished('Y, F');
+/* shows the publish date */
+if ($publication -> getDatePublished('Y, F')) {
+	$citation .= ', '.$publication -> getDatePublished('Y, F');
+}
+

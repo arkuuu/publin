@@ -65,14 +65,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showTitle() {
-		$title = $this -> publication -> getTitle();
-
-		if ($title) {
-			return $title;
-		}
-		else {
-			throw new Exception('the publication with id '.$this -> publication -> getId().' has no title');
-		}
+		return $this -> publication -> getTitle();
 	}
 
 
@@ -83,14 +76,11 @@ class PublicationView extends View {
 	 */
 	public function showAuthors() {
 
-		$string = '';
+		$result = false;
 		$authors = $this -> publication -> getAuthors();
 		$num = count($authors);
 
-		if ($num < 1) {
-			throw new Exception('the publication with id '.$this -> publication -> getId().' has no authors');
-		}
-		else {
+		if ($num > 0) {
 			$i = 1;
 			foreach ($authors as $author) {
 
@@ -111,21 +101,20 @@ class PublicationView extends View {
 
 				if ($i == 1) {
 					/* first author */
-					$string .= $author;
+					$result .= $author;
 				}
 				else if ($i == $num) {
 					/* last author */
-					$string .= ' and '.$author;
+					$result .= ' and '.$author;
 				}
 				else {
 					/* all other authors */
-					$string .= ', '.$author;
+					$result .= ', '.$author;
 				}
 				$i++;
 			}
 		}
-
-		return $string;	
+		return $result;	
 	}
 
 
@@ -135,14 +124,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showDatePublished($format = 'F Y') {
-		$date = $this -> publication -> getDatePublished($format);
-
-		if (!empty($date)) {
-			return $date;
-		}
-		else {
-			throw new Exception('the publication with id '.$this -> publication -> getId().' has no publish date');
-		}
+		return $this -> publication -> getDatePublished($format);
 	}
 
 
@@ -160,15 +142,11 @@ class PublicationView extends View {
 		if ($type_id && $type_name) {
 			return '<a href="'.$url.$type_id.'">'.$type_name.'</a>';
 		}
-		// TODO: change this to not only show number
-		else if ($type_id) {
-			return $type_id;
-		}
 		else if ($type_name) {
 			return $type_name;
 		}
 		else {
-			throw new Exception('the publication with id '.$this -> publication -> getId().' has no type');
+			return false;
 		}
 	}
 
@@ -189,6 +167,30 @@ class PublicationView extends View {
 		}
 		else if ($journal_name) {
 			return $journal_name;
+		}
+		else {
+			return false;
+
+		}
+	}
+
+
+	/**
+	 * Shows the publication's book name.
+	 *
+	 * @return	string
+	 */
+	public function showBook() {
+
+		$url = '?p=publication&amp;id=';
+		$book_name = $this -> publication -> getBookName();
+		$book_id = $this -> publication -> getBookId();
+
+		if ($book_id && $book_name) {
+			return '<a href="'.$url.$book_id.'">'.$book_name.'</a>';
+		}
+		else if ($book_name) {
+			return $book_name;
 		}
 		else {
 			return false;
@@ -220,20 +222,48 @@ class PublicationView extends View {
 		}
 	}
 
+	public function showInstitution() {
+		return $this -> publication -> getInstitution();
+	}
+
+	public function showSchool() {
+		return $this -> publication -> getSchool();
+	}
+	public function showHowpublished() {
+		return $this -> publication -> getHowpublished();
+	}
+	public function showAdress() {
+		return $this -> publication -> getAdress();
+	}
+	public function showDoi() {
+		return $this -> publication -> getDoi();
+	}
+	public function showIsbn() {
+		return $this -> publication -> getIsbn();
+	}
+	public function showNote() {
+		return $this -> publication -> getNote();
+	}
+	public function showSeries() {
+		return $this -> publication -> getSeries();
+	}
+	public function showNumber() {
+		return $this -> publication -> getNumber();
+	}
+	public function showVolume() {
+		return $this -> publication -> getVolume();
+	}
+	public function showEdition() {
+		return $this -> publication -> getEdition();
+	}
+
 	/**
 	 * Shows the publication's abstract.
 	 *
 	 * @return	string
 	 */
 	public function showAbstract() {
-		$abstract = $this -> publication -> getAbstract();
-
-		if (!empty($abstract)) {
-			return $abstract;
-		}
-		else {
-			return 'no abstract given';
-		}
+		return $this -> publication -> getAbstract();
 	}
 
 	/**
@@ -244,7 +274,7 @@ class PublicationView extends View {
 	 * @return	string
 	 */
 	public function showReferences() {
-		return '<li>TODO</li>';
+		return false;
 	}
 
 
@@ -279,8 +309,7 @@ class PublicationView extends View {
 			return substr($string, 0, -(strlen($separator)));
 		}
 		else {
-
-			return 'no key terms assigned';
+			return false;
 		}
 	}
 
