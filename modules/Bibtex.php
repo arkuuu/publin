@@ -72,18 +72,17 @@ class Bibtex {
 		}
 
 		/* Gets the BibTeX type or returns false if there is no type given */
-		if (isset($data['type']) && !empty($data['type'])) {
-
+		if (!empty($data['type'])) {
 			$type = $data['type'];
 			unset($data['type']);
 		}
 		else {
+			// TODO: throw exception?
 			return false;
 		}
 
 		/* Gets the cite key or generates one if there is none given */
 		if (!empty($data['cite_key'])) {
-
 			$cite_key = $data['cite_key'];
 			unset($data['cite_key']);
 		}
@@ -92,7 +91,7 @@ class Bibtex {
 		}
 
 		/* Composes the authors string */
-		if (isset($data['author'])) {
+		if (isset($data['author']) && is_array($data['author'])) {
 			$string = '';
 			$given = $this -> author_fields['given'];
 			$family = $this -> author_fields['family'];
@@ -107,17 +106,17 @@ class Bibtex {
 		}
 
 		/* Composes the keywords string */
-		if (isset($data['keywords'])) {
+		if (isset($data['keywords']) && is_array($data['keywords'])) {
 			$string = '';
-			foreach ($data['keywords'] as $keywords) {
-				$string .= $keywords.', ';
+			foreach ($data['keywords'] as $keyword) {
+				$string .= $keyword.', ';
 			}
 			$string = substr($string, 0, -2);
 			$data['keywords'] = $string;
 		}
 
 		/* Composes the pages string */
-		if (isset($data['pages'])) {
+		if (isset($data['pages']) && is_array($data['pages'])) {
 			$string = '';
 			$from = $this -> pages_fields['from'];
 			$to = $this -> pages_fields['to'];
@@ -168,8 +167,17 @@ class Bibtex {
 
 		/* Gets the entry type and the cite key */
 		preg_match('/\@(article|book|incollection|inproceedings|masterthesis|misc|phdthesis|techreport|unpublished|inbook)\s?(\"|\{)([^\"\},]*),/i', $input, $typeReg);
-		$result['type'] = strtolower($typeReg[1]);
-		$result['cite_key'] = $typeReg[3];
+
+		if (!empty($typeReg[1])) {
+			$result['type'] = strtolower($typeReg[1]);
+		}
+		else {
+			// TODO: throw exception?
+			return false;
+		}
+		if (!empty($typeReg[3])) {
+			$result['cite_key'] = $typeReg[3];
+		}
 
 		/* Gets all other fields */
 		foreach ($this -> fields as $bibtex_field => $your_field) {
