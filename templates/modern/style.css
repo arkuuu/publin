@@ -131,7 +131,10 @@ div#right a:hover {
 	text-decoration: underline;
 }
 	
-
+input, label {
+	margin-right: 5px;
+	margin-bottom: 10px;
+}
 
 /*	Other stuff */
 .form ul {
@@ -145,19 +148,17 @@ div#right a:hover {
 	display: block;
 	width: 400px;
 	float: left;
-	margin-bottom: 10px;
+
 }
 
 .form label
 {
 	width: 130px;
 	text-align: left;
-	padding-right: 10px;
 }
 
 .form li input {
 	width: 250px;
-	margin-right: 5px;
 	margin-bottom: 0px;
 }
 
