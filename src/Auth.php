@@ -20,6 +20,7 @@ class Auth {
 	public function validateLogin($user_name, $password) {
 		$user_name = $this -> db -> real_escape_string($user_name);
 		$password = $this -> db -> real_escape_string($password);
+		// TODO: use password hash instead of clear password!
 
 		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$user_name.'" AND `password` = "'.$password.'";';
 		$result = $this -> db -> getData($query);
