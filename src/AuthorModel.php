@@ -64,6 +64,16 @@ class AuthorModel {
 
 	public function store(Author $author) {
 
+		$data = $author -> getData();
+		$id = $this -> db -> insertData('list_authors', $data);
+
+		if (!empty($id)) {
+			return $id;
+		}
+		else {
+			throw new Exception('Error while inserting author to DB');
+			
+		}
 	}
 
 }

@@ -38,6 +38,15 @@ abstract class Object {
 		return $this -> data;
 	}
 
+	public function setData(array $data) {
+
+		foreach ($data as $key => $value) {
+			if (isset($this -> data[$key]) && $key != 'id') {
+				$this -> data[$key] = $value;
+			}
+		}
+	}
+
 	/**
 	 * Returns the id.
 	 *

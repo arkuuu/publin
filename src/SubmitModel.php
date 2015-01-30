@@ -250,11 +250,8 @@ class SubmitModel extends Model {
 		}
 
 		if (empty($this -> errors)) {
-			$publication = new Publication($data);
-			$publication -> setAuthors($authors);
-			$publication -> setKeyTerms($key_terms);
-
-			print_r($publication);
+			$model = new PublicationModel($this -> db);
+			$publication = $model -> create($data, $authors, $key_terms);
 			$this -> publication = $publication;
 			return $publication;
 		}
@@ -278,7 +275,9 @@ class SubmitModel extends Model {
 
 
 		if ($given && $family) {
-			return new Author(array('given' => $given, 'family' => $family));
+			$model = new AuthorModel($this -> db);
+			$author = $model -> create(array('given' => $given, 'family' => $family));
+			return $author;
 		}
 		else if ($given) {
 			$this -> errors[] = 'The author '.$given.' needs a family name';
@@ -300,7 +299,9 @@ class SubmitModel extends Model {
 		$name = $this -> validateInput('name', $input);
 
 		if ($name) {
-			return new KeyTerm(array('name' => $name));
+			$model = new KeyTermModel($this -> db);
+			$key_term = $model -> create(array('name' => $name));
+			return $key_term;
 		}
 		else {
 			$this -> errors[] = 'Invalid input for key term '.$input;
@@ -310,94 +311,10 @@ class SubmitModel extends Model {
 
 
 	public function storePublication(Publication $publication) {
-
-		$data = $publication -> getData();
-		$authors = $publication -> getAuthors();
-		$key_terms = $publication -> getKeyTerms();
-
-		$author_ids = array();
-		foreach ($authors as $author) {
-			$author_ids[] = $this -> storeObject($author);
-		}
-
-		$key_term_ids = array();
-		foreach ($key_terms as $key_term) {
-			$key_term_ids[] = $this -> storeObject($key_term);
-		}
-		// TODO: do this for type and study field!
-		if (isset($data['type'])) {
-			$data['type_id'] = $this -> storeObject(new Type(array('name' => $data['type'])));
-			unset($data['type']);
-		}
-		if (isset($data['study_field'])) {
-			$data['study_field_id'] = $this -> storeObject(new StudyField(array('name' => $data['study_field'])));
-			unset($data['study_field']);
-		}
-		if (isset($data['journal'])) {
-			$data['journal_id'] = $this -> storeObject(new Journal(array('name' => $data['journal'])));
-			unset($data['journal']);
-		}
-		if (isset($data['publisher'])) {
-			$data['publisher_id'] = $this -> storeObject(new Publisher(array('name' => $data['publisher'])));
-			unset($data['publisher']);
-		}
-
-
-		$publication_id = $this -> db -> insertData('list_publications', $data);
-
-		if (!empty($publication_id)) {
-
-			if (!empty($author_ids)) {
-				$prio = 1; // TODO: really start with 1 and go up?
-				foreach ($author_ids as $author_id) {
-					$data = array('publication_id' => $publication_id,
-								'author_id' => $author_id, 'priority' => $prio);
-					$this -> db -> insertData('rel_publ_to_authors', $data);
-					$prio++;
-				}
-			}
-
-			if (!empty($key_term_ids)) {
-				foreach ($key_term_ids as $key_term_id) {
-					$data = array('publication_id' => $publication_id,
-								'key_term_id' => $key_term_id);
-					$this -> db -> insertData('rel_publ_to_key_terms', $data);
-				}
-			}
-
-			return $publication_id;
-		}
-		else {
-			throw new Exception('Error while inserting publication to DB');
-			
-		}
+		$model = new PublicationModel($this -> db);
+		$model -> store($publication);
 	}
 
-
-	public function storeObject(Object $object) {
-
-		$tables = array(
-					'Type' => 'list_types',
-					'StudyField' => 'list_study_fields',
-					'Author' => 'list_authors',
-					'KeyTerm' => 'list_key_terms',
-					'Journal' => 'list_journals',
-					'Publisher' => 'list_publishers',);
-
-		$data = $object -> getData();
-		$class = get_class($object);
-		$table = isset($tables[$class]) ? $tables[$class] : false;
-
-		$object_id = $this -> db -> insertData($table, $data);
-
-		if (!empty($object_id)) {
-			return $object_id;
-		}
-		else {
-			throw new Exception('Error while inserting '.$class.' to DB');
-			
-		}
-	}
 
 
 }

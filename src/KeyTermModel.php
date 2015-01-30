@@ -8,6 +8,7 @@ class KeyTermModel {
 
 	private $db;
 	private $num;
+	private $errors;
 
 	
 	public function __construct(Database $db) {
@@ -17,6 +18,9 @@ class KeyTermModel {
 	
 	public function getNum() {
 		return $this -> num;
+	}
+	public function getErrors() {
+		return $this -> errors;
 	}
 
 
@@ -35,7 +39,7 @@ class KeyTermModel {
 	}
 
 
-	public function validate(array $input) {
+	public function validate(array &$input) {
 
 		$errors = array();
 		// validation
