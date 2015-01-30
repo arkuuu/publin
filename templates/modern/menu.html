@@ -12,34 +12,12 @@
 		</div>
 		<div id="login">
 			<ul>
-				<li><a href="./?p=login">Login</a></li>
-				<!-- <li><a href="#">Max Mustermann</a></li> -->
-				<!-- <li><a href="#">Logout</a></li> -->
+				<?php echo $this -> showUserName() ? '<li><a href="#">'.$this -> showUserName().'</a></li>' : ''?>
+				<?php echo $this -> showUserName() ? '<li><a href="./?p=logout">Logout</a></li>' : '<li><a href="./?p=login">Login</a></li>'?>
 			</ul>
 		</div>
 		<div class="clearBoth"></div>
 		</div>
 	</div>
-<!-- 	<div id="menu">
-		<div id="logo">&nbsp;</div>
-		<h1>publin alpha</h1>
-		<ul>
-			<li><a href="./?p=start">Start</a></li>
-			<li><a href="./?p=browse&amp;by=recent">Recent</a></li>	
-			<li><a href="./?p=browse">Browse</a>
-				<ul>
-					<li><a href="./?p=browse&amp;by=author">Authors</a></li>
-					<li><a href="./?p=browse&amp;by=journal">Journals</a></li>
-					<li><a href="./?p=browse&amp;by=publisher">Publishers</a></li>
-					<li><a href="./?p=browse&amp;by=year">Years</a></li>
-					<li><a href="./?p=browse&amp;by=type">Types</a></li>
-					<li><a href="./?p=browse&amp;by=key_term">Key Terms</a></li>			
-					<li><a href="./?p=browse&amp;by=study_field">Fields of Study</a></li>	
-				</ul>
-			</li>
-			<li><a href="./?p=submit">Submit</a></li>	
-			<li><a href="./?p=about">About</a></li>	
-		</ul>
-	</div> -->
 	<div id="right">
 		<div class="content">

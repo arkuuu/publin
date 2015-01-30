@@ -1,48 +1,30 @@
 <?php
 
-require_once 'StudyField.php';
-require_once 'Type.php';
-require_once 'Model.php';
+require_once 'StudyFieldModel.php';
+require_once 'TypeModel.php';
+require_once 'JournalModel.php';
+require_once 'PublisherModel.php';
 
-/**
- * Model for browse page
- *
- * TODO: comment
- */
-class BrowseModel extends Model {
-
-	/**
-	 * @var	string
-	 */
-	private $browse_type;
-
-	/**
-	 * @var	array
-	 */
+class BrowseModel {
+	
+	private $db;
 	private $list = array();
-
-	/**
-	 * @var	array
-	 */
 	private $result = array();
-
-	/**
-	 * @var	boolean
-	 */
+	private $browse_type;
 	private $is_result = false;
+	private $num = -9999;
 
 
+	public function __construct(Database $db) {
+		$this -> db = $db;
+	}
 
-	/**
-	 * Constructs the model and gets all data needed.
-	 *
-	 * @param	string		$type	Type of browsing
-	 * @param	int			$id		Id of browsing
-	 * @param	Database	$db		Database connection
-	 */
-	public function __construct($type, $id) {
+	public function getNum() {
+		return $this -> num;
+	}
 
-		parent::__construct();
+
+	public function handle($type, $id) {
 
 		if (!empty($type)) {
 
@@ -52,61 +34,79 @@ class BrowseModel extends Model {
 
 				case 'recent':
 					$this -> is_result = true;
-					$this -> result = $this -> createPublications(false, array('limit' => '0,10'));
+					$model = new PublicationModel($this -> db);
+					$this -> result = $model -> fetch(false, array('limit' => '0,10'));
+					$this -> num = $model -> getNum();
 					break;
 
 				case 'author':
-					$this -> list = $this -> createAuthors(false);
+					$model = new AuthorModel($this -> db);
+					$this -> list = $model -> fetch(false);
 					break;
 
 				case 'key_term':
 					if ($id > 0) {
 						$this -> is_result = true;
-						$this -> result = $this -> createPublications(false, array('key_term_id' => $id));
+						$model = new PublicationModel($this -> db);
+						$this -> result = $model -> fetch(false, array('key_term_id' => $id));
+						$this -> num = $model -> getNum();
 					}
 					else {
-						$this -> list = $this -> createKeyTerms();
+						$model = new KeyTermModel($this -> db);
+						$this -> list = $model -> fetch();
 					}
 					break;
 				
 				case 'study_field':				
 					if ($id > 0) {
 						$this -> is_result = true;
-						$this -> result = $this -> createPublications(false, array('study_field_id' => $id));
+						$model = new PublicationModel($this -> db);
+						$this -> result = $model -> fetch(false, array('study_field_id' => $id));
+						$this -> num = $model -> getNum();
 					}
 					else {
-						$this -> list = $this -> createStudyFields();
-						$this -> num = $this -> getNum();
+						$model = new StudyFieldModel($this -> db);
+						$this -> list = $model -> fetch();
+						$this -> num = $model -> getNum();
 					}
 					break;
 
 				case 'type':
 					if ($id > 0) {
 						$this -> is_result = true;
-						$this -> result = $this -> createPublications(false, array('type_id' => $id));
+						$model = new PublicationModel($this -> db);
+						$this -> result = $model -> fetch(false, array('type_id' => $id));
+						$this -> num = $model -> getNum();
 					}
 					else {
-						$this -> list = $this -> createTypes();
+						$model = new TypeModel($this -> db);
+						$this -> list = $model -> fetch();
 					}
 					break;
 
 				case 'journal':
 					if ($id > 0) {
 						$this -> is_result = true;
-						$this -> result = $this -> createPublications(false, array('journal_id' => $id));
+						$model = new PublicationModel($this -> db);
+						$this -> result = $model -> fetch(false, array('journal_id' => $id));
+						$this -> num = $model -> getNum();
 					}
 					else {
-						$this -> list = $this -> createJournals();
+						$model = new JournalModel($this -> db);
+						$this -> list = $model -> fetch();
 					}
 					break;
 
 				case 'publisher':
 					if ($id > 0) {
 						$this -> is_result = true;
-						$this -> result = $this -> createPublications(false, array('publisher_id' => $id));
+						$model = new PublicationModel($this -> db);
+						$this -> result = $model -> fetch(false, array('publisher_id' => $id));
+						$this -> num = $model -> getNum();
 					}
 					else {
-						$this -> list = $this -> createPublishers();
+						$model = new PublisherModel($this -> db);
+						$this -> list = $model -> fetch();
 					}
 					break;
 
@@ -115,7 +115,9 @@ class BrowseModel extends Model {
 
 						// $this -> browse_list = $this -> fetchMonths();
 						$this -> is_result = true;
-						$this -> result = $this -> createPublications(false, array('year_published' => $id));
+						$model = new PublicationModel($this -> db);
+						$this -> result = $model -> create(false, array('year_published' => $id));
+						$this -> num = $model -> getNum();
 
 					}
 					else {
@@ -195,11 +197,6 @@ class BrowseModel extends Model {
 	}
 
 
-	/**
-	 * Returns an array with all years from the database.
-	 *
-	 * @return	array
-	 */
 	private function fetchYears() {
 		$data = $this -> db -> fetchYears();
 		$this -> num = $this -> db -> getNumRows();
@@ -212,18 +209,6 @@ class BrowseModel extends Model {
 
 		return $years;
 
-	}
-
-
-	/**
-	 * Returns an array with all months.
-	 *
-	 * @return	array
-	 */
-	private function fetchMonths() {
-		$data = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-
-		return $data;
 	}
 
 }

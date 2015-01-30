@@ -4,11 +4,14 @@ require_once 'SubmitModel.php';
 
 class SubmitController {
 
-	public function __construct() {
-		// not if there is a session already
-		// session_destroy();
-		session_start();
-		// $_SESSION = array();
+	private $db;
+
+	public function __construct($db) {
+		$this -> db = $db;
+
+		if (!isset($_SESSION)) {
+			session_start();
+		}
 
 	}
 
@@ -20,7 +23,7 @@ class SubmitController {
 			$mode = 'start';
 		}
 
-		$model = new SubmitModel;
+		$model = new SubmitModel($this -> db);
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST)) {
 			if (!empty($_POST['bibtex'])) {

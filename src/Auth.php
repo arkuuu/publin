@@ -28,6 +28,8 @@ class Auth {
 		if ($this -> db -> getNumRows() == 1) {
 			$user = new User($result[0]);
 			$_SESSION['user'] = $user;
+			$user -> setPermissions($this -> getPermissions($user));
+			return true;
 		}
 		else {
 			return false;
@@ -70,6 +72,20 @@ class Auth {
 		else {
 			return false;
 		}
+	}
+
+	public function getPermissions(User $user) {
+
+		$user_id = $this -> db -> real_escape_string($user -> getId());
+
+		$query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r 
+		LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
+		LEFT JOIN `rel_user_roles` rur ON (rur.`role_id` = rrp.`role_id`)
+		WHERE rur.`user_id` = '.$user_id.';';
+
+		$permissions = $this -> db -> getData($query);
+
+		return $permissions;
 	}
 
 

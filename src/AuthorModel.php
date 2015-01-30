@@ -1,47 +1,69 @@
 <?php
 
-require_once 'Model.php';
+require_once 'PublicationModel.php';
+require_once 'Author.php';
 
-/**
- * Model for author page
- *
- * TODO: comment
- */
-class AuthorModel extends Model {
+
+class AuthorModel {
+
+
+	private $db;
+	private $num;
+
 	
-	/**
-	 * @var	Author
-	 */
-	private $author;
-
-
-
-	/**
-	 * Constructs the model and gets all data needed for author page.
-	 *
-	 * Fetches the author, the author's publications and the authors of these
-	 * publications and adds everything to the author object.
-	 *
-	 * @param	int			$id		Id of the author
-	 * @param	Database	$db		Database connection
-	 */
-	public function __construct($id) {
-
-		parent::__construct();
-
-		$authors = $this -> createAuthors(true, array('id' => $id));
-		// TODO: check if really only one was returned
-		$this -> author = $authors[0];
+	public function __construct(Database $db) {
+		$this -> db = $db;
 	}
 
 
-	/**
-	 * Returns the Author object.
-	 *
-	 * @return	Author
-	 */
-	public function getAuthor() {
-		return $this -> author;
+	public function getNum() {
+		return $this -> num;
+	}
+
+
+	public function fetch($mode, array $filter = array()) {
+
+		$authors = array();
+
+		/* Gets the authors */
+		$data = $this -> db -> fetchAuthors($filter);
+		$this -> num = $this -> db -> getNumRows();
+
+		foreach ($data as $key => $value) {
+			$author = new Author($value);
+		
+			if ($mode) {
+				/* Gets the authors' publications */
+				$model = new PublicationModel($this -> db);
+				$publications = $model -> fetch(false, array('author_id' => $author -> getId()));
+				$author -> setPublications($publications);
+			}
+
+			$authors[] = $author;
+		}
+
+		return $authors;
+	}
+
+
+	public function validate(array $input) {
+
+		$errors = array();
+		// validation
+		return $errors;
+	}
+
+
+	public function create(array $data) {
+
+		// validation here?
+		$author = new Author($data);
+		return $author;
+	}
+
+
+	public function store(Author $author) {
+
 	}
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 require_once 'FormatHandler.php';
+require_once 'Model.php';
 
 class SubmitModel extends Model {
 	
@@ -33,8 +34,8 @@ class SubmitModel extends Model {
 
 
 
-	public function __construct() {
-		parent::__construct();
+	public function __construct($db) {
+		parent::__construct($db);
 	}
 
 	public function getErrors() {

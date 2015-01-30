@@ -161,6 +161,10 @@ class Publication extends Object {
 		return $this -> getData('address');
 	}
 
+	public function getCopyright() {
+		return $this -> getData('copyright');
+	}
+
 	/**
 	 * @return string
 	 */
@@ -304,6 +308,7 @@ class Publication extends Object {
 		$data['abstract'] = $this -> getAbstract();
 		$data['note'] = $this -> getNote();
 		$data['address'] = $this -> getAddress();
+		$data['bibsource'] = 'publin alpha';
 		// some more missing
 		$data['key_terms'] = $key_terms;
 

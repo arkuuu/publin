@@ -22,7 +22,7 @@ abstract class View {
 		$this -> content = $content;
 	}
 
-	protected function displayContentOnly() {
+	public function displayContentOnly() {
 
 		$content = './templates/'.$this -> template.'/'.$this -> content.'.html';
 
@@ -95,6 +95,24 @@ abstract class View {
 	 */
 	public function showMetaTags() {	// TODO: make abstract
 		return "\n";
+	}
+
+	public function showUserName() {
+		if (isset($_SESSION['user'])) {
+			return $_SESSION['user'] -> getName();
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function checkUserPermission($permission) {
+		if (isset($_SESSION['user']) && $_SESSION['user'] -> hasPermission($permission)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	

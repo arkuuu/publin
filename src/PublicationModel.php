@@ -1,47 +1,79 @@
 <?php
 
-require_once 'Model.php';
+require_once 'AuthorModel.php';
+require_once 'KeyTermModel.php';
+require_once 'Publication.php';
 
-/**
- * Model for publication page
- *
- * TODO: comment
- */
-class PublicationModel extends Model {
-	
-	/**
-	 * @var	Publication
-	 */
-	private $publication;
+
+class PublicationModel {
+
+	private $db;
+	private $num;
 
 	
-
-	/**
-	 * Constructs the model and gets all data needed for publication page.
-	 *
-	 * Fetches the publication, the publications authors and key terms and adds
-	 * everything to the publication object.
-	 *
-	 * @param	int			$id		Id of the publication
-	 * @param	Database	$db		Database connection
-	 */
-	public function __construct($id) {
-
-		parent::__construct();
-
-		$publications = $this -> createPublications(true, array('id' => $id));
-		// TODO: check if really only one was returned
-		$this -> publication = $publications[0];
+	public function __construct(Database $db) {
+		$this -> db = $db;
 	}
 
 
-	/**
-	 * Returns the Publication object.
-	 *
-	 * @return	Publication
-	 */
-	public function getPublication() {
-		return $this -> publication;
+	public function getNum() {
+		return $this -> num;
+	}
+
+
+	public function fetch($mode, array $filter = array()) {
+
+		$publications = array();
+
+		/* Gets the publications */
+		$data = $this -> db -> fetchPublications($filter);
+		$this -> num = $this -> db -> getNumRows();
+
+		foreach ($data as $key => $value) {
+			$publication = new Publication($value);
+
+			/* Gets the publications' authors */
+			$model = new AuthorModel($this -> db);
+			$authors = $model -> fetch(false, array('publication_id' => $publication -> getId()));
+			$publication -> setAuthors($authors);
+
+			if ($mode) {
+				/* Gets the publications' key terms */
+				$model = new KeyTermModel($this -> db);
+				$key_terms = $model -> fetch(array('publication_id' => $publication -> getId()));
+				$publication -> setKeyTerms($key_terms);
+			}
+
+			$publications[] = $publication;
+		}
+
+		return $publications;
+	}
+
+
+	public function validate(array $input) {
+
+		$errors = array();
+
+		// validation
+
+		return $errors;
+	}
+
+
+	public function create(array $data, array $authors, array $key_terms) {
+
+		// validation here?
+		$publication = new Publication($data);
+		$publication -> setAuthors($authors);
+		$publication -> setKeyTerms($key_terms);
+
+		return $publication;
+	}
+
+
+	public function store(Publication $publication) {
+
 	}
 
 }
