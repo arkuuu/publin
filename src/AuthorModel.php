@@ -48,15 +48,20 @@ class AuthorModel {
 
 	public function validate(array $input) {
 
-		$errors = array();
-		// validation
-		return $errors;
+		// TODO not sure if useful
+		$allowed_fields = array('given', 'family');
+
+		foreach ($input as $key => $value) {
+			if (!in_array($key, $allowed_fields)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 
 	public function create(array $data) {
 
-		// validation here?
 		$author = new Author($data);
 		return $author;
 	}
@@ -64,6 +69,7 @@ class AuthorModel {
 
 	public function store(Author $author) {
 
+		// validation here?
 		$data = $author -> getData();
 		$id = $this -> db -> insertData('list_authors', $data);
 
@@ -74,6 +80,16 @@ class AuthorModel {
 			throw new Exception('Error while inserting author to DB');
 			
 		}
+	}
+
+
+	public function update($id, array $data) {
+		
+	}
+
+
+	public function delete($id) {
+
 	}
 
 }
