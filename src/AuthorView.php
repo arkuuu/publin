@@ -17,12 +17,10 @@ class AuthorView extends View {
 	private $author;
 
 
-
 	/**
 	 * Constructs the author view.
 	 *
-	 * @param	AuthorModel		$model		The author model
-	 * @param	string			$template	The template folder
+	 * @param Author $author
 	 */
 	public function __construct(Author $author) {
 
@@ -44,7 +42,8 @@ class AuthorView extends View {
 	/**
 	 * Shows the author's name.
 	 *
-	 * @return	string
+	 * @return string
+	 * @throws Exception
 	 */
 	public function showName() {
 		$name = $this -> author -> getName();
@@ -99,7 +98,8 @@ class AuthorView extends View {
 	/**
 	 * Shows the author's publications.
 	 *
-	 * @return	string
+	 * @param string $style
+	 * @return string
 	 */
 	public function showPublications($style = '') {
 

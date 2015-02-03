@@ -8,7 +8,7 @@ require_once 'PublisherModel.php';
 class BrowseModel {
 	
 	private $db;
-	private $list = array();
+	private $browse_list = array();
 	private $result = array();
 	private $browse_type;
 	private $is_result = false;
@@ -41,7 +41,7 @@ class BrowseModel {
 
 				case 'author':
 					$model = new AuthorModel($this -> db);
-					$this -> list = $model -> fetch(false);
+					$this -> browse_list = $model -> fetch(false);
 					break;
 
 				case 'key_term':
@@ -53,7 +53,7 @@ class BrowseModel {
 					}
 					else {
 						$model = new KeyTermModel($this -> db);
-						$this -> list = $model -> fetch();
+						$this -> browse_list = $model -> fetch();
 					}
 					break;
 				
@@ -66,7 +66,7 @@ class BrowseModel {
 					}
 					else {
 						$model = new StudyFieldModel($this -> db);
-						$this -> list = $model -> fetch();
+						$this -> browse_list = $model -> fetch();
 						$this -> num = $model -> getNum();
 					}
 					break;
@@ -80,7 +80,7 @@ class BrowseModel {
 					}
 					else {
 						$model = new TypeModel($this -> db);
-						$this -> list = $model -> fetch();
+						$this -> browse_list = $model -> fetch();
 					}
 					break;
 
@@ -93,7 +93,7 @@ class BrowseModel {
 					}
 					else {
 						$model = new JournalModel($this -> db);
-						$this -> list = $model -> fetch();
+						$this -> browse_list = $model -> fetch();
 					}
 					break;
 
@@ -106,44 +106,23 @@ class BrowseModel {
 					}
 					else {
 						$model = new PublisherModel($this -> db);
-						$this -> list = $model -> fetch();
+						$this -> browse_list = $model -> fetch();
 					}
 					break;
 
 				case 'year':
 					if ($id > 0) {
 
-						// $this -> browse_list = $this -> fetchMonths();
 						$this -> is_result = true;
 						$model = new PublicationModel($this -> db);
-						$this -> result = $model -> create(false, array('year_published' => $id));
+						$this -> result = $model -> fetch(false, array('year_published' => $id));
 						$this -> num = $model -> getNum();
 
 					}
 					else {
-						$this -> list = $this -> fetchYears();
+						$this -> browse_list = $this -> fetchYears();
 					}
 					break;
-
-				// case 'year:month':
-				// 	if ($id > 0) {
-				// 		$year = strtok($id, ':');
-				// 		$month = strtok(':');
-
-				// 		if (empty($month)) {
-				// 			$this -> browse_list = $this -> fetchMonths();
-				// 			$this -> fetchPublications(array('year' => $id));
-				// 		}
-				// 		else {
-				// 			$this -> fetchPublications(array('year' => $year, 'month' => $month));
-				// 		}
-
-				// 		$this -> browse_num = $this -> db -> getNumData();
-				// 		if ($this -> browse_num > 0) {
-				// 			$this -> fetchAuthorsOfPublications();
-				// 		}
-				// 	}
-				// 	break;
 
 
 				default:
@@ -170,7 +149,7 @@ class BrowseModel {
 	 * @return	array
 	 */
 	public function getBrowseList() {
-		return $this -> list;
+		return $this -> browse_list;
 	}
 
 

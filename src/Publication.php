@@ -176,6 +176,7 @@ class Publication extends Object {
 	}
 
 	/**
+	 * @param $divider
 	 * @return string
 	 */
 	public function getPages($divider) {

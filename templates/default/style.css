@@ -39,9 +39,7 @@ div#menu {
 div#menu #logo {  
 	height: 100px;
 	padding: 0;
-	background-image: url(logo.png);
-	background-repeat: no-repeat;
-	background-position: center;
+	background: url(logo.png) no-repeat center;
 }
 
 div#menu h1, div#menu p, div#menu ul {

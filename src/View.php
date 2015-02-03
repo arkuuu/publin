@@ -44,8 +44,8 @@ abstract class View {
 
 	/**
 	 * Returns the content of the page.
-	 *
-	 * @return	string
+	 * @return string
+	 * @throws Exception
 	 */
 	public function display() {
 		$header = './templates/'.$this -> template.'/header.html';

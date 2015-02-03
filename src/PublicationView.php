@@ -18,12 +18,10 @@ class PublicationView extends View {
 	private $publication;
 
 
-
 	/**
 	 * Constructs the publication view.
 	 *
-	 * @param	PublicationModel	$model		The publication model
-	 * @param	string				$template	The template folder
+	 * @param Publication $publication
 	 */
 	public function __construct(Publication $publication) {
 
@@ -72,7 +70,8 @@ class PublicationView extends View {
 	/**
 	 * Shows the publication's authors.
 	 *
-	 * @return	string
+	 * @return string
+	 * @throws Exception
 	 */
 	public function showAuthors() {
 
@@ -121,7 +120,8 @@ class PublicationView extends View {
 	/**
 	 * Shows the publication's publish date.
 	 *
-	 * @return	string
+	 * @param string $format
+	 * @return string
 	 */
 	public function showDatePublished($format = 'F Y') {
 		return $this -> publication -> getDatePublished($format);

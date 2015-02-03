@@ -15,12 +15,10 @@ class BrowseView extends View {
 	private $model;
 
 
-
 	/**
 	 * Constructs the browse view.
 	 *
-	 * @param	BrowseModel		$model		The browse model
-	 * @param	string			$template	The template folder
+	 * @param    BrowseModel $model The browse model
 	 */
 	public function __construct(BrowseModel $model) {
 
@@ -173,7 +171,8 @@ class BrowseView extends View {
 	/**
 	 * Shows the browse results.
 	 *
-	 * @return	string
+	 * @param string $style
+	 * @return string
 	 */
 	public function showBrowseResult($style = 'default') {
 

@@ -78,9 +78,7 @@ div#nav a:hover, div#nav a.active, div#login a:hover, div#login a.active {
 div#logo {  
 	height: 80px;
 	width: 209px;
-	background-image: url(logo.png);
-	background-repeat: no-repeat;
-	background-position: center;
+	background: url(logo.png) no-repeat center;
 	/*background-color: red;*/
 }
 
@@ -159,7 +157,7 @@ input, label {
 
 .form li input {
 	width: 250px;
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
 
 .form br

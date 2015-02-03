@@ -20,8 +20,6 @@ require_once 'Auth.php';
  */
 class Controller {
 
-	private $view;
-	private $model;
 	private $auth;
 	private $db;
 
@@ -48,7 +46,10 @@ class Controller {
 	 *
 	 * TODO: comment
 	 *
-	 * @return	string
+	 * @param $page
+	 * @param $id
+	 * @param $by
+	 * @return string
 	 */
 	public function run($page, $id, $by) {
 

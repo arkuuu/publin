@@ -69,6 +69,9 @@ class SubmitView extends View {
 			$sub_view = new PublicationView($publication);
 			return $sub_view -> displayContentOnly();
 		}
+		else {
+			return false;
+		}
 	}
 
 

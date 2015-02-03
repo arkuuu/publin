@@ -15,12 +15,10 @@ class GenericView extends View {
 	private $page;
 
 
-
 	/**
 	 * Constructs the generic view.
 	 *
-	 * @param	string		$page		The page (=template file)
-	 * @param	string		$template	The template folder
+	 * @param    string $page The page (=template file)
 	 */
 	public function __construct($page) {
 

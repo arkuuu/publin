@@ -15,7 +15,7 @@ abstract class Model {
 
 
 
-	protected function __construct($db) {
+	protected function __construct(Database $db) {
 		$this -> db = $db;
 	}
 

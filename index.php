@@ -26,4 +26,3 @@ else {
 $controller = new Controller();
 echo $controller -> run($p, $id, $by);
 
-?>

@@ -4,7 +4,7 @@ require_once 'Author.php';
 require_once 'Publication.php';
 
 /**
- * Handles the links to other bibliograpgic services.
+ * Handles the links to other bibliographic services.
  *
  * TODO: comment
  */

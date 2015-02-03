@@ -58,9 +58,8 @@ class Bibtex {
 	/**
 	 * TODO: comment
 	 *
-	 * @param	array	$data	description
-	 *
-	 * @return	string
+	 * @param $input
+	 * @return string
 	 */
 	public function export($input) {
 
@@ -144,9 +143,8 @@ class Bibtex {
 	/**
 	 * TODO: comment
 	 *
-	 * @param	string	$bibtex	description
-	 *
-	 * @return	array
+	 * @param $input
+	 * @return array
 	 */
 	public function import($input) {
 
