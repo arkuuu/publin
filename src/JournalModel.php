@@ -3,76 +3,81 @@
 require_once 'Journal.php';
 
 
+
 class JournalModel {
 
 
-	private $db;
-	private $num;
-
-	
-	public function __construct(Database $db) {
-		$this -> db = $db;
-	}
-
-	
-	public function getNum() {
-		return $this -> num;
-	}
+    private $db;
+    private $num;
 
 
-	public function fetch(array $filter = array()) {
+    public function __construct(Database $db) {
 
-		$journals = array();
-
-		$data = $this -> db -> fetchJournals($filter);
-		$this -> num = $this -> db -> getNumRows();
-
-		foreach ($data as $key => $value) {
-			$journals[] = new Journal($value);
-		}
-
-		return $journals;
-	}
+        $this->db = $db;
+    }
 
 
-	public function validate(array $input) {
+    public function getNum() {
 
-		$errors = array();
-		// validation
-		return $errors;
-	}
+        return $this->num;
+    }
 
 
-	public function create(array $data) {
+    public function fetch(array $filter = array()) {
 
-		// validation here?
-		$journal = new Journal($data);
-		return $journal;
-	}
+        $journals = array();
 
+        $data = $this->db->fetchJournals($filter);
+        $this->num = $this->db->getNumRows();
 
-	public function store(Journal $journal) {
+        foreach ($data as $key => $value) {
+            $journals[] = new Journal($value);
+        }
 
-		$data = $journal -> getData();
-		$id = $this -> db -> insertData('list_journals', $data);
-
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting journal to DB');
-			
-		}
-	}
+        return $journals;
+    }
 
 
-	public function update($id, array $data) {
-		
-	}
+    public function validate(array $input) {
+
+        $errors = array();
+
+        // validation
+        return $errors;
+    }
 
 
-	public function delete($id) {
+    public function create(array $data) {
 
-	}
+        // validation here?
+        $journal = new Journal($data);
+
+        return $journal;
+    }
+
+
+    public function store(Journal $journal) {
+
+        $data = $journal->getData();
+        $id = $this->db->insertData('list_journals', $data);
+
+        if (!empty($id)) {
+            return $id;
+        }
+        else {
+            throw new Exception('Error while inserting journal to DB');
+
+        }
+    }
+
+
+    public function update($id, array $data) {
+
+    }
+
+
+    public function delete($id) {
+
+    }
 
 }

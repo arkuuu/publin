@@ -3,76 +3,81 @@
 require_once 'Publisher.php';
 
 
+
 class PublisherModel {
 
 
-	private $db;
-	private $num;
-
-	
-	public function __construct(Database $db) {
-		$this -> db = $db;
-	}
-
-	
-	public function getNum() {
-		return $this -> num;
-	}
+    private $db;
+    private $num;
 
 
-	public function fetch(array $filter = array()) {
+    public function __construct(Database $db) {
 
-		$publishers = array();
-
-		$data = $this -> db -> fetchPublishers($filter);
-		$this -> num = $this -> db -> getNumRows();
-
-		foreach ($data as $key => $value) {
-			$publishers[] = new Publisher($value);
-		}
-
-		return $publishers;
-	}
+        $this->db = $db;
+    }
 
 
-	public function validate(array $input) {
+    public function getNum() {
 
-		$errors = array();
-		// validation
-		return $errors;
-	}
+        return $this->num;
+    }
 
 
-	public function create(array $data) {
+    public function fetch(array $filter = array()) {
 
-		// validation here?
-		$publisher = new Publisher($data);
-		return $publisher;
-	}
+        $publishers = array();
 
+        $data = $this->db->fetchPublishers($filter);
+        $this->num = $this->db->getNumRows();
 
-	public function store(Publisher $publisher) {
+        foreach ($data as $key => $value) {
+            $publishers[] = new Publisher($value);
+        }
 
-		$data = $publisher -> getData();
-		$id = $this -> db -> insertData('list_publishers', $data);
-
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting publisher to DB');
-			
-		}
-	}
+        return $publishers;
+    }
 
 
-	public function update($id, array $data) {
-		
-	}
+    public function validate(array $input) {
+
+        $errors = array();
+
+        // validation
+        return $errors;
+    }
 
 
-	public function delete($id) {
+    public function create(array $data) {
 
-	}
+        // validation here?
+        $publisher = new Publisher($data);
+
+        return $publisher;
+    }
+
+
+    public function store(Publisher $publisher) {
+
+        $data = $publisher->getData();
+        $id = $this->db->insertData('list_publishers', $data);
+
+        if (!empty($id)) {
+            return $id;
+        }
+        else {
+            throw new Exception('Error while inserting publisher to DB');
+
+        }
+    }
+
+
+    public function update($id, array $data) {
+
+    }
+
+
+    public function delete($id) {
+
+    }
 
 }

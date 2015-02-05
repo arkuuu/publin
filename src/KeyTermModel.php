@@ -3,80 +3,88 @@
 require_once 'KeyTerm.php';
 
 
+
 class KeyTermModel {
 
 
-	private $db;
-	private $num;
-	private $errors;
-
-	
-	public function __construct(Database $db) {
-		$this -> db = $db;
-	}
-
-	
-	public function getNum() {
-		return $this -> num;
-	}
-	public function getErrors() {
-		return $this -> errors;
-	}
+    private $db;
+    private $num;
+    private $errors;
 
 
-	public function fetch(array $filter = array()) {
+    public function __construct(Database $db) {
 
-		$key_terms = array();
-
-		$data = $this -> db -> fetchKeyTerms($filter);
-		$this -> num = $this -> db -> getNumRows();
-
-		foreach ($data as $key => $value) {
-			$key_terms[] = new KeyTerm($value);
-		}
-
-		return $key_terms;
-	}
+        $this->db = $db;
+    }
 
 
-	public function validate(array &$input) {
+    public function getNum() {
 
-		$errors = array();
-		// validation
-		return $errors;
-	}
+        return $this->num;
+    }
 
 
-	public function create(array $data) {
+    public function getErrors() {
 
-		// validation here?
-		$key_term = new KeyTerm($data);
-		return $key_term;
-	}
+        return $this->errors;
+    }
 
 
-	public function store(KeyTerm $key_term) {
+    public function fetch(array $filter = array()) {
 
-		$data = $key_term -> getData();
-		$id = $this -> db -> insertData('list_key_terms', $data);
+        $key_terms = array();
 
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting key term to DB');
-			
-		}
-	}
+        $data = $this->db->fetchKeyTerms($filter);
+        $this->num = $this->db->getNumRows();
 
+        foreach ($data as $key => $value) {
+            $key_terms[] = new KeyTerm($value);
+        }
 
-	public function update($id, array $data) {
-		
-	}
+        return $key_terms;
+    }
 
 
-	public function delete($id) {
+    public function validate(array &$input) {
 
-	}
+        $errors = array();
+
+        // validation
+        return $errors;
+    }
+
+
+    public function create(array $data) {
+
+        // validation here?
+        $key_term = new KeyTerm($data);
+
+        return $key_term;
+    }
+
+
+    public function store(KeyTerm $key_term) {
+
+        $data = $key_term->getData();
+        $id = $this->db->insertData('list_key_terms', $data);
+
+        if (!empty($id)) {
+            return $id;
+        }
+        else {
+            throw new Exception('Error while inserting key term to DB');
+
+        }
+    }
+
+
+    public function update($id, array $data) {
+
+    }
+
+
+    public function delete($id) {
+
+    }
 
 }
