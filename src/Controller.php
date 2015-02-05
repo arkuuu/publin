@@ -14,7 +14,6 @@ require_once 'GenericView.php';
 require_once 'Auth.php';
 
 
-
 /**
  * Controls everything.
  *
@@ -130,7 +129,7 @@ class Controller {
         } catch (Exception $e) {
             ob_end_clean();
 
-            return 'Error: ' . $e->getMessage() . '<br/>File: ' . $e->getFile();
+            return 'Error: '.$e->getMessage().'<br/>File: '.$e->getFile();
         }
 
 

@@ -4,7 +4,6 @@ require_once 'Author.php';
 require_once 'Publication.php';
 
 
-
 /**
  * Handles the links to other bibliographic services.
  *
@@ -36,12 +35,12 @@ abstract class BibLink {
         switch ($service) {
             case 'Google':
                 return 'http://scholar.google.com/scholar?q='
-                . urlencode('"' . $author->getFirstName() . ' ' . $author->getLastName() . '"');
+                .urlencode('"'.$author->getFirstName().' '.$author->getLastName().'"');
                 break;
 
             case 'Base':
                 return 'http://www.base-search.net/Search/Results?lookfor=aut:'
-                . urlencode('"' . $author->getFirstName() . ' ' . $author->getLastName() . '"');
+                .urlencode('"'.$author->getFirstName().' '.$author->getLastName().'"');
                 break;
 
             default:
@@ -64,12 +63,12 @@ abstract class BibLink {
         switch ($service) {
             case 'Google':
                 return 'http://scholar.google.com/scholar?q=allintitle:'
-                . urlencode('"' . $publication->getTitle() . '"');
+                .urlencode('"'.$publication->getTitle().'"');
                 break;
 
             case 'Base':
                 return 'http://www.base-search.net/Search/Results?lookfor=tit:'
-                . urlencode('"' . $publication->getTitle() . '"');
+                .urlencode('"'.$publication->getTitle().'"');
                 break;
 
             default:

@@ -3,7 +3,6 @@
 require_once 'Object.php';
 
 
-
 /**
  * Handles journal data.
  *

@@ -3,7 +3,6 @@
 require_once 'View.php';
 
 
-
 class SubmitView extends View {
 
     private $model;
@@ -100,10 +99,10 @@ class SubmitView extends View {
 
         foreach ($types as $type) {
             if ($type->getName() == $selected) {
-                $string .= '<option value="' . $type->getName() . '" selected>' . $type->getName() . '</option>';
+                $string .= '<option value="'.$type->getName().'" selected>'.$type->getName().'</option>';
             }
             else {
-                $string .= '<option value="' . $type->getName() . '">' . $type->getName() . '</option>';
+                $string .= '<option value="'.$type->getName().'">'.$type->getName().'</option>';
             }
 
         }
@@ -126,10 +125,10 @@ class SubmitView extends View {
 
         foreach ($study_fields as $study_field) {
             if ($study_field->getName() == $selected) {
-                $string .= '<option value="' . $study_field->getName() . '" selected>' . $study_field->getName() . '</option>';
+                $string .= '<option value="'.$study_field->getName().'" selected>'.$study_field->getName().'</option>';
             }
             else {
-                $string .= '<option value="' . $study_field->getName() . '">' . $study_field->getName() . '</option>';
+                $string .= '<option value="'.$study_field->getName().'">'.$study_field->getName().'</option>';
             }
 
         }
@@ -145,7 +144,7 @@ class SubmitView extends View {
         if (!empty($errors)) {
             $string = '';
             foreach ($errors as $error) {
-                $string .= '<li>' . $error . '</li>';
+                $string .= '<li>'.$error.'</li>';
             }
 
             return $string;
@@ -180,7 +179,7 @@ class SubmitView extends View {
         if ($key_terms) {
             foreach ($key_terms as $key => $value) {
                 $string .= '<li class="multi-field">
-						<input type="text" name="key_terms[]" placeholder="Keyword" value="' . $this->showPostValue('key_terms', $key) . '"/>
+						<input type="text" name="key_terms[]" placeholder="Keyword" value="'.$this->showPostValue('key_terms', $key).'"/>
 						<button type="button" class="remove-field">x</button>
 						</li>';
             }
@@ -203,8 +202,8 @@ class SubmitView extends View {
         if ($authors) {
             foreach ($authors as $key => $value) {
                 $string .= '<li class="multi-field">
-				<input type="text" name="authors[given][]" placeholder="Given Name(s)" value="' . $this->showPostValue('authors', $key, 'given') . '"/>
-				<input type="text" name="authors[family][]" placeholder="Family Name" value="' . $this->showPostValue('authors', $key, 'family') . '"/>
+				<input type="text" name="authors[given][]" placeholder="Given Name(s)" value="'.$this->showPostValue('authors', $key, 'given').'"/>
+				<input type="text" name="authors[family][]" placeholder="Family Name" value="'.$this->showPostValue('authors', $key, 'family').'"/>
 				<button type="button" class="remove-field">x</button>
 				</li>';
             }

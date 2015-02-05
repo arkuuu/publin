@@ -6,7 +6,6 @@ require_once 'JournalModel.php';
 require_once 'PublisherModel.php';
 
 
-
 class BrowseModel {
 
     private $db;
@@ -131,7 +130,7 @@ class BrowseModel {
 
 
                 default:
-                    throw new Exception('unknown browse type "' . $type . '"');
+                    throw new Exception('unknown browse type "'.$type.'"');
 
                     break;
             }

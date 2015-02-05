@@ -9,7 +9,6 @@ require_once 'Journal.php';
 require_once 'Publisher.php';
 
 
-
 abstract class Model {
 
     protected $db;

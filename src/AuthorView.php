@@ -5,7 +5,6 @@ require_once 'Citation.php';
 require_once 'BibLink.php';
 
 
-
 /**
  * View for author page
  *
@@ -56,7 +55,7 @@ class AuthorView extends View {
             return $name;
         }
         else {
-            throw new Exception('the author with id ' . $this->author->getId() . ' has no name');
+            throw new Exception('the author with id '.$this->author->getId().' has no name');
         }
     }
 
@@ -71,7 +70,7 @@ class AuthorView extends View {
         $website = $this->author->getWebsite();
 
         if ($website) {
-            return '<a href="http://' . $website . '" target="_blank">' . $website . '</a>';
+            return '<a href="http://'.$website.'" target="_blank">'.$website.'</a>';
         }
         else {
             return false;
@@ -114,8 +113,8 @@ class AuthorView extends View {
         $string = '';
 
         foreach ($this->author->getPublications() as $publication) {
-            $string .= '<li>' . Citation::getCitation($publication, $style)
-                . '</li>' . "\n";
+            $string .= '<li>'.Citation::getCitation($publication, $style)
+                .'</li>'."\n";
         }
 
         if (!empty($string)) {
@@ -137,7 +136,7 @@ class AuthorView extends View {
         $string = '';
 
         foreach (BibLink::getServices() as $service) {
-            $string .= '<li><a href="' . BibLink::getAuthorsLink($this->author, $service) . '" target="_blank">' . $service . '</a></li>';
+            $string .= '<li><a href="'.BibLink::getAuthorsLink($this->author, $service).'" target="_blank">'.$service.'</a></li>';
         }
 
         return $string;

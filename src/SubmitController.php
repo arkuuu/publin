@@ -3,7 +3,6 @@
 require_once 'SubmitModel.php';
 
 
-
 class SubmitController {
 
     private $db;

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Parent class for all views
  *
@@ -27,7 +26,7 @@ abstract class View {
 
     public function displayContentOnly() {
 
-        $content = './templates/' . $this->template . '/' . $this->content . '.html';
+        $content = './templates/'.$this->template.'/'.$this->content.'.html';
 
         if (file_exists($content)) {
 
@@ -40,7 +39,7 @@ abstract class View {
         }
         else {
             // TODO: error
-            return 'Could not find template ' . $content . '!';
+            return 'Could not find template '.$content.'!';
         }
     }
 
@@ -53,10 +52,10 @@ abstract class View {
      */
     public function display() {
 
-        $header = './templates/' . $this->template . '/header.html';
-        $menu = './templates/' . $this->template . '/menu.html';
-        $content = './templates/' . $this->template . '/' . $this->content . '.html';
-        $footer = './templates/' . $this->template . '/footer.html';
+        $header = './templates/'.$this->template.'/header.html';
+        $menu = './templates/'.$this->template.'/menu.html';
+        $content = './templates/'.$this->template.'/'.$this->content.'.html';
+        $footer = './templates/'.$this->template.'/footer.html';
 
         if (file_exists($header) && file_exists($menu) && file_exists($footer)) {
             if (file_exists($content)) {
@@ -73,7 +72,7 @@ abstract class View {
             }
             else {
                 // TODO: error
-                throw new Exception('Could not find template ' . $content . '!');
+                throw new Exception('Could not find template '.$content.'!');
 
             }
         }

@@ -3,7 +3,6 @@
 require_once 'Object.php';
 
 
-
 /**
  * Handles author data.
  *
@@ -42,7 +41,7 @@ class Author extends Object {
         $family = $this->getData('family');
 
         if ($given && $family) {
-            return $given . ' ' . $family;
+            return $given.' '.$family;
         }
         else {
             return false;
@@ -76,7 +75,7 @@ class Author extends Object {
             $names = preg_split("/\s+/", $given);
             $string = '';
             foreach ($names as $name) {
-                $string .= mb_substr($name, 0, 1) . '.';
+                $string .= mb_substr($name, 0, 1).'.';
             }
 
             return $string;

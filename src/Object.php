@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Parent class for all 'real' objects.
  *
@@ -27,7 +26,11 @@ abstract class Object {
     }
 
 
-    // TODO: doc
+    /**
+     * @param null $field
+     *
+     * @return array|bool
+     */
     public function getData($field = null) {
 
         if (isset($field)) {
@@ -43,6 +46,9 @@ abstract class Object {
     }
 
 
+    /**
+     * @param array $data
+     */
     public function setData(array $data) {
 
         foreach ($data as $key => $value) {

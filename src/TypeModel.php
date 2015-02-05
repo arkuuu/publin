@@ -3,7 +3,6 @@
 require_once 'Type.php';
 
 
-
 class TypeModel {
 
 

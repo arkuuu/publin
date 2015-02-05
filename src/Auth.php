@@ -3,7 +3,6 @@
 require_once 'User.php';
 
 
-
 class Auth {
 
     private $db;
@@ -25,7 +24,7 @@ class Auth {
         $password = $this->db->real_escape_string($password);
         // TODO: use password hash instead of clear password!
 
-        $query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "' . $user_name . '" AND `password` = "' . $password . '";';
+        $query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$user_name.'" AND `password` = "'.$password.'";';
         $result = $this->db->getData($query);
 
         if ($this->db->getNumRows() == 1) {
@@ -63,7 +62,7 @@ class Auth {
             $query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r
 			LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
 			LEFT JOIN `rel_user_roles` rur ON (rur.`role_id` = rrp.`role_id`)
-			WHERE r.`name` = "' . $permission_name . '" AND rur.`user_id` = ' . $user_id . ';';
+			WHERE r.`name` = "'.$permission_name.'" AND rur.`user_id` = '.$user_id.';';
 
             $this->db->getData($query);
 
@@ -87,7 +86,7 @@ class Auth {
         $query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r
 		LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
 		LEFT JOIN `rel_user_roles` rur ON (rur.`role_id` = rrp.`role_id`)
-		WHERE rur.`user_id` = ' . $user_id . ';';
+		WHERE rur.`user_id` = '.$user_id.';';
 
         $permissions = $this->db->getData($query);
 

@@ -4,7 +4,6 @@ require_once 'FormatHandler.php';
 require_once 'Model.php';
 
 
-
 class SubmitModel extends Model {
 
     private $required_fields = array(
@@ -164,12 +163,12 @@ class SubmitModel extends Model {
                     break;
 
                 default:
-                    throw new Exception('no content type defined for ' . $key);
+                    throw new Exception('no content type defined for '.$key);
                     break;
             }
         }
         else {
-            throw new Exception('unknown field ' . $key);
+            throw new Exception('unknown field '.$key);
         }
 
         if ($result === false) {
@@ -250,12 +249,12 @@ class SubmitModel extends Model {
                         $data[$field] = $value;
                     }
                     else {
-                        $this->errors[] = 'Invalid input for ' . $field;
+                        $this->errors[] = 'Invalid input for '.$field;
                     }
                 }
             }
             else if (in_array($field, $required_fields)) {
-                $this->errors[] = 'Missing input for ' . $field . ' required';
+                $this->errors[] = 'Missing input for '.$field.' required';
             }
         }
 
@@ -292,12 +291,12 @@ class SubmitModel extends Model {
             return $author;
         }
         else if ($given) {
-            $this->errors[] = 'The author ' . $given . ' needs a family name';
+            $this->errors[] = 'The author '.$given.' needs a family name';
 
             return false;
         }
         else if ($family) {
-            $this->errors[] = 'The author ' . $family . ' needs a given name';
+            $this->errors[] = 'The author '.$family.' needs a given name';
 
             return false;
         }
@@ -320,7 +319,7 @@ class SubmitModel extends Model {
             return $key_term;
         }
         else {
-            $this->errors[] = 'Invalid input for key term ' . $input;
+            $this->errors[] = 'Invalid input for key term '.$input;
 
             return false;
         }

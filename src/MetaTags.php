@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Handles the meta tags.
  *
@@ -35,19 +34,19 @@ abstract class MetaTags {
         switch ($style) {
             case 'highwire':
                 $tags =
-                    '<meta name="citation_title" content="' . $publication->getTitle() . '" />' . "\n\t" .
-                    '<meta name="citation_publication_date" content ="' . $publication->getYear() . '" />' . "\n\t" .
-                    '<meta name="citation_online_date" content ="" />' . "\n\t";
+                    '<meta name="citation_title" content="'.$publication->getTitle().'" />'."\n\t".
+                    '<meta name="citation_publication_date" content ="'.$publication->getYear().'" />'."\n\t".
+                    '<meta name="citation_online_date" content ="" />'."\n\t";
                 foreach ($publication->getAuthors() as $author) {
-                    $tags .= '<meta name="citation_author" content ="' . $author->getName() . '" />' . "\n\t";
+                    $tags .= '<meta name="citation_author" content ="'.$author->getName().'" />'."\n\t";
                 }
-                $tags .= '<meta name="citation_pdf_url" content ="" />' . "\n";
+                $tags .= '<meta name="citation_pdf_url" content ="" />'."\n";
 
                 break;
 
             case 'dublin_core':
                 $tags = '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">'
-                    . '<meta name="dc.title" content="' . $publication->getTitle() . '">';
+                    .'<meta name="dc.title" content="'.$publication->getTitle().'">';
                 break;
 
             default:

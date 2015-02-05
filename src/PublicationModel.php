@@ -9,7 +9,6 @@ require_once 'TypeModel.php';
 require_once 'Publication.php';
 
 
-
 class PublicationModel {
 
     private $db;

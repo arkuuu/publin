@@ -3,7 +3,6 @@
 require_once 'StudyField.php';
 
 
-
 class StudyFieldModel {
 
 

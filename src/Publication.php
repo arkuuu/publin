@@ -3,7 +3,6 @@
 require_once 'Object.php';
 
 
-
 /**
  * Handles publication data.
  *
@@ -34,6 +33,9 @@ class Publication extends Object {
     }
 
 
+    /**
+     * @return array|bool
+     */
     public function getTypeId() {
 
         return $this->getData('type_id');
@@ -82,6 +84,9 @@ class Publication extends Object {
     }
 
 
+    /**
+     * @return array|bool
+     */
     public function getJournalId() {
 
         return $this->getData('journal_id');
@@ -97,6 +102,9 @@ class Publication extends Object {
     }
 
 
+    /**
+     * @return array|bool
+     */
     public function getPublisherId() {
 
         return $this->getData('publisher_id');
@@ -202,6 +210,9 @@ class Publication extends Object {
     }
 
 
+    /**
+     * @return array|bool
+     */
     public function getCopyright() {
 
         return $this->getData('copyright');
@@ -217,6 +228,9 @@ class Publication extends Object {
     }
 
 
+    /**
+     * @return array|bool
+     */
     public function getBookId() {
 
         return $this->getData('book_id');
@@ -234,7 +248,7 @@ class Publication extends Object {
         $pages_to = $this->getData('pages_to');
 
         if ($pages_from && $pages_to) {
-            return $pages_from . ' ' . $divider . ' ' . $pages_to;
+            return $pages_from.' '.$divider.' '.$pages_to;
         }
         else {
             return false;
@@ -330,6 +344,9 @@ class Publication extends Object {
     }
 
 
+    /**
+     * @return array
+     */
     public function toArray() {
 
         $data = array();

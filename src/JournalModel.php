@@ -3,7 +3,6 @@
 require_once 'Journal.php';
 
 
-
 class JournalModel {
 
 

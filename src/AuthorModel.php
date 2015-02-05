@@ -4,7 +4,6 @@ require_once 'PublicationModel.php';
 require_once 'Author.php';
 
 
-
 class AuthorModel {
 
 

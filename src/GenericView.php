@@ -3,7 +3,6 @@
 require_once 'View.php';
 
 
-
 /**
  * View for all static pages
  *

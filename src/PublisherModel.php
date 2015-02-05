@@ -3,7 +3,6 @@
 require_once 'Publisher.php';
 
 
-
 class PublisherModel {
 
 

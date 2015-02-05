@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Handles all database communication.
  *
@@ -75,15 +74,15 @@ class Database extends mysqli {
         $msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
         $msg = str_replace("\t", '', $msg);
         $file = fopen('./logs/sql.log', 'a');
-        fwrite($file, '[' . date('d.m.Y H:i:s') . '] '
-            . $msg . "\n");
+        fwrite($file, '['.date('d.m.Y H:i:s').'] '
+            .$msg."\n");
         fclose($file);
 
         /* Sends query to database */
         $result = parent::query($query);
 
         if (!is_object($result)) {
-            die('ERROR IN SQL SYNTAX, CHECK SQL LOG<br/>' . $this->error);
+            die('ERROR IN SQL SYNTAX, CHECK SQL LOG<br/>'.$this->error);
         }
         $this->num_rows = $result->num_rows;
 
@@ -107,17 +106,17 @@ class Database extends mysqli {
 
         $into = array_keys($data);
         $values = array_values($data);
-        $query = 'INSERT INTO ' . $table . '(';
+        $query = 'INSERT INTO '.$table.'(';
 
         foreach ($into as $field) {
-            $query .= '`' . $field . '`, ';
+            $query .= '`'.$field.'`, ';
         }
         $query = substr($query, 0, -2);
 
         $query .= ') VALUES (';
 
         foreach ($values as $value) {
-            $query .= '"' . $value . '", ';
+            $query .= '"'.$value.'", ';
         }
         $query = substr($query, 0, -2);
 
@@ -127,8 +126,8 @@ class Database extends mysqli {
         $msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
         $msg = str_replace("\t", '', $msg);
         $file = fopen('./logs/sql.log', 'a');
-        fwrite($file, '[' . date('d.m.Y H:i:s') . '] '
-            . $msg . "\n");
+        fwrite($file, '['.date('d.m.Y H:i:s').'] '
+            .$msg."\n");
         fclose($file);
 
         parent::query($query);
@@ -159,7 +158,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -169,7 +168,7 @@ class Database extends mysqli {
 
                 /* Creates the WHERE clause from the rest of the filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' t.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' t.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -177,7 +176,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -205,7 +204,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -217,13 +216,13 @@ class Database extends mysqli {
                 if (array_key_exists('publication_id', $filter)) {
                     $from = 'FROM `rel_publ_to_key_terms` rk';    // Better SQL performance this way
                     $join .= ' JOIN `list_key_terms` k ON (rk.`key_term_id` = k.`id`)';
-                    $where .= ' rk.`publication_id` LIKE "' . $filter['publication_id'] . '" AND';
+                    $where .= ' rk.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
                     unset($filter['publication_id']);
                 }
 
                 /* Creates the WHERE clause from the rest of the filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' k.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' k.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -231,7 +230,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $join . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);    // TODO: Return Author objects instead?
     }
@@ -258,7 +257,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -268,7 +267,7 @@ class Database extends mysqli {
 
                 /* Creates the WHERE clause from the rest of the filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' s.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' s.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -276,7 +275,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -303,7 +302,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -313,7 +312,7 @@ class Database extends mysqli {
 
                 /* Creates the WHERE clause from the rest of the filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' j.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' j.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -321,7 +320,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -340,7 +339,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -350,7 +349,7 @@ class Database extends mysqli {
 
                 /* Creates the WHERE clause from the rest of the filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' p.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -358,7 +357,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -431,7 +430,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -443,14 +442,14 @@ class Database extends mysqli {
                 if (array_key_exists('publication_id', $filter)) {
                     $from = 'FROM `rel_publ_to_authors` rb';    // Better SQL performance this way
                     $join .= ' JOIN `list_authors` a ON (rb.`author_id` = a.`id`)';
-                    $where .= ' rb.`publication_id` LIKE "' . $filter['publication_id'] . '" AND';
+                    $where .= ' rb.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
                     $order = 'ORDER BY `priority` ASC';
                     unset($filter['publication_id']);
                 }
 
                 /* Creates the WHERE clause from the rest of the filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' a.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' a.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -458,7 +457,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $join . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -488,7 +487,7 @@ class Database extends mysqli {
 
             /* Creates the LIMIT clause */
             if (array_key_exists('limit', $filter)) {
-                $limit = 'LIMIT ' . $filter['limit'];
+                $limit = 'LIMIT '.$filter['limit'];
                 unset($filter['limit']);
             }
 
@@ -499,26 +498,26 @@ class Database extends mysqli {
                 /* Creates the JOIN clause if needed */
                 if (array_key_exists('author_id', $filter)) {
                     $join .= ' JOIN `rel_publ_to_authors` ra ON (ra.`publication_id` = p.`id`)';
-                    $where .= ' ra.`author_id` LIKE "' . $filter['author_id'] . '" AND';
+                    $where .= ' ra.`author_id` LIKE "'.$filter['author_id'].'" AND';
                     unset($filter['author_id']);
                 }
                 if (array_key_exists('key_term_id', $filter)) {
                     $join .= ' JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)';
-                    $where .= ' rk.`key_term_id` LIKE "' . $filter['key_term_id'] . '" AND';
+                    $where .= ' rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
                     unset($filter['key_term_id']);
                 }
                 if (array_key_exists('year_published', $filter)) {
-                    $where .= ' YEAR(p.`date_published`) LIKE "' . $filter['year_published'] . '" AND';
+                    $where .= ' YEAR(p.`date_published`) LIKE "'.$filter['year_published'].'" AND';
                     unset($filter['year_published']);
                 }
                 if (array_key_exists('month_published', $filter)) {
-                    $where .= ' MONTH(p.`date_published`) LIKE "' . $filter['month_published'] . '" AND';
+                    $where .= ' MONTH(p.`date_published`) LIKE "'.$filter['month_published'].'" AND';
                     unset($filter['month_published']);
                 }
 
                 /* Creates the WHERE clause from the rest of filter array */
                 foreach ($filter as $key => $value) {
-                    $where .= ' p.`' . $key . '` LIKE "' . $value . '" AND';
+                    $where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
                 }
                 $where = substr($where, 0, -3);
             }
@@ -526,7 +525,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $join . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -546,11 +545,11 @@ class Database extends mysqli {
 
             if (array_key_exists('user_id', $filter)) {
                 $join .= ' JOIN `rel_user_roles` ru ON (ru.`role_id` = r.`id`)';
-                $where .= ' ru.`user_id` = ' . $filter['user_id'] . ' AND';
+                $where .= ' ru.`user_id` = '.$filter['user_id'].' AND';
                 unset($filter['user_id']);
             }
             foreach ($filter as $key => $value) {
-                $where .= ' r.`' . $key . '` LIKE "' . $value . '" AND';
+                $where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
             }
             $where = substr($where, 0, -3);
 
@@ -558,7 +557,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $join . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -578,11 +577,11 @@ class Database extends mysqli {
 
             if (array_key_exists('role_id', $filter)) {
                 $join .= ' JOIN `rel_roles_permissions` rr ON (rr.`permission_id` = p.`id`)';
-                $where .= ' rr.`role_id` = ' . $filter['role_id'] . ' AND';
+                $where .= ' rr.`role_id` = '.$filter['role_id'].' AND';
                 unset($filter['role_id']);
             }
             foreach ($filter as $key => $value) {
-                $where .= ' r.`' . $key . '` LIKE "' . $value . '" AND';
+                $where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
             }
             $where = substr($where, 0, -3);
 
@@ -590,7 +589,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $join . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }
@@ -610,11 +609,11 @@ class Database extends mysqli {
 
             if (array_key_exists('role_id', $filter)) {
                 $join .= ' JOIN `rel_user_roles` rr ON (rr.`user_id` = p.`id`)';
-                $where .= ' rr.`role_id` = ' . $filter['role_id'] . ' AND';
+                $where .= ' rr.`role_id` = '.$filter['role_id'].' AND';
                 unset($filter['role_id']);
             }
             foreach ($filter as $key => $value) {
-                $where .= ' u.`' . $key . '` LIKE "' . $value . '" AND';
+                $where .= ' u.`'.$key.'` LIKE "'.$value.'" AND';
             }
             $where = substr($where, 0, -3);
 
@@ -622,7 +621,7 @@ class Database extends mysqli {
         unset($filter);
 
         /* Combines everything to the complete query */
-        $query = $select . ' ' . $from . ' ' . $join . ' ' . $where . ' ' . $order . ' ' . $limit . ';';
+        $query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
         return $this->getData($query);
     }

@@ -3,7 +3,6 @@
 require_once 'View.php';
 
 
-
 /**
  * View for browse page
  *
@@ -106,7 +105,7 @@ class BrowseView extends View {
      */
     public function showBrowseType() {
 
-        return 'Browse ' . $this->browse_type['text'];
+        return 'Browse '.$this->browse_type['text'];
     }
 
 
@@ -135,24 +134,24 @@ class BrowseView extends View {
         if (!empty($browse_list)) {
             if ($browse_type == 'year') {
                 foreach ($browse_list as $year) {
-                    $string .= '<li><a href="' . $this->browse_type['result_url'] . $year . '">' . $year . '</a></li>' . "\n";
+                    $string .= '<li><a href="'.$this->browse_type['result_url'].$year.'">'.$year.'</a></li>'."\n";
                 }
             }
             else if ($browse_type == 'author') {
                 foreach ($browse_list as $author) {
-                    $string .= '<li><a href="' . $this->browse_type['result_url'] . $author->getId() . '">' . $author->getLastName() . ', ' . $author->getFirstName() . '</a></li>' . "\n";
+                    $string .= '<li><a href="'.$this->browse_type['result_url'].$author->getId().'">'.$author->getLastName().', '.$author->getFirstName().'</a></li>'."\n";
                 }
             }
             else {
                 foreach ($browse_list as $object) {
-                    $string .= '<li><a href="' . $this->browse_type['result_url'] . $object->getId() . '">' . $object->getName() . '</a></li>' . "\n";
+                    $string .= '<li><a href="'.$this->browse_type['result_url'].$object->getId().'">'.$object->getName().'</a></li>'."\n";
                 }
             }
 
         }
         else {
             foreach ($this->browse_type_list as $browse_type) {
-                $string .= '<li><a href="' . $browse_type['url'] . '">' . $browse_type['name'] . '</a></li>' . "\n";
+                $string .= '<li><a href="'.$browse_type['url'].'">'.$browse_type['name'].'</a></li>'."\n";
             }
         }
 
@@ -186,8 +185,8 @@ class BrowseView extends View {
         $string = '';
 
         foreach ($this->model->getBrowseResult() as $publication) {
-            $string .= '<li>' . Citation::getCitation($publication, $style)
-                . '</li>' . "\n";
+            $string .= '<li>'.Citation::getCitation($publication, $style)
+                .'</li>'."\n";
         }
 
         return $string;

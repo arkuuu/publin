@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Handles citation styles.
  *
@@ -31,7 +30,7 @@ abstract class Citation {
      */
     public static function getCitation(Publication $publication, $style) {
 
-        $file = './modules/citation_styles/' . $style . '/' . $publication->getTypeName() . '.php';
+        $file = './modules/citation_styles/'.$style.'/'.$publication->getTypeName().'.php';
         $file_fallback = './modules/citation_styles/default.php';
         $publication_url = './?p=publication&amp;id=';
         $citation = '';

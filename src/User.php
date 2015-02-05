@@ -3,7 +3,6 @@
 require_once 'Object.php';
 
 
-
 class User extends Object {
 
     private $role;
