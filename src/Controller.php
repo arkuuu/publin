@@ -1,18 +1,8 @@
 <?php
 
-// TODO: use __autoload!
-require_once 'BrowseModel.php';
-require_once 'AuthorModel.php';
-require_once 'PublicationModel.php';
-require_once 'SubmitModel.php';
-require_once 'SubmitController.php';
-require_once 'BrowseView.php';
-require_once 'AuthorView.php';
-require_once 'PublicationView.php';
-require_once 'SubmitView.php';
-require_once 'GenericView.php';
-require_once 'Auth.php';
+namespace publin\src;
 
+use Exception;
 
 /**
  * Controls everything.
@@ -21,118 +11,117 @@ require_once 'Auth.php';
  */
 class Controller {
 
-    private $auth;
-    private $db;
+	private $auth;
+	private $db;
 
 
-    /**
-     * Constructs the controller and the needed Model and View.
-     *
-     * TODO: change parameters to one array with all parameters
-     *
-     *
-     */
-    public function __construct() {
+	/**
+	 * Constructs the controller and the needed Model and View.
+	 *
+	 * TODO: change parameters to one array with all parameters
+	 *
+	 *
+	 */
+	public function __construct() {
 
-        mb_internal_encoding('utf8');
-        header('Content-Type: text/html; charset=UTF-8');
+		mb_internal_encoding('utf8');
+		header('Content-Type: text/html; charset=UTF-8');
 
-        $this->db = new Database();
-        $this->auth = new Auth($this->db);
-    }
-
-
-    /**
-     * Displays the page.
-     *
-     * TODO: comment
-     *
-     * @param $page
-     * @param $id
-     * @param $by
-     *
-     * @return string
-     */
-    public function run($page, $id, $by) {
-
-        $db = $this->db;
-        // print_r($_SESSION);
+		$this->db = new Database();
+		$this->auth = new Auth($this->db);
+	}
 
 
-        try {
-            switch ($page) {
-                case 'browse':
-                    $model = new BrowseModel($db);
-                    $model->handle($by, $id);
-                    $view = new BrowseView($model);
+	/**
+	 * Displays the page.
+	 *
+	 * TODO: comment
+	 *
+	 * @param $page
+	 * @param $id
+	 * @param $by
+	 *
+	 * @return string
+	 */
+	public function run($page, $id, $by) {
 
-                    return $view->display();
-                    break;
+		$db = $this->db;
+		// print_r($_SESSION);
 
-                case 'author':
-                    $model = new AuthorModel($db);
-                    $author = $model->fetch(true, array('id' => $id));
-                    $view = new AuthorView($author[0]);
+		try {
+			switch ($page) {
+				case 'browse':
+					$model = new BrowseModel($db);
+					$model->handle($by, $id);
+					$view = new BrowseView($model);
 
-                    return $view->display();
-                    break;
+					return $view->display();
+					break;
 
-                case 'publication':
-                    $model = new PublicationModel($db);
-                    $publication = $model->fetch(true, array('id' => $id));
-                    $view = new PublicationView($publication[0]);
+				case 'author':
+					$model = new AuthorModel($db);
+					$author = $model->fetch(true, array('id' => $id));
+					$view = new AuthorView($author[0]);
 
-                    return $view->display();
-                    break;
+					return $view->display();
+					break;
 
-                case 'submit':
-                    // $model = new SubmitModel();
-                    // $view = new SubmitView($model, 'form');
-                    $controller = new SubmitController($db);
+				case 'publication':
+					$model = new PublicationModel($db);
+					$publication = $model->fetch(true, array('id' => $id));
+					$view = new PublicationView($publication[0]);
 
-                    return $controller->run();
-                    break;
+					return $view->display();
+					break;
 
-                case 'login':
-                    if (!empty($_POST['username']) && !empty($_POST['password'])) {
-                        if ($this->auth->validateLogin($_POST['username'], $_POST['password'])) {
-                            // header();
-                            print_r('success');
-                        }
-                        else {
-                            print_r('incorrect login');
-                        }
-                    }
-                    $view = new GenericView('login');
+				case 'submit':
+					// $model = new SubmitModel();
+					// $view = new SubmitView($model, 'form');
+					$controller = new SubmitController($db);
 
-                    return $view->display();
+					return $controller->run();
+					break;
 
-                    break;
+				case 'login':
+					if (!empty($_POST['username']) && !empty($_POST['password'])) {
+						if ($this->auth->validateLogin($_POST['username'], $_POST['password'])) {
+							// header();
+							print_r('success');
+						}
+						else {
+							print_r('incorrect login');
+						}
+					}
+					$view = new GenericView('login');
 
-                case 'logout':
-                    if ($this->auth->checkLoginStatus()) {
-                        $this->auth->logout();
-                    }
-                    $view = new GenericView('login');
+					return $view->display();
 
-                    return $view->display();
-                    break;
+					break;
 
-                default:
-                    $view = new GenericView($page);
+				case 'logout':
+					if ($this->auth->checkLoginStatus()) {
+						$this->auth->logout();
+					}
+					$view = new GenericView('login');
 
-                    return $view->display();
-                    break;
-            }
+					return $view->display();
+					break;
 
-            // return $view -> display();
-        } catch (Exception $e) {
-            ob_end_clean();
+				default:
+					$view = new GenericView($page);
 
-            return 'Error: '.$e->getMessage().'<br/>File: '.$e->getFile();
-        }
+					return $view->display();
+					break;
+			}
+
+			// return $view -> display();
+		} catch (Exception $e) {
+			ob_end_clean();
+
+			return 'Error: '.$e->getMessage().'<br/>File: '.$e->getFile();
+		}
 
 
-    }
+	}
 
 }

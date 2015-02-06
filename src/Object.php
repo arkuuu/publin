@@ -1,83 +1,85 @@
 <?php
 
+namespace publin\src;
 
 /**
  * Parent class for all 'real' objects.
  *
  * TODO: comment
  */
-abstract class Object {
+class Object {
 
-    /**
-     * @var    array
-     */
-    protected $data;
-
-
-    /**
-     * Constructs an object.
-     *
-     * @param    array $data type data from database
-     */
-    public function __construct(array $data) {
-
-        // TODO: input validation
-        $this->data = $data;
-    }
+	/**
+	 * @var    array
+	 */
+	protected $data;
 
 
-    /**
-     * @param null $field
-     *
-     * @return array|bool
-     */
-    public function getData($field = null) {
+	/**
+	 * Constructs an object.
+	 *
+	 * @param    array $data type data from database
+	 */
+	public function __construct(array $data) {
 
-        if (isset($field)) {
-            if (!empty($this->data[$field])) {
-                return $this->data[$field];
-            }
-            else {
-                return false;
-            }
-        }
-
-        return $this->data;
-    }
+		// TODO: input validation
+		$this->data = $data;
+	}
 
 
-    /**
-     * @param array $data
-     */
-    public function setData(array $data) {
+	/**
+	 * Returns the id.
+	 *
+	 * @return int
+	 */
+	public function getId() {
 
-        foreach ($data as $key => $value) {
-            if (isset($this->data[$key]) && $key != 'id') {
-                $this->data[$key] = $value;
-            }
-        }
-    }
+		return $this->getData('id');
+	}
 
 
-    /**
-     * Returns the id.
-     *
-     * @return int
-     */
-    public function getId() {
+	/**
+	 * @param null $field
+	 *
+	 * @return array|bool
+	 */
+	public function getData($field = null) {
 
-        return $this->getData('id');
-    }
+		if (isset($field)) {
+			if (!empty($this->data[$field])) {
+				return $this->data[$field];
+			}
+			else {
+				return false;
+			}
+		}
+
+		return $this->data;
+	}
 
 
-    /**
-     * Returns the name.
-     *
-     * @return string
-     */
-    public function getName() {
+	/**
+	 * @param array $data
+	 */
+	public function setData(array $data) {
 
-        return $this->getData('name');
-    }
+		foreach ($data as $key => $value) {
+			if (isset($this->data[$key]) && $key != 'id') {
+				$this->data[$key] = $value;
+				// TODO: return true or false!
+			}
+		}
+	}
+
+
+	/**
+	 * Returns the name.
+	 *
+	 * @return string
+	 */
+	public function getName() {
+
+		return $this->getData('name');
+	}
 
 }

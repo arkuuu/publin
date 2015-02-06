@@ -1,9 +1,8 @@
 <?php
 
-require_once 'View.php';
-require_once 'Citation.php';
-require_once 'BibLink.php';
+namespace publin\src;
 
+use Exception;
 
 /**
  * View for author page
@@ -12,134 +11,134 @@ require_once 'BibLink.php';
  */
 class AuthorView extends View {
 
-    /**
-     * @var    Author
-     */
-    private $author;
+	/**
+	 * @var    Author
+	 */
+	private $author;
 
 
-    /**
-     * Constructs the author view.
-     *
-     * @param Author $author
-     */
-    public function __construct(Author $author) {
+	/**
+	 * Constructs the author view.
+	 *
+	 * @param Author $author
+	 */
+	public function __construct(Author $author) {
 
-        parent::__construct('author');
-        $this->author = $author;
-    }
-
-
-    /**
-     * Shows the page title.
-     *
-     * @return    string
-     */
-    public function showPageTitle() {
-
-        return $this->showName();
-    }
+		parent::__construct('author');
+		$this->author = $author;
+	}
 
 
-    /**
-     * Shows the author's name.
-     *
-     * @return string
-     * @throws Exception
-     */
-    public function showName() {
+	/**
+	 * Shows the page title.
+	 *
+	 * @return    string
+	 */
+	public function showPageTitle() {
 
-        $name = $this->author->getName();
-
-        if ($name) {
-            return $name;
-        }
-        else {
-            throw new Exception('the author with id '.$this->author->getId().' has no name');
-        }
-    }
+		return $this->showName();
+	}
 
 
-    /**
-     * Shows the author's website.
-     *
-     * @return    string
-     */
-    public function showWebsite() {
+	/**
+	 * Shows the author's name.
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	public function showName() {
 
-        $website = $this->author->getWebsite();
+		$name = $this->author->getName();
 
-        if ($website) {
-            return '<a href="http://'.$website.'" target="_blank">'.$website.'</a>';
-        }
-        else {
-            return false;
-        }
-
-    }
-
-
-    /**
-     * Shows the author's contact info.
-     *
-     * @return    string
-     */
-    public function showContact() {
-
-        return $this->author->getContact();
-    }
+		if ($name) {
+			return $name;
+		}
+		else {
+			throw new Exception('the author with id '.$this->author->getId().' has no name');
+		}
+	}
 
 
-    /**
-     * Shows the author's text.
-     *
-     * @return    string
-     */
-    public function showText() {
+	/**
+	 * Shows the author's website.
+	 *
+	 * @return    string
+	 */
+	public function showWebsite() {
 
-        return $this->author->getText();
-    }
+		$website = $this->author->getWebsite();
 
+		if ($website) {
+			return '<a href="http://'.$website.'" target="_blank">'.$website.'</a>';
+		}
+		else {
+			return false;
+		}
 
-    /**
-     * Shows the author's publications.
-     *
-     * @param string $style
-     *
-     * @return string
-     */
-    public function showPublications($style = '') {
-
-        $string = '';
-
-        foreach ($this->author->getPublications() as $publication) {
-            $string .= '<li>'.Citation::getCitation($publication, $style)
-                .'</li>'."\n";
-        }
-
-        if (!empty($string)) {
-            return $string;
-        }
-        else {
-            return '<li>no publications found</li>';
-        }
-    }
+	}
 
 
-    /**
-     * Shows links to other bibliographic indexes for this author.
-     *
-     * @return    string
-     */
-    public function showBibLinks() {
+	/**
+	 * Shows the author's contact info.
+	 *
+	 * @return    string
+	 */
+	public function showContact() {
 
-        $string = '';
+		return $this->author->getContact();
+	}
 
-        foreach (BibLink::getServices() as $service) {
-            $string .= '<li><a href="'.BibLink::getAuthorsLink($this->author, $service).'" target="_blank">'.$service.'</a></li>';
-        }
 
-        return $string;
-    }
+	/**
+	 * Shows the author's text.
+	 *
+	 * @return    string
+	 */
+	public function showText() {
+
+		return $this->author->getText();
+	}
+
+
+	/**
+	 * Shows the author's publications.
+	 *
+	 * @param string $style
+	 *
+	 * @return string
+	 */
+	public function showPublications($style = '') {
+
+		$string = '';
+
+		foreach ($this->author->getPublications() as $publication) {
+			$string .= '<li>'.Citation::getCitation($publication, $style)
+				.'</li>'."\n";
+		}
+
+		if (!empty($string)) {
+			return $string;
+		}
+		else {
+			return '<li>no publications found</li>';
+		}
+	}
+
+
+	/**
+	 * Shows links to other bibliographic indexes for this author.
+	 *
+	 * @return    string
+	 */
+	public function showBibLinks() {
+
+		$string = '';
+
+		foreach (BibLink::getServices() as $service) {
+			$string .= '<li><a href="'.BibLink::getAuthorsLink($this->author, $service).'" target="_blank">'.$service.'</a></li>';
+		}
+
+		return $string;
+	}
 
 }

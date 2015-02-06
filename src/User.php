@@ -1,52 +1,51 @@
 <?php
 
-require_once 'Object.php';
-
+namespace publin\src;
 
 class User extends Object {
 
-    private $role;
-    private $permissions = array();
+	private $roles;
+	private $permissions = array();
 
 
-    public function getPassword() {
+	public function getPassword() {
 
-        return $this->getData('password');
-    }
-
-
-    public function getRole() {
-
-        return $this->role;
-    }
+		return $this->getData('password');
+	}
 
 
-    public function setRole($role) {
+	public function getRoles() {
 
-        $this->role = $role;
-    }
-
-
-    public function getPermissions() {
-
-        return $this->permissions;
-    }
+		return $this->roles;
+	}
 
 
-    public function setPermissions(array $permissions) {
+	public function setRoles(array $roles) {
 
-        $this->permissions = $permissions;
-    }
+		$this->roles = $roles;
+	}
 
 
-    public function hasPermission($permission) {
+	public function getPermissions() {
 
-        $permission = array('name' => $permission);
-        if (in_array($permission, $this->permissions)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+		return $this->permissions;
+	}
+
+
+	public function setPermissions(array $permissions) {
+
+		$this->permissions = $permissions;
+	}
+
+
+	public function hasPermission($permission) {
+
+		$permission = array('name' => $permission);
+		if (in_array($permission, $this->permissions)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

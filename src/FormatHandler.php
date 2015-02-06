@@ -1,5 +1,8 @@
 <?php
 
+namespace publin\src;
+
+use Exception;
 
 /**
  * Handles the import and export formats.
@@ -12,45 +15,45 @@
  */
 class FormatHandler {
 
-    private $parser;
+	private $parser;
 
 
-    public function __construct($format) {
+	public function __construct($format) {
 
-        $file = './modules/'.$format.'.php';
+		$file = './modules/'.$format.'.php';
 
-        if (!file_exists($file)) {
-            throw new Exception('file '.$file.' not found');
-        }
+		if (!file_exists($file)) {
+			throw new Exception('file '.$file.' not found');
+		}
 
-        include $file;
+		include $file;
 
-        if (!class_exists($format)) {
-            throw new Exception('parser for '.$format.' not found in file '.$file);
-        }
+		if (!class_exists($format)) {
+			throw new Exception('parser for '.$format.' not found in file '.$file);
+		}
 
-        $this->parser = new $format();
-    }
-
-
-    public function export($data) {
-
-        if (!method_exists($this->parser, 'export')) {
-            throw new Exception('parser for '.get_class($this->parser).' offers no export');
-        }
-
-        return $this->parser->export($data);
-    }
+		$this->parser = new $format();
+	}
 
 
-    public function import($data) {
+	public function export($data) {
 
-        if (!method_exists($this->parser, 'import')) {
-            throw new Exception('parser for '.get_class($this->parser).' offers no import');
-        }
+		if (!method_exists($this->parser, 'export')) {
+			throw new Exception('parser for '.get_class($this->parser).' offers no export');
+		}
 
-        return $this->parser->import($data);
-    }
+		return $this->parser->export($data);
+	}
+
+
+	public function import($data) {
+
+		if (!method_exists($this->parser, 'import')) {
+			throw new Exception('parser for '.get_class($this->parser).' offers no import');
+		}
+
+		return $this->parser->import($data);
+	}
 
 
 }

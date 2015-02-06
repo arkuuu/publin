@@ -1,82 +1,83 @@
 <?php
 
-require_once 'Type.php';
+namespace publin\src;
 
+use Exception;
 
 class TypeModel {
 
 
-    private $db;
-    private $num;
+	private $db;
+	private $num;
 
 
-    public function __construct(Database $db) {
+	public function __construct(Database $db) {
 
-        $this->db = $db;
-    }
-
-
-    public function getNum() {
-
-        return $this->num;
-    }
+		$this->db = $db;
+	}
 
 
-    public function fetch(array $filter = array()) {
+	public function getNum() {
 
-        $types = array();
-
-        $data = $this->db->fetchTypes($filter);
-        $this->num = $this->db->getNumRows();
-
-        foreach ($data as $key => $value) {
-            $types[] = new Type($value);
-        }
-
-        return $types;
-    }
+		return $this->num;
+	}
 
 
-    public function validate(array $input) {
+	public function fetch(array $filter = array()) {
 
-        $errors = array();
+		$types = array();
 
-        // validation
-        return $errors;
-    }
+		$data = $this->db->fetchTypes($filter);
+		$this->num = $this->db->getNumRows();
 
+		foreach ($data as $key => $value) {
+			$types[] = new Type($value);
+		}
 
-    public function create(array $data) {
-
-        // validation here?
-        $type = new Type($data);
-
-        return $type;
-    }
+		return $types;
+	}
 
 
-    public function store(Type $type) {
+	public function validate(array $input) {
 
-        $data = $type->getData();
-        $id = $this->db->insertData('list_types', $data);
+		$errors = array();
 
-        if (!empty($id)) {
-            return $id;
-        }
-        else {
-            throw new Exception('Error while inserting type to DB');
-
-        }
-    }
+		// validation
+		return $errors;
+	}
 
 
-    public function update($id, array $data) {
+	public function create(array $data) {
 
-    }
+		// validation here?
+		$type = new Type($data);
+
+		return $type;
+	}
 
 
-    public function delete($id) {
+	public function store(Type $type) {
 
-    }
+		$data = $type->getData();
+		$id = $this->db->insertData('list_types', $data);
+
+		if (!empty($id)) {
+			return $id;
+		}
+		else {
+			throw new Exception('Error while inserting type to DB');
+
+		}
+	}
+
+
+	public function update($id, array $data) {
+
+	}
+
+
+	public function delete($id) {
+
+	}
 
 }

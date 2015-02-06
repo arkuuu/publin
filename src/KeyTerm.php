@@ -1,7 +1,6 @@
 <?php
 
-require_once 'Object.php';
-
+namespace publin\src;
 
 /**
  * Handles key term data.
