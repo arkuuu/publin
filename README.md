@@ -7,16 +7,17 @@ View bachelor thesis: http://www.ifis.uni-luebeck.de/index.php?id=363
 
 Planned features (WIP)
 ======
-* Submit publications, via web form or BibTeX import
-* Browse and view publications, authors, journals etc
-* Export publications to various formats (e.g. BibTeX, RIS, ...)
-* Support OAI-PMH, register as OAI Data Provider
-* Support various meta tag formats for getting indexed by search engines (e.g. DublinCore, HighwirePress Tags)
-* Support CSL styles for viewing and exporting citations
-* User authentication and authorization system with assignable roles and permissions
-* Template system for easy changing of the look and feel
-* Modular system for easy extending of export/import and meta tag formats
-* ...
+* [x] Submit publications, via web form or BibTeX import
+* [x] Browse and view publications, authors, journals etc
+* [ ] Edit publication and author metadata
+* [ ] Export publications to various formats (e.g. BibTeX, RIS, ...)
+* [ ] Support OAI-PMH, register as OAI Data Provider
+* [ ] Support various meta tag formats for getting indexed by search engines (e.g. DublinCore, HighwirePress Tags)
+* [ ] Support CSL styles for viewing and exporting citations
+* [x] User authentication and authorization system with assignable roles and permissions
+* [x] Template system for easy changing of the look and feel
+* [ ] Modular system for easy extending of export/import and meta tag formats
+* [ ] ...
 
 Additional notes
 =====
