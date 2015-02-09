@@ -23,6 +23,11 @@ class PublisherModel {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return Publisher[]
+	 */
 	public function fetch(array $filter = array()) {
 
 		$publishers = array();

@@ -4,6 +4,10 @@ namespace publin\src;
 
 class User extends Object {
 
+
+	/**
+	 * @var Role[]
+	 */
 	private $roles;
 	private $permissions;
 
@@ -16,6 +20,9 @@ class User extends Object {
 	}
 
 
+	/**
+	 * @return Role[]
+	 */
 	public function getRoles() {
 
 		return $this->roles;

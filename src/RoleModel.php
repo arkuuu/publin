@@ -22,6 +22,12 @@ class RoleModel {
 	}
 
 
+	/**
+	 * @param       $mode
+	 * @param array $filter
+	 *
+	 * @return Role[]
+	 */
 	public function fetch($mode, array $filter = array()) {
 
 		$users = array();

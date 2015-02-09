@@ -23,6 +23,11 @@ class JournalModel {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return Journal[]
+	 */
 	public function fetch(array $filter = array()) {
 
 		$journals = array();

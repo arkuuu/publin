@@ -20,6 +20,7 @@ class Publication extends Object {
 	 */
 	private $key_terms;
 
+	// TODO: maybe add $authors and $key_terms to constructor already?
 
 	/**
 	 * @return array|bool
@@ -182,7 +183,7 @@ class Publication extends Object {
 	 * Returns an array with the authors of this publication.
 	 * The array consists of Author objects.
 	 *
-	 * @return    array
+	 * @return    Author[]
 	 */
 	public function getAuthors() {
 
@@ -208,7 +209,7 @@ class Publication extends Object {
 	 * Returns an array with the key terms of this publication.
 	 * The array consists of KeyTerm objects.
 	 *
-	 * @return    array
+	 * @return    KeyTerm[]
 	 */
 	public function getKeyTerms() {
 

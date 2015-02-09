@@ -22,6 +22,12 @@ class PublicationModel {
 	}
 
 
+	/**
+	 * @param       $mode
+	 * @param array $filter
+	 *
+	 * @return Publication[]
+	 */
 	public function fetch($mode, array $filter = array()) {
 
 		$publications = array();
@@ -56,6 +62,7 @@ class PublicationModel {
 	public function create(array $data, array $authors, array $key_terms) {
 
 		// TODO: make to set new and return false if ID is detected.
+		// TODO: delete this and make bigger constructor instead.
 
 		// validation here?
 		$publication = new Publication($data);

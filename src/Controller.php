@@ -111,7 +111,6 @@ class Controller {
 						return $view->display();
 					}
 
-
 					break;
 
 				case 'logout':

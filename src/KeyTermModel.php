@@ -29,6 +29,11 @@ class KeyTermModel {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return KeyTerm[]
+	 */
 	public function fetch(array $filter = array()) {
 
 		$key_terms = array();

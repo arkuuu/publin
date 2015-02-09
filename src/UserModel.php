@@ -20,6 +20,12 @@ class UserModel {
 	}
 
 
+	/**
+	 * @param       $mode
+	 * @param array $filter
+	 *
+	 * @return User[]
+	 */
 	public function fetch($mode, array $filter = array()) {
 
 		$users = array();

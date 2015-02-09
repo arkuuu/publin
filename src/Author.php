@@ -12,7 +12,7 @@ class Author extends Object {
 	/**
 	 * Array with publications of this author
 	 *
-	 * @var    array
+	 * @var  Publication[]
 	 */
 	private $publications;
 

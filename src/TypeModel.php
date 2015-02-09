@@ -23,6 +23,11 @@ class TypeModel {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return Type[]
+	 */
 	public function fetch(array $filter = array()) {
 
 		$types = array();

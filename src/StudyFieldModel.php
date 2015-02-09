@@ -23,6 +23,11 @@ class StudyFieldModel {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return StudyField[]
+	 */
 	public function fetch(array $filter = array()) {
 
 		$study_fields = array();

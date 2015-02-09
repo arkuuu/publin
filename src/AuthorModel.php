@@ -23,6 +23,12 @@ class AuthorModel {
 	}
 
 
+	/**
+	 * @param       $mode
+	 * @param array $filter
+	 *
+	 * @return Author[]
+	 */
 	public function fetch($mode, array $filter = array()) {
 
 		$authors = array();
