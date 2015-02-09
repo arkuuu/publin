@@ -105,12 +105,10 @@ class Controller {
 						else {
 							print_r('incorrect login');
 						}
-
-						$view = new GenericView('login');
-
-						return $view->display();
 					}
+					$view = new GenericView('login');
 
+					return $view->display();
 					break;
 
 				case 'logout':
