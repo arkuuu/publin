@@ -1,0 +1,40 @@
+<style type="text/css" scoped="scoped">
+	table, th, td {
+		border: 1px solid black;
+		border-collapse: collapse;
+
+	}
+
+	th, td {
+		text-align: left;
+		vertical-align: top;
+		padding: 5px;
+	}
+
+	td.green {
+		background: lightgreen;
+		text-align: center;
+	}
+
+	td.red {
+		background: lightcoral;
+		text-align: center;
+	}
+
+	table input {
+		margin: 0;
+	}
+</style>
+<h1>Access Control Center</h1>
+<p>A list of available Roles with their permissions.</p>
+
+<h2>List view</h2>
+<?php echo $this -> showRoles() ?>
+
+<h2>Table view</h2>
+<?php echo $this -> showRoles('table') ?>
+
+<h2>Users</h2>
+<?php echo $this -> showUsers('table') ?>
+
+

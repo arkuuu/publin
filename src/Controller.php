@@ -82,6 +82,20 @@ class Controller {
 					return $controller->run();
 					break;
 
+				case 'manage':
+					if ($this->auth->checkLoginStatus()) {
+						$controller = new ManageController($db);
+
+						return $controller->run();
+					}
+					else {
+						$view = new GenericView('login');
+
+						return $view->display();
+					}
+
+					break;
+
 				case 'login':
 					if (!empty($_POST['username']) && !empty($_POST['password'])) {
 						if ($this->auth->validateLogin($_POST['username'], $_POST['password'])) {
@@ -91,10 +105,12 @@ class Controller {
 						else {
 							print_r('incorrect login');
 						}
-					}
-					$view = new GenericView('login');
 
-					return $view->display();
+						$view = new GenericView('login');
+
+						return $view->display();
+					}
+
 
 					break;
 

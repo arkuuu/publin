@@ -99,7 +99,38 @@ class Database extends mysqli {
 	}
 
 
-	//TODO: Doc
+	public function deleteData($table, array $where) {
+
+		if (empty($where)) {
+			// TODO: throw exception
+			die('Where must not be empty when deleting');
+		}
+
+		parent::change_user($this->writeonly_user,
+			$this->writeonly_password,
+			$this->database);
+
+		$query = 'DELETE FROM `'.$table.'`';
+		$query .= 'WHERE';
+
+		foreach ($where as $key => $value) {
+			$query .= ' `'.$key.'` = "'.$value.'" AND';
+		}
+		$query = substr($query, 0, -3);
+
+		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+		$msg = str_replace("\t", '', $msg);
+		$file = fopen('./logs/sql.log', 'a');
+		fwrite($file, '['.date('d.m.Y H:i:s').'] '
+			.$msg."\n");
+		fclose($file);
+
+		parent::query($query);
+
+		return $this->affected_rows;
+
+	}
+
 
 	/**
 	 * Returns an array with types. All Columns are returned.
@@ -368,7 +399,7 @@ class Database extends mysqli {
 
 	public function fetchUsers(array $filter = array()) {
 
-		$select = 'SELECT p.*';
+		$select = 'SELECT u.*';
 		$from = 'FROM `list_users` u';
 		$where = '';
 		$order = 'ORDER BY `name` ASC';
@@ -620,7 +651,7 @@ class Database extends mysqli {
 				unset($filter['role_id']);
 			}
 			foreach ($filter as $key => $value) {
-				$where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
+				$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
 			}
 			$where = substr($where, 0, -3);
 
