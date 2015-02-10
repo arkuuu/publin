@@ -16,65 +16,44 @@ class ManageModel {
 
 	public function getPermissions() {
 
+		// TODO: create and use PermissionModel
 		$query = 'SELECT `id`, `name` FROM list_permissions ORDER BY `name` ASC;';
-		$permissions = $this->db->getData($query);
 
-		return $permissions;
+		return $this->db->getData($query);
 	}
 
 
 	public function updatePermissions(array $input) {
 
 		$roles = $this->getRoles();
+		$model = new RoleModel($this->db);
+
 		foreach ($roles as $role) {
-			$old_permissions = $role->getPermissions();
-			$old = array();
-
-			foreach ($old_permissions as $old_permission) {
-				$old[] = $old_permission['id'];
-			}
-
 			if (isset($input[$role->getId()])) {
-				$new_permissions = $input[$role->getId()];
-				$new = array_keys($new_permissions);
-
-				$to_delete = array_diff($old, $new);
-				$to_add = array_diff($new, $old);
+				$permissions = array_keys($input[$role->getId()]);
+				$model->updatePermissions($role->getId(), $permissions);
 			}
 			else {
-				$to_add = array();
-				$to_delete = $old;
-			}
-
-			$model = new RoleModel($this->db);
-			foreach ($to_add as $id) {
-				$success = $model->addPermission($role->getId(), $id);
-				var_dump($success);
-			}
-			foreach ($to_delete as $id) {
-				$success = $model->removePermission($role->getId(), $id);
-				var_dump($success);
+				$model->updatePermissions($role->getId(), array());
 			}
 		}
 
-
+		return true;
 	}
 
 
 	public function getRoles() {
 
 		$model = new RoleModel($this->db);
-		$roles = $model->fetch(true);
 
-		return $roles;
+		return $model->fetch(true);
 	}
 
 
 	public function getUsers() {
 
 		$model = new UserModel($this->db);
-		$users = $model->fetch(true);
 
-		return $users;
+		return $model->fetch(true);
 	}
 }

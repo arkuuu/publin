@@ -2,7 +2,8 @@
 
 namespace publin\src;
 
-use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 
 class JournalModel {
 
@@ -64,15 +65,9 @@ class JournalModel {
 	public function store(Journal $journal) {
 
 		$data = $journal->getData();
-		$id = $this->db->insertData('list_journals', $data);
 
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting journal to DB');
+		return $this->db->insertData('list_journals', $data);
 
-		}
 	}
 
 
@@ -83,6 +78,19 @@ class JournalModel {
 
 	public function delete($id) {
 
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_journals', $where);
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting journal '.$id.': '.$this->db->error);
+		}
 	}
 
 }

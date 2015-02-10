@@ -2,10 +2,12 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
+
 /**
- * Handles author data.
+ * Class Author
  *
- * TODO: comment
+ * @package publin\src
  */
 class Author extends Object {
 
@@ -89,17 +91,6 @@ class Author extends Object {
 
 
 	/**
-	 * Returns the academic title.
-	 *
-	 * @return    string
-	 */
-	public function getAcademicTitle() {
-
-		return $this->getData('academic_title');
-	}
-
-
-	/**
 	 * Returns the website.
 	 *
 	 * @return    string
@@ -133,9 +124,7 @@ class Author extends Object {
 
 
 	/**
-	 * Returns an array with publications of this authors.
-	 *
-	 * @return    array
+	 * @return Publication[]
 	 */
 	public function getPublications() {
 
@@ -144,16 +133,23 @@ class Author extends Object {
 
 
 	/**
-	 * Adds the publications to the author.
+	 * @param array $publications
 	 *
-	 * @param    array $publications array with Publications objects
-	 *
-	 * @return    void
+	 * @return bool
 	 */
 	public function setPublications(array $publications) {
 
-		// TODO: input validation
-		$this->publications = $publications;
+		foreach ($publications as $publication) {
+
+			if ($publication instanceof Publication) {
+				$this->publications[] = $publication;
+			}
+			else {
+				throw new InvalidArgumentException('must be array with Publication objects');
+			}
+		}
+
+		return true;
 	}
 
 }

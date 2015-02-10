@@ -96,6 +96,7 @@ class PublicationView extends View {
 				}
 				else {
 					// $author = 'Unknown Author';
+					// TODO: really an exception?
 					throw new Exception('the publication with id '.$this->publication->getId().' has an author with no name');
 				}
 

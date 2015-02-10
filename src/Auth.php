@@ -5,6 +5,7 @@ namespace publin\src;
 class Auth {
 
 	private $db;
+	private $session_expire_time = 60;
 
 
 	public function __construct(Database $db) {
@@ -27,9 +28,15 @@ class Auth {
 		$result = $this->db->getData($query);
 
 		if ($this->db->getNumRows() == 1) {
+
+			//TODO: write Login date to DB
 			$user = new User($result[0]);
-			$_SESSION['user'] = $user;
 			$user->setPermissions($this->getPermissions($user));
+
+			session_regenerate_id(true);
+			$_SESSION['user'] = $user;
+			$_SESSION['created'] = time();
+			$_SESSION['last_activity'] = time();
 
 			return true;
 		}
@@ -84,8 +91,17 @@ class Auth {
 
 	public function checkLoginStatus() {
 
-		if (isset($_SESSION['user'])) {
-			return true;
+		if (isset($_SESSION['user']) && isset($_SESSION['last_activity'])) {
+			if (time() - $_SESSION['last_activity'] > $this->session_expire_time) {
+				$this->logout();
+
+				return false;
+			}
+			else {
+				$_SESSION['last_activity'] = time();
+
+				return true;
+			}
 		}
 		else {
 			return false;
@@ -95,6 +111,7 @@ class Auth {
 
 	public function logout() {
 
+		session_unset();
 		session_destroy();
 		session_start();
 	}

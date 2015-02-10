@@ -4,7 +4,9 @@ namespace publin\src;
 
 use Exception;
 
-class SubmitModel extends Model {
+class SubmitModel {
+
+	private $db;
 
 	private $required_fields = array(
 		'all'           => array('type', 'study_field', 'date_published', 'title', 'authors'),
@@ -34,9 +36,9 @@ class SubmitModel extends Model {
 	private $publication;
 
 
-	public function __construct($db) {
+	public function __construct(Database $db) {
 
-		parent::__construct($db);
+		$this->db = $db;
 	}
 
 
@@ -329,6 +331,22 @@ class SubmitModel extends Model {
 
 		$model = new PublicationModel($this->db);
 		$model->store($publication);
+	}
+
+
+	public function createTypes() {
+
+		$model = new TypeModel($this->db);
+
+		return $model->fetch();
+	}
+
+
+	public function createStudyFields() {
+
+		$model = new StudyFieldModel($this->db);
+
+		return $model->fetch();
 	}
 
 

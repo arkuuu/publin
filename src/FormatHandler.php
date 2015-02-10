@@ -2,17 +2,9 @@
 
 namespace publin\src;
 
-use Exception;
+use BadMethodCallException;
+use DomainException;
 
-/**
- * Handles the import and export formats.
- *
- * This should later be replaced by a modular system looking for export formats
- * found in the /export directory.
- *
- * TODO: comment
- * TODO: implement
- */
 class FormatHandler {
 
 	private $parser;
@@ -23,13 +15,13 @@ class FormatHandler {
 		$file = './modules/'.$format.'.php';
 
 		if (!file_exists($file)) {
-			throw new Exception('file '.$file.' not found');
+			throw new DomainException('file '.$file.' not found');
 		}
 
 		include $file;
 
 		if (!class_exists($format)) {
-			throw new Exception('parser for '.$format.' not found in file '.$file);
+			throw new DomainException('parser for '.$format.' not found in file '.$file);
 		}
 
 		$this->parser = new $format();
@@ -39,7 +31,7 @@ class FormatHandler {
 	public function export($data) {
 
 		if (!method_exists($this->parser, 'export')) {
-			throw new Exception('parser for '.get_class($this->parser).' offers no export');
+			throw new BadMethodCallException('parser for '.get_class($this->parser).' offers no export');
 		}
 
 		return $this->parser->export($data);
@@ -49,7 +41,7 @@ class FormatHandler {
 	public function import($data) {
 
 		if (!method_exists($this->parser, 'import')) {
-			throw new Exception('parser for '.get_class($this->parser).' offers no import');
+			throw new BadMethodCallException('parser for '.get_class($this->parser).' offers no import');
 		}
 
 		return $this->parser->import($data);

@@ -2,7 +2,9 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
 use mysqli;
+use publin\src\exceptions\SQLException;
 
 /**
  * Handles all database communication.
@@ -24,10 +26,7 @@ class Database extends mysqli {
 
 
 	/**
-	 * Constructs a new database connection.
-	 *
-	 * Uses the constructor of mysqli class. Stops the script if connection cannot be
-	 * established. Sets the charset used for transmission.
+	 * @throws SQLException
 	 */
 	public function __construct() {
 
@@ -39,7 +38,7 @@ class Database extends mysqli {
 
 		/* Stops if the connection cannot be established */
 		if ($this->connect_errno) {
-			die('NO CONNECTION TO DATABASE');    // TODO don't use die!
+			throw new SQLException($this->connect_error);
 		}
 		/* Sets the charset used for transmission */
 		parent::set_charset($this->charset);
@@ -60,7 +59,18 @@ class Database extends mysqli {
 	}
 
 
+	/**
+	 * @param       $table
+	 * @param array $data
+	 *
+	 * @return mixed
+	 * @throws SQLException
+	 */
 	public function insertData($table, array $data) {
+
+		if (empty($data)) {
+			throw new InvalidArgumentException('where must not be empty when deleting');
+		}
 
 		parent::change_user($this->writeonly_user,
 			$this->writeonly_password,
@@ -92,18 +102,28 @@ class Database extends mysqli {
 			.$msg."\n");
 		fclose($file);
 
-		parent::query($query);
+		$result = parent::query($query);
+
+		if (!$result) {
+			throw new SQLException($this->error);
+		}
 
 		return $this->insert_id;
 
 	}
 
 
+	/**
+	 * @param       $table
+	 * @param array $where
+	 *
+	 * @return int
+	 * @throws SQLException
+	 */
 	public function deleteData($table, array $where) {
 
 		if (empty($where)) {
-			// TODO: throw exception
-			die('Where must not be empty when deleting');
+			throw new InvalidArgumentException('where must not be empty when deleting');
 		}
 
 		parent::change_user($this->writeonly_user,
@@ -125,7 +145,11 @@ class Database extends mysqli {
 			.$msg."\n");
 		fclose($file);
 
-		parent::query($query);
+		$result = parent::query($query);
+
+		if (!$result) {
+			throw new SQLException($this->error);
+		}
 
 		return $this->affected_rows;
 
@@ -185,7 +209,8 @@ class Database extends mysqli {
 	 *
 	 * @param    string $query The SQL query
 	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
 	public function getData($query) {
 
@@ -201,7 +226,7 @@ class Database extends mysqli {
 		$result = parent::query($query);
 
 		if (!is_object($result)) {
-			die('ERROR IN SQL SYNTAX, CHECK SQL LOG<br/>'.$this->error);
+			throw new SQLException($this->error);
 		}
 		$this->num_rows = $result->num_rows;
 

@@ -2,7 +2,8 @@
 
 namespace publin\src;
 
-use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 
 class StudyFieldModel {
 
@@ -64,15 +65,8 @@ class StudyFieldModel {
 	public function store(StudyField $study_field) {
 
 		$data = $study_field->getData();
-		$id = $this->db->insertData('list_study_fields', $data);
 
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting field of study to DB');
-
-		}
+		return $this->db->insertData('list_study_fields', $data);
 	}
 
 
@@ -83,6 +77,20 @@ class StudyFieldModel {
 
 	public function delete($id) {
 
+		//TODO: this only works when no foreign key constraints fail
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_study_fields', $where);
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting study field '.$id.': '.$this->db->error);
+		}
 	}
 
 }

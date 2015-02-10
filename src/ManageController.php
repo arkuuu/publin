@@ -2,6 +2,8 @@
 
 namespace publin\src;
 
+use Exception;
+
 class ManageController {
 
 	private $db;
@@ -18,81 +20,106 @@ class ManageController {
 		// TODO: input safety!!
 		// TODO: check for user permission to this!
 
-		if (isset($_GET['m'])) {
-			$mode = $_GET['m'];
+		try {
+			if (isset($_GET['m'])) {
+				$mode = $_GET['m'];
 
-			if ($mode == 'rmp') {
-				if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['rid']) && is_numeric($_GET['rid'])) {
-					$permission_id = $_GET['id'];
-					$role_id = $_GET['rid'];
+				if ($mode == 'rmp' && isset($_GET['id']) && isset($_GET['rid'])) {
+					$success = $this->removePermissionFromRole($_GET['rid'], $_GET['id']);
+				}
 
-					$model = new RoleModel($this->db);
-					$success = $model->removePermission($role_id, $permission_id);
-					var_dump($success);
+				else if ($mode == 'rmr' && isset($_GET['id'])) {
+					$success = $this->deleteRole($_GET['id']);
+				}
+				if ($mode == 'rmur' && isset($_GET['id']) && isset($_GET['uid'])) {
+					$success = $this->removeRoleFromUser($_GET['uid'], $_GET['id']);
 				}
 			}
 
-			else if ($mode == 'rmr') {
-				if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-					$role_id = $_GET['id'];
-
-					$model = new RoleModel($this->db);
-					$success = $model->delete($role_id);
-					var_dump($success);
-				}
+			else if (isset($_POST['role_id']) && isset($_POST['permission_id'])) {
+				$success = $this->addPermissionToRole($_POST['role_id'], $_POST['permission_id']);
 			}
-			if ($mode == 'rmur') {
-				if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-					$role_id = $_GET['id'];
-					$user_id = $_GET['uid'];
 
-					$model = new UserModel($this->db);
-					$success = $model->removeRole($user_id, $role_id);
-					var_dump($success);
-				}
+			else if (isset($_POST['role_id']) && isset($_POST['user_id'])) {
+				$success = $this->addRoleToUser($_POST['user_id'], $_POST['role_id']);
 			}
+
+			else if (!empty($_POST['role_name'])) {
+				$success = $this->newRole($_POST['role_name']);
+			}
+
+			else if (isset($_POST['role_perm'])) {
+				$success = $this->updateRolePermissions($_POST['role_perm']);
+			}
+			else {
+				$success = null;
+			}
+		} catch (Exception $e) {
+			print_r($e->getMessage());
+			$success = false;
 		}
 
-		else if (isset($_POST['role_id']) && is_numeric($_POST['role_id']) && isset($_POST['permission_id']) &&
-			is_numeric($_POST['permission_id'])
-		) {
-			$role_id = $_POST['role_id'];
-			$permission_id = $_POST['permission_id'];
-
-			$model = new RoleModel($this->db);
-			$success = $model->addPermission($role_id, $permission_id);
-			var_dump($success);
-		}
-
-		else if (isset($_POST['user_role_id']) && is_numeric($_POST['user_role_id']) && isset
-			($_POST['user_id']) &&
-			is_numeric($_POST['user_id'])
-		) {
-			$user_id = $_POST['user_id'];
-			$role_id = $_POST['user_role_id'];
-
-			$model = new UserModel($this->db);
-			$success = $model->addRole($user_id, $role_id);
-			var_dump($success);
-		}
-
-		else if (!empty($_POST['role_name'])) {
-			$role_name = $_POST['role_name'];
-			$role = new Role(array('name' => $role_name));
-			$model = new RoleModel($this->db);
-			$success = $model->store($role);
-			var_dump($success);
-
-		}
-
-		else if (isset($_POST['role_perm'])) {
-			$model = new ManageModel($this->db);
-			$model->updatePermissions($_POST['role_perm']);
-		}
-
+		var_dump($success);
 		$model = new ManageModel($this->db);
-		$view = new ManageView($model);
+		$view = new ManageView($model, $success);
 
 		return $view->display();
+	}
+
+
+	public function removePermissionFromRole($role_id, $permission_id) {
+
+		$model = new RoleModel($this->db);
+
+		return $model->removePermission($role_id, $permission_id);
+	}
+
+
+	public function deleteRole($role_id) {
+
+		$model = new RoleModel($this->db);
+
+		return $model->delete($role_id);
+	}
+
+
+	public function removeRoleFromUser($user_id, $role_id) {
+
+		$model = new UserModel($this->db);
+
+		return $model->removeRole($user_id, $role_id);
+	}
+
+
+	public function addPermissionToRole($role_id, $permission_id) {
+
+		$model = new RoleModel($this->db);
+
+		return $model->addPermission($role_id, $permission_id);
+	}
+
+
+	public function addRoleToUser($user_id, $role_id) {
+
+		$model = new UserModel($this->db);
+
+		return $model->addRole($user_id, $role_id);
+	}
+
+
+	public function newRole($role_name) {
+
+		$model = new RoleModel($this->db);
+		$role = new Role(array('name' => $role_name));
+
+		return $model->store($role);
+	}
+
+
+	public function updateRolePermissions(array $role_permissions) {
+
+		$model = new ManageModel($this->db);
+
+		return $model->updatePermissions($role_permissions);
 	}
 }

@@ -2,7 +2,8 @@
 
 namespace publin\src;
 
-use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 
 class TypeModel {
 
@@ -64,15 +65,9 @@ class TypeModel {
 	public function store(Type $type) {
 
 		$data = $type->getData();
-		$id = $this->db->insertData('list_types', $data);
 
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting type to DB');
+		return $this->db->insertData('list_types', $data);
 
-		}
 	}
 
 
@@ -83,6 +78,20 @@ class TypeModel {
 
 	public function delete($id) {
 
+		//TODO: this only works when no foreign key constraints fail
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_types', $where);
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting type '.$id.': '.$this->db->error);
+		}
 	}
 
 }

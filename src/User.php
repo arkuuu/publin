@@ -72,6 +72,8 @@ class User extends Object {
 			}
 			else {
 				// TODO: what to do when incorrect object
+				//TODO: only while Permission Object not in use:
+				$this->permissions = $permissions;
 			}
 		}
 	}

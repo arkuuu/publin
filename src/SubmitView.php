@@ -96,6 +96,7 @@ class SubmitView extends View {
 			$string = '<option value selected disabled>Select...</option>';
 		}
 
+		/* @var $type Type */
 		foreach ($types as $type) {
 			if ($type->getName() == $selected) {
 				$string .= '<option value="'.$type->getName().'" selected>'.$type->getName().'</option>';
@@ -139,6 +140,7 @@ class SubmitView extends View {
 			$string = '<option value selected disabled>Select...</option>';
 		}
 
+		/* @var $study_field StudyField */
 		foreach ($study_fields as $study_field) {
 			if ($study_field->getName() == $selected) {
 				$string .= '<option value="'.$study_field->getName().'" selected>'.$study_field->getName().'</option>';
@@ -176,6 +178,7 @@ class SubmitView extends View {
 		$string = '';
 		$key_terms = $this->showPostValue('key_terms');
 		if ($key_terms) {
+			/* @var $key_terms KeyTerm[] */
 			foreach ($key_terms as $key => $value) {
 				$string .= '<li class="multi-field">
 						<input type="text" name="key_terms[]" placeholder="Keyword" value="'.$this->showPostValue('key_terms', $key).'"/>
@@ -199,6 +202,7 @@ class SubmitView extends View {
 		$string = '';
 		$authors = $this->showPostValue('authors');
 		if ($authors) {
+			/* @var $authors Author[] */
 			foreach ($authors as $key => $value) {
 				$string .= '<li class="multi-field">
 				<input type="text" name="authors[given][]" placeholder="Given Name(s)" value="'.$this->showPostValue('authors', $key, 'given').'"/>

@@ -2,6 +2,8 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
+
 /**
  * Handles publication data.
  *
@@ -10,13 +12,13 @@ namespace publin\src;
 class Publication extends Object {
 
 	/**
-	 * @var    array
+	 * @var    Author[]
 	 */
 	private $authors;
 
 
 	/**
-	 * @var    array
+	 * @var    KeyTerm[]
 	 */
 	private $key_terms;
 
@@ -192,16 +194,23 @@ class Publication extends Object {
 
 
 	/**
-	 * Adds the authors to the publication.
+	 * @param array $authors
 	 *
-	 * @param    array $authors array with Author objects
-	 *
-	 * @return    void
+	 * @return bool
 	 */
 	public function setAuthors(array $authors) {
 
-		// TODO: Input validation
-		$this->authors = $authors;
+		foreach ($authors as $author) {
+
+			if ($author instanceof Author) {
+				$this->authors[] = $author;
+			}
+			else {
+				throw new InvalidArgumentException('must be array with Author objects');
+			}
+		}
+
+		return true;
 	}
 
 
@@ -218,16 +227,23 @@ class Publication extends Object {
 
 
 	/**
-	 * Adds the key terms to the publication.
+	 * @param array $key_terms
 	 *
-	 * @param    array $key_terms array with KeyTerm objects
-	 *
-	 * @return    void
+	 * @return bool
 	 */
 	public function setKeyTerms(array $key_terms) {
 
-		// TODO: Input validation
-		$this->key_terms = $key_terms;
+		foreach ($key_terms as $key_term) {
+
+			if ($key_term instanceof KeyTerm) {
+				$this->key_terms[] = $key_term;
+			}
+			else {
+				throw new InvalidArgumentException('must be array with KeyTerm objects');
+			}
+		}
+
+		return true;
 	}
 
 

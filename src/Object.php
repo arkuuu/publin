@@ -45,6 +45,7 @@ class Object {
 	 */
 	public function getData($field = null) {
 
+		// TODO: throw exception when trying to access unset field!
 		if (isset($field)) {
 			if (!empty($this->data[$field])) {
 				return $this->data[$field];

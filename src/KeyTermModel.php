@@ -2,13 +2,13 @@
 
 namespace publin\src;
 
-use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 
 class KeyTermModel {
 
 	private $db;
 	private $num;
-	private $errors;
 
 
 	public function __construct(Database $db) {
@@ -20,12 +20,6 @@ class KeyTermModel {
 	public function getNum() {
 
 		return $this->num;
-	}
-
-
-	public function getErrors() {
-
-		return $this->errors;
 	}
 
 
@@ -70,15 +64,8 @@ class KeyTermModel {
 	public function store(KeyTerm $key_term) {
 
 		$data = $key_term->getData();
-		$id = $this->db->insertData('list_key_terms', $data);
 
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting key term to DB');
-
-		}
+		return $this->db->insertData('list_key_terms', $data);
 	}
 
 
@@ -89,6 +76,19 @@ class KeyTermModel {
 
 	public function delete($id) {
 
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_key_terms', $where);
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting key term '.$id.': '.$this->db->error);
+		}
 	}
 
 }

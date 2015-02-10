@@ -2,7 +2,6 @@
 	table, th, td {
 		border: 1px solid black;
 		border-collapse: collapse;
-
 	}
 
 	th, td {
@@ -11,12 +10,12 @@
 		padding: 5px;
 	}
 
-	td.green {
+	.green {
 		background: lightgreen;
 		text-align: center;
 	}
 
-	td.red {
+	.red {
 		background: lightcoral;
 		text-align: center;
 	}
@@ -27,6 +26,7 @@
 </style>
 <h1>Access Control Center</h1>
 <p>A list of available Roles with their permissions.</p>
+<?php echo $this-> showMessage() ?>
 
 <h2>List view</h2>
 <?php echo $this -> showRoles() ?>

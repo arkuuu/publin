@@ -2,6 +2,9 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 class UserModel {
 
 	private $db;
@@ -58,14 +61,8 @@ class UserModel {
 	public function addRole($user_id, $role_id) {
 
 		$data = array('user_id' => $user_id, 'role_id' => $role_id);
-		$id = $this->db->insertData('rel_user_roles', $data);
 
-		if ($id) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return $this->db->insertData('rel_user_roles', $data);
 	}
 
 
@@ -74,12 +71,31 @@ class UserModel {
 		$where = array('user_id' => $user_id, 'role_id' => $role_id);
 		$rows = $this->db->deleteData('rel_user_roles', $where);
 
+		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			// TODO: proper error handling stuff here
-			return false;
+			throw new RuntimeException('Error while removing role '.$role_id.' from user '.$user_id.': '.$this->db->error);
+		}
+	}
+
+
+	public function delete($id) {
+
+		//TODO: this only works when no foreign key constraints fail
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_users', $where);
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting user '.$id.': '.$this->db->error);
 		}
 	}
 }

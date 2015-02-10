@@ -6,11 +6,13 @@ namespace publin\src;
 class ManageView extends View {
 
 	private $model;
+	private $success;
 
 
-	public function __construct(ManageModel $model) {
+	public function __construct(ManageModel $model, $success = null) {
 
 		$this->model = $model;
+		$this->success = $success;
 		parent::__construct('manage');
 	}
 
@@ -34,6 +36,7 @@ class ManageView extends View {
 		/* List view */
 		if ($mode == 'list') {
 			$string = '<ul>';
+			/* @var $role Role */
 			foreach ($roles as $role) {
 				$role_permissions = $role->getPermissions();
 
@@ -51,7 +54,7 @@ class ManageView extends View {
 							<option selected disabled>Select permission...</option>';
 
 				foreach ($permissions as $permission) {
-					if (!$role->hasPermission($permission['name'])) {
+					if (!$role->hasPermission($permission['id'])) {
 						$string .= '<option value="'.$permission['id'].'">'.$permission['name'].'</option>';
 					}
 				}
@@ -71,6 +74,7 @@ class ManageView extends View {
 		else if ($mode == 'table') {
 			$string = '<form action="./?p=manage" method="post">';
 			$string .= '<table><tr><th>Permission</th>';
+			/* @var $role Role */
 			foreach ($roles as $role) {
 				$string .= '<th>'.$role->getName().'</th>';
 			}
@@ -112,7 +116,7 @@ class ManageView extends View {
 								<th>Last login</th>
 								<th>Assigned Roles</th>
 							</tr>';
-
+			/* @var $user User */
 			foreach ($this->model->getUsers() as $user) {
 				$string .= '<tr>
 								<td>'.$user->getName().'</td>
@@ -124,9 +128,10 @@ class ManageView extends View {
 				foreach ($user->getRoles() as $role) {
 					$string .= $role->getName().' <a href="./?p=manage&amp;m=rmur&amp;id='.$role->getId().'&amp;uid='.$user->getId().'">(remove)</a><br/>';
 				}
-				$string .= '<form action="./?p=manage#Users" method="post"><select name="user_role_id">
+				$string .= '<form action="./?p=manage" method="post"><select name="role_id">
 							<option selected disabled>Select role...</option>';
 
+				/* @var $role Role */
 				foreach ($this->model->getRoles() as $role) {
 					if (!$user->hasRole($role->getId())) {
 						$string .= '<option value="'.$role->getId().'">'.$role->getName().'</option>';
@@ -149,6 +154,21 @@ class ManageView extends View {
 			return 'ERROR';
 		}
 
+	}
+
+
+	public function showMessage() {
+
+		if ($this->success == true) {
+			return '<div class="green"><p>Update successful</p></div>';
+		}
+		else if ($this->success === false) {
+			return '<div class="red"><p>An Error occurred!</p></div>';
+		}
+		else {
+			//TODO: better return false?
+			return '';
+		}
 	}
 
 

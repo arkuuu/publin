@@ -3,6 +3,8 @@
 namespace publin\src;
 
 use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 
 class PublicationModel {
 
@@ -164,8 +166,8 @@ class PublicationModel {
 			return $publication_id;
 		}
 		else {
+			// TODO: streamline this with the other Model classes
 			throw new Exception('Error while inserting publication to DB');
-
 		}
 	}
 
@@ -177,6 +179,20 @@ class PublicationModel {
 
 	public function delete($id) {
 
+		//TODO: this only works when no foreign key constraints fail
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_publications', $where);
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting role '.$id.': '.$this->db->error);
+		}
 	}
 
 }

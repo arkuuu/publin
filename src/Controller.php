@@ -28,6 +28,7 @@ class Controller {
 		header('Content-Type: text/html; charset=UTF-8');
 
 		$this->db = new Database();
+		// TODO: catch exception here
 		$this->auth = new Auth($this->db);
 	}
 
@@ -46,7 +47,7 @@ class Controller {
 	public function run($page, $id, $by) {
 
 		$db = $this->db;
-		// print_r($_SESSION);
+		$this->auth->checkLoginStatus();
 
 		try {
 			switch ($page) {

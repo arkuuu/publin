@@ -2,7 +2,7 @@
 
 namespace publin\src;
 
-use Exception;
+use InvalidArgumentException;
 
 class AuthorModel {
 
@@ -81,15 +81,9 @@ class AuthorModel {
 
 		// validation here?
 		$data = $author->getData();
-		$id = $this->db->insertData('list_authors', $data);
 
-		if (!empty($id)) {
-			return $id;
-		}
-		else {
-			throw new Exception('Error while inserting author to DB');
+		return $this->db->insertData('list_authors', $data);
 
-		}
 	}
 
 
@@ -100,6 +94,9 @@ class AuthorModel {
 
 	public function delete($id) {
 
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
 	}
 
 }

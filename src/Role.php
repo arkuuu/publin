@@ -1,17 +1,19 @@
 <?php
-/**
- * User: arkuuu
- * Date: 06.02.15
- * Time: 12:11
- */
 
 namespace publin\src;
 
 class Role extends Object {
 
+
+	/**
+	 * @var array
+	 */
 	private $permissions = array();
 
 
+	/**
+	 * @return array
+	 */
 	public function getPermissions() {
 
 		return $this->permissions;
