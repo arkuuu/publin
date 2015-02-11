@@ -3,6 +3,7 @@
 namespace publin\src;
 
 use Exception;
+use publin\src\exceptions\NotFoundException;
 
 /**
  * Controls everything.
@@ -76,11 +77,17 @@ class Controller {
 					break;
 
 				case 'submit':
-					// $model = new SubmitModel();
-					// $view = new SubmitView($model, 'form');
-					$controller = new SubmitController($db);
+					if ($this->auth->checkLoginStatus()) {
+						$controller = new SubmitController($db);
 
-					return $controller->run();
+						return $controller->run();
+					}
+					else {
+						$view = new View('login');
+
+						return $view->display();
+					}
+
 					break;
 
 				case 'manage':
@@ -90,7 +97,7 @@ class Controller {
 						return $controller->run();
 					}
 					else {
-						$view = new GenericView('login');
+						$view = new View('login');
 
 						return $view->display();
 					}
@@ -98,6 +105,7 @@ class Controller {
 					break;
 
 				case 'login':
+					// TODO: redirect if already logged in
 					if (!empty($_POST['username']) && !empty($_POST['password'])) {
 						if ($this->auth->validateLogin($_POST['username'], $_POST['password'])) {
 							// header();
@@ -107,7 +115,7 @@ class Controller {
 							print_r('incorrect login');
 						}
 					}
-					$view = new GenericView('login');
+					$view = new View('login');
 
 					return $view->display();
 					break;
@@ -116,23 +124,30 @@ class Controller {
 					if ($this->auth->checkLoginStatus()) {
 						$this->auth->logout();
 					}
-					$view = new GenericView('login');
+					$view = new View('login');
 
 					return $view->display();
 					break;
 
 				default:
-					$view = new GenericView($page);
+					$view = new View($page);
 
 					return $view->display();
 					break;
 			}
 
 			// return $view -> display();
-		} catch (Exception $e) {
+		}
+		catch (NotFoundException $e) {
+			// header(..)
+			return 'Ooops, something missing here: '.$e->getMessage();
+		}
+		catch (Exception $e) {
+
+			// TODO maybe put this in view?
 			ob_end_clean();
 
-			return 'Error: '.$e->getMessage().'<br/>File: '.$e->getFile();
+			return 'Error: '.$e->getMessage();
 		}
 
 

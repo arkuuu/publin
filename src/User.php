@@ -79,16 +79,16 @@ class User extends Object {
 	}
 
 
-//	public function hasPermission($permission) {
-//
-//		$permission = array('name' => $permission);
-//		if (in_array($permission, $this->permissions)) {
-//			return true;
-//		}
-//		else {
-//			return false;
-//		}
-//	}
+	public function hasPermission($permission) {
+
+		$permission = array('name' => $permission);
+		if (in_array($permission, $this->permissions)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	public function getMail() {
 

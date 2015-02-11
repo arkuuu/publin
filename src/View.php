@@ -3,13 +3,14 @@
 namespace publin\src;
 
 use Exception;
+use publin\src\exceptions\NotFoundException;
 
 /**
  * Parent class for all views
  *
  * TODO: comment
  */
-abstract class View {
+class View {
 
 	/**
 	 * The path to the template file
@@ -21,7 +22,7 @@ abstract class View {
 	protected $content;
 
 
-	protected function __construct($content) {
+	public function __construct($content) {
 
 		$this->content = $content;
 	}
@@ -41,8 +42,7 @@ abstract class View {
 			return $output;
 		}
 		else {
-			// TODO: error
-			return 'Could not find template '.$content.'!';
+			throw new NotFoundException('Could not find template '.$content.'!');
 		}
 	}
 
@@ -75,7 +75,7 @@ abstract class View {
 			}
 			else {
 				// TODO: error
-				throw new Exception('Could not find template '.$content.'!');
+				throw new NotFoundException('Could not find template '.$content.'!');
 
 			}
 		}
@@ -92,7 +92,13 @@ abstract class View {
 	 *
 	 * @return    string
 	 */
-	abstract public function showPageTitle();
+	public function showPageTitle() {
+
+		$string = ucfirst($this->content);    // TODO: doesn't work with non UTF chars
+		$string = str_replace('_', ' ', $string);
+
+		return $string;
+	}
 
 
 	/**
@@ -100,7 +106,7 @@ abstract class View {
 	 *
 	 * @return    string
 	 */
-	public function showMetaTags() {    // TODO: make abstract
+	public function showMetaTags() {
 		return "\n";
 	}
 

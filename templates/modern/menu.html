@@ -6,16 +6,20 @@
 				<li><a href="./?p=start">Start</a></li>
 				<li><a href="#">Search</a></li>
 				<li><a href="./?p=browse">Browse</a></li>
-				<li><a href="./?p=submit">Submit</a></li>
 				<li><a href="./?p=about">About</a></li>
 			</ul>
 		</div>
 		<div id="login">
 			<ul>
 				<?php echo $this -> showUserName() ? '
-				<li><a href="./?p=manage">'.$this -> showUserName().'</a></li>
-				' :
-				''?>
+				<li><a href="#">'.$this -> showUserName().'</a></li>
+				' :''?>
+				<?php echo $this -> checkUserPermission('publication_submit') ?'
+				<li><a href="./?p=submit">Submit</a></li>
+				':''?>
+				<?php echo $this -> checkUserPermission('manage') ?'
+				<li><a href="./?p=manage">Manage</a></li>
+				':''?>
 				<?php echo $this -> showUserName() ? '<li><a href="./?p=logout">Logout</a></li>' : '<li><a href="./?p=login">Login</a></li>'?>
 			</ul>
 		</div>

@@ -5,7 +5,7 @@ namespace publin\src;
 class Auth {
 
 	private $db;
-	private $session_expire_time = 60;
+	private $session_expire_time = 120;
 
 
 	public function __construct(Database $db) {
