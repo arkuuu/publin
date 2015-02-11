@@ -1,11 +1,12 @@
-About publin
+Publin - Publication Index System
 ======
+Publin allows you to upload and manage scholarly publications and expose them to the web. It is designed to be used by individual authors, groups or institutions. More Information will follow.
 
-This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. The name "publin" is a short term for "publication index" which is what all this mostly is about. More Information will follow.
+About the Project
+======
+This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the task here: http://www.ifis.uni-luebeck.de/index.php?id=363 
 
-View bachelor thesis: http://www.ifis.uni-luebeck.de/index.php?id=363 
-
-Planned features (WIP)
+Planned Features (WIP)
 ======
 * [x] Submit publications, via web form or BibTeX import
 * [x] Browse and view publications, authors, journals etc
@@ -19,6 +20,12 @@ Planned features (WIP)
 * [ ] Modular system for easy extending of export/import and meta tag formats
 * [ ] ...
 
-Additional notes
+Requirements (WIP)
+======
+A webserver with:
+* PHP >= 5.3.14
+* MySQL >= 5.5.38
+
+Additional Notes
 =====
 Please note that this is work in progress. Everything is subject to changes. The project will be released under an Open Source License when it's ready.
