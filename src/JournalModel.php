@@ -53,26 +53,15 @@ class JournalModel {
 	}
 
 
-	public function create(array $data) {
-
-		// validation here?
-		$journal = new Journal($data);
-
-		return $journal;
-	}
-
-
 	public function store(Journal $journal) {
 
 		$data = $journal->getData();
 
 		return $this->db->insertData('list_journals', $data);
-
 	}
 
 
 	public function update($id, array $data) {
-
 	}
 
 
@@ -92,5 +81,4 @@ class JournalModel {
 			throw new RuntimeException('Error while deleting journal '.$id.': '.$this->db->error);
 		}
 	}
-
 }

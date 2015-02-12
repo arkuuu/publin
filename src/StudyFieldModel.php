@@ -53,15 +53,6 @@ class StudyFieldModel {
 	}
 
 
-	public function create(array $data) {
-
-		// validation here?
-		$study_field = new StudyField($data);
-
-		return $study_field;
-	}
-
-
 	public function store(StudyField $study_field) {
 
 		$data = $study_field->getData();

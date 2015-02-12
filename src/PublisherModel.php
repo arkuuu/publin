@@ -53,15 +53,6 @@ class PublisherModel {
 	}
 
 
-	public function create(array $data) {
-
-		// validation here?
-		$publisher = new Publisher($data);
-
-		return $publisher;
-	}
-
-
 	public function store(Publisher $publisher) {
 
 		$data = $publisher->getData();
@@ -71,7 +62,6 @@ class PublisherModel {
 
 
 	public function update($id, array $data) {
-
 	}
 
 
@@ -92,5 +82,4 @@ class PublisherModel {
 			throw new RuntimeException('Error while deleting publisher '.$id.': '.$this->db->error);
 		}
 	}
-
 }

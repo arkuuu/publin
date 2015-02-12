@@ -52,15 +52,6 @@ class KeyTermModel {
 	}
 
 
-	public function create(array $data) {
-
-		// validation here?
-		$key_term = new KeyTerm($data);
-
-		return $key_term;
-	}
-
-
 	public function store(KeyTerm $key_term) {
 
 		$data = $key_term->getData();
@@ -70,7 +61,6 @@ class KeyTermModel {
 
 
 	public function update($id, array $data) {
-
 	}
 
 
@@ -90,5 +80,4 @@ class KeyTermModel {
 			throw new RuntimeException('Error while deleting key term '.$id.': '.$this->db->error);
 		}
 	}
-
 }

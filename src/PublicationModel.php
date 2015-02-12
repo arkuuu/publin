@@ -53,25 +53,11 @@ class PublicationModel {
 				$key_terms = array();
 			}
 
-			$publication = $this->create($value, $authors, $key_terms);
+			$publication = new Publication($value, $authors, $key_terms);
 			$publications[] = $publication;
 		}
 
 		return $publications;
-	}
-
-
-	public function create(array $data, array $authors, array $key_terms) {
-
-		// TODO: make to set new and return false if ID is detected.
-		// TODO: delete this and make bigger constructor instead.
-
-		// validation here?
-		$publication = new Publication($data);
-		$publication->setAuthors($authors);
-		$publication->setKeyTerms($key_terms);
-
-		return $publication;
 	}
 
 
@@ -106,28 +92,28 @@ class PublicationModel {
 		/* Stores the type */
 		if (isset($data['type'])) {
 			$model = new TypeModel($this->db);
-			$type = $model->create(array('name' => $data['type']));
+			$type = new Type(array('name' => $data['type']));
 			$data['type_id'] = $model->store($type);
 			unset($data['type']);
 		}
 		/* Stores the study field */
 		if (isset($data['study_field'])) {
 			$model = new StudyFieldModel($this->db);
-			$study_field = $model->create(array('name' => $data['study_field']));
+			$study_field = new StudyField(array('name' => $data['study_field']));
 			$data['study_field_id'] = $model->store($study_field);
 			unset($data['study_field']);
 		}
 		/* Stores the journal */
 		if (isset($data['journal'])) {
 			$model = new JournalModel($this->db);
-			$journal = $model->create(array('name' => $data['journal']));
+			$journal = new Journal(array('name' => $data['journal']));
 			$data['journal_id'] = $model->store($journal);
 			unset($data['journal']);
 		}
 		/* Stores the publisher */
 		if (isset($data['publisher'])) {
 			$model = new PublisherModel($this->db);
-			$publisher = $model->create(array('name' => $data['publisher']));
+			$publisher = new Publisher(array('name' => $data['publisher']));
 			$data['publisher_id'] = $model->store($publisher);
 			unset($data['publisher']);
 		}
@@ -138,28 +124,16 @@ class PublicationModel {
 
 			/* Stores the relation between the publication and its authors */
 			if (!empty($author_ids)) {
-				$prio = 1; // TODO: really start with 1 and go up?
+				$priority = 1; // TODO: really start with 1 and go up?
 				foreach ($author_ids as $author_id) {
-					$data = array('publication_id' => $publication_id,
-								  'author_id'      => $author_id, 'priority' => $prio);
-					$insert = $this->db->insertData('rel_publ_to_authors', $data);
-					if (empty($insert)) {
-						throw new Exception('Error while inserting publ_author link to DB');
-
-					}
-					$prio++;
+					$this->addAuthor($publication_id, $author_id, $priority);
+					$priority++;
 				}
 			}
 			/* Stores the relation between the publication and its key terms */
 			if (!empty($key_term_ids)) {
 				foreach ($key_term_ids as $key_term_id) {
-					$data = array('publication_id' => $publication_id,
-								  'key_term_id'    => $key_term_id);
-					$insert = $this->db->insertData('rel_publ_to_key_terms', $data);
-					if (empty($insert)) {
-						throw new Exception('Error while inserting publ_key_term link to DB');
-
-					}
+					$this->addKeyTerm($publication_id, $key_term_id);
 				}
 			}
 
@@ -172,8 +146,34 @@ class PublicationModel {
 	}
 
 
-	public function update($id, array $data) {
+	public function addAuthor($publication_id, $author_id, $priority) {
 
+		if (!is_numeric($publication_id) || !is_numeric($author_id) || !is_numeric($priority)) {
+			throw new InvalidArgumentException('params should be numeric');
+		}
+
+		$data = array('publication_id' => $publication_id,
+					  'author_id'      => $author_id,
+					  'priority'       => $priority);
+
+		return $this->db->insertData('rel_publ_to_authors', $data);
+	}
+
+
+	public function addKeyTerm($publication_id, $key_term_id) {
+
+		if (!is_numeric($publication_id) || !is_numeric($key_term_id)) {
+			throw new InvalidArgumentException('params should be numeric');
+		}
+
+		$data = array('publication_id' => $publication_id,
+					  'key_term_id'    => $key_term_id);
+
+		return $this->db->insertData('rel_publ_to_key_terms', $data);
+	}
+
+
+	public function update($id, array $data) {
 	}
 
 
@@ -195,4 +195,45 @@ class PublicationModel {
 		}
 	}
 
+
+	public function removeAuthor($publication_id, $author_id) {
+
+		if (!is_numeric($publication_id) || !is_numeric($author_id)) {
+			throw new InvalidArgumentException('params should be numeric');
+		}
+
+		$where = array('publication_id' => $publication_id,
+					   'author_id'      => $author_id);
+
+		$rows = $this->db->deleteData('rel_publ_to_authors', $where);
+
+		// TODO: How to get rid of this and move it to DB?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error removing author '.$author_id.' from publication '.$publication_id.': '.$this->db->error);
+		}
+	}
+
+
+	public function removeKeyTerm($publication_id, $key_term_id) {
+
+		if (!is_numeric($publication_id) || !is_numeric($key_term_id)) {
+			throw new InvalidArgumentException('params should be numeric');
+		}
+
+		$where = array('publication_id' => $publication_id,
+					   'key_term_id'    => $key_term_id);
+
+		$rows = $this->db->deleteData('rel_publ_to_key_terms', $where);
+
+		// TODO: How to get rid of this and move it to DB?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error removing key term '.$key_term_id.' from publication '.$publication_id.': '.$this->db->error);
+		}
+	}
 }

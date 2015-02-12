@@ -58,6 +58,7 @@ class AuthorModel {
 
 		// TODO not sure if useful
 		$allowed_fields = array('given', 'family');
+		$required_fields = array('given', 'family');
 
 		foreach ($input as $key => $value) {
 			if (!in_array($key, $allowed_fields)) {
@@ -65,15 +66,13 @@ class AuthorModel {
 			}
 		}
 
+		foreach ($required_fields as $field) {
+			if (empty($input[$field])) {
+				return false;
+			}
+		}
+
 		return true;
-	}
-
-
-	public function create(array $data) {
-
-		$author = new Author($data);
-
-		return $author;
 	}
 
 
@@ -83,12 +82,10 @@ class AuthorModel {
 		$data = $author->getData();
 
 		return $this->db->insertData('list_authors', $data);
-
 	}
 
 
 	public function update($id, array $data) {
-
 	}
 
 
@@ -98,5 +95,4 @@ class AuthorModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 	}
-
 }

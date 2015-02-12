@@ -188,8 +188,7 @@ class SubmitModel {
 		}
 
 		if (empty($this->errors)) {
-			$model = new PublicationModel($this->db);
-			$publication = $model->create($data, $authors, $key_terms);
+			$publication = new Publication($data, $authors, $key_terms);
 			$this->publication = $publication;
 
 			return $publication;
@@ -213,8 +212,7 @@ class SubmitModel {
 		}
 
 		if ($given && $family) {
-			$model = new AuthorModel($this->db);
-			$author = $model->create(array('given' => $given, 'family' => $family));
+			$author = new Author(array('given' => $given, 'family' => $family));
 
 			return $author;
 		}
@@ -314,8 +312,7 @@ class SubmitModel {
 		$name = $this->validateInput('name', $input);
 
 		if ($name) {
-			$model = new KeyTermModel($this->db);
-			$key_term = $model->create(array('name' => $name));
+			$key_term = new KeyTerm(array('name' => $name));
 
 			return $key_term;
 		}

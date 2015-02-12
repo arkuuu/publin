@@ -7,7 +7,6 @@ use RuntimeException;
 
 class TypeModel {
 
-
 	private $db;
 	private $num;
 
@@ -53,26 +52,15 @@ class TypeModel {
 	}
 
 
-	public function create(array $data) {
-
-		// validation here?
-		$type = new Type($data);
-
-		return $type;
-	}
-
-
 	public function store(Type $type) {
 
 		$data = $type->getData();
 
 		return $this->db->insertData('list_types', $data);
-
 	}
 
 
 	public function update($id, array $data) {
-
 	}
 
 
@@ -93,5 +81,4 @@ class TypeModel {
 			throw new RuntimeException('Error while deleting type '.$id.': '.$this->db->error);
 		}
 	}
-
 }

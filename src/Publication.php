@@ -23,6 +23,12 @@ class Publication extends Object {
 	private $key_terms;
 
 	// TODO: maybe add $authors and $key_terms to constructor already?
+	public function __construct(array $data, array $authors, array $key_terms = array()) {
+
+		parent::__construct($data);
+		$this->setAuthors($authors);
+		$this->setKeyTerms($key_terms);
+	}
 
 	/**
 	 * @return array|bool
