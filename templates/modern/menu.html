@@ -14,10 +14,10 @@
 				<?php echo $this -> showUserName() ? '
 				<li><a href="#">'.$this -> showUserName().'</a></li>
 				' :''?>
-				<?php echo $this -> checkUserPermission('publication_submit') ?'
+				<?php echo $this -> hasPermission('publication_submit') ?'
 				<li><a href="./?p=submit">Submit</a></li>
 				':''?>
-				<?php echo $this -> checkUserPermission('manage') ?'
+				<?php echo $this -> hasPermission('manage') ?'
 				<li><a href="./?p=manage">Manage</a></li>
 				':''?>
 				<?php echo $this -> showUserName() ? '<li><a href="./?p=logout">Logout</a></li>' : '<li><a href="./?p=login">Login</a></li>'?>

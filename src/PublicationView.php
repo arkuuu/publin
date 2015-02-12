@@ -95,9 +95,7 @@ class PublicationView extends View {
 					$author = $author_name;
 				}
 				else {
-					// $author = 'Unknown Author';
-					// TODO: really an exception?
-					throw new Exception('the publication with id '.$this->publication->getId().' has an author with no name');
+					$author = 'Unknown Author';
 				}
 
 				if ($i == 1) {
@@ -427,7 +425,8 @@ class PublicationView extends View {
 			$export = new FormatHandler($format);
 
 			return $export->export($this->publication->toArray());
-		} catch (Exception $e) {
+		}
+		catch (Exception $e) {
 			return 'Error: '.$e->getMessage();
 		}
 

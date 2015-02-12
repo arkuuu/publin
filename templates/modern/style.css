@@ -9,13 +9,12 @@ Light grey: #e4e4e4
 * {
 	/*-moz-box-sizing: border-box;*/
 	/*-webkit-box-sizing: border-box;*/
-	box-sizing: border-box; 
+	box-sizing: border-box;
 }
-
 
 body {
 	height: 100%;
-	font-family: Arial,sans-serif;
+	font-family: Arial, sans-serif;
 	margin: 0;
 }
 
@@ -42,47 +41,47 @@ div#nav {
 	float: left;
 	/*background-color: green;*/
 }
+
 div#login {
 	float: right;
 	/*background-color: red;*/
 }
 
 div#nav ul, div#login ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
 div#nav li {
-    padding-right: 15px;
-    float: left;
+	padding-right: 15px;
+	float: left;
 }
+
 div#login li {
-    padding-left: 15px;
-    float: left;
+	padding-left: 15px;
+	float: left;
 }
 
 div#nav a, div#login a {
-    display: block;
-    padding: 5px;
+	display: block;
+	padding: 5px;
 	color: white;
 	text-decoration: none;
 }
+
 div#nav a:hover, div#nav a.active, div#login a:hover, div#login a.active {
 	color: #004b5a;
-    background-color: white;
+	background-color: white;
 }
 
-
-div#logo {  
+div#logo {
 	height: 80px;
 	width: 209px;
 	background: url(logo.png) no-repeat center;
 	/*background-color: red;*/
 }
-
-
 
 /* The right box with it's contents */
 div#right {
@@ -93,7 +92,6 @@ div#right {
 	font-size: 15px;
 	/*background-color: red;  */
 }
-
 
 div#right h1 {
 	/*border-bottom: 1px solid #e4e4e4;*/
@@ -128,7 +126,7 @@ div#right a:hover {
 	color: black;
 	text-decoration: underline;
 }
-	
+
 input, label {
 	margin-right: 5px;
 	margin-bottom: 10px;
@@ -141,16 +139,13 @@ input, label {
 	padding: 0;
 }
 
-.form label, .form input
-{
+.form label, .form input {
 	display: block;
 	width: 400px;
 	float: left;
-
 }
 
-.form label
-{
+.form label {
 	width: 130px;
 	text-align: left;
 }
@@ -160,17 +155,46 @@ input, label {
 	margin-bottom: 0;
 }
 
-.form br
-{
+.form br {
 	clear: left;
 }
 
 .form input[type=number] {
 	width: 50px;
 }
+
 .form input[type=button], .form input[type=submit] {
 	width: auto;
 }
+
 .form select {
 	width: 200px;
 }
+
+/* Citation stuff */
+div.citation {
+	padding-bottom: 10px;
+}
+
+div.citation .title {
+	font-weight: bold;
+}
+
+div.citation .authors { }
+
+div.citation .year { }
+
+div.citation .journal {
+	font-style: italic;
+}
+
+div.citation .volume {
+	font-style: italic;
+}
+
+div.citation .number { }
+
+div.citation .booktitle { }
+
+div.citation .pages { }
+

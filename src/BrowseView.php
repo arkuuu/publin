@@ -28,57 +28,43 @@ class BrowseView extends View {
 		$this->browse_type_list =
 			array(
 				'recent'      => array(
-					'name'       => 'Recent publications',
-					'text'       => 'recent publications',
+					'name'       => 'Recent Publications',
 					'url'        => './?p=browse&amp;by=recent',
-					'result_url' => './?p=publication&amp;id='
-				),
+					'result_url' => './?p=publication&amp;id='),
 				'author'      => array(
 					'name'       => 'Authors',
-					'text'       => 'authors',
 					'url'        => './?p=browse&amp;by=author',
-					'result_url' => './?p=author&amp;id='
-				),
+					'result_url' => './?p=author&amp;id='),
 				'key_term'    => array(
 					'name'       => 'Key Terms',
-					'text'       => 'key terms',
 					'url'        => './?p=browse&amp;by=key_term',
-					'result_url' => './?p=browse&amp;by=key_term&amp;id='
-				),
+					'result_url' => './?p=browse&amp;by=key_term&amp;id='),
 				'study_field' => array(
 					'name'       => 'Fields of Study',
-					'text'       => 'fields of study',
 					'url'        => './?p=browse&amp;by=study_field',
-					'result_url' => './?p=browse&amp;by=study_field&amp;id='
-				),
+					'result_url' => './?p=browse&amp;by=study_field&amp;id='),
 				'type'        => array(
 					'name'       => 'Types',
-					'text'       => 'types',
 					'url'        => './?p=browse&amp;by=type',
-					'result_url' => './?p=browse&amp;by=type&amp;id='
-				),
+					'result_url' => './?p=browse&amp;by=type&amp;id='),
 				'journal'     => array(
 					'name'       => 'Journals',
-					'text'       => 'journals',
 					'url'        => './?p=browse&amp;by=journal',
-					'result_url' => './?p=browse&amp;by=journal&amp;id='
-				),
+					'result_url' => './?p=browse&amp;by=journal&amp;id='),
 				'publisher'   => array(
 					'name'       => 'Publishers',
-					'text'       => 'publishers',
 					'url'        => './?p=browse&amp;by=publisher',
-					'result_url' => './?p=browse&amp;by=publisher&amp;id='
-				),
+					'result_url' => './?p=browse&amp;by=publisher&amp;id='),
 				'year'        => array(
 					'name'       => 'Years',
-					'text'       => 'years',
 					'url'        => './?p=browse&amp;by=year',
-					'result_url' => './?p=browse&amp;by=year&amp;id='
-				),
+					'result_url' => './?p=browse&amp;by=year&amp;id='),
 			);
 
 		if (!array_key_exists($this->model->getBrowseType(), $this->browse_type_list)) {
-			$this->browse_type = array('name' => '', 'text' => '');
+			$this->browse_type = array('name'       => '',
+									   'url'        => '',
+									   'result_url' => '');
 		}
 		else {
 			$this->browse_type = $this->browse_type_list[$this->model->getBrowseType()];
@@ -104,7 +90,7 @@ class BrowseView extends View {
 	 */
 	public function showBrowseType() {
 
-		return 'Browse '.$this->browse_type['text'];
+		return 'Browse '.$this->browse_type['name'];
 	}
 
 
@@ -137,11 +123,13 @@ class BrowseView extends View {
 				}
 			}
 			else if ($browse_type == 'author') {
+				/* @var $author Author */
 				foreach ($browse_list as $author) {
 					$string .= '<li><a href="'.$this->browse_type['result_url'].$author->getId().'">'.$author->getLastName().', '.$author->getFirstName().'</a></li>'."\n";
 				}
 			}
 			else {
+				/* @var $object Object */
 				foreach ($browse_list as $object) {
 					$string .= '<li><a href="'.$this->browse_type['result_url'].$object->getId().'">'.$object->getName().'</a></li>'."\n";
 				}
@@ -175,18 +163,15 @@ class BrowseView extends View {
 	/**
 	 * Shows the browse results.
 	 *
-	 * @param string $style
-	 *
 	 * @return string
 	 */
-	public function showBrowseResult($style = 'default') {
+	public function showBrowseResult() {
 
 		$string = '';
 
 		foreach ($this->model->getBrowseResult() as $publication) {
 
-			$string .= '<li>'.Citation::getCitation($publication, $style)
-				.'</li>'."\n";
+			$string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
 		}
 
 		return $string;

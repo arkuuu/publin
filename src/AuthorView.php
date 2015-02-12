@@ -103,17 +103,14 @@ class AuthorView extends View {
 	/**
 	 * Shows the author's publications.
 	 *
-	 * @param string $style
-	 *
 	 * @return string
 	 */
-	public function showPublications($style = '') {
+	public function showPublications() {
 
 		$string = '';
 
 		foreach ($this->author->getPublications() as $publication) {
-			$string .= '<li>'.Citation::getCitation($publication, $style)
-				.'</li>'."\n";
+			$string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
 		}
 
 		if (!empty($string)) {

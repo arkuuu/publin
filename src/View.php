@@ -107,6 +107,7 @@ class View {
 	 * @return    string
 	 */
 	public function showMetaTags() {
+
 		return "\n";
 	}
 
@@ -122,9 +123,9 @@ class View {
 	}
 
 
-	public function checkUserPermission($permission) {
+	public function hasPermission($permission_name) {
 
-		if (isset($_SESSION['user']) && $_SESSION['user']->hasPermission($permission)) {
+		if (isset($_SESSION['user']) && $_SESSION['user']->hasPermission($permission_name)) {
 			return true;
 		}
 		else {
@@ -133,4 +134,74 @@ class View {
 	}
 
 
+	public function showCitation(Publication $publication, $max_authors = 6) {
+
+		$url = './?p=publication&amp;id='.$publication->getId();
+		$citation = '<div class="citation"">';
+
+		/* shows the title and links to the publication page */
+		$citation .= '<a href="'.$url.'" class="title">'.$publication->getTitle().'</a><br/>';
+
+		/* creates list of authors */
+		$authors = $publication->getAuthors();
+		$num = count($authors);
+		$authors_string = '';
+		if ($num > 0) {
+			$i = 1;
+			foreach ($authors as $author) {
+				if ($i == 1) {
+					/* first author */
+					$authors_string .= $author->getFirstName(true).' '
+						.$author->getLastName();
+				}
+				else if ($i > $max_authors) {
+					/* break with "et al." if too many authors */
+					$authors_string .= ' et al.';
+					break;
+				}
+				else if ($i == $num) {
+					/* last author */
+					$authors_string .= ' and '.$author->getFirstName(true).' '
+						.$author->getLastName();
+				}
+				else {
+					/* all other authors */
+					$authors_string .= ', '.$author->getFirstName(true).' '
+						.$author->getLastName();
+				}
+				$i++;
+			}
+		}
+
+		/* shows list of authors */
+		$citation .= '<span class="authors">'.$authors_string.'</span>';
+
+		/* appends publish date behind the authors */
+		$citation .= ' <span class="year">('.$publication->getDatePublished('Y').')</span><br/>';
+
+		/* shows journal or booktitle and additional data*/
+		if ($publication->getJournalName()) {
+			$citation .= '<span class="journal">'.$publication->getJournalName().'</span>';
+
+			if ($publication->getVolume()) {
+				$citation .= ', <span class="volume">'.$publication->getVolume().'</span>';
+
+				if ($publication->getNumber()) {
+					$citation .= ' <span class="number">('.$publication->getNumber().')</span>';
+				}
+			}
+			if ($publication->getPages('-')) {
+				$citation .= ', <span class="pages">'.$publication->getPages('-').'</span>';
+			}
+		}
+		else if ($publication->getBookName()) {
+			$citation .= 'In: <span class="booktitle">'.$publication->getBookName().'</span>';
+
+			if ($publication->getPages('-')) {
+				$citation .= ', <span class="pages">'.$publication->getPages('-').'</span>';
+			}
+		}
+
+		return $citation.'</div>';
+	}
 }

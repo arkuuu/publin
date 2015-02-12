@@ -283,7 +283,7 @@ class Publication extends Object {
 	 */
 	public function getBookName() {
 
-		return $this->getData('book');
+		return $this->getData('booktitle');
 	}
 
 
