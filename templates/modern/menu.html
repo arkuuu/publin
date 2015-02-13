@@ -3,24 +3,28 @@
 			<div id="logo"></div>
 			<div id="nav">
 			<ul>
-				<li><a href="./?p=start">Start</a></li>
+				<li><?php echo $this->showLink('start', 'Start') ?></li>
 				<li><a href="#">Search</a></li>
-				<li><a href="./?p=browse">Browse</a></li>
-				<li><a href="./?p=about">About</a></li>
+				<li><?php echo $this->showLink('browse', 'Browse') ?></li>
+				<li><?php echo $this->showLink('about', 'About') ?></li>
 			</ul>
 		</div>
 		<div id="login">
 			<ul>
-				<?php echo $this -> showUserName() ? '
+				<?php if ($this->showUserName()) {echo '
 				<li><a href="#">'.$this -> showUserName().'</a></li>
-				' :''?>
-				<?php echo $this -> hasPermission('publication_submit') ?'
-				<li><a href="./?p=submit">Submit</a></li>
-				':''?>
-				<?php echo $this -> hasPermission('manage') ?'
-				<li><a href="./?p=manage">Manage</a></li>
-				':''?>
-				<?php echo $this -> showUserName() ? '<li><a href="./?p=logout">Logout</a></li>' : '<li><a href="./?p=login">Login</a></li>'?>
+								 ';}?>
+				<?php if ($this->hasPermission('publication_submit')) {echo '
+				<li>'.$this->showLink('submit', 'Submit').'</li>
+								 ';}?>
+				<?php if ($this->hasPermission('manage')) {echo '
+				<li>'.$this->showLink('manage', 'Manage').'</li>
+								 ';}?>
+				<?php if ($this->showUserName()) {echo '
+				<li>'.$this->showLink('logout', 'Logout').'</li>
+								 ';} else {echo '
+				<li>'.$this->showLink('login', 'Login').'</li>
+								 ';}?>
 			</ul>
 		</div>
 		<div class="clearBoth"></div>

@@ -177,6 +177,7 @@ div.citation {
 }
 
 div.citation .title {
+	/* can't change stuff already defined by the a element */
 	font-weight: bold;
 }
 

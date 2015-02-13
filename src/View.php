@@ -74,15 +74,12 @@ class View {
 				return $output;
 			}
 			else {
-				// TODO: error
 				throw new NotFoundException('Could not find template '.$content.'!');
-
 			}
 		}
 		else {
-			// TODO: error
+			// TODO: really a normal exception? Not a specialised one?
 			throw new Exception('Could not find master template!');
-
 		}
 	}
 
@@ -130,6 +127,17 @@ class View {
 		}
 		else {
 			return false;
+		}
+	}
+
+
+	public function showLink($page, $title) {
+
+		if ($this->content == $page) {
+			return '<a href="./?p='.$page.'" class="active">'.$title.'</a>';
+		}
+		else {
+			return '<a href="./?p='.$page.'">'.$title.'</a>';
 		}
 	}
 
