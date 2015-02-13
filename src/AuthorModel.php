@@ -56,23 +56,19 @@ class AuthorModel {
 
 	public function validate(array $input) {
 
-		// TODO not sure if useful
-		$allowed_fields = array('given', 'family');
-		$required_fields = array('given', 'family');
+		$validator = new Validator();
+		$validator->addRule('given', 'text', true, 'Given name is required but invalid');
+		$validator->addRule('family', 'text', true, 'Family name is required but invalid');
+		$validator->addRule('website', 'url', false, 'Website URL is invalid');
+		$validator->addRule('contact', 'text', false, 'Contact info is invalid');
+		$validator->addRule('text', 'text', false, 'Text is invalid');
 
-		foreach ($input as $key => $value) {
-			if (!in_array($key, $allowed_fields)) {
-				return false;
-			}
+		if ($validator->validate($input)) {
+			return $validator->getSanitizedResult();
 		}
-
-		foreach ($required_fields as $field) {
-			if (empty($input[$field])) {
-				return false;
-			}
+		else {
+			return false;
 		}
-
-		return true;
 	}
 
 
