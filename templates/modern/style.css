@@ -171,6 +171,10 @@ input, label {
 	width: 200px;
 }
 
+.notice {
+	font-size: small;
+}
+
 /* Citation stuff */
 div.citation {
 	padding-bottom: 10px;

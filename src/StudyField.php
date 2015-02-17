@@ -7,6 +7,6 @@ namespace publin\src;
  *
  * TODO: comment
  */
-class StudyField extends Object {
+class StudyField extends ObjectWithPublications {
 
 }

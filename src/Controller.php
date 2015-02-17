@@ -50,6 +50,7 @@ class Controller {
 		$db = $this->db;
 		$this->auth->checkLoginStatus();
 
+		//TODO: author and co do fail when no id is given
 		try {
 			switch ($page) {
 				case 'browse':
@@ -72,6 +73,38 @@ class Controller {
 					$model = new PublicationModel($db);
 					$publication = $model->fetch(true, array('id' => $id));
 					$view = new PublicationView($publication[0]);
+
+					return $view->display();
+					break;
+
+				case 'journal':
+					$model = new JournalModel($db);
+					$journal = $model->fetch(true, array('id' => $id));
+					$view = new JournalView($journal[0]);
+
+					return $view->display();
+					break;
+
+				case 'publisher':
+					$model = new PublisherModel($db);
+					$publisher = $model->fetch(true, array('id' => $id));
+					$view = new PublisherView($publisher[0]);
+
+					return $view->display();
+					break;
+
+				case 'key_term':
+					$model = new KeyTermModel($db);
+					$key_term = $model->fetch(true, array('id' => $id));
+					$view = new KeyTermView($key_term[0]);
+
+					return $view->display();
+					break;
+
+				case 'study_field':
+					$model = new StudyFieldModel($db);
+					$study_field = $model->fetch(true, array('id' => $id));
+					$view = new StudyFieldView($study_field[0]);
 
 					return $view->display();
 					break;

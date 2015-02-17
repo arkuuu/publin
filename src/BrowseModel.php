@@ -47,30 +47,13 @@ class BrowseModel {
 					break;
 
 				case 'key_term':
-					if ($id > 0) {
-						$this->is_result = true;
-						$model = new PublicationModel($this->db);
-						$this->result = $model->fetch(false, array('key_term_id' => $id));
-						$this->num = $model->getNum();
-					}
-					else {
-						$model = new KeyTermModel($this->db);
-						$this->browse_list = $model->fetch();
-					}
+					$model = new KeyTermModel($this->db);
+					$this->browse_list = $model->fetch(false);
 					break;
 
 				case 'study_field':
-					if ($id > 0) {
-						$this->is_result = true;
-						$model = new PublicationModel($this->db);
-						$this->result = $model->fetch(false, array('study_field_id' => $id));
-						$this->num = $model->getNum();
-					}
-					else {
-						$model = new StudyFieldModel($this->db);
-						$this->browse_list = $model->fetch();
-						$this->num = $model->getNum();
-					}
+					$model = new StudyFieldModel($this->db);
+					$this->browse_list = $model->fetch(false);
 					break;
 
 				case 'type':
@@ -87,29 +70,13 @@ class BrowseModel {
 					break;
 
 				case 'journal':
-					if ($id > 0) {
-						$this->is_result = true;
-						$model = new PublicationModel($this->db);
-						$this->result = $model->fetch(false, array('journal_id' => $id));
-						$this->num = $model->getNum();
-					}
-					else {
-						$model = new JournalModel($this->db);
-						$this->browse_list = $model->fetch();
-					}
+					$model = new JournalModel($this->db);
+					$this->browse_list = $model->fetch(false);
 					break;
 
 				case 'publisher':
-					if ($id > 0) {
-						$this->is_result = true;
-						$model = new PublicationModel($this->db);
-						$this->result = $model->fetch(false, array('publisher_id' => $id));
-						$this->num = $model->getNum();
-					}
-					else {
-						$model = new PublisherModel($this->db);
-						$this->browse_list = $model->fetch();
-					}
+					$model = new PublisherModel($this->db);
+					$this->browse_list = $model->fetch(false);
 					break;
 
 				case 'year':

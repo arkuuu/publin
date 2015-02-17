@@ -29,7 +29,7 @@ class StudyFieldModel {
 	 *
 	 * @return StudyField[]
 	 */
-	public function fetch(array $filter = array()) {
+	public function fetch($mode, array $filter = array()) {
 
 		$study_fields = array();
 
@@ -37,7 +37,14 @@ class StudyFieldModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$study_fields[] = new StudyField($value);
+			$study_field = new StudyField($value);
+
+			if ($mode) {
+				$model = new PublicationModel($this->db);
+				$publications = $model->fetch(false, array('study_field_id' => $study_field->getId()));
+				$study_field->setPublications($publications);
+			}
+			$study_fields[] = $study_field;
 		}
 
 		return $study_fields;
@@ -62,7 +69,6 @@ class StudyFieldModel {
 
 
 	public function update($id, array $data) {
-
 	}
 
 
@@ -83,5 +89,4 @@ class StudyFieldModel {
 			throw new RuntimeException('Error while deleting study field '.$id.': '.$this->db->error);
 		}
 	}
-
 }

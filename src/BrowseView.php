@@ -38,11 +38,11 @@ class BrowseView extends View {
 				'key_term'    => array(
 					'name'       => 'Key Terms',
 					'url'        => './?p=browse&amp;by=key_term',
-					'result_url' => './?p=browse&amp;by=key_term&amp;id='),
+					'result_url' => './?p=key_term&amp;id='),
 				'study_field' => array(
 					'name'       => 'Fields of Study',
 					'url'        => './?p=browse&amp;by=study_field',
-					'result_url' => './?p=browse&amp;by=study_field&amp;id='),
+					'result_url' => './?p=study_field&amp;id='),
 				'type'        => array(
 					'name'       => 'Types',
 					'url'        => './?p=browse&amp;by=type',
@@ -50,11 +50,11 @@ class BrowseView extends View {
 				'journal'     => array(
 					'name'       => 'Journals',
 					'url'        => './?p=browse&amp;by=journal',
-					'result_url' => './?p=browse&amp;by=journal&amp;id='),
+					'result_url' => './?p=journal&amp;id='),
 				'publisher'   => array(
 					'name'       => 'Publishers',
 					'url'        => './?p=browse&amp;by=publisher',
-					'result_url' => './?p=browse&amp;by=publisher&amp;id='),
+					'result_url' => './?p=publisher&amp;id='),
 				'year'        => array(
 					'name'       => 'Years',
 					'url'        => './?p=browse&amp;by=year',

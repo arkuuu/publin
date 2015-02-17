@@ -2,14 +2,12 @@
 
 namespace publin\src;
 
-use Exception;
-
 /**
  * View for author page
  *
  * TODO: comment
  */
-class AuthorView extends View {
+class AuthorView extends ViewWithPublications {
 
 	/**
 	 * @var    Author
@@ -24,38 +22,8 @@ class AuthorView extends View {
 	 */
 	public function __construct(Author $author) {
 
-		parent::__construct('author');
+		parent::__construct($author, 'author');
 		$this->author = $author;
-	}
-
-
-	/**
-	 * Shows the page title.
-	 *
-	 * @return    string
-	 */
-	public function showPageTitle() {
-
-		return $this->showName();
-	}
-
-
-	/**
-	 * Shows the author's name.
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function showName() {
-
-		$name = $this->author->getName();
-
-		if ($name) {
-			return $name;
-		}
-		else {
-			throw new Exception('the author with id '.$this->author->getId().' has no name');
-		}
 	}
 
 
@@ -74,7 +42,6 @@ class AuthorView extends View {
 		else {
 			return false;
 		}
-
 	}
 
 
@@ -101,28 +68,6 @@ class AuthorView extends View {
 
 
 	/**
-	 * Shows the author's publications.
-	 *
-	 * @return string
-	 */
-	public function showPublications() {
-
-		$string = '';
-
-		foreach ($this->author->getPublications() as $publication) {
-			$string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
-		}
-
-		if (!empty($string)) {
-			return $string;
-		}
-		else {
-			return '<li>no publications found</li>';
-		}
-	}
-
-
-	/**
 	 * Shows links to other bibliographic indexes for this author.
 	 *
 	 * @return    string
@@ -137,5 +82,4 @@ class AuthorView extends View {
 
 		return $string;
 	}
-
 }

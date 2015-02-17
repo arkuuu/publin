@@ -29,7 +29,7 @@ class PublisherModel {
 	 *
 	 * @return Publisher[]
 	 */
-	public function fetch(array $filter = array()) {
+	public function fetch($mode, array $filter = array()) {
 
 		$publishers = array();
 
@@ -37,7 +37,15 @@ class PublisherModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$publishers[] = new Publisher($value);
+			$publisher = new Publisher($value);
+
+			if ($mode) {
+				$model = new PublicationModel($this->db);
+				$publications = $model->fetch(false, array('publisher_id' => $publisher->getId()));
+				$publisher->setPublications($publications);
+			}
+
+			$publishers[] = $publisher;
 		}
 
 		return $publishers;

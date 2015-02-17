@@ -22,7 +22,6 @@ class Object {
 	 */
 	public function __construct(array $data) {
 
-		// TODO: input validation
 		$this->data = $data;
 	}
 

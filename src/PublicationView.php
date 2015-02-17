@@ -161,7 +161,7 @@ class PublicationView extends View {
 	 */
 	public function showJournal() {
 
-		$url = '?p=browse&amp;by=journal&amp;id=';
+		$url = '?p=journal&amp;id=';
 		$journal_name = $this->publication->getJournalName();
 		$journal_id = $this->publication->getJournalId();
 
@@ -218,7 +218,7 @@ class PublicationView extends View {
 	 */
 	public function showPublisher() {
 
-		$url = '?p=browse&amp;by=publisher&amp;id=';
+		$url = '?p=publisher&amp;id=';
 		$publisher_name = $this->publication->getPublisherName();
 		$publisher_id = $this->publication->getPublisherId();
 
@@ -372,7 +372,7 @@ class PublicationView extends View {
 		if (!empty($key_terms)) {
 
 			$string = '';
-			$url = '?p=browse&amp;by=key_term&amp;id=';
+			$url = '?p=key_term&amp;id=';
 
 			foreach ($key_terms as $key_term) {
 

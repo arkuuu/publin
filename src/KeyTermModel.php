@@ -28,7 +28,7 @@ class KeyTermModel {
 	 *
 	 * @return KeyTerm[]
 	 */
-	public function fetch(array $filter = array()) {
+	public function fetch($mode, array $filter = array()) {
 
 		$key_terms = array();
 
@@ -36,7 +36,15 @@ class KeyTermModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$key_terms[] = new KeyTerm($value);
+			$key_term = new KeyTerm($value);
+
+			if ($mode) {
+				$model = new PublicationModel($this->db);
+				$publications = $model->fetch(false, array('key_term_id' => $key_term->getId()));
+				$key_term->setPublications($publications);
+			}
+
+			$key_terms[] = $key_term;
 		}
 
 		return $key_terms;

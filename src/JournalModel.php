@@ -25,11 +25,12 @@ class JournalModel {
 
 
 	/**
+	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return Journal[]
 	 */
-	public function fetch(array $filter = array()) {
+	public function fetch($mode, array $filter = array()) {
 
 		$journals = array();
 
@@ -37,7 +38,15 @@ class JournalModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$journals[] = new Journal($value);
+			$journal = new Journal($value);
+
+			if ($mode) {
+				$model = new PublicationModel($this->db);
+				$publications = $model->fetch(false, array('journal_id' => $journal->getId()));
+				$journal->setPublications($publications);
+			}
+
+			$journals[] = $journal;
 		}
 
 		return $journals;

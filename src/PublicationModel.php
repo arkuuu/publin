@@ -47,7 +47,7 @@ class PublicationModel {
 			if ($mode) {
 				/* Gets the publications' key terms */
 				$model = new KeyTermModel($this->db);
-				$key_terms = $model->fetch(array('publication_id' => $value['id']));
+				$key_terms = $model->fetch(false, array('publication_id' => $value['id']));
 			}
 			else {
 				$key_terms = array();

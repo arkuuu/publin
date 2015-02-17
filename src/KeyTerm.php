@@ -7,6 +7,6 @@ namespace publin\src;
  *
  * TODO: comment
  */
-class KeyTerm extends Object {
+class KeyTerm extends ObjectWithPublications {
 
 }

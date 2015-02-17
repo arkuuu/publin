@@ -7,6 +7,6 @@ namespace publin\src;
  *
  * TODO: comment
  */
-class Journal extends Object {
+class Journal extends ObjectWithPublications {
 
 }
