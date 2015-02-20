@@ -18,7 +18,7 @@
 
 			var showFormFields = function(show_time) {
 				var type = $('.type-selector').find(':selected').val();
-	
+
 				if (type) {
 					$('.'+type).show(show_time);
 				}
@@ -36,8 +36,8 @@
 				hideFormFields(200);
 				showFormFields(400);
 			});
-	
-		
+
+
 		});
 	</script>
 
@@ -78,7 +78,7 @@
 			<input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this -> showPostValue('journal') ?>"/>
 			<br/>
 		</div>
-		
+
 		<div class="incollection inproceedings">
 			<label for="booktitle">Book Title:</label>
 			<input type="text" name="booktitle" id="booktitle" maxlength="200" value="<?php echo $this -> showPostValue('booktitle') ?>"/>
@@ -128,7 +128,7 @@
 			<label for="number">Number:</label>
 			<input type="number" name="number" id="number" min="0" value="<?php echo $this -> showPostValue('number') ?>"/>
 			<br/>
-		</div>	
+		</div>
 
 		<div class="book">
 			<label for="series">Series:</label>
@@ -145,11 +145,13 @@
 			<button type="button" class="add-field">Add field</button>
 		</div>
 
-		<h2>Key Terms</h2>
-		<p>More information to come here. <a href="?p=browse&amp;by=key_term" target="_blank">Show list of key terms</a></p>
+			<h2>Keywords</h2>
+
+			<p>More information to come here. <a href="?p=browse&amp;by=keyword" target="_blank">Show list of
+																								 keywords</a></p>
 		<div class="multi-field-wrapper">
 			<ul class="multi-fields">
-				<?php echo $this -> listKeyTerms() ?>
+				<?php echo $this -> listKeywords() ?>
 			</ul>
 			<button type="button" class="add-field">Add field</button>
 		</div>

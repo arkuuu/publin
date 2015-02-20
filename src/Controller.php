@@ -91,8 +91,8 @@ class Controller {
 					return $view->display();
 					break;
 
-				case 'key_term':
-					$controller = new KeyTermController($db);
+				case 'keyword':
+					$controller = new KeywordController($db);
 
 					return $controller->run($id);
 					break;

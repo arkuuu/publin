@@ -21,7 +21,7 @@ class SubmitModel {
 		'unpublished'   => array(),);
 
 	private $optional_fields = array(
-		'all'           => array('key_terms', 'abstract'),
+		'all' => array('keywords', 'abstract'),
 		'article'       => array('publisher', 'volume', 'number', 'pages'),
 		'book'          => array('volume', 'series', 'edition'),
 		'incollection'  => array('publisher', 'pages'),
@@ -67,7 +67,7 @@ class SubmitModel {
 					$result['authors'] = $value;
 				}
 			}
-			if (($key == 'key_terms' || $key == 'pages') && !empty($value)) {
+			if (($key == 'keywords' || $key == 'pages') && !empty($value)) {
 				$value = array_filter($value);
 				if ($value) {
 					$result[$key] = $value;
@@ -112,7 +112,7 @@ class SubmitModel {
 
 		$data = array();
 		$authors = array();
-		$key_terms = array();
+		$keywords = array();
 
 		if (empty($input['type'])
 			|| !in_array($input['type'], array_keys($this->required_fields))
@@ -142,12 +142,12 @@ class SubmitModel {
 					}
 				}
 
-				/* validates key terms and creates objects */
-				else if ($field == 'key_terms') {
-					foreach ($input[$field] as $key_term_input) {
-						$key_term = $this->createNewKeyTerm($key_term_input);
-						if ($key_term) {
-							$key_terms[] = $key_term;
+				/* validates keywords and creates objects */
+				else if ($field == 'keywords') {
+					foreach ($input[$field] as $keyword_input) {
+						$keyword = $this->createNewKeyword($keyword_input);
+						if ($keyword) {
+							$keywords[] = $keyword;
 						}
 					}
 				}
@@ -188,7 +188,7 @@ class SubmitModel {
 		}
 
 		if (empty($this->errors)) {
-			$publication = new Publication($data, $authors, $key_terms);
+			$publication = new Publication($data, $authors, $keywords);
 			$this->publication = $publication;
 
 			return $publication;
@@ -255,7 +255,7 @@ class SubmitModel {
 			'series'         => 'number',
 			'given'          => 'text',
 			'family'         => 'text',
-			'key_terms'      => 'array',
+			'keywords' => 'array',
 			'abstract'       => 'text',
 			'name'           => 'text');
 
@@ -307,17 +307,17 @@ class SubmitModel {
 	}
 
 
-	public function createNewKeyTerm($input) {
+	public function createNewKeyword($input) {
 
 		$name = $this->validateInput('name', $input);
 
 		if ($name) {
-			$key_term = new KeyTerm(array('name' => $name));
+			$keyword = new Keyword(array('name' => $name));
 
-			return $key_term;
+			return $keyword;
 		}
 		else {
-			$this->errors[] = 'Invalid input for key term '.$input;
+			$this->errors[] = 'Invalid input for keyword '.$input;
 
 			return false;
 		}

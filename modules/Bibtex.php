@@ -54,7 +54,7 @@ class Bibtex {
 			'note'          => 'note',
 			'date-added'    => 'date-added',
 			'date-modified' => 'date-modified',
-			'keywords'      => 'key_terms',
+			'keywords' => 'keywords',
 		);
 
 		$this->author_fields = array(

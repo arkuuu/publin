@@ -18,16 +18,16 @@ class Publication extends Object {
 
 
 	/**
-	 * @var    KeyTerm[]
+	 * @var    Keyword[]
 	 */
-	private $key_terms;
+	private $keywords;
 
 	// TODO: maybe add $authors and $key_terms to constructor already?
-	public function __construct(array $data, array $authors, array $key_terms = array()) {
+	public function __construct(array $data, array $authors, array $keywords = array()) {
 
 		parent::__construct($data);
 		$this->setAuthors($authors);
-		$this->setKeyTerms($key_terms);
+		$this->setKeywords($keywords);
 	}
 
 	/**
@@ -148,14 +148,14 @@ class Publication extends Object {
 
 		$data = array();
 		$authors = array();
-		$key_terms = array();
+		$keywords = array();
 
 		foreach ($this->getAuthors() as $author) {
 			$authors[] = array('given' => $author->getFirstName(), 'family' => $author->getLastName());
 		}
 
-		foreach ($this->getKeyTerms() as $key_term) {
-			$key_terms[] = $key_term->getName();
+		foreach ($this->getKeywords() as $key_term) {
+			$keywords[] = $key_term->getName();
 		}
 
 		$data['type'] = $this->getTypeName();
@@ -181,7 +181,7 @@ class Publication extends Object {
 		$data['address'] = $this->getAddress();
 		$data['bibsource'] = 'publin alpha';
 		// some more missing
-		$data['key_terms'] = $key_terms;
+		$data['keywords'] = $keywords;
 
 		return $data;
 	}
@@ -224,25 +224,25 @@ class Publication extends Object {
 	 * Returns an array with the key terms of this publication.
 	 * The array consists of KeyTerm objects.
 	 *
-	 * @return    KeyTerm[]
+	 * @return    Keyword[]
 	 */
-	public function getKeyTerms() {
+	public function getKeywords() {
 
-		return $this->key_terms;
+		return $this->keywords;
 	}
 
 
 	/**
-	 * @param array $key_terms
+	 * @param array $keywords
 	 *
 	 * @return bool
 	 */
-	public function setKeyTerms(array $key_terms) {
+	public function setKeywords(array $keywords) {
 
-		foreach ($key_terms as $key_term) {
+		foreach ($keywords as $keyword) {
 
-			if ($key_term instanceof KeyTerm) {
-				$this->key_terms[] = $key_term;
+			if ($keyword instanceof Keyword) {
+				$this->keywords[] = $keyword;
 			}
 			else {
 				throw new InvalidArgumentException('must be array with KeyTerm objects');

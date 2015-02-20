@@ -46,8 +46,8 @@ class BrowseModel {
 					$this->browse_list = $model->fetch(false);
 					break;
 
-				case 'key_term':
-					$model = new KeyTermModel($this->db);
+				case 'keyword':
+					$model = new KeywordModel($this->db);
 					$this->browse_list = $model->fetch(false);
 					break;
 

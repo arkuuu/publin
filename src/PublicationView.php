@@ -359,31 +359,29 @@ class PublicationView extends View {
 
 
 	/**
-	 * Shows the publication's key terms.
+	 * @param string $separator
 	 *
-	 * @param    string $separator Optional separator between key terms
-	 *
-	 * @return    string
+	 * @return bool|string
 	 */
-	public function showKeyTerms($separator = ', ') {
+	public function showKeywords($separator = ', ') {
 
-		$key_terms = $this->publication->getKeyTerms();
+		$keywords = $this->publication->getKeywords();
 
-		if (!empty($key_terms)) {
+		if (!empty($keywords)) {
 
 			$string = '';
-			$url = '?p=key_term&amp;id=';
+			$url = '?p=keyword&amp;id=';
 
-			foreach ($key_terms as $key_term) {
+			foreach ($keywords as $keyword) {
 
-				$key_term_id = $key_term->getId();
-				$key_term_name = $key_term->getName();
+				$keyword_id = $keyword->getId();
+				$keyword_name = $keyword->getName();
 
-				if ($key_term_id && $key_term_name) {
-					$string .= '<a href="'.$url.$key_term_id.'">'.$key_term_name.'</a>'.$separator;
+				if ($keyword_id && $keyword_name) {
+					$string .= '<a href="'.$url.$keyword_id.'">'.$keyword_name.'</a>'.$separator;
 				}
-				else if ($key_term_name) {
-					$string .= $key_term_name.$separator;
+				else if ($keyword_name) {
+					$string .= $keyword_name.$separator;
 				}
 			}
 

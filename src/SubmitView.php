@@ -173,22 +173,22 @@ class SubmitView extends View {
 	}
 
 
-	public function listKeyTerms() {
+	public function listKeywords() {
 
 		$string = '';
-		$key_terms = $this->showPostValue('key_terms');
-		if ($key_terms) {
-			/* @var $key_terms KeyTerm[] */
-			foreach ($key_terms as $key => $value) {
+		$keywords = $this->showPostValue('keywords');
+		if ($keywords) {
+			/* @var $keywords Keyword[] */
+			foreach ($keywords as $key => $value) {
 				$string .= '<li class="multi-field">
-						<input type="text" name="key_terms[]" placeholder="Keyword" value="'.$this->showPostValue('key_terms', $key).'"/>
+						<input type="text" name="keywords[]" placeholder="Keyword" value="'.$this->showPostValue('keywords', $key).'"/>
 						<button type="button" class="remove-field">x</button>
 						</li>';
 			}
 		}
 		else {
 			$string .= '<li class="multi-field">
-						<input type="text" name="key_terms[]" placeholder="Keyword"/>
+						<input type="text" name="keywords[]" placeholder="Keyword"/>
 						<button type="button" class="remove-field">x</button>
 						</li>';
 		}
