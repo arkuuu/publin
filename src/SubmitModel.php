@@ -343,7 +343,7 @@ class SubmitModel {
 
 		$model = new StudyFieldModel($this->db);
 
-		return $model->fetch();
+		return $model->fetch(false);
 	}
 
 
