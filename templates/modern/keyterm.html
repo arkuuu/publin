@@ -1,8 +1,39 @@
-<h1><?php echo $this -> showName() ?></h1>
-<p>Key Term</p>
+<h1><?php echo $this->showName() ?></h1>
+
+<?php if (!$this->isEditMode()) { ?>
+
+<?php if ($this->hasPermission('keyword_edit')) { ?>
+<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit keyword</a></p>
+<?php } ?>
+
+<p>Showing all publications with the keyword <b><?php echo $this->showName() ?></b> assigned.</p>
 
 <h2>Publications</h2>
 <ul>
-	<?php echo $this -> showPublications() ?>
+	<?php echo $this->showPublications() ?>
 </ul>
 <p class="notice">This list may be incomplete. <a href="#">Find out why.</a></p>
+
+
+<?php } else { ?>
+<p><a href="<?php echo $this->showLinkToSelf() ?>">Back to keyword page</a></p>
+<h2>Edit this keyword</h2>
+<div class="form">
+	<form action="#" method="post" accept-charset="utf-8">
+		<label for="name">Name:</label>
+		<input type="text" name="name" id="name" value="<?php echo $this->showName() ?>"/>
+		<br/>
+		<input type="submit" value="Update"/>
+		<input type="reset" value="Reset changes"/>
+	</form>
+</div>
+<br/>
+<h2>Delete this keyword</h2>
+<p>This will remove this keyword from any publications.</p>
+<form action="#" method="post" accept-charset="utf-8">
+	<input type="checkbox" name="delete" id="delete" value="yes"/>
+	<label for="delete">Delete the keyword <b><?php echo $this->showName() ?></b></label>
+	<br/>
+	<input type="submit" value="Delete">
+</form>
+<?php } ?>

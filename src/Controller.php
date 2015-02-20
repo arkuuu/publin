@@ -92,11 +92,9 @@ class Controller {
 					break;
 
 				case 'key_term':
-					$model = new KeyTermModel($db);
-					$key_term = $model->fetch(true, array('id' => $id));
-					$view = new KeyTermView($key_term[0]);
+					$controller = new KeyTermController($db);
 
-					return $view->display();
+					return $controller->run($id);
 					break;
 
 				case 'study_field':

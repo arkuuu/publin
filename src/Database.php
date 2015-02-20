@@ -130,7 +130,7 @@ class Database extends mysqli {
 							$this->database);
 
 		$query = 'DELETE FROM `'.$table.'`';
-		$query .= 'WHERE';
+		$query .= ' WHERE';
 
 		foreach ($where as $key => $value) {
 			$query .= ' `'.$key.'` = "'.$value.'" AND';

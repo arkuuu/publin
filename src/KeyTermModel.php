@@ -61,6 +61,8 @@ class KeyTermModel {
 
 
 	public function update($id, array $data) {
+
+		return $this->db->updateData('list_key_terms', array('id' => $id), $data);
 	}
 
 
@@ -69,6 +71,12 @@ class KeyTermModel {
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
+
+		// Deletes the relations from any publication to this keyword
+		$where = array('key_term_id' => $id);
+		$this->db->deleteData('rel_publ_to_key_terms', $where);
+
+		// Deletes the keyword itself
 		$where = array('id' => $id);
 		$rows = $this->db->deleteData('list_key_terms', $where);
 
