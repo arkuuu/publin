@@ -55,26 +55,11 @@ class AuthorModel {
 
 
 	public function validate(array $input) {
-
-		$validator = new Validator();
-		$validator->addRule('given', 'text', true, 'Given name is required but invalid');
-		$validator->addRule('family', 'text', true, 'Family name is required but invalid');
-		$validator->addRule('website', 'url', false, 'Website URL is invalid');
-		$validator->addRule('contact', 'text', false, 'Contact info is invalid');
-		$validator->addRule('text', 'text', false, 'Text is invalid');
-
-		if ($validator->validate($input)) {
-			return $validator->getSanitizedResult();
-		}
-		else {
-			return false;
-		}
 	}
 
 
 	public function store(Author $author) {
 
-		// validation here?
 		$data = $author->getData();
 
 		return $this->db->insertData('list_authors', $data);
@@ -82,6 +67,8 @@ class AuthorModel {
 
 
 	public function update($id, array $data) {
+
+		return $this->db->updateData('list_authors', array('id' => $id), $data);
 	}
 
 

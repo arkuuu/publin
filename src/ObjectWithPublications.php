@@ -22,7 +22,6 @@ class ObjectWithPublications extends Object {
 	public function __construct(array $data, array $publications = array()) {
 
 		parent::__construct($data);
-		$this->publications = array();
 		$this->setPublications($publications);
 	}
 
@@ -44,6 +43,8 @@ class ObjectWithPublications extends Object {
 	 */
 	public function setPublications(array $publications) {
 
+		$this->publications = array();
+
 		foreach ($publications as $publication) {
 
 			if ($publication instanceof Publication) {
@@ -55,5 +56,14 @@ class ObjectWithPublications extends Object {
 		}
 
 		return true;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getPublicationsNum() {
+
+		return count($this->publications);
 	}
 }

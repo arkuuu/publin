@@ -14,16 +14,55 @@ class AuthorView extends ViewWithPublications {
 	 */
 	private $author;
 
+	/**
+	 * @var bool
+	 */
+	private $edit_mode;
+
 
 	/**
 	 * Constructs the author view.
 	 *
 	 * @param Author $author
+	 * @param bool   $edit_mode
 	 */
-	public function __construct(Author $author) {
+	public function __construct(Author $author, $edit_mode = false) {
 
 		parent::__construct($author, 'author');
 		$this->author = $author;
+		$this->edit_mode = $edit_mode;
+	}
+
+
+	public function isEditMode() {
+
+		return $this->edit_mode;
+	}
+
+
+	public function showLinkToSelf($mode = '') {
+
+		$url = '?p=author&amp;id=';
+		$mode_url = '&amp;m='.$mode;
+
+		if (empty($mode)) {
+			return $url.$this->author->getId();
+		}
+		else {
+			return $url.$this->author->getId().$mode_url;
+		}
+	}
+
+
+	public function showGivenName() {
+
+		return $this->author->getFirstName();
+	}
+
+
+	public function showFamilyName() {
+
+		return $this->author->getLastName();
 	}
 
 
@@ -34,14 +73,7 @@ class AuthorView extends ViewWithPublications {
 	 */
 	public function showWebsite() {
 
-		$website = $this->author->getWebsite();
-
-		if ($website) {
-			return '<a href="http://'.$website.'" target="_blank">'.$website.'</a>';
-		}
-		else {
-			return false;
-		}
+		return $this->author->getWebsite();
 	}
 
 

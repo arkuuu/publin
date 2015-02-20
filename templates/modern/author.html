@@ -1,25 +1,73 @@
-	<h1><?php echo $this -> showName() ?></h1>
-	<?php if ($this -> showWebsite()) { ?>
-	<p><?php echo $this -> showWebsite() ?></p>
-	<?php } ?>
+<h1><?php echo $this->showName() ?></h1>
 
-	<?php if ($this -> showContact()) { ?>
-	<h2>Contact</h2>
-	<p><?php echo $this -> showContact() ?></p>
-	<?php } ?>
+<?php if (!$this->isEditMode()) { ?>
 
-	<?php if ($this -> showText()) { ?>
-	<h2>About this author</h2>
-	<p><?php echo $this -> showText() ?></p>
-	<?php } ?>
+<?php if ($this->hasPermission('author_edit')) { ?>
+<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit or add data</a></p>
+<?php } ?>
 
-	<h2>Publications</h2>
-	<ul>
-		<?php echo $this -> showPublications() ?>
-	</ul>
-	<p class="notice">This list may be incomplete. <a href="#">Find out why.</a></p>
+<?php if ($this->showWebsite()) { ?>
+<h2>Website</h2>
+<p><a href="http://<?php echo $this->showWebsite() ?>" target="_blank"><?php echo $this->showWebsite() ?></a></p>
+<?php } ?>
 
-	<h2>Search this author in</h2>
-	<ul>
-		<?php echo $this -> showBibLinks() ?>
-	</ul>
+<?php if ($this->showContact()) { ?>
+<h2>Contact</h2>
+<p><?php echo $this->showContact() ?></p>
+<?php } ?>
+
+<?php if ($this->showText()) { ?>
+<h2>About</h2>
+<p><?php echo $this->showText() ?></p>
+<?php } ?>
+
+<h2>Publications</h2>
+<ul>
+	<?php echo $this->showPublications() ?>
+</ul>
+<p class="notice">This list may be incomplete. <a href="#">Find out why.</a></p>
+
+<h2>Search this author in</h2>
+<ul>
+	<?php echo $this->showBibLinks() ?>
+</ul>
+
+<?php } else { ?>
+<p><a href="<?php echo $this->showLinkToSelf() ?>">Back to author page</a></p>
+<h2>Edit this author</h2>
+<div class="form">
+	<form action="#" method="post" accept-charset="utf-8">
+		<label for="given">Given Name:</label>
+		<input type="text" name="given" id="given" value="<?php echo $this->showGivenName() ?>"/>
+		<br/>
+		<label for="family">Family Name:</label>
+		<input type="text" name="family" id="family" value="<?php echo $this->showFamilyName() ?>"/>
+		<br/>
+		<label for="website">Website:</label>
+		<input type="text" name="website" id="website" value="<?php echo $this->showWebsite() ?>"/>
+		<br/>
+		<label for="contact">Contact:</label>
+		<textarea name="contact" id="contact" rows="5" cols="50"><?php echo $this->showContact() ?></textarea>
+		<br/>
+		<label for="text">About:</label>
+		<textarea name="text" id="text" rows="5" cols="50"><?php echo $this->showText() ?></textarea>
+		<br/>
+		<input type="submit" value="Update"/>
+		<input type="reset" value="Reset changes"/>
+	</form>
+</div>
+<br/>
+<h2>Delete this author</h2>
+<?php if ($this->showPublicationsNum() > 0) { ?>
+<p>You cannot delete this author because there are publications assigned.</p>
+
+<?php } else { ?>
+<p>This will try to delete this author. It will fail if there are any publications assigned to this author.</p>
+<form action="#" method="post" accept-charset="utf-8">
+	<input type="checkbox" name="delete" id="delete" value="yes"/>
+	<label for="delete">Delete the author <?php echo $this->showName() ?></label>
+	<br/>
+	<input type="submit" value="Delete">
+</form>
+<?php } ?>
+<?php } ?>

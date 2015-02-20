@@ -42,6 +42,7 @@ class ViewWithPublications extends View {
 			return $name;
 		}
 		else {
+			// TODO: maybe log here because this should never happen?
 			return 'No name';
 		}
 	}
@@ -64,5 +65,14 @@ class ViewWithPublications extends View {
 		else {
 			return '<li>no publications found</li>';
 		}
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function showPublicationsNum() {
+
+		return $this->object->getPublicationsNum();
 	}
 }

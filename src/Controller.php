@@ -62,11 +62,9 @@ class Controller {
 					break;
 
 				case 'author':
-					$model = new AuthorModel($db);
-					$author = $model->fetch(true, array('id' => $id));
-					$view = new AuthorView($author[0]);
+					$controller = new AuthorController($db);
 
-					return $view->display();
+					return $controller->run($id);
 					break;
 
 				case 'publication':
@@ -168,7 +166,6 @@ class Controller {
 					return $view->display();
 					break;
 			}
-
 			// return $view -> display();
 		}
 		catch (NotFoundException $e) {
@@ -182,8 +179,5 @@ class Controller {
 
 			return 'Error: '.$e->getMessage();
 		}
-
-
 	}
-
 }

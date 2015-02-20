@@ -25,6 +25,7 @@ class PublisherModel {
 
 
 	/**
+	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return Publisher[]
@@ -49,15 +50,6 @@ class PublisherModel {
 		}
 
 		return $publishers;
-	}
-
-
-	public function validate(array $input) {
-
-		$errors = array();
-
-		// validation
-		return $errors;
 	}
 
 

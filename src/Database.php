@@ -32,9 +32,9 @@ class Database extends mysqli {
 
 		/* Calls the constructor of mysqli and creates a connection */
 		parent::__construct($this->host,
-			$this->readonly_user,
-			$this->readonly_password,
-			$this->database);
+							$this->readonly_user,
+							$this->readonly_password,
+							$this->database);
 
 		/* Stops if the connection cannot be established */
 		if ($this->connect_errno) {
@@ -73,8 +73,8 @@ class Database extends mysqli {
 		}
 
 		parent::change_user($this->writeonly_user,
-			$this->writeonly_password,
-			$this->database);
+							$this->writeonly_password,
+							$this->database);
 
 		$into = array_keys($data);
 		$values = array_values($data);
@@ -99,7 +99,7 @@ class Database extends mysqli {
 		$msg = str_replace("\t", '', $msg);
 		$file = fopen('./logs/sql.log', 'a');
 		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-			.$msg."\n");
+					.$msg."\n");
 		fclose($file);
 
 		$result = parent::query($query);
@@ -109,7 +109,6 @@ class Database extends mysqli {
 		}
 
 		return $this->insert_id;
-
 	}
 
 
@@ -127,8 +126,8 @@ class Database extends mysqli {
 		}
 
 		parent::change_user($this->writeonly_user,
-			$this->writeonly_password,
-			$this->database);
+							$this->writeonly_password,
+							$this->database);
 
 		$query = 'DELETE FROM `'.$table.'`';
 		$query .= 'WHERE';
@@ -142,7 +141,7 @@ class Database extends mysqli {
 		$msg = str_replace("\t", '', $msg);
 		$file = fopen('./logs/sql.log', 'a');
 		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-			.$msg."\n");
+					.$msg."\n");
 		fclose($file);
 
 		$result = parent::query($query);
@@ -152,7 +151,49 @@ class Database extends mysqli {
 		}
 
 		return $this->affected_rows;
+	}
 
+
+	public function updateData($table, array $where, array $data) {
+
+		if (empty($where) || empty($data)) {
+			throw new InvalidArgumentException('where and data must not be empty when updating');
+		}
+
+		parent::change_user($this->writeonly_user,
+							$this->writeonly_password,
+							$this->database);
+
+		$query = 'UPDATE `'.$table.'`';
+
+		$query .= ' SET';
+
+		foreach ($data as $column => $value) {
+			$query .= ' `'.$column.'` = "'.$value.'",';
+		}
+		$query = substr($query, 0, -1);
+
+		$query .= ' WHERE';
+
+		foreach ($where as $key => $value) {
+			$query .= ' `'.$key.'` = "'.$value.'" AND';
+		}
+		$query = substr($query, 0, -3);
+
+		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+		$msg = str_replace("\t", '', $msg);
+		$file = fopen('./logs/sql.log', 'a');
+		fwrite($file, '['.date('d.m.Y H:i:s').'] '
+					.$msg."\n");
+		fclose($file);
+
+		$result = parent::query($query);
+
+		if (!$result) {
+			throw new SQLException($this->error);
+		}
+
+		return $this->affected_rows;
 	}
 
 
@@ -219,7 +260,7 @@ class Database extends mysqli {
 		$msg = str_replace("\t", '', $msg);
 		$file = fopen('./logs/sql.log', 'a');
 		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-			.$msg."\n");
+					.$msg."\n");
 		fclose($file);
 
 		/* Sends query to database */
@@ -647,7 +688,6 @@ class Database extends mysqli {
 				$where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
 			}
 			$where = substr($where, 0, -3);
-
 		}
 		unset($filter);
 
@@ -679,7 +719,6 @@ class Database extends mysqli {
 				$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
 			}
 			$where = substr($where, 0, -3);
-
 		}
 		unset($filter);
 
@@ -688,6 +727,4 @@ class Database extends mysqli {
 
 		return $this->getData($query);
 	}
-
-
 }

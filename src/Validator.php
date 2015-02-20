@@ -62,7 +62,7 @@ class Validator {
 			if (empty($input[$field]) && $rule['required'] == true) {
 				$this->errors[] = $rule['error_msg'];
 			}
-			else if (!empty($input[$field])) {
+			else if (isset($input[$field])) {
 
 				$temp = $input[$field];
 
@@ -80,15 +80,18 @@ class Validator {
 
 					case 'text':
 						if (is_string($temp)) {
+							// TODO: problem here with '  ' inputs
+							//$temp = str_replace('  ', ' ', $temp);
 							$temp = trim($temp);
 							$temp = stripslashes($temp);
 							$temp = htmlspecialchars($temp);
 
-							if (!empty($temp)) {
-								$result[$field] = $temp;
+							if (empty($temp) && $rule['required'] == true) {
+								$this->errors[] = $rule['error_msg'];
 							}
 							else {
-								$this->errors[] = $rule['error_msg'];
+								$result[$field] = $temp;
+
 							}
 						}
 						break;
