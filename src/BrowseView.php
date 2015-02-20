@@ -35,10 +35,10 @@ class BrowseView extends View {
 					'name'       => 'Authors',
 					'url'        => './?p=browse&amp;by=author',
 					'result_url' => './?p=author&amp;id='),
-				'key_term'    => array(
-					'name'       => 'Key Terms',
-					'url'        => './?p=browse&amp;by=key_term',
-					'result_url' => './?p=key_term&amp;id='),
+				'keyword' => array(
+					'name'       => 'Keywords',
+					'url'        => './?p=browse&amp;by=keyword',
+					'result_url' => './?p=keyword&amp;id='),
 				'study_field' => array(
 					'name'       => 'Fields of Study',
 					'url'        => './?p=browse&amp;by=study_field',

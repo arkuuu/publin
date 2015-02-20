@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class KeyTermController {
+class KeywordController {
 
 	private $db;
 	private $model;
@@ -12,7 +12,7 @@ class KeyTermController {
 	public function __construct(Database $db) {
 
 		$this->db = $db;
-		$this->model = new KeyTermModel($db);
+		$this->model = new KeywordModel($db);
 	}
 
 
@@ -24,11 +24,10 @@ class KeyTermController {
 		else if (isset($_GET['m']) && $_GET['m'] === 'edit' && !empty($_POST)) {
 
 			$validator = new Validator();
-			$validator->addRule('name', 'text', true, 'Given name is required but invalid');
+			$validator->addRule('name', 'text', true, 'Name is required but invalid');
 
 			if ($validator->validate($_POST)) {
 				$input = $validator->getSanitizedResult();
-				//var_dump($input);
 				$sucess = $this->model->update($id, $input);
 			}
 			else {
@@ -39,10 +38,10 @@ class KeyTermController {
 		$keywords = $this->model->fetch(true, array('id' => $id));
 
 		if (isset($_GET['m']) && $_GET['m'] === 'edit') {
-			$view = new KeyTermView($keywords[0], true);
+			$view = new KeywordView($keywords[0], true);
 		}
 		else {
-			$view = new KeyTermView($keywords[0]);
+			$view = new KeywordView($keywords[0]);
 		}
 
 		return $view->display();

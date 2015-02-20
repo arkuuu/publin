@@ -1,6 +1,6 @@
 	<script type="text/javascript" src="./templates/default/jquery.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {		
+		$(document).ready(function () {
 			$('.export textarea').hide();
 			$('.export a').click(function(e) {
 				e.preventDefault();
@@ -16,7 +16,7 @@
 	echo $this -> showDatePublished() ? $this -> showDatePublished() : '';
 	echo $this -> showAuthors() ? '<br />By: '.$this -> showAuthors() : '';
 	echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '';
-	echo $this -> showBook() ? '<br />In: '.$this -> showBook() : '';	
+	echo $this -> showBook() ? '<br/>In: '.$this -> showBook() : '';
 	echo $this -> showPublisher() ? '<br />Publisher: '.$this -> showPublisher() : '';
 	echo $this -> showInstitution() ? '<br />Institution: '.$this -> showInstitution() : '';
 	echo $this -> showSchool() ? '<br />School: '.$this -> showSchool() : '';
@@ -40,9 +40,9 @@
 	<ul><?php echo $this -> showReferences() ?></ul>
 	<?php } ?>
 
-	<?php if ($this -> showKeyTerms()) { ?>
-	<h2>Key Terms</h2>
-	<p><?php echo $this -> showKeyTerms() ?></p>
+	<?php if ($this -> showKeywords()) { ?>
+	<h2>Keywords</h2>
+	<p><?php echo $this -> showKeywords() ?></p>
 	<?php } ?>
 
 

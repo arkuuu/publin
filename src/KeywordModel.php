@@ -5,7 +5,7 @@ namespace publin\src;
 use InvalidArgumentException;
 use RuntimeException;
 
-class KeyTermModel {
+class KeywordModel {
 
 	private $db;
 	private $num;
@@ -27,42 +27,42 @@ class KeyTermModel {
 	 * @param       $mode
 	 * @param array $filter
 	 *
-	 * @return KeyTerm[]
+	 * @return Keyword[]
 	 */
 	public function fetch($mode, array $filter = array()) {
 
-		$key_terms = array();
+		$keywords = array();
 
-		$data = $this->db->fetchKeyTerms($filter);
+		$data = $this->db->fetchKeywords($filter);
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$key_term = new KeyTerm($value);
+			$keyword = new Keyword($value);
 
 			if ($mode) {
 				$model = new PublicationModel($this->db);
-				$publications = $model->fetch(false, array('key_term_id' => $key_term->getId()));
-				$key_term->setPublications($publications);
+				$publications = $model->fetch(false, array('keyword_id' => $keyword->getId()));
+				$keyword->setPublications($publications);
 			}
 
-			$key_terms[] = $key_term;
+			$keywords[] = $keyword;
 		}
 
-		return $key_terms;
+		return $keywords;
 	}
 
 
-	public function store(KeyTerm $key_term) {
+	public function store(Keyword $keyword) {
 
-		$data = $key_term->getData();
+		$data = $keyword->getData();
 
-		return $this->db->insertData('list_key_terms', $data);
+		return $this->db->insertData('list_keywords', $data);
 	}
 
 
 	public function update($id, array $data) {
 
-		return $this->db->updateData('list_key_terms', array('id' => $id), $data);
+		return $this->db->updateData('list_keywords', array('id' => $id), $data);
 	}
 
 
@@ -73,19 +73,19 @@ class KeyTermModel {
 		}
 
 		// Deletes the relations from any publication to this keyword
-		$where = array('key_term_id' => $id);
-		$this->db->deleteData('rel_publ_to_key_terms', $where);
+		$where = array('keyword_id' => $id);
+		$this->db->deleteData('rel_publication_keywords', $where);
 
 		// Deletes the keyword itself
 		$where = array('id' => $id);
-		$rows = $this->db->deleteData('list_key_terms', $where);
+		$rows = $this->db->deleteData('list_keywords', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting key term '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting keyword '.$id.': '.$this->db->error);
 		}
 	}
 }

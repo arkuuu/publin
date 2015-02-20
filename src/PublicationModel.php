@@ -45,15 +45,15 @@ class PublicationModel {
 			$authors = $model->fetch(false, array('publication_id' => $value['id']));
 
 			if ($mode) {
-				/* Gets the publications' key terms */
-				$model = new KeyTermModel($this->db);
-				$key_terms = $model->fetch(false, array('publication_id' => $value['id']));
+				/* Gets the publications' keywords */
+				$model = new KeywordModel($this->db);
+				$keywords = $model->fetch(false, array('publication_id' => $value['id']));
 			}
 			else {
-				$key_terms = array();
+				$keywords = array();
 			}
 
-			$publication = new Publication($value, $authors, $key_terms);
+			$publication = new Publication($value, $authors, $keywords);
 			$publications[] = $publication;
 		}
 
@@ -65,7 +65,7 @@ class PublicationModel {
 
 		$data = $publication->getData();
 		$authors = $publication->getAuthors();
-		$key_terms = $publication->getKeyTerms();
+		$keywords = $publication->getKeywords();
 
 		/* Stores the authors */
 		$author_ids = array();
@@ -74,10 +74,10 @@ class PublicationModel {
 			$author_ids[] = $model->store($author);
 		}
 		/* Stores the key terms */
-		$key_term_ids = array();
-		$model = new KeyTermModel($this->db);
-		foreach ($key_terms as $key_term) {
-			$key_term_ids[] = $model->store($key_term);
+		$keyword_ids = array();
+		$model = new KeywordModel($this->db);
+		foreach ($keywords as $keyword) {
+			$keyword_ids[] = $model->store($keyword);
 		}
 		/* Stores the type */
 		if (isset($data['type'])) {
@@ -121,9 +121,9 @@ class PublicationModel {
 				}
 			}
 			/* Stores the relation between the publication and its key terms */
-			if (!empty($key_term_ids)) {
-				foreach ($key_term_ids as $key_term_id) {
-					$this->addKeyTerm($publication_id, $key_term_id);
+			if (!empty($keyword_ids)) {
+				foreach ($keyword_ids as $keyword_id) {
+					$this->addKeyword($publication_id, $keyword_id);
 				}
 			}
 
@@ -150,16 +150,16 @@ class PublicationModel {
 	}
 
 
-	public function addKeyTerm($publication_id, $key_term_id) {
+	public function addKeyword($publication_id, $keyword_id) {
 
-		if (!is_numeric($publication_id) || !is_numeric($key_term_id)) {
+		if (!is_numeric($publication_id) || !is_numeric($keyword_id)) {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
 		$data = array('publication_id' => $publication_id,
-					  'key_term_id'    => $key_term_id);
+					  'keyword_id' => $keyword_id);
 
-		return $this->db->insertData('rel_publ_to_key_terms', $data);
+		return $this->db->insertData('rel_publication_keywords', $data);
 	}
 
 
@@ -207,23 +207,23 @@ class PublicationModel {
 	}
 
 
-	public function removeKeyTerm($publication_id, $key_term_id) {
+	public function removeKeyword($publication_id, $keyword_id) {
 
-		if (!is_numeric($publication_id) || !is_numeric($key_term_id)) {
+		if (!is_numeric($publication_id) || !is_numeric($keyword_id)) {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
 		$where = array('publication_id' => $publication_id,
-					   'key_term_id'    => $key_term_id);
+					   'keyword_id' => $keyword_id);
 
-		$rows = $this->db->deleteData('rel_publ_to_key_terms', $where);
+		$rows = $this->db->deleteData('rel_publication_keywords', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error removing key term '.$key_term_id.' from publication '.$publication_id.': '.$this->db->error);
+			throw new RuntimeException('Error removing keyword '.$keyword_id.' from publication '.$publication_id.': '.$this->db->error);
 		}
 	}
 }

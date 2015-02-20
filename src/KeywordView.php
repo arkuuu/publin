@@ -3,10 +3,10 @@
 
 namespace publin\src;
 
-class KeyTermView extends ViewWithPublications {
+class KeywordView extends ViewWithPublications {
 
 	/**
-	 * @var KeyTerm
+	 * @var Keyword
 	 */
 	private $keyword;
 	/**
@@ -15,9 +15,9 @@ class KeyTermView extends ViewWithPublications {
 	private $edit_mode;
 
 
-	public function __construct(KeyTerm $keyword, $edit_mode = false) {
+	public function __construct(Keyword $keyword, $edit_mode = false) {
 
-		parent::__construct($keyword, 'keyterm');
+		parent::__construct($keyword, 'keyword');
 		$this->keyword = $keyword;
 		$this->edit_mode = $edit_mode;
 	}
@@ -31,7 +31,7 @@ class KeyTermView extends ViewWithPublications {
 
 	public function showLinkToSelf($mode = '') {
 
-		$url = '?p=key_term&amp;id=';
+		$url = '?p=keyword&amp;id=';
 		$mode_url = '&amp;m='.$mode;
 
 		if (empty($mode)) {

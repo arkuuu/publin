@@ -78,7 +78,7 @@ class Database extends mysqli {
 
 		$into = array_keys($data);
 		$values = array_values($data);
-		$query = 'INSERT INTO '.$table.'(';
+		$query = 'INSERT INTO `'.$table.'`(';
 
 		foreach ($into as $field) {
 			$query .= '`'.$field.'`, ';
@@ -290,10 +290,10 @@ class Database extends mysqli {
 	 *
 	 * @return    array
 	 */
-	public function fetchKeyTerms(array $filter = array()) {
+	public function fetchKeywords(array $filter = array()) {
 
 		$select = 'SELECT k.*';
-		$from = 'FROM `list_key_terms` k';
+		$from = 'FROM `list_keywords` k';
 		$join = '';
 		$where = '';
 		$order = 'ORDER BY `name` ASC';
@@ -314,8 +314,8 @@ class Database extends mysqli {
 
 				/* Creates the JOIN clause if needed */
 				if (array_key_exists('publication_id', $filter)) {
-					$from = 'FROM `rel_publ_to_key_terms` rk';    // Better SQL performance this way
-					$join .= ' JOIN `list_key_terms` k ON (rk.`key_term_id` = k.`id`)';
+					$from = 'FROM `rel_publication_keywords` rk';    // Better SQL performance this way
+					$join .= ' JOIN `list_keywords` k ON (rk.`keyword_id` = k.`id`)';
 					$where .= ' rk.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
 					unset($filter['publication_id']);
 				}
@@ -637,10 +637,10 @@ class Database extends mysqli {
 					$where .= ' ra.`author_id` LIKE "'.$filter['author_id'].'" AND';
 					unset($filter['author_id']);
 				}
-				if (array_key_exists('key_term_id', $filter)) {
-					$join .= ' JOIN `rel_publ_to_key_terms` rk ON (rk.`publication_id` = p.`id`)';
-					$where .= ' rk.`key_term_id` LIKE "'.$filter['key_term_id'].'" AND';
-					unset($filter['key_term_id']);
+				if (array_key_exists('keyword_id', $filter)) {
+					$join .= ' JOIN `rel_publication_keywords` rk ON (rk.`publication_id` = p.`id`)';
+					$where .= ' rk.`keyword_id` LIKE "'.$filter['keyword_id'].'" AND';
+					unset($filter['keyword_id']);
 				}
 				if (array_key_exists('year_published', $filter)) {
 					$where .= ' YEAR(p.`date_published`) LIKE "'.$filter['year_published'].'" AND';
