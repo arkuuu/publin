@@ -53,15 +53,6 @@ class JournalModel {
 	}
 
 
-	public function validate(array $input) {
-
-		$errors = array();
-
-		// validation
-		return $errors;
-	}
-
-
 	public function store(Journal $journal) {
 
 		$data = $journal->getData();

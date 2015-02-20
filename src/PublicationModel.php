@@ -61,16 +61,6 @@ class PublicationModel {
 	}
 
 
-	public function validate(array $input) {
-
-		$errors = array();
-
-		// validation
-
-		return $errors;
-	}
-
-
 	public function store(Publication $publication) {
 
 		$data = $publication->getData();

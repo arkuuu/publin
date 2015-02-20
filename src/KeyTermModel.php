@@ -24,6 +24,7 @@ class KeyTermModel {
 
 
 	/**
+	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return KeyTerm[]
@@ -48,15 +49,6 @@ class KeyTermModel {
 		}
 
 		return $key_terms;
-	}
-
-
-	public function validate(array &$input) {
-
-		$errors = array();
-
-		// validation
-		return $errors;
 	}
 
 

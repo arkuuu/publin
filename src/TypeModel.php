@@ -43,15 +43,6 @@ class TypeModel {
 	}
 
 
-	public function validate(array $input) {
-
-		$errors = array();
-
-		// validation
-		return $errors;
-	}
-
-
 	public function store(Type $type) {
 
 		$data = $type->getData();

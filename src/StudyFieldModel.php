@@ -25,6 +25,7 @@ class StudyFieldModel {
 
 
 	/**
+	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return StudyField[]
@@ -48,15 +49,6 @@ class StudyFieldModel {
 		}
 
 		return $study_fields;
-	}
-
-
-	public function validate(array $input) {
-
-		$errors = array();
-
-		// validation
-		return $errors;
 	}
 
 
