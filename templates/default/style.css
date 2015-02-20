@@ -1,7 +1,7 @@
 * {
 	/*-moz-box-sizing: border-box;*/
 	/*-webkit-box-sizing: border-box;*/
-	box-sizing: border-box; 
+	box-sizing: border-box;
 }
 
 
@@ -36,7 +36,7 @@ div#menu {
 	color: #004b5a;
 }
 
-div#menu #logo {  
+div#menu #logo {
 	height: 100px;
 	padding: 0;
 	background: url(logo.png) no-repeat center;
@@ -78,7 +78,7 @@ div#menu a:hover {
 
 
 /* The right box with it's contents */
-div#right {
+div#pageContent {
 	width: auto;
 	min-width: 250px;
 	position: absolute;
@@ -87,52 +87,52 @@ div#right {
 	padding: 30px 0;
 	margin-left: 25px;
 	font-size: 15px;
-	background-color: #D6DFE4;  
+	background-color: #d6dfe4;
 }
 
-div#right h1, div#right h2, div#right p, div#right ul, div#right div, div#right textarea {
+div#pageContent h1, div#pageContent h2, div#pageContent p, div#pageContent ul, div#pageContent div, div#pageContent textarea {
 	max-width: 700px;
 	min-width: 250px; /* bei div#right auch ändern! */
 	/*padding: 0 25px 0;*/
 }
 
-div#right h1 {
+div#pageContent h1 {
 	color: #004b5a;
 	font-size: 20px;
 }
 
-div#right h2 {
+div#pageContent h2 {
 	color: #004b5a;
 	font-size: 16px;
 	padding-top: 30px;
 }
 
-div#right p {
+div#pageContent p {
 	color: black;
 }
 
-div#right ul {
+div#pageContent ul {
 	padding-left: 45px;
 	list-style-type: circle;
 }
 
-div#right li {
+div#pageContent li {
 	margin-bottom: 10px;
 }
 
-div#right a {
+div#pageContent a {
 	color: #004b5a;
 	text-decoration: none;
 }
 
-div#right a:hover {
+div#pageContent a:hover {
 	color: black;
 	text-decoration: underline;
 }
 
-div#right li input {
+div#pageContent li input {
 	width: 200px;
-}	
+}
 
 
 /*	Other stuff */
@@ -156,10 +156,11 @@ div#right li input {
 	clear: left;
 }
 
-div#right input[type=number] {
+div#pageContent input[type=number] {
 	width: 50px;
 }
-div#right select {
+
+div#pageContent select {
 	width: 200px;
 }
 
