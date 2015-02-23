@@ -21,6 +21,11 @@
 <p><?php echo $this->showText() ?></p>
 <?php } ?>
 
+<?php if ($this -> showKeywords()) { ?>
+<h2>Research Keywords</h2>
+<p><?php echo $this -> showKeywords() ?></p>
+<?php } ?>
+
 <h2>Publications</h2>
 <ul>
 	<?php echo $this->showPublications() ?>

@@ -38,16 +38,21 @@ class AuthorModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$author = new Author($value);
 
 			if ($mode) {
 				/* Gets the authors' publications */
 				$model = new PublicationModel($this->db);
-				$publications = $model->fetch(false, array('author_id' => $author->getId()));
-				$author->setPublications($publications);
+				$publications = $model->fetch(false, array('author_id' => $value['id']));
+
+				$model = new KeywordModel($this->db);
+				$keywords = $model->fetch(false, array('author_id' => $value['id']));
+			}
+			else {
+				$publications = array();
+				$keywords = array();
 			}
 
-			$authors[] = $author;
+			$authors[] = new Author($value, $publications, $keywords);
 		}
 
 		return $authors;
