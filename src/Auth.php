@@ -5,7 +5,7 @@ namespace publin\src;
 class Auth {
 
 	private $db;
-	private $session_expire_time = 120;
+	private $session_expire_time = 1000;
 
 
 	public function __construct(Database $db) {
@@ -18,7 +18,7 @@ class Auth {
 	}
 
 
-	public function validateLogin($user_name, $password) {
+	public function login($user_name, $password) {
 
 		$user_name = $this->db->real_escape_string($user_name);
 		$password = $this->db->real_escape_string($password);
