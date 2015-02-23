@@ -82,11 +82,9 @@ class Controller {
 					break;
 
 				case 'publisher':
-					$model = new PublisherModel($db);
-					$publisher = $model->fetch(true, array('id' => $id));
-					$view = new PublisherView($publisher[0]);
+					$controller = new PublisherController($db);
 
-					return $view->display();
+					return $controller->run($id);
 					break;
 
 				case 'keyword':

@@ -62,6 +62,8 @@ class PublisherModel {
 
 
 	public function update($id, array $data) {
+
+		return $this->db->updateData('list_publishers', array('id' => $id), $data);
 	}
 
 
