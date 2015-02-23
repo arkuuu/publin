@@ -76,11 +76,9 @@ class Controller {
 					break;
 
 				case 'journal':
-					$model = new JournalModel($db);
-					$journal = $model->fetch(true, array('id' => $id));
-					$view = new JournalView($journal[0]);
+					$controller = new JournalController($db);
 
-					return $view->display();
+					return $controller->run($id);
 					break;
 
 				case 'publisher':

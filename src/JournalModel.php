@@ -62,6 +62,8 @@ class JournalModel {
 
 
 	public function update($id, array $data) {
+
+		return $this->db->updateData('list_journals', array('id' => $id), $data);
 	}
 
 
