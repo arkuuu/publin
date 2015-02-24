@@ -2,26 +2,12 @@
 
 namespace publin\src;
 
-use InvalidArgumentException;
-
 /**
  * Class Author
  *
  * @package publin\src
  */
 class Author extends ObjectWithPublications {
-
-	/**
-	 * @var    Keyword[]
-	 */
-	private $keywords;
-
-
-	public function __construct(array $data, array $publications = array(), array $keywords = array()) {
-
-		parent::__construct($data, $publications);
-		$this->setKeywords($keywords);
-	}
 
 
 	/**
@@ -125,38 +111,5 @@ class Author extends ObjectWithPublications {
 	public function getText() {
 
 		return $this->getData('text');
-	}
-
-
-	/**
-	 * Returns an array with the key terms of this publication.
-	 * The array consists of KeyTerm objects.
-	 *
-	 * @return    Keyword[]
-	 */
-	public function getKeywords() {
-
-		return $this->keywords;
-	}
-
-
-	/**
-	 * @param array $keywords
-	 *
-	 * @return bool
-	 */
-	public function setKeywords(array $keywords) {
-
-		foreach ($keywords as $keyword) {
-
-			if ($keyword instanceof Keyword) {
-				$this->keywords[] = $keyword;
-			}
-			else {
-				throw new InvalidArgumentException('must be array with KeyTerm objects');
-			}
-		}
-
-		return true;
 	}
 }

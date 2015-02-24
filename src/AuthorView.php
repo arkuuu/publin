@@ -114,34 +114,4 @@ class AuthorView extends ViewWithPublications {
 
 		return $string;
 	}
-
-
-	public function showKeywords($separator = ', ') {
-
-		$keywords = $this->author->getKeywords();
-
-		if (!empty($keywords)) {
-
-			$string = '';
-			$url = '?p=keyword&amp;id=';
-
-			foreach ($keywords as $keyword) {
-
-				$keyword_id = $keyword->getId();
-				$keyword_name = $keyword->getName();
-
-				if ($keyword_id && $keyword_name) {
-					$string .= '<a href="'.$url.$keyword_id.'">'.$keyword_name.'</a>'.$separator;
-				}
-				else if ($keyword_name) {
-					$string .= $keyword_name.$separator;
-				}
-			}
-
-			return substr($string, 0, -(strlen($separator)));
-		}
-		else {
-			return false;
-		}
-	}
 }
