@@ -54,10 +54,6 @@ class AuthorModel {
 	}
 
 
-	public function validate(array $input) {
-	}
-
-
 	public function store(Author $author) {
 
 		$data = $author->getData();
