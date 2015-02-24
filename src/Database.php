@@ -319,6 +319,14 @@ class Database extends mysqli {
 					$where .= ' rk.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
 					unset($filter['publication_id']);
 				}
+				if (array_key_exists('author_id', $filter)) {
+					$select = 'SELECT DISTINCT k.*';
+					$from = 'FROM `rel_publication_keywords` rk';    // Better SQL performance this way
+					$join .= ' JOIN `list_keywords` k ON (rk.`keyword_id` = k.`id`)';
+					$join .= ' JOIN `rel_publ_to_authors` a ON (rk.`publication_id` = a.`publication_id`)';
+					$where .= ' a.`author_id` LIKE "'.$filter['author_id'].'" AND';
+					unset($filter['author_id']);
+				}
 
 				/* Creates the WHERE clause from the rest of the filter array */
 				foreach ($filter as $key => $value) {
