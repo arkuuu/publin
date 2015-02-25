@@ -7,38 +7,44 @@ use DomainException;
 
 class FormatHandler {
 
-	private $parser;
-
-
-	public function __construct($format) {
+	public static function export(Publication $publication, $format) {
 
 		$class = '\\publin\\modules\\'.$format;
-		if (!class_exists($class)) {
-			throw new DomainException('parser for '.$format.' not found');
-		}
 
-		$this->parser = new $class();
+		if (class_exists($class)) {
+			$module = new $class();
+
+			if (method_exists($module, 'export')) {
+
+				return $module->export($publication);
+			}
+			else {
+				throw new BadMethodCallException('export method in module for '.$format.' not found');
+			}
+		}
+		else {
+			throw new DomainException('module class for '.$format.' not found');
+		}
 	}
 
 
-	public function export(Publication $publication) {
+	public static function import($data, $format) {
 
-		if (!method_exists($this->parser, 'export')) {
-			throw new BadMethodCallException('parser for '.get_class($this->parser).' offers no export');
+		$class = '\\publin\\modules\\'.$format;
+
+		if (class_exists($class)) {
+			$module = new $class();
+
+			if (method_exists($module, 'import')) {
+
+				return $module->import($data);
+			}
+			else {
+				throw new BadMethodCallException('import method in module for '.$format.' not found');
+			}
 		}
-
-		return $this->parser->export($publication);
-	}
-
-
-	public function import($data) {
-
-		if (!method_exists($this->parser, 'import')) {
-			throw new BadMethodCallException('parser for '.get_class($this->parser).' offers no import');
+		else {
+			throw new DomainException('module class for '.$format.' not found');
 		}
-
-		return $this->parser->import($data);
 	}
-
-
 }

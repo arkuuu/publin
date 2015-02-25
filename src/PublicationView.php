@@ -52,19 +52,18 @@ class PublicationView extends View {
 
 
 	/**
-	 * Shows the meta tags.
-	 *
-	 * @return    string
+	 * @return string
 	 */
 	public function showMetaTags() {
 
-		$string = '';
+		$formats = array('HighwirePressTags', 'DublinCoreTags', 'PRISMTags');
+		$result = '';
 
-		foreach (MetaTags::getStyles() as $style) {
-			$string .= MetaTags::getPublicationsMetaTags($this->publication, $style);
+		foreach ($formats as $format) {
+			$result .= FormatHandler::export($this->publication, $format);
 		}
 
-		return $string;
+		return $result;
 	}
 
 
@@ -173,7 +172,6 @@ class PublicationView extends View {
 		}
 		else {
 			return false;
-
 		}
 	}
 
@@ -197,7 +195,6 @@ class PublicationView extends View {
 		}
 		else {
 			return false;
-
 		}
 	}
 
@@ -230,7 +227,6 @@ class PublicationView extends View {
 		}
 		else {
 			return false;
-
 		}
 	}
 
@@ -419,15 +415,6 @@ class PublicationView extends View {
 	 */
 	public function showExport($format) {
 
-		try {
-			$export = new FormatHandler($format);
-
-			return $export->export($this->publication);
-		}
-		catch (Exception $e) {
-			return 'Error: '.$e->getMessage();
-		}
-
+		return FormatHandler::export($this->publication, $format);
 	}
-
 }

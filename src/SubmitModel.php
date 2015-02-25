@@ -99,10 +99,9 @@ class SubmitModel {
 	}
 
 
-	public function formatImport($string, $import_format) {
+	public function formatImport($string, $format) {
 
-		$handler = new FormatHandler($import_format);
-		$result = $handler->import($string);
+		$result = FormatHandler::import($string, $format);
 
 		return $result;
 	}
