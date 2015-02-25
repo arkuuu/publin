@@ -2,6 +2,8 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
+
 /**
  * Parent class for all 'real' objects.
  *
@@ -38,23 +40,29 @@ class Object {
 
 
 	/**
-	 * @param null $field
+	 * @param string $field
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
-	public function getData($field = null) {
+	public function getData($field = '') {
 
-		// TODO: throw exception when trying to access unset field!
-		if (isset($field)) {
-			if (!empty($this->data[$field])) {
-				return $this->data[$field];
+		if (!empty($field)) {
+			if (array_key_exists($field, $this->data)) {
+				if (!empty($this->data[$field])) {
+					return $this->data[$field];
+				}
+				else {
+					return false;
+				}
 			}
 			else {
-				return false;
+				// TODO: remove this in production use
+				throw new InvalidArgumentException('field "'.$field.'" does not exist in this class');
 			}
 		}
-
-		return $this->data;
+		else {
+			return $this->data;
+		}
 	}
 
 
@@ -81,5 +89,4 @@ class Object {
 
 		return $this->getData('name');
 	}
-
 }
