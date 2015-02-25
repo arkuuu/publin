@@ -1,4 +1,7 @@
 <?php
+
+namespace publin\modules;
+
 use publin\src\Publication;
 
 /**
@@ -34,31 +37,31 @@ class Bibtex {
 		/* Map your fields here. You can change the order or leave out fields. */
 		$this->fields = array(
 			/* bibtex field => your field */
-			'type'          => 'type',
-			'cite_key'      => 'cite_key',
-			'author'        => 'authors',
-			'title'         => 'title',
-			'journal'       => 'journal',
-			'booktitle'     => 'booktitle',
-			'publisher'     => 'publisher',
-			'edition'       => 'edition',
-			'institution'   => 'institution',
-			'school'        => 'school',
-			'howpublished'  => 'howpublished',
-			'year'          => 'year',
-			'month'         => 'month',
-			'volume'        => 'volume',
-			'pages'         => 'pages',
-			'number'        => 'number',
-			'series'        => 'series',
-			'abstract'      => 'abstract',
-			'bibsource'     => 'bibsource',
-			'copyright'     => 'copyright',
-			'url'           => 'url',
-			'doi'           => 'doi',
-			'address'       => 'address',
-			'note'          => 'note',
-			'keywords' => 'keywords',
+			'type'         => 'type',
+			'cite_key'     => 'cite_key',
+			'author'       => 'authors',
+			'title'        => 'title',
+			'journal'      => 'journal',
+			'booktitle'    => 'booktitle',
+			'publisher'    => 'publisher',
+			'edition'      => 'edition',
+			'institution'  => 'institution',
+			'school'       => 'school',
+			'howpublished' => 'howpublished',
+			'year'         => 'year',
+			'month'        => 'month',
+			'volume'       => 'volume',
+			'pages'        => 'pages',
+			'number'       => 'number',
+			'series'       => 'series',
+			'abstract'     => 'abstract',
+			'bibsource'    => 'bibsource',
+			'copyright'    => 'copyright',
+			'url'          => 'url',
+			'doi'          => 'doi',
+			'address'      => 'address',
+			'note'         => 'note',
+			'keywords'     => 'keywords',
 		);
 
 		$this->author_fields = array(

@@ -12,20 +12,12 @@ class FormatHandler {
 
 	public function __construct($format) {
 
-		$file = './modules/'.$format.'.php';
-
-		if (!file_exists($file)) {
-			throw new DomainException('file '.$file.' not found');
+		$class = '\\publin\\modules\\'.$format;
+		if (!class_exists($class)) {
+			throw new DomainException('parser for '.$format.' not found');
 		}
 
-		/** @noinspection PhpIncludeInspection */
-		include $file;
-
-		if (!class_exists($format)) {
-			throw new DomainException('parser for '.$format.' not found in file '.$file);
-		}
-
-		$this->parser = new $format();
+		$this->parser = new $class();
 	}
 
 
