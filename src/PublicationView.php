@@ -422,7 +422,7 @@ class PublicationView extends View {
 		try {
 			$export = new FormatHandler($format);
 
-			return $export->export($this->publication->toArray());
+			return $export->export($this->publication);
 		}
 		catch (Exception $e) {
 			return 'Error: '.$e->getMessage();

@@ -115,11 +115,23 @@ class Publication extends Object {
 		$pages_to = $this->getData('pages_to');
 
 		if ($pages_from && $pages_to) {
-			return $pages_from.' '.$divider.' '.$pages_to;
+			return $pages_from.$divider.$pages_to;
 		}
 		else {
 			return false;
 		}
+	}
+
+
+	public function getFirstPage() {
+
+		return $this->getData('pages_from');
+	}
+
+
+	public function getLastPage() {
+
+		return $this->getData('pages_to');
 	}
 
 

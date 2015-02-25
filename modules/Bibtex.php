@@ -1,5 +1,5 @@
 <?php
-
+use publin\src\Publication;
 
 /**
  * Class Bibtex
@@ -19,11 +19,17 @@ class Bibtex {
 	 */
 	private $pages_fields;
 
+	private $bibsource;
+	private $url;
+
 
 	/**
 	 *
 	 */
 	public function __construct() {
+
+		$this->bibsource = 'publin';
+		$this->url = 'http://localhost:8888/publin/?p=publication&amp;id=';
 
 		/* Map your fields here. You can change the order or leave out fields. */
 		$this->fields = array(
@@ -52,8 +58,6 @@ class Bibtex {
 			'doi'           => 'doi',
 			'address'       => 'address',
 			'note'          => 'note',
-			'date-added'    => 'date-added',
-			'date-modified' => 'date-modified',
 			'keywords' => 'keywords',
 		);
 
@@ -71,14 +75,123 @@ class Bibtex {
 	}
 
 
+	public function export(Publication $publication) {
+
+		// TODO: encode bibtex characters?
+		$result = '@'.$publication->getTypeName().'{'.$this->generateCiteKey($publication).','."\n\t";
+
+		$authors = '';
+		foreach ($publication->getAuthors() as $author) {
+			if ($author->getFirstName() && $author->getLastName()) {
+				$authors .= $author->getFirstName().' '.$author->getLastName().' and ';
+			}
+		}
+		if (!empty($authors)) {
+			$authors = substr($authors, 0, -5);
+			$result .= 'author = {'.$authors.'}'."\n\t";;
+		}
+
+		if ($publication->getTitle()) {
+			$result .= 'title = {'.$publication->getTitle().'}'."\n\t";
+		}
+		if ($publication->getJournalName()) {
+			$result .= 'journal = {'.$publication->getJournalName().'}'."\n\t";
+		}
+		if ($publication->getBookName()) {
+			$result .= 'booktitle = {'.$publication->getBookName().'}'."\n\t";
+		}
+		if ($publication->getVolume()) {
+			$result .= 'volume = {'.$publication->getVolume().'}'."\n\t";
+		}
+		if ($publication->getNumber()) {
+			$result .= 'number = {'.$publication->getNumber().'}'."\n\t";
+		}
+		if ($publication->getSeries()) {
+			$result .= 'series = {'.$publication->getSeries().'}'."\n\t";
+		}
+		if ($publication->getEdition()) {
+			$result .= 'edition = {'.$publication->getEdition().'}'."\n\t";
+		}
+		if ($publication->getPages('--')) {
+			$result .= 'pages = {'.$publication->getPages('--').'}'."\n\t";
+		}
+		if ($publication->getDatePublished('Y-m-d')) {
+			$result .= 'month = {'.$publication->getDatePublished('F').'}'."\n\t";
+			$result .= 'year = {'.$publication->getDatePublished('Y').'}'."\n\t";
+		}
+		if (false) {
+			// TODO: link to pdf
+			$result .= '<meta name="DC.identifier" content="'.false.'" />'."\n\t";
+		}
+		if (false) {
+			$result .= '<meta name="citation_issn" content="'.false.'" />'."\n\t";
+		}
+		if (false) {
+			$result .= '<meta name="citation_isbn" content="'.false.'" />'."\n\t";
+		}
+		if ($publication->getInstitution()) {
+			$result .= 'institution = {'.$publication->getInstitution().'}'."\n\t";
+		}
+		if ($publication->getSchool()) {
+			$result .= 'school = {'.$publication->getSchool().'}'."\n\t";
+		}
+		if ($publication->getPublisherName()) {
+			$result .= 'publisher = {'.$publication->getPublisherName().'}'."\n\t";
+		}
+//		if ($publication->getDoi()) {
+//			$result .= 'url = {'.$publication->getDoi().'}'."\n\t";
+//		}
+		if ($publication->getAddress()) {
+			$result .= 'address = {'.$publication->getAddress().'}'."\n\t";
+		}
+		if ($publication->getHowpublished()) {
+			$result .= 'howpublished = {'.$publication->getHowpublished().'}'."\n\t";
+		}
+		if ($publication->getNote()) {
+			$result .= 'note = {'.$publication->getNote().'}'."\n\t";
+		}
+		if ($publication->getAbstract()) {
+			$result .= 'abstract = {'.$publication->getAbstract().'}'."\n\t";
+		}
+
+		$keywords = '';
+		foreach ($publication->getKeywords() as $keyword) {
+			$keywords .= $keyword->getName().', ';
+		}
+		if (!empty($keywords)) {
+			$keywords = substr($keywords, 0, -2);
+			$result .= 'keywords = {'.$keywords.'}'."\n\t";;
+		}
+
+		$result .= 'bibsource = {'.$this->bibsource.'}'."\n\t";
+		$result .= 'biburl = {'.$this->url.$publication->getId().'}'."\n";
+		$result .= '}';
+
+		return $result;
+	}
+
+
 	/**
-	 * TODO: comment
-	 *
-	 * @param $input
+	 * @param Publication $publication
 	 *
 	 * @return string
 	 */
-	public function export($input) {
+	private function generateCiteKey(Publication $publication) {
+
+		// TODO: implement
+		return 'cite_key_'.$publication->getId();
+	}
+
+
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 */
+	public function exportOld(Publication $publication) {
+
+		// TODO: work with publication and not with array
+		$input = $publication->getData();
 
 		/* Maps your fields to the BibTeX fields. */
 		foreach ($this->fields as $bibtex_field => $your_field) {
@@ -157,22 +270,6 @@ class Bibtex {
 
 
 	/**
-	 * TODO: comment
-	 *
-	 * @param    array $data description
-	 *
-	 * @return    string
-	 */
-	private function generateCiteKey($data) {
-
-		// TODO: implement
-		return 'todo';
-	}
-
-
-	/**
-	 * TODO: comment
-	 *
 	 * @param $input
 	 *
 	 * @return array
@@ -390,5 +487,4 @@ class Bibtex {
 
 		return $pages;
 	}
-
 }

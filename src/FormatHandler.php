@@ -18,6 +18,7 @@ class FormatHandler {
 			throw new DomainException('file '.$file.' not found');
 		}
 
+		/** @noinspection PhpIncludeInspection */
 		include $file;
 
 		if (!class_exists($format)) {
@@ -28,13 +29,13 @@ class FormatHandler {
 	}
 
 
-	public function export($data) {
+	public function export(Publication $publication) {
 
 		if (!method_exists($this->parser, 'export')) {
 			throw new BadMethodCallException('parser for '.get_class($this->parser).' offers no export');
 		}
 
-		return $this->parser->export($data);
+		return $this->parser->export($publication);
 	}
 
 
