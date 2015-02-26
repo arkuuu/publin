@@ -28,7 +28,7 @@ class JournalController {
 
 			if ($validator->validate($_POST)) {
 				$input = $validator->getSanitizedResult();
-				$sucess = $this->model->update($id, $input);
+				$success = $this->model->update($id, $input);
 			}
 			else {
 				print_r($validator->getErrors());

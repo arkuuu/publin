@@ -30,7 +30,7 @@ class AuthorController {
 			if ($validator->validate($_POST)) {
 				$input = $validator->getSanitizedResult();
 				//var_dump($input);
-				$sucess = $this->model->update($id, $input);
+				$success = $this->model->update($id, $input);
 			}
 			else {
 				print_r($validator->getErrors());

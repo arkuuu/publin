@@ -66,8 +66,10 @@ class Auth {
 
 		if ($this->checkLoginStatus()) {
 
+			/* @var $user User */
+			$user = $_SESSION['user'];
 			$permission_name = $this->db->real_escape_string($permission_name);
-			$user_id = $this->db->real_escape_string($_SESSION['user']->getId());
+			$user_id = $this->db->real_escape_string($user->getId());
 
 			$query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r
 			LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)

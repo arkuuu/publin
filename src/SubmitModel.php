@@ -151,7 +151,7 @@ class SubmitModel {
 					}
 				}
 
-				/* reformats pages array into separate fields */
+				/* formats pages array into separate fields */
 				else if ($field == 'pages') {
 					$from = false;
 					$to = false;

@@ -35,6 +35,7 @@ class View {
 		if (file_exists($content)) {
 
 			ob_start();
+			/** @noinspection PhpIncludeInspection */
 			include $content;
 			$output = ob_get_contents();
 			ob_end_clean();
@@ -64,9 +65,13 @@ class View {
 			if (file_exists($content)) {
 
 				ob_start();
+				/** @noinspection PhpIncludeInspection */
 				include $header;
+				/** @noinspection PhpIncludeInspection */
 				include $menu;
+				/** @noinspection PhpIncludeInspection */
 				include $content;
+				/** @noinspection PhpIncludeInspection */
 				include $footer;
 				$output = ob_get_contents();
 				ob_end_clean();
@@ -112,7 +117,10 @@ class View {
 	public function showUserName() {
 
 		if (isset($_SESSION['user'])) {
-			return $_SESSION['user']->getName();
+			/* @var $user User */
+			$user = $_SESSION['user'];
+
+			return $user->getName();
 		}
 		else {
 			return false;
@@ -122,8 +130,15 @@ class View {
 
 	public function hasPermission($permission_name) {
 
-		if (isset($_SESSION['user']) && $_SESSION['user']->hasPermission($permission_name)) {
-			return true;
+		if (isset($_SESSION['user'])) {
+			/* @var $user User */
+			$user = $_SESSION['user'];
+			if ($user->hasPermission($permission_name)) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
