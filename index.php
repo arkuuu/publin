@@ -6,10 +6,13 @@ use publin\src\Controller;
 
 spl_autoload_register(function ($class) {
 
-	$path = substr(str_replace('\\', '/', $class), strlen(__NAMESPACE__));
-	$path = __DIR__.$path.'.php';
-	if (file_exists($path)) {
-		require $path;
+	$path = str_replace('\\', '/', $class);
+	$root = substr(__DIR__, 0, -(strlen(__NAMESPACE__)));
+	$file = $root.$path.'.php';
+
+	if (file_exists($file)) {
+		/** @noinspection PhpIncludeInspection */
+		require $file;
 	}
 });
 
