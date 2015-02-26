@@ -16,7 +16,7 @@ abstract class BibLink {
 	 */
 	public static function getServices() {
 
-		return array('Google', 'Base');
+		return array('Google Scholar', 'BASE');
 	}
 
 
@@ -31,14 +31,14 @@ abstract class BibLink {
 	public static function getAuthorsLink(Author $author, $service) {
 
 		switch ($service) {
-			case 'Google':
+			case 'Google Scholar':
 				return 'http://scholar.google.com/scholar?q='
-				.urlencode('"'.$author->getFirstName().' '.$author->getLastName().'"');
+				.urlencode($author->getFirstName().' '.$author->getLastName());
 				break;
 
-			case 'Base':
+			case 'BASE':
 				return 'http://www.base-search.net/Search/Results?lookfor=aut:'
-				.urlencode('"'.$author->getFirstName().' '.$author->getLastName().'"');
+				.urlencode($author->getFirstName().' '.$author->getLastName());
 				break;
 
 			default:
@@ -59,14 +59,14 @@ abstract class BibLink {
 	public static function getPublicationsLink(Publication $publication, $service) {
 
 		switch ($service) {
-			case 'Google':
+			case 'Google Scholar':
 				return 'http://scholar.google.com/scholar?q=allintitle:'
-				.urlencode('"'.$publication->getTitle().'"');
+				.urlencode($publication->getTitle());
 				break;
 
-			case 'Base':
+			case 'BASE':
 				return 'http://www.base-search.net/Search/Results?lookfor=tit:'
-				.urlencode('"'.$publication->getTitle().'"');
+				.urlencode($publication->getTitle());
 				break;
 
 			default:
