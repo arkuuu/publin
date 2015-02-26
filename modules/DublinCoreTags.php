@@ -10,13 +10,18 @@ class DublinCoreTags {
 	public function export(Publication $publication) {
 
 		// TODO: html encode everything!
+		// http://www.mendeley.com/import/information-for-publishers/
+		// TODO: what is with <link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">?
+
 		$result = '';
 
 		if ($publication->getTitle()) {
 			$result .= '<meta name="DC.title" content="'.$publication->getTitle().'" />'."\n";
 		}
 		foreach ($publication->getAuthors() as $author) {
-			$result .= '<meta name="DC.creator" content="'.$author->getFirstName().' '.$author->getLastName().'" />'."\n";
+			if ($author->getLastName() && $author->getFirstName()) {
+				$result .= '<meta name="DC.creator" content="'.$author->getFirstName().' '.$author->getLastName().'" />'."\n";
+			}
 		}
 		if ($publication->getDatePublished('Y/m/d')) {
 			$result .= '<meta name="DC.issued" content="'.$publication->getDatePublished('Y/m/d').'" />'."\n";
@@ -47,12 +52,12 @@ class DublinCoreTags {
 			// TODO: link to pdf
 			$result .= '<meta name="DC.identifier" content="'.false.'" />'."\n";
 		}
-		if (false) {
-			$result .= '<meta name="citation_issn" content="'.false.'" />'."\n";
-		}
-		if (false) {
-			$result .= '<meta name="citation_isbn" content="'.false.'" />'."\n";
-		}
+//		if (false) {
+//			$result .= '<meta name="citation_issn" content="'.false.'" />'."\n";
+//		}
+//		if (false) {
+//			$result .= '<meta name="citation_isbn" content="'.false.'" />'."\n";
+//		}
 		if ($publication->getInstitution()) {
 			// using DC.publisher for institution, too
 			$result .= '<meta name="DC.publisher" content="'.$publication->getInstitution().'" />'."\n";

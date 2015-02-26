@@ -9,14 +9,15 @@ class PRISMTags {
 
 	public function export(Publication $publication) {
 
+		// http://www.prismstandard.org/specifications/3.0/PRISM_Basic_Metadata_3.0.pdf
+		// http://www.prismstandard.org/specifications/3.0/PRISM_Dublin_Core_Metadata_3.0.pdf
+		// http://www.mendeley.com/import/information-for-publishers/
 		// TODO: html encode everything!
 		$result = '';
 
-		if ($publication->getTitle()) {
-			$result .= '<meta name="prism.title" content="'.$publication->getTitle().'" />'."\n";
-		}
-//		foreach ($publication->getAuthors() as $author) {
-//			$result .= '<meta name="DC.creator" content="'.$author->getFirstName().' '.$author->getLastName().'" />'."\n";
+//		if ($publication->getTitle()) {
+//			// TODO: really prism.title? Isn't it part of the dc subset of prism?
+//			$result .= '<meta name="prism.title" content="'.$publication->getTitle().'" />'."\n";
 //		}
 		if ($publication->getDatePublished('Y-m-d')) {
 			$result .= '<meta name="prism.publicationDate" content="'.$publication->getDatePublished('Y-m-d').'" />'."\n";
@@ -34,6 +35,9 @@ class PRISMTags {
 		if ($publication->getNumber()) {
 			$result .= '<meta name="prism.number" content="'.$publication->getNumber().'" />'."\n";
 		}
+		if ($publication->getEdition()) {
+			$result .= '<meta name="prism.edition" content="'.$publication->getEdition().'" />'."\n";
+		}
 		if ($publication->getFirstPage()) {
 			$result .= '<meta name="prism.startingPage" content="'.$publication->getFirstPage().'" />'."\n";
 		}
@@ -45,18 +49,20 @@ class PRISMTags {
 			$result .= '<meta name="prism.url" content="'.false.'" />'."\n";;
 		}
 		if (false) {
+			// TODO: issn
 			$result .= '<meta name="prism.issn" content="'.false.'" />'."\n";;
 		}
-//		if (false) {
-//			$result .= '<meta name="citation_isbn" content="'.false.'" />'."\n";;
-//		}
-//		if ($publication->getInstitution()) {
-//			// using DC.publisher for institution, too
-//			$result .= '<meta name="DC.publisher" content="'.$publication->getInstitution().'" />'."\n";;
-//		}
-//		if ($publication->getPublisherName()) {
-//			$result .= '<meta name="DC.publisher" content="'.$publication->getPublisherName().'" />'."\n";;
-//		}
+		if (false) {
+			// TODO: copyright
+			$result .= '<meta name="prism.copyright" content="'.false.'" />'."\n";;
+		}
+		if ($publication->getIsbn()) {
+			$result .= '<meta name="prism.isbn" content="'.$publication->getIsbn().'" />'."\n";;
+		}
+		if ($publication->getInstitution()) {
+			// TODO: check if this is valid
+			$result .= '<meta name="prism.organization" content="'.$publication->getInstitution().'" />'."\n";;
+		}
 		if ($publication->getDoi()) {
 			$result .= '<meta name="prism.doi" content="'.$publication->getDoi().'" />'."\n";;
 		}

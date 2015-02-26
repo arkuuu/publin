@@ -10,6 +10,8 @@ class HighwirePressTags {
 	public function export(Publication $publication) {
 
 		// TODO: html encode everything!
+		// http://www.mendeley.com/import/information-for-publishers/
+
 		$result = '';
 
 		if ($publication->getTitle()) {
