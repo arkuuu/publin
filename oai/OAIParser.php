@@ -3,6 +3,7 @@
 
 namespace publin\oai;
 
+use DOMDocument;
 use publin\src\Database;
 
 class OAIParser {
@@ -31,7 +32,6 @@ class OAIParser {
 	public function __construct() {
 
 		$this->db = new Database();
-
 	}
 
 
@@ -51,6 +51,10 @@ class OAIParser {
 					return $this->listSets();
 					break;
 
+				case 'GetRecord':
+					return $this->getRecord();
+					break;
+
 				default:
 					return false;
 					break;
@@ -59,13 +63,12 @@ class OAIParser {
 		else {
 			return false;
 		}
-
 	}
 
 
 	public function identify() {
 
-		$dom = new \DOMDocument('1.0', 'utf-8');
+		$dom = new DOMDocument('1.0', 'utf-8');
 		$oai = $dom->createElement('OAI-PMH');
 		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
 		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -96,7 +99,7 @@ class OAIParser {
 
 		$oai_identifier = $dom->createElement('oai-identifier');
 		$oai_identifier->setAttribute('xsi:schemaLocation',
-			'<oai-identifier xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd');
+									  '<oai-identifier xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd');
 		$description->appendChild($oai_identifier);
 
 		$oai_identifier->appendChild($dom->createElement('scheme', 'oai'));
@@ -105,13 +108,12 @@ class OAIParser {
 		$oai_identifier->appendChild($dom->createElement('sampleIdentifier', 'oai:'.$this->repositoryIdentifier.':TODO'));
 
 		return $dom->saveXML();
-
 	}
 
 
 	public function listMetadataFormats() {
 
-		$dom = new \DOMDocument('1.0', 'utf-8');
+		$dom = new DOMDocument('1.0', 'utf-8');
 		$oai = $dom->createElement('OAI-PMH');
 		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
 		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -142,7 +144,7 @@ class OAIParser {
 
 	public function listSets() {
 
-		$dom = new \DOMDocument('1.0', 'utf-8');
+		$dom = new DOMDocument('1.0', 'utf-8');
 		$oai = $dom->createElement('OAI-PMH');
 		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
 		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -163,25 +165,17 @@ class OAIParser {
 
 
 	public function getRecord() {
-
-
 	}
 
 
 	public function listIdentifiers() {
-
-
 	}
 
 
 	public function listRecords() {
-
-
 	}
 
 
 	public function createXML($request_verb) {
-
-
 	}
 }
