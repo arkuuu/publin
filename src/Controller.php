@@ -156,7 +156,7 @@ class Controller {
 
 		$controller = new JournalController($this->db);
 
-		return $controller->run($request->id);
+		return $controller->run($request);
 	}
 
 
