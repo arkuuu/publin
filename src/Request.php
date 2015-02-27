@@ -17,6 +17,9 @@ class Request {
 		if (!empty($_GET['p'])) {
 			$this->page = $_GET['p'];
 		}
+		else {
+			$this->page = 'start';
+		}
 		if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
 			$this->id = (int)$_GET['id'];
 		}
@@ -44,6 +47,11 @@ class Request {
 	}
 
 
+	/**
+	 * @param string $name
+	 *
+	 * @return bool|array|string
+	 */
 	public function getPost($name = '') {
 
 		if (!empty($name) && isset($this->post[$name])) {
