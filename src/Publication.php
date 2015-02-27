@@ -22,13 +22,14 @@ class Publication extends Object {
 	 */
 	private $keywords;
 
-	// TODO: maybe add $authors and $key_terms to constructor already?
+
 	public function __construct(array $data, array $authors, array $keywords = array()) {
 
 		parent::__construct($data);
 		$this->setAuthors($authors);
 		$this->setKeywords($keywords);
 	}
+
 
 	/**
 	 * @return array|bool
@@ -218,6 +219,8 @@ class Publication extends Object {
 	 */
 	public function setAuthors(array $authors) {
 
+		$this->authors = array();
+
 		foreach ($authors as $author) {
 
 			if ($author instanceof Author) {
@@ -250,6 +253,8 @@ class Publication extends Object {
 	 * @return bool
 	 */
 	public function setKeywords(array $keywords) {
+
+		$this->keywords = array();
 
 		foreach ($keywords as $keyword) {
 
@@ -422,5 +427,4 @@ class Publication extends Object {
 
 		return $this->getData('address');
 	}
-
 }
