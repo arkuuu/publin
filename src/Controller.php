@@ -15,10 +15,6 @@ class Controller {
 	private $auth;
 	private $db;
 
-	// TODO: replace these with Request class
-	private $id;
-	private $by;
-
 
 	/**
 	 * Constructs the controller and the needed Model and View.
@@ -41,29 +37,23 @@ class Controller {
 	/**
 	 * Displays the page.
 	 *
-	 * TODO: comment
-	 *
-	 * @param $page
-	 * @param $id
-	 * @param $by
+	 * @param Request $request
 	 *
 	 * @return string
 	 */
-	public function run($page, $id, $by) {
-
-		$this->id = $id;
-		$this->by = $by;
+	public function run(Request $request) {
 
 		/* Resets the inactivity timer */
 		$this->auth->checkLoginStatus();
 
 		/* Searches method to run for request */
 		try {
-			if (method_exists($this, $page)) {
-				return $this->$page();
+			$handler = $request->page;
+			if (method_exists($this, $handler)) {
+				return $this->$handler($request);
 			}
 			else {
-				return $this->staticPage($page);
+				return $this->staticPage($request);
 			}
 		}
 		catch (NotFoundException $e) {
@@ -82,85 +72,130 @@ class Controller {
 	}
 
 
-	private function staticPage($page) {
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function staticPage(Request $request) {
 
-		$view = new View($page);
+		$view = new View($request->page);
 
 		return $view->display();
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function browse() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function browse(Request $request) {
 
 		$model = new BrowseModel($this->db);
-		$model->handle($this->by, $this->id);
+		$model->handle($request->by, $request->id);
 		$view = new BrowseView($model);
 
 		return $view->display();
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function author() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
+	private function author(Request $request) {
 
 		$controller = new AuthorController($this->db);
 
-		return $controller->run($this->id);
+		return $controller->run($request->id);
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function publication() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function publication(Request $request) {
 
 		$model = new PublicationModel($this->db);
-		$publication = $model->fetch(true, array('id' => $this->id));
+		$publication = $model->fetch(true, array('id' => $request->id));
 		$view = new PublicationView($publication[0]);
 
 		return $view->display();
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function keyword() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
+	private function keyword(Request $request) {
 
 		$controller = new KeywordController($this->db);
 
-		return $controller->run($this->id);
+		return $controller->run($request->id);
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function journal() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
+	private function journal(Request $request) {
 
 		$controller = new JournalController($this->db);
 
-		return $controller->run($this->id);
+		return $controller->run($request->id);
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function publisher() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
+	private function publisher(Request $request) {
 
 		$controller = new PublisherController($this->db);
 
-		return $controller->run($this->id);
+		return $controller->run($request->id);
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function study_field() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function study_field(Request $request) {
 
 		$model = new StudyFieldModel($this->db);
-		$study_field = $model->fetch(true, array('id' => $this->id));
+		$study_field = $model->fetch(true, array('id' => $request->id));
 		$view = new StudyFieldView($study_field[0]);
 
 		return $view->display();
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function submit() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
+	private function submit(Request $request) {
 
 		if ($this->auth->checkLoginStatus()) {
 			$controller = new SubmitController($this->db);
@@ -168,12 +203,19 @@ class Controller {
 			return $controller->run();
 		}
 		else {
-			return $this->login();
+			return $this->login($request);
 		}
 	}
 
 
-	private function login() {
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function login(Request $request) {
 
 		// TODO: redirect if already logged in
 		if (!empty($_POST['username']) && !empty($_POST['password'])) {
@@ -192,21 +234,27 @@ class Controller {
 
 
 	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function manage() {
+	private function manage(Request $request) {
 
 		if ($this->auth->checkLoginStatus()) {
 			$controller = new ManageController($this->db);
 
-			return $controller->run();
+			return $controller->run($request);
 		}
 		else {
-			return $this->login();
+			return $this->login($request);
 		}
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function logout() {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function logout(Request $request) {
 
 		if ($this->auth->checkLoginStatus()) {
 			$this->auth->logout();

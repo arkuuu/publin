@@ -3,6 +3,7 @@
 namespace publin;
 
 use publin\src\Controller;
+use publin\src\Request;
 
 spl_autoload_register(function ($class) {
 
@@ -36,7 +37,7 @@ if (!isset($_GET['by'])) {
 else {
 	$by = $_GET['by'];
 }
-
+$request = new Request();
 $controller = new Controller();
-echo $controller->run($p, $id, $by);
+echo $controller->run($request);
 
