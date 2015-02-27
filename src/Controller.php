@@ -81,7 +81,12 @@ class Controller {
 	 */
 	private function staticPage(Request $request) {
 
-		$view = new View($request->page);
+		if ($request->page) {
+			$view = new View($request->page);
+		}
+		else {
+			$view = new View('start');
+		}
 
 		return $view->display();
 	}
@@ -218,8 +223,8 @@ class Controller {
 	private function login(Request $request) {
 
 		// TODO: redirect if already logged in
-		if (!empty($_POST['username']) && !empty($_POST['password'])) {
-			if ($this->auth->login($_POST['username'], $_POST['password'])) {
+		if ($request->getPost('username') && $request->getPost('password')) {
+			if ($this->auth->login($request->getPost('username'), $request->getPost('password'))) {
 				// header();
 				print_r('success');
 			}

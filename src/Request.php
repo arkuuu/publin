@@ -18,16 +18,25 @@ class Request {
 			$this->page = $_GET['p'];
 		}
 		else {
-			$this->page = 'start';
+			$this->page = false;
 		}
 		if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
 			$this->id = (int)$_GET['id'];
 		}
+		else {
+			$this->id = false;
+		}
 		if (!empty($_GET['m'])) {
 			$this->mode = $_GET['m'];
 		}
+		else {
+			$this->mode = false;
+		}
 		if (!empty($_GET['by'])) {
 			$this->by = $_GET['by'];
+		}
+		else {
+			$this->by = false;
 		}
 		if (!empty($_POST)) {
 			$this->post = $_POST;
