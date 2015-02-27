@@ -143,7 +143,7 @@ class Controller {
 
 		$controller = new KeywordController($this->db);
 
-		return $controller->run($request->id);
+		return $controller->run($request);
 	}
 
 
