@@ -9,68 +9,53 @@ class HighwirePressTags {
 
 	public function export(Publication $publication) {
 
-		// TODO: html encode everything!
 		// http://www.mendeley.com/import/information-for-publishers/
 
-		$result = '';
-
-		if ($publication->getTitle()) {
-			$result .= '<meta name="citation_title" content="'.$publication->getTitle().'" />'."\n";
+		$keywords = '';
+		foreach ($publication->getKeywords() as $keyword) {
+			if ($keyword->getName()) {
+				$keywords .= $keyword->getName().'; ';
+			}
 		}
+		$keywords = substr($keywords, 0, -2);
+
+		$fields = array();
+		$fields[] = array('citation_title', $publication->getTitle());
 		foreach ($publication->getAuthors() as $author) {
 			if ($author->getLastName() && $author->getFirstName()) {
-				$result .= '<meta name="citation_author" content="'.$author->getLastName().', '.$author->getFirstName().'" />'."\n";
+				$fields[] = array('citation_author', $author->getLastName().', '.$author->getFirstName());
 			}
 		}
-		if ($publication->getDatePublished('Y/m/d')) {
-			$result .= '<meta name="citation_publication_date" content="'.$publication->getDatePublished('Y/m/d').'" />'."\n";
+		$fields[] = array('citation_publication_date', $publication->getDatePublished('Y/m/d'));
+		$fields[] = array('citation_journal_title', $publication->getJournalName());
+		$fields[] = array('citation_conference_title', $publication->getBookName());
+		$fields[] = array('citation_volume', $publication->getVolume());
+		if ($publication->getTypeName() == 'techreport') {
+			$fields[] = array('citation_technical_report_number', $publication->getNumber());
 		}
-		if ($publication->getJournalName()) {
-			$result .= '<meta name="citation_journal_title" content="'.$publication->getJournalName().'" />'."\n";
+		else {
+			$fields[] = array('citation_issue', $publication->getNumber());
 		}
-		if ($publication->getBookName()) {
-			$result .= '<meta name="citation_conference_title" content="'.$publication->getBookName().'" />'."\n";
+		$fields[] = array('citation_firstpage', $publication->getFirstPage());
+		$fields[] = array('citation_lastpage', $publication->getLastPage());
+		//$fields[] = array('citation_pdf_url', false); // TODO: link to pdf
+		//$fields[] = array('citation_issn', false); // TODO
+		$fields[] = array('citation_isbn', $publication->getIsbn());
+		$fields[] = array('citation_publisher', $publication->getPublisherName());
+		if ($publication->getTypeName() == 'techreport') {
+			$fields[] = array('citation_technical_report_institution', $publication->getInstitution());
 		}
-		if ($publication->getVolume()) {
-			$result .= '<meta name="citation_volume" content="'.$publication->getVolume().'" />'."\n";
+		else if (in_array($publication->getTypeName(), array('phdthesis', 'masterthesis'))) {
+			$fields[] = array('citation_dissertation_institution', $publication->getInstitution());
 		}
-		if ($publication->getNumber()) {
-			if ($publication->getTypeName() == 'techreport') {
-				$result .= '<meta name="citation_technical_report_number" content="'.$publication->getNumber().'" />'."\n";
+		$fields[] = array('citation_doi', $publication->getDoi());
+		$fields[] = array('citation_keywords', $keywords);
+
+		$result = '';
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
 			}
-			else {
-				$result .= '<meta name="citation_issue" content="'.$publication->getNumber().'" />'."\n";
-			}
-		}
-		if ($publication->getFirstPage()) {
-			$result .= '<meta name="citation_firstpage" content="'.$publication->getFirstPage().'" />'."\n";
-		}
-		if ($publication->getLastPage()) {
-			$result .= '<meta name="citation_lastpage" content="'.$publication->getLastPage().'" />'."\n";
-		}
-		if (false) {
-			$result .= '<meta name="citation_pdf_url" content="'.false.'" />'."\n";
-		}
-		if (false) {
-			$result .= '<meta name="citation_issn" content="'.false.'" />'."\n";
-		}
-		if (false) {
-			$result .= '<meta name="citation_isbn" content="'.false.'" />'."\n";
-		}
-		if ($publication->getInstitution()) {
-			if ($publication->getTypeName() == 'techreport') {
-				$result .= '<meta name="citation_technical_report_institution" content="'.false.'" />'."\n";
-			}
-			else if (in_array($publication->getTypeName(), array('phdthesis', 'masterthesis'))) {
-				$result .= '<meta name="citation_dissertation_institution" content="'.$publication->getInstitution().'" />'."\n";
-			}
-			// TODO: what happens with institution if neither techreport nor thesis?
-		}
-		if ($publication->getPublisherName()) {
-			$result .= '<meta name="citation_publisher" content="'.$publication->getPublisherName().'" />'."\n";
-		}
-		if ($publication->getDoi()) {
-			$result .= '<meta name="citation_doi" content="'.$publication->getDoi().'" />'."\n";
 		}
 
 		return $result;

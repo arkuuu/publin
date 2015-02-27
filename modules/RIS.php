@@ -60,7 +60,7 @@ class RIS {
 		$fields[] = array('PY', $publication->getDatePublished('Y/m/d'));
 		$fields[] = array('PB', $publication->getPublisherName());
 		$fields[] = array('N1', $publication->getNote());
-		$fields[] = array('L1', false); // TODO: link to pdf
+		//$fields[] = array('L1', false); // TODO: link to pdf
 		$fields[] = array('UR', $publication->getDoi()); // TODO: link to doi or link to publin page
 		$fields[] = array('SN', $publication->getIsbn());
 		$fields[] = array('AB', $publication->getAbstract());

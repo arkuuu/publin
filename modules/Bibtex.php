@@ -2,6 +2,7 @@
 
 namespace publin\modules;
 
+use Exception;
 use publin\src\Publication;
 
 /**
@@ -22,7 +23,13 @@ class Bibtex {
 	 */
 	private $pages_fields;
 
+	/**
+	 * @var string
+	 */
 	private $bibsource;
+	/**
+	 * @var string
+	 */
 	private $url;
 
 
@@ -78,10 +85,17 @@ class Bibtex {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
 	public function export(Publication $publication) {
 
-		// TODO: encode bibtex characters?
-		$result = '@'.$publication->getTypeName().'{'.$this->generateCiteKey($publication).','."\n\t";
+		if (!$publication->getTypeName()) {
+			throw new Exception('publication type missing');
+		}
 
 		$authors = '';
 		foreach ($publication->getAuthors() as $author) {
@@ -89,86 +103,50 @@ class Bibtex {
 				$authors .= $author->getFirstName().' '.$author->getLastName().' and ';
 			}
 		}
-		if (!empty($authors)) {
-			$authors = substr($authors, 0, -5);
-			$result .= 'author = {'.$authors.'}'."\n\t";;
-		}
-
-		if ($publication->getTitle()) {
-			$result .= 'title = {'.$publication->getTitle().'}'."\n\t";
-		}
-		if ($publication->getJournalName()) {
-			$result .= 'journal = {'.$publication->getJournalName().'}'."\n\t";
-		}
-		if ($publication->getBookName()) {
-			$result .= 'booktitle = {'.$publication->getBookName().'}'."\n\t";
-		}
-		if ($publication->getVolume()) {
-			$result .= 'volume = {'.$publication->getVolume().'}'."\n\t";
-		}
-		if ($publication->getNumber()) {
-			$result .= 'number = {'.$publication->getNumber().'}'."\n\t";
-		}
-		if ($publication->getSeries()) {
-			$result .= 'series = {'.$publication->getSeries().'}'."\n\t";
-		}
-		if ($publication->getEdition()) {
-			$result .= 'edition = {'.$publication->getEdition().'}'."\n\t";
-		}
-		if ($publication->getPages('--')) {
-			$result .= 'pages = {'.$publication->getPages('--').'}'."\n\t";
-		}
-		if ($publication->getDatePublished('Y-m-d')) {
-			$result .= 'month = {'.$publication->getDatePublished('F').'}'."\n\t";
-			$result .= 'year = {'.$publication->getDatePublished('Y').'}'."\n\t";
-		}
-		if (false) {
-			// TODO: link to pdf
-			$result .= '<meta name="DC.identifier" content="'.false.'" />'."\n\t";
-		}
-		if (false) {
-			$result .= '<meta name="citation_issn" content="'.false.'" />'."\n\t";
-		}
-		if (false) {
-			$result .= '<meta name="citation_isbn" content="'.false.'" />'."\n\t";
-		}
-		if ($publication->getInstitution()) {
-			$result .= 'institution = {'.$publication->getInstitution().'}'."\n\t";
-		}
-		if ($publication->getSchool()) {
-			$result .= 'school = {'.$publication->getSchool().'}'."\n\t";
-		}
-		if ($publication->getPublisherName()) {
-			$result .= 'publisher = {'.$publication->getPublisherName().'}'."\n\t";
-		}
-//		if ($publication->getDoi()) {
-//			$result .= 'url = {'.$publication->getDoi().'}'."\n\t";
-//		}
-		if ($publication->getAddress()) {
-			$result .= 'address = {'.$publication->getAddress().'}'."\n\t";
-		}
-		if ($publication->getHowpublished()) {
-			$result .= 'howpublished = {'.$publication->getHowpublished().'}'."\n\t";
-		}
-		if ($publication->getNote()) {
-			$result .= 'note = {'.$publication->getNote().'}'."\n\t";
-		}
-		if ($publication->getAbstract()) {
-			$result .= 'abstract = {'.$publication->getAbstract().'}'."\n\t";
-		}
+		$authors = substr($authors, 0, -5);
 
 		$keywords = '';
 		foreach ($publication->getKeywords() as $keyword) {
-			$keywords .= $keyword->getName().', ';
+			if ($keyword->getName()) {
+				$keywords .= $keyword->getName().', ';
+			}
 		}
-		if (!empty($keywords)) {
-			$keywords = substr($keywords, 0, -2);
-			$result .= 'keywords = {'.$keywords.'}'."\n\t";;
-		}
+		$keywords = substr($keywords, 0, -2);
 
-		$result .= 'bibsource = {'.$this->bibsource.'}'."\n\t";
-		$result .= 'biburl = {'.$this->url.$publication->getId().'}'."\n";
-		$result .= '}';
+		$fields = array();
+		$fields[] = array('author', $authors);
+		$fields[] = array('title', $publication->getTitle());
+		$fields[] = array('journal', $publication->getJournalName());
+		$fields[] = array('booktitle', $publication->getBookName());
+		$fields[] = array('volume', $publication->getVolume());
+		$fields[] = array('number', $publication->getNumber());
+		$fields[] = array('series', $publication->getSeries());
+		$fields[] = array('edition', $publication->getEdition());
+		$fields[] = array('pages', $publication->getPages('--'));
+		$fields[] = array('month', $publication->getDatePublished('F'));
+		$fields[] = array('year', $publication->getDatePublished('Y'));
+		//$fields[] = array('url', false); // TODO: link to pdf
+		//$fields[] = array('issn', false); // TODO
+		$fields[] = array('isbn', $publication->getIsbn());
+		$fields[] = array('institution', $publication->getInstitution());
+		$fields[] = array('school', $publication->getSchool());
+		$fields[] = array('publisher', $publication->getPublisherName());
+		$fields[] = array('doi', $publication->getDoi());
+		$fields[] = array('address', $publication->getAddress());
+		$fields[] = array('howpublished', $publication->getHowpublished());
+		$fields[] = array('note', $publication->getNote());
+		$fields[] = array('abstract', $publication->getAbstract());
+		$fields[] = array('bibsource', $this->bibsource);
+		$fields[] = array('biburl', $this->url.$publication->getId());
+		$fields[] = array('keywords', $keywords);
+
+		$result = '@'.$publication->getTypeName().'{'.$this->generateCiteKey($publication);
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$result .= ','."\n\t".$field[0].' = {'.$this->encodeSpecialChars($field[1]).'}';
+			}
+		}
+		$result .= "\n".'}';
 
 		return $result;
 	}
@@ -181,94 +159,111 @@ class Bibtex {
 	 */
 	private function generateCiteKey(Publication $publication) {
 
-		// TODO: implement
+		// TODO implement
+
 		return 'cite_key_'.$publication->getId();
 	}
 
 
+
+//	public function exportOld(Publication $publication) {
+//
+//		$input = $publication->getData();
+//
+//		/* Maps your fields to the BibTeX fields. */
+//		foreach ($this->fields as $bibtex_field => $your_field) {
+//			if (isset($input[$your_field])) {
+//				$data[$bibtex_field] = $input[$your_field];
+//			}
+//		}
+//
+//		/* Gets the BibTeX type or returns false if there is no type given */
+//		if (!empty($data['type'])) {
+//			$type = $data['type'];
+//			unset($data['type']);
+//		}
+//		else {
+//			return false;
+//		}
+//
+//		/* Gets the cite key or generates one if there is none given */
+//		if (!empty($data['cite_key'])) {
+//			$cite_key = $data['cite_key'];
+//			unset($data['cite_key']);
+//		}
+//		else {
+//			$cite_key = self::generateCiteKey($data);
+//		}
+//
+//		/* Composes the authors string */
+//		if (isset($data['author']) && is_array($data['author'])) {
+//			$string = '';
+//			$given = $this->author_fields['given'];
+//			$family = $this->author_fields['family'];
+//
+//			foreach ($data['author'] as $author) {
+//				if (!empty($author[$given]) && !empty($author[$family])) {
+//					$string .= $author[$given].' '.$author[$family].' and ';
+//				}
+//			}
+//			$string = substr($string, 0, -5);
+//			$data['author'] = $string;
+//		}
+//
+//		/* Composes the keywords string */
+//		if (isset($data['keywords']) && is_array($data['keywords'])) {
+//			$string = '';
+//			foreach ($data['keywords'] as $keyword) {
+//				$string .= $keyword.', ';
+//			}
+//			$string = substr($string, 0, -2);
+//			$data['keywords'] = $string;
+//		}
+//
+//		/* Composes the pages string */
+//		if (isset($data['pages']) && is_array($data['pages'])) {
+//			$string = '';
+//			$from = $this->pages_fields['from'];
+//			$to = $this->pages_fields['to'];
+//
+//			if (!empty($data['pages'][$from]) && !empty($data['pages'][$to])) {
+//				$string = $data['pages'][$from].'--'.$data['pages'][$to];
+//			}
+//			$data['pages'] = $string;
+//		}
+//
+//		/* Composes the BibTeX entry */
+//		$result = '@'.$type.'{'.$cite_key;
+//		foreach ($data as $key => $value) {
+//			if (!empty($value)) {
+//				$result .= ','."\n\t".$key.' = {'.$value.'}';
+//			}
+//		}
+//		$result .= "\n".'}';
+//
+//		return $result;
+//	}
+
 	/**
-	 * @param Publication $publication
+	 * @param $string
 	 *
-	 * @return string
+	 * @return mixed
 	 */
-	public function exportOld(Publication $publication) {
+	private function encodeSpecialChars($string) {
 
-		// TODO: work with publication and not with array
-		$input = $publication->getData();
+		$string = str_replace('ü', '\"{u}', $string);
+		$string = str_replace('ä', '\"{a}', $string);
+		$string = str_replace('ö', '\"{o}', $string);
+		$string = str_replace('Ü', '\"{U}', $string);
+		$string = str_replace('Ä', '\"{A}', $string);
+		$string = str_replace('Ö', '\"{O}', $string);
 
-		/* Maps your fields to the BibTeX fields. */
-		foreach ($this->fields as $bibtex_field => $your_field) {
-			if (isset($input[$your_field])) {
-				$data[$bibtex_field] = $input[$your_field];
-			}
-		}
+		$string = str_replace('ç', '\c{c}', $string);
+		$string = str_replace('Ç', '\c{C}', $string);
 
-		/* Gets the BibTeX type or returns false if there is no type given */
-		if (!empty($data['type'])) {
-			$type = $data['type'];
-			unset($data['type']);
-		}
-		else {
-			// TODO: throw exception?
-			return false;
-		}
+		// TODO continue
 
-		/* Gets the cite key or generates one if there is none given */
-		if (!empty($data['cite_key'])) {
-			$cite_key = $data['cite_key'];
-			unset($data['cite_key']);
-		}
-		else {
-			$cite_key = self::generateCiteKey($data);
-		}
-
-		/* Composes the authors string */
-		if (isset($data['author']) && is_array($data['author'])) {
-			$string = '';
-			$given = $this->author_fields['given'];
-			$family = $this->author_fields['family'];
-
-			foreach ($data['author'] as $author) {
-				if (!empty($author[$given]) && !empty($author[$family])) {
-					$string .= $author[$given].' '.$author[$family].' and ';
-				}
-			}
-			$string = substr($string, 0, -5);
-			$data['author'] = $string;
-		}
-
-		/* Composes the keywords string */
-		if (isset($data['keywords']) && is_array($data['keywords'])) {
-			$string = '';
-			foreach ($data['keywords'] as $keyword) {
-				$string .= $keyword.', ';
-			}
-			$string = substr($string, 0, -2);
-			$data['keywords'] = $string;
-		}
-
-		/* Composes the pages string */
-		if (isset($data['pages']) && is_array($data['pages'])) {
-			$string = '';
-			$from = $this->pages_fields['from'];
-			$to = $this->pages_fields['to'];
-
-			if (!empty($data['pages'][$from]) && !empty($data['pages'][$to])) {
-				$string = $data['pages'][$from].'--'.$data['pages'][$to];
-			}
-			$data['pages'] = $string;
-		}
-
-		/* Composes the BibTeX entry */
-		$result = '@'.$type.'{'.$cite_key;
-		foreach ($data as $key => $value) {
-			if (!empty($value)) {
-				$result .= ','."\n\t".$key.' = {'.$value.'}';
-			}
-		}
-		$result .= "\n".'}';
-
-		return $result;
+		return $string;
 	}
 
 
@@ -282,17 +277,7 @@ class Bibtex {
 		$result = array();
 
 		$input = stripslashes($input);
-
-		/* Gets rid of some special symbols. This needs to be extended further */
-		$input = str_replace(array('\"u', '\"{u}', '{\"u}'), 'ü', $input);
-		$input = str_replace(array('\"a', '\"{a}', '{\"a}'), 'ä', $input);
-		$input = str_replace(array('\"o', '\"{o}', '{\"o}'), 'ö', $input);
-		$input = str_replace(array('\"U', '\"{U}', '{\"U}'), 'Ü', $input);
-		$input = str_replace(array('\"A', '\"{A}', '{\"A}'), 'Ä', $input);
-		$input = str_replace(array('\"O', '\"{O}', '{\"O}'), 'Ö', $input);
-
-		$input = str_replace('\c{c}', 'ç', $input);
-		$input = str_replace('\c{C}', 'Ç', $input);
+		$input = $this->decodeSpecialChars($input);
 
 		/* Gets the entry type and the cite key */
 		preg_match('/\@(article|book|incollection|inproceedings|masterthesis|misc|phdthesis|techreport|unpublished|inbook)\s?(\"|\{)([^\"\},]*),/i', $input, $typeReg);
@@ -355,6 +340,29 @@ class Bibtex {
 
 
 	/**
+	 * @param $string
+	 *
+	 * @return mixed
+	 */
+	private function decodeSpecialChars($string) {
+
+		$string = str_replace(array('\"u', '\"{u}', '{\"u}'), 'ü', $string);
+		$string = str_replace(array('\"a', '\"{a}', '{\"a}'), 'ä', $string);
+		$string = str_replace(array('\"o', '\"{o}', '{\"o}'), 'ö', $string);
+		$string = str_replace(array('\"U', '\"{U}', '{\"U}'), 'Ü', $string);
+		$string = str_replace(array('\"A', '\"{A}', '{\"A}'), 'Ä', $string);
+		$string = str_replace(array('\"O', '\"{O}', '{\"O}'), 'Ö', $string);
+
+		$string = str_replace('\c{c}', 'ç', $string);
+		$string = str_replace('\c{C}', 'Ç', $string);
+
+		// TODO continue
+
+		return $string;
+	}
+
+
+	/**
 	 * TODO: comment
 	 *
 	 * @param    string $string description
@@ -404,8 +412,6 @@ class Bibtex {
 
 
 	/**
-	 * TODO: comment
-	 *
 	 * @param    string $string description
 	 *
 	 * @return    array
@@ -448,8 +454,6 @@ class Bibtex {
 
 
 	/**
-	 * TODO: comment
-	 *
 	 * @param    string $string description
 	 *
 	 * @return    array
@@ -472,8 +476,6 @@ class Bibtex {
 
 
 	/**
-	 * TODO: comment
-	 *
 	 * @param    string $string description
 	 *
 	 * @return    array
