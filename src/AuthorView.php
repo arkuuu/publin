@@ -109,7 +109,8 @@ class AuthorView extends ViewWithPublications {
 		$string = '';
 
 		foreach (BibLink::getServices() as $service) {
-			$string .= '<li><a href="'.BibLink::getAuthorsLink($this->author, $service).'" target="_blank">'.$service.'</a></li>';
+			$url = BibLink::getAuthorsLink($this->author, $service);
+			$string .= '<li><a href="'.$url.'" target="_blank">'.$service.'</a></li>';
 		}
 
 		return $string;

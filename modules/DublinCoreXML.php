@@ -24,15 +24,16 @@ class DublinCoreXML {
 		$fields[] = array('dc:identifier', $publication->getDoi());
 
 		$dom = new DOMDocument('1.0', 'utf-8');
-		$entry = $dom->createElement('metadata');
-		$entry->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1/');
-		$entry->setAttribute('xmlns:dcterms', 'http://purl.org/dc/terms/');
+		$metadata = $dom->createElement('metadata');
+		$metadata->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1/');
+		$metadata->setAttribute('xmlns:dcterms', 'http://purl.org/dc/terms/');
+		$dom->appendChild($metadata);
+
 		foreach ($fields as $field) {
 			if ($field[1]) {
-				$entry->appendChild($dom->createElement($field[0], $field[1]));
+				$metadata->appendChild($dom->createElement($field[0], $field[1]));
 			}
 		}
-		$dom->appendChild($entry);
 
 		return $dom->saveXML();
 	}

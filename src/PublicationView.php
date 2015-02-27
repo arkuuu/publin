@@ -399,7 +399,8 @@ class PublicationView extends View {
 		$string = '';
 
 		foreach (BibLink::getServices() as $service) {
-			$string .= '<li><a href="'.BibLink::getPublicationsLink($this->publication, $service).'" target="_blank">'.$service.'</a></li>';
+			$url = BibLink::getPublicationsLink($this->publication, $service);
+			$string .= '<li><a href="'.$url.'" target="_blank">'.$service.'</a></li>';
 		}
 
 		return $string;
