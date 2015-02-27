@@ -28,6 +28,27 @@ class FormatHandler {
 	}
 
 
+	public static function exportMultiple(array $publications, $format) {
+
+		$class = '\\publin\\modules\\'.$format;
+
+		if (class_exists($class)) {
+			$module = new $class();
+
+			if (method_exists($module, 'exportMultiple')) {
+
+				return $module->exportMultiple($publications);
+			}
+			else {
+				throw new BadMethodCallException('multiple export method in module for '.$format.' not found');
+			}
+		}
+		else {
+			throw new DomainException('module class for '.$format.' not found');
+		}
+	}
+
+
 	public static function import($data, $format) {
 
 		$class = '\\publin\\modules\\'.$format;

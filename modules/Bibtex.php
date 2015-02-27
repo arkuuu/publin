@@ -86,6 +86,25 @@ class Bibtex {
 
 
 	/**
+	 * @param Publication[] $publications
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	public function exportMultiple(array $publications) {
+
+		$result = '';
+		foreach ($publications as $publication) {
+			if ($publication instanceof Publication) {
+				$result .= $this->export($publication)."\n\n";
+			}
+		}
+
+		return $result;
+	}
+
+
+	/**
 	 * @param Publication $publication
 	 *
 	 * @return string

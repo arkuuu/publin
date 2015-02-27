@@ -8,43 +8,36 @@ use publin\src\Publication;
 
 class RIS {
 
+	/**
+	 * @param Publication[] $publications
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	public function exportMultiple(array $publications) {
+
+		$result = '';
+		foreach ($publications as $publication) {
+			if ($publication instanceof Publication) {
+				$result .= $this->export($publication)."\n\n";
+			}
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
 	public function export(Publication $publication) {
 
 		// http://de.wikipedia.org/wiki/RIS_%28Dateiformat%29
-		// TODO: maybe make this a individual method?
-		switch ($publication->getTypeName()) {
-			case 'article':
-				$type = 'JOUR';
-				break;
-			case 'inproceedings':
-				$type = 'CONF';
-				break;
-			case 'incollection':
-				$type = 'CHAP';
-				break;
-			case 'book':
-				$type = 'BOOK';
-				break;
-			case 'masterthesis':
-			case 'phdthesis':
-				$type = 'THES';
-				break;
-			case 'techreport':
-				$type = 'RPRT'; // TODO: check if valid
-				break;
-			case 'misc':
-				$type = 'GEN';
-				break;
-			case 'unpublished':
-				$type = 'UNPB';
-				break;
-			default:
-				throw new Exception('unknown or missing publication type');
-				break;
-		}
-
 		$fields = array();
-		$fields[] = array('TY', $type);
+		$fields[] = array('TY', $this->encodeType($publication->getTypeName()));
 		foreach ($publication->getAuthors() as $keyword) {
 			if ($keyword->getLastName() && $keyword->getFirstName()) {
 				$fields[] = array('AU', $keyword->getLastName().', '.$keyword->getFirstName());
@@ -77,5 +70,46 @@ class RIS {
 		$result .= "\n".'ER  -';
 
 		return $result;
+	}
+
+
+	/**
+	 * @param $type
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	private function encodeType($type) {
+
+		switch ($type) {
+			case 'article':
+				return 'JOUR';
+				break;
+			case 'inproceedings':
+				return 'CONF';
+				break;
+			case 'incollection':
+				return 'CHAP';
+				break;
+			case 'book':
+				return 'BOOK';
+				break;
+			case 'masterthesis':
+			case 'phdthesis':
+				return 'THES';
+				break;
+			case 'techreport':
+				return 'RPRT'; // TODO: check if valid
+				break;
+			case 'misc':
+				return 'GEN';
+				break;
+			case 'unpublished':
+				return 'UNPB';
+				break;
+			default:
+				throw new Exception('unknown or missing publication type');
+				break;
+		}
 	}
 }
