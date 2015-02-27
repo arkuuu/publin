@@ -51,12 +51,11 @@ class Request {
 			// TODO: maybe trim?
 			return $this->post[$name];
 		}
-		else if (!empty($name)) {
-			// TODO exception here?
-			return '';
+		else if (empty($name) && !empty($this->post)) {
+			return $this->post;
 		}
 		else {
-			return $this->post;
+			return false;
 		}
 	}
 }

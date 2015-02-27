@@ -113,7 +113,7 @@ class Controller {
 
 		$controller = new AuthorController($this->db);
 
-		return $controller->run($request->id);
+		return $controller->run($request);
 	}
 
 
