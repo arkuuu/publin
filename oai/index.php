@@ -14,12 +14,16 @@ spl_autoload_register(function ($class) {
 	}
 });
 
+mb_internal_encoding('utf8');
+
 if (isset($_GET['verb'])) {
 	header('Content-type: text/xml; charset=utf-8');
 	$parser = new OAIParser();
 	echo $parser->run($_GET);
 }
 else {
+	header('Content-Type: text/html; charset=UTF-8');
+
 	echo '	<a href="?verb=Identify">Identify</a><br/>
 			<a href="?verb=ListMetadataFormats">ListMetadataFormats</a><br/>
 			<a href="?verb=ListSets">ListSets</a><br/>
