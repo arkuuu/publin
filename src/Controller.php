@@ -169,7 +169,7 @@ class Controller {
 
 		$controller = new PublisherController($this->db);
 
-		return $controller->run($request->id);
+		return $controller->run($request);
 	}
 
 

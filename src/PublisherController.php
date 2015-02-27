@@ -16,28 +16,28 @@ class PublisherController {
 	}
 
 
-	public function run($id) {
+	public function run(Request $request) {
 
-		if (isset($_POST['delete']) && $_POST['delete'] === 'yes') {
-			$this->model->delete($id);
+		if ($request->getPost('delete') === 'yes') {
+			$this->model->delete($request->id);
 		}
-		else if (isset($_GET['m']) && $_GET['m'] === 'edit' && !empty($_POST)) {
+		else if ($request->mode === 'edit' && $request->getPost()) {
 
 			$validator = new Validator();
 			$validator->addRule('name', 'text', true, 'Name is required but invalid');
 
-			if ($validator->validate($_POST)) {
+			if ($validator->validate($request->getPost())) {
 				$input = $validator->getSanitizedResult();
-				$success = $this->model->update($id, $input);
+				$success = $this->model->update($request->id, $input);
 			}
 			else {
 				print_r($validator->getErrors());
 			}
 		}
 
-		$publishers = $this->model->fetch(true, array('id' => $id));
+		$publishers = $this->model->fetch(true, array('id' => $request->id));
 
-		if (isset($_GET['m']) && $_GET['m'] === 'edit') {
+		if ($request->mode === 'edit') {
 			$view = new PublisherView($publishers[0], true);
 		}
 		else {
