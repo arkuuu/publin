@@ -12,8 +12,8 @@ Planned Features (WIP)
 * [x] Submit publications, via web form or BibTeX import
 * [x] Browse and view publications, authors, journals etc
 * [ ] Edit publication and author metadata
-* [ ] Export publications to various formats (e.g. BibTeX, RIS, ...)
-* [ ] Meta tag support for getting indexed by search engines (e.g. Dublin Core, HighwirePress Tags)
+* [x] Export publications to various formats (e.g. BibTeX, RIS, ...)
+* [x] Meta tag support for getting indexed by search engines (e.g. Dublin Core, HighwirePress Tags)
 * [x] Modular system for easy extension of export, import or meta tag formats
 * [ ] CSL style support for viewing and exporting citations
 * [ ] OAI-PMH interface for being able to register as OAI Data Provider
