@@ -20,9 +20,9 @@ class Request {
 	}
 
 
-	public static function getUrl() {
+	public function getUrl() {
 
-		return self::createUrl($_GET);
+		return $this->createUrl($_GET);
 	}
 
 
