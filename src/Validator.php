@@ -46,14 +46,10 @@ class Validator {
 	}
 
 
-	public function resetResult() {
+	public function validate(array $input) {
 
 		$this->result = array();
 		$this->errors = array();
-	}
-
-
-	public function validate(array $input) {
 
 		$result = array();
 
@@ -70,49 +66,62 @@ class Validator {
 				switch ($rule['type']) {
 
 					case 'number':
-						if ((is_numeric($temp) && $temp >= 0)) {
-							$result[$field] = (int)$temp;
+						if ($this->sanitizeNumber($temp)) {
+							$result[$field] = $this->sanitizeNumber($temp);
+						}
+						else if ($rule['required'] == true) {
+							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$this->errors[] = $rule['error_msg'];
+							$result[$field] = null;
 						}
 						break;
 
 					case 'text':
-						if (is_string($temp)) {
-							// TODO: problem here with '  ' inputs
-							//$temp = str_replace('  ', ' ', $temp);
-							$temp = trim($temp);
-							$temp = stripslashes($temp);
-							$temp = htmlspecialchars($temp);
-
-							if (empty($temp) && $rule['required'] == true) {
-								$this->errors[] = $rule['error_msg'];
-							}
-							else {
-								$result[$field] = $temp;
-
-							}
+						if ($this->sanitizeText($temp)) {
+							$result[$field] = $this->sanitizeText($temp);
+						}
+						else if ($rule['required'] == true) {
+							$this->errors[] = $rule['error_msg'];
+						}
+						else {
+							$result[$field] = '';
 						}
 						break;
 
 					case 'date':
-						// TODO: test for date
-						if (!empty($temp)) {
-							$result[$field] = $temp;
+						if ($this->sanitizeDate($temp)) {
+							$result[$field] = $this->sanitizeDate($temp);
+						}
+						else if ($rule['required'] == true) {
+							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$this->errors[] = $rule['error_msg'];
+							$result[$field] = '';
 						}
 						break;
 
 					case 'url':
-						// TODO: test for url
-						if (!empty($temp)) {
-							$result[$field] = $temp;
+						if ($this->sanitizeUrl($temp)) {
+							$result[$field] = $this->sanitizeUrl($temp);
+						}
+						else if ($rule['required'] == true) {
+							$this->errors[] = $rule['error_msg'];
 						}
 						else {
+							$result[$field] = '';
+						}
+						break;
+
+					case 'email':
+						if ($this->sanitizeEmail($temp)) {
+							$result[$field] = $this->sanitizeEmail($temp);
+						}
+						else if ($rule['required'] == true) {
 							$this->errors[] = $rule['error_msg'];
+						}
+						else {
+							$result[$field] = '';
 						}
 						break;
 
@@ -120,7 +129,6 @@ class Validator {
 						throw new InvalidArgumentException('unknown validation rule '.$rule['type']);
 						break;
 				}
-				$result[$field] = $input[$field];
 			}
 		}
 
@@ -128,6 +136,77 @@ class Validator {
 			$this->result = $result;
 
 			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public static function sanitizeNumber($number) {
+
+		if (is_string($number)) {
+			$number = trim($number);
+		}
+		if (is_numeric($number) && $number >= 0) {
+			return $number;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public static function sanitizeText($text) {
+
+		if (is_string($text)) {
+			$text = trim($text);
+			$text = stripslashes($text);
+			$text = htmlspecialchars($text);
+
+			return $text;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public static function sanitizeDate($date) {
+
+		if (is_string($date)) {
+			$date = trim($date);
+
+			// TODO
+			return $date;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public static function sanitizeUrl($url) {
+
+		if (is_string($url)) {
+			$url = trim($url);
+
+			// TODO
+			return $url;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public static function sanitizeEmail($email) {
+
+		if (is_string($email)) {
+			$email = trim($email);
+
+			// TODO
+			return $email;
 		}
 		else {
 			return false;
