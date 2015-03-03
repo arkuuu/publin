@@ -15,41 +15,42 @@ class ManageController {
 	}
 
 
-	public function run() {
+	public function run(Request $request) {
 
 		// TODO: input safety!!
+		// TODO: use Request
 		// TODO: check for user permission to this!
 
 		try {
-			if (isset($_GET['m'])) {
-				$mode = $_GET['m'];
+			if ($request->get('m')) {
+				$mode = $request->get('m');
 
-				if ($mode == 'rmp' && isset($_GET['id']) && isset($_GET['rid'])) {
-					$success = $this->removePermissionFromRole($_GET['rid'], $_GET['id']);
+				if ($mode == 'rmp' && $request->get('id') && $request->get('rid')) {
+					$success = $this->removePermissionFromRole($request->get('rid'), $request->get('id'));
 				}
 
-				else if ($mode == 'rmr' && isset($_GET['id'])) {
-					$success = $this->deleteRole($_GET['id']);
+				else if ($mode == 'rmr' && $request->get('id')) {
+					$success = $this->deleteRole($request->get('id'));
 				}
-				if ($mode == 'rmur' && isset($_GET['id']) && isset($_GET['uid'])) {
-					$success = $this->removeRoleFromUser($_GET['uid'], $_GET['id']);
+				if ($mode == 'rmur' && $request->get('id') && $request->get('uid')) {
+					$success = $this->removeRoleFromUser($request->get('uid'), $request->get('id'));
 				}
 			}
 
-			else if (isset($_POST['role_id']) && isset($_POST['permission_id'])) {
-				$success = $this->addPermissionToRole($_POST['role_id'], $_POST['permission_id']);
+			else if ($request->post('role_id') && $request->post('permission_id')) {
+				$success = $this->addPermissionToRole($request->post('role_id'), $request->post('permission_id'));
 			}
 
-			else if (isset($_POST['role_id']) && isset($_POST['user_id'])) {
-				$success = $this->addRoleToUser($_POST['user_id'], $_POST['role_id']);
+			else if ($request->post('role_id') && $request->post('user_id')) {
+				$success = $this->addRoleToUser($request->post('user_id'), $request->post('role_id'));
 			}
 
-			else if (!empty($_POST['role_name'])) {
-				$success = $this->newRole($_POST['role_name']);
+			else if ($request->post('role_name')) {
+				$success = $this->newRole($request->post('role_name'));
 			}
 
-			else if (isset($_POST['role_perm'])) {
-				$success = $this->updateRolePermissions($_POST['role_perm']);
+			else if ($request->post('role_perm')) {
+				$success = $this->updateRolePermissions($request->post('role_perm'));
 			}
 			else {
 				$success = null;

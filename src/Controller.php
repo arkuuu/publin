@@ -48,7 +48,7 @@ class Controller {
 
 		/* Searches method to run for request */
 		try {
-			$handler = $request->page;
+			$handler = $request->get('p');
 			if (method_exists($this, $handler)) {
 				return $this->$handler($request);
 			}
@@ -81,8 +81,8 @@ class Controller {
 	 */
 	private function staticPage(Request $request) {
 
-		if ($request->page) {
-			$view = new View($request->page);
+		if ($request->get('p')) {
+			$view = new View($request->get('p'));
 		}
 		else {
 			$view = new View('start');
@@ -102,7 +102,7 @@ class Controller {
 	private function browse(Request $request) {
 
 		$model = new BrowseModel($this->db);
-		$model->handle($request->by, $request->id);
+		$model->handle($request->get('by'), $request->get('id'));
 		$view = new BrowseView($model);
 
 		return $view->display();
@@ -132,7 +132,7 @@ class Controller {
 	private function publication(Request $request) {
 
 		$model = new PublicationModel($this->db);
-		$publication = $model->fetch(true, array('id' => $request->id));
+		$publication = $model->fetch(true, array('id' => $request->get('id')));
 		$view = new PublicationView($publication[0]);
 
 		return $view->display();
@@ -188,7 +188,7 @@ class Controller {
 	private function study_field(Request $request) {
 
 		$model = new StudyFieldModel($this->db);
-		$study_field = $model->fetch(true, array('id' => $request->id));
+		$study_field = $model->fetch(true, array('id' => $request->get('id')));
 		$view = new StudyFieldView($study_field[0]);
 
 		return $view->display();
@@ -223,8 +223,8 @@ class Controller {
 	private function login(Request $request) {
 
 		// TODO: redirect if already logged in
-		if ($request->getPost('username') && $request->getPost('password')) {
-			if ($this->auth->login($request->getPost('username'), $request->getPost('password'))) {
+		if ($request->post('username') && $request->post('password')) {
+			if ($this->auth->login($request->post('username'), $request->post('password'))) {
 				// header();
 				print_r('success');
 			}
@@ -238,7 +238,11 @@ class Controller {
 	}
 
 
-	/** @noinspection PhpUnusedPrivateMethodInspection */
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
 	private function manage(Request $request) {
 
 		if ($this->auth->checkLoginStatus()) {

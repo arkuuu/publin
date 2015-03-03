@@ -18,26 +18,26 @@ class KeywordController {
 
 	public function run(Request $request) {
 
-		if ($request->getPost('delete') === 'yes') {
-			$this->model->delete($request->id);
+		if ($request->post('delete') === 'yes') {
+			$this->model->delete($request->get('id'));
 		}
-		else if ($request->mode === 'edit' && $request->getPost()) {
+		else if ($request->get('m') === 'edit' && $request->post()) {
 
 			$validator = new Validator();
 			$validator->addRule('name', 'text', true, 'Name is required but invalid');
 
-			if ($validator->validate($request->getPost())) {
+			if ($validator->validate($request->post())) {
 				$input = $validator->getSanitizedResult();
-				$success = $this->model->update($request->id, $input);
+				$success = $this->model->update($request->get('id'), $input);
 			}
 			else {
 				print_r($validator->getErrors());
 			}
 		}
 
-		$keywords = $this->model->fetch(true, array('id' => $request->id));
+		$keywords = $this->model->fetch(true, array('id' => $request->get('id')));
 
-		if ($request->mode === 'edit') {
+		if ($request->get('m') === 'edit') {
 			$view = new KeywordView($keywords[0], true);
 		}
 		else {

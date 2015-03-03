@@ -18,7 +18,7 @@ class AuthorController {
 
 	public function run(Request $request) {
 
-		if ($request->mode === 'edit' && $request->getPost()) {
+		if ($request->get('m') === 'edit' && $request->post()) {
 
 			$validator = new Validator();
 			$validator->addRule('given', 'text', true, 'Given name is required but invalid');
@@ -27,18 +27,18 @@ class AuthorController {
 			$validator->addRule('contact', 'text', false, 'Contact info is invalid');
 			$validator->addRule('text', 'text', false, 'Text is invalid');
 
-			if ($validator->validate($request->getPost())) {
+			if ($validator->validate($request->post())) {
 				$input = $validator->getSanitizedResult();
-				$success = $this->model->update($request->id, $input);
+				$success = $this->model->update($request->get('id'), $input);
 			}
 			else {
 				print_r($validator->getErrors());
 			}
 		}
 
-		$author = $this->model->fetch(true, array('id' => $request->id));
+		$author = $this->model->fetch(true, array('id' => $request->get('id')));
 
-		if ($request->mode === 'edit') {
+		if ($request->get('m') === 'edit') {
 			$view = new AuthorView($author[0], true);
 		}
 		else {
