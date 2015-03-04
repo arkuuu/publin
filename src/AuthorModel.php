@@ -3,6 +3,7 @@
 namespace publin\src;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class AuthorModel {
 
@@ -72,6 +73,18 @@ class AuthorModel {
 
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
+		}
+
+		$where = array('id' => $id);
+		$rows = $this->db->deleteData('list_authors', $where);
+		// TODO try/catch block
+
+		// TODO: how to get rid of these?
+		if ($rows == 1) {
+			return true;
+		}
+		else {
+			throw new RuntimeException('Error while deleting author '.$id.': '.$this->db->error);
 		}
 	}
 }

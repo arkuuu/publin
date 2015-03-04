@@ -18,7 +18,42 @@ class AuthorController {
 
 	public function run(Request $request) {
 
-		if ($request->get('m') === 'edit' && $request->post()) {
+		if ($request->get('m') === 'edit') {
+
+			if ($request->post('delete')) {
+				$this->delete($request);
+				// TODO: header()
+			}
+			else {
+				$this->edit($request);
+			}
+
+			$author = $this->model->fetch(true, array('id' => $request->get('id')));
+			$view = new AuthorView($author[0], true);
+		}
+		else {
+			$author = $this->model->fetch(true, array('id' => $request->get('id')));
+			$view = new AuthorView($author[0]);
+		}
+
+		return $view->display();
+	}
+
+
+	public function delete(Request $request) {
+
+		if ($request->post('delete') == 'yes' && $request->get('id')) {
+			return $this->model->delete($request->get('id'));
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function edit(Request $request) {
+
+		if ($request->post()) {
 
 			$validator = new Validator();
 			$validator->addRule('given', 'text', true, 'Given name is required but invalid');
@@ -29,22 +64,17 @@ class AuthorController {
 
 			if ($validator->validate($request->post())) {
 				$input = $validator->getSanitizedResult();
-				$success = $this->model->update($request->get('id'), $input);
+
+				return $this->model->update($request->get('id'), $input);
 			}
 			else {
 				print_r($validator->getErrors());
+
+				return false;
 			}
 		}
-
-		$author = $this->model->fetch(true, array('id' => $request->get('id')));
-
-		if ($request->get('m') === 'edit') {
-			$view = new AuthorView($author[0], true);
-		}
 		else {
-			$view = new AuthorView($author[0]);
+			return false;
 		}
-
-		return $view->display();
 	}
 }
