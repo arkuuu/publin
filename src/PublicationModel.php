@@ -226,4 +226,18 @@ class PublicationModel {
 			throw new RuntimeException('Error removing keyword '.$keyword_id.' from publication '.$publication_id.': '.$this->db->error);
 		}
 	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('type', 'text', true, 'Type is required but invalid');
+		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
+		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid');
+		$validator->addRule('title', 'text', true, 'Title is required but invalid');
+		// TODO: validate array with authors?
+		// TODO: types
+
+		return $validator;
+	}
 }

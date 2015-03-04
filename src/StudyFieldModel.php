@@ -81,4 +81,13 @@ class StudyFieldModel {
 			throw new RuntimeException('Error while deleting study field '.$id.': '.$this->db->error);
 		}
 	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('name', 'text', true, 'Name is required but invalid');
+
+		return $validator;
+	}
 }

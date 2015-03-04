@@ -87,4 +87,17 @@ class AuthorModel {
 			throw new RuntimeException('Error while deleting author '.$id.': '.$this->db->error);
 		}
 	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('given', 'text', true, 'Given name is required but invalid');
+		$validator->addRule('family', 'text', true, 'Family name is required but invalid');
+		$validator->addRule('website', 'url', false, 'Website URL is invalid');
+		$validator->addRule('contact', 'text', false, 'Contact info is invalid');
+		$validator->addRule('text', 'text', false, 'Text is invalid');
+
+		return $validator;
+	}
 }

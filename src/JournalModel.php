@@ -83,4 +83,13 @@ class JournalModel {
 			throw new RuntimeException('Error while deleting journal '.$id.': '.$this->db->error);
 		}
 	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('name', 'text', true, 'Name is required but invalid');
+
+		return $validator;
+	}
 }

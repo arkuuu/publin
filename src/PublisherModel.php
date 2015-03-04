@@ -84,4 +84,13 @@ class PublisherModel {
 			throw new RuntimeException('Error while deleting publisher '.$id.': '.$this->db->error);
 		}
 	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('name', 'text', true, 'Name is required but invalid');
+
+		return $validator;
+	}
 }

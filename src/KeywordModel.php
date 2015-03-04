@@ -88,4 +88,13 @@ class KeywordModel {
 			throw new RuntimeException('Error while deleting keyword '.$id.': '.$this->db->error);
 		}
 	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('name', 'text', true, 'Name is required but invalid');
+
+		return $validator;
+	}
 }
