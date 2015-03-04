@@ -48,9 +48,9 @@ class Controller {
 
 		/* Searches method to run for request */
 		try {
-			$handler = $request->get('p');
-			if (method_exists($this, $handler)) {
-				return $this->$handler($request);
+			$method = $request->get('p');
+			if (method_exists($this, $method)) {
+				return $this->$method($request);
 			}
 			else {
 				return $this->staticPage($request);
@@ -131,11 +131,9 @@ class Controller {
 	 */
 	private function publication(Request $request) {
 
-		$model = new PublicationModel($this->db);
-		$publication = $model->fetch(true, array('id' => $request->get('id')));
-		$view = new PublicationView($publication[0]);
+		$controller = new PublicationController($this->db);
 
-		return $view->display();
+		return $controller->run($request);
 	}
 
 
@@ -187,11 +185,9 @@ class Controller {
 	 */
 	private function study_field(Request $request) {
 
-		$model = new StudyFieldModel($this->db);
-		$study_field = $model->fetch(true, array('id' => $request->get('id')));
-		$view = new StudyFieldView($study_field[0]);
+		$controller = new StudyFieldController($this->db);
 
-		return $view->display();
+		return $controller->run($request);
 	}
 
 

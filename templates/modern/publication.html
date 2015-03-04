@@ -1,65 +1,105 @@
-	<script type="text/javascript" src="./templates/default/jquery.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$('.export textarea').hide();
-			$('.export a').click(function(e) {
-				e.preventDefault();
-				var textarea = $(this).attr('class');
-				$('textarea.'+textarea).toggle(400);
-			});
+<script type="text/javascript" src="./templates/default/jquery.js"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.export textarea').hide();
+		$('.export a').click(function (e) {
+			e.preventDefault();
+			var textarea = $(this).attr('class');
+			$('textarea.' + textarea).toggle(400);
 		});
-	</script>
+	});
+</script>
 
-	<h1><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h1>
-	<p>
+<h1><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h1>
+<?php if (!$this->isEditMode()) { ?>
+
+<?php if ($this->hasPermission('publication_edit')) { ?>
+<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit or add data</a></p>
+<?php } ?>
+<p>
 	<?php
 	echo $this -> showDatePublished() ? $this -> showDatePublished() : '';
-	echo $this -> showAuthors() ? '<br />By: '.$this -> showAuthors() : '';
-	echo $this -> showJournal() ? '<br />In: '.$this -> showJournal() : '';
-	echo $this -> showBook() ? '<br/>In: '.$this -> showBook() : '';
-	echo $this -> showPublisher() ? '<br />Publisher: '.$this -> showPublisher() : '';
-	echo $this -> showInstitution() ? '<br />Institution: '.$this -> showInstitution() : '';
-	echo $this -> showSchool() ? '<br />School: '.$this -> showSchool() : '';
-	echo $this -> showPages() ? '<br />Pages: '.$this -> showPages() : '';
-	echo $this -> showVolume() ? '<br />Volume: '.$this -> showVolume() : '';
-	echo $this -> showNumber() ? '<br />Number: '.$this -> showNumber() : '';
-	echo $this -> showSeries() ? '<br />Series: '.$this -> showSeries() : '';
-	echo $this -> showEdition() ? '<br />Edition: '.$this -> showEdition() : '';
-	echo $this -> showHowpublished() ? '<br />How published: '.$this -> showHowpublished() : '';
-	echo $this -> showType() ? '<br />Type: '.$this -> showType() : '';
-	?>
-	</p>
+				  echo $this -> showAuthors() ? '<br/>By: '.$this -> showAuthors() : '';
+				  echo $this -> showJournal() ? '<br/>In: '.$this -> showJournal() : '';
+				  echo $this -> showBook() ? '<br/>In: '.$this -> showBook() : '';
+				  echo $this -> showPublisher() ? '<br/>Publisher: '.$this -> showPublisher() : '';
+				  echo $this -> showInstitution() ? '<br/>Institution: '.$this -> showInstitution() : '';
+				  echo $this -> showSchool() ? '<br/>School: '.$this -> showSchool() : '';
+				  echo $this -> showPages() ? '<br/>Pages: '.$this -> showPages() : '';
+				  echo $this -> showVolume() ? '<br/>Volume: '.$this -> showVolume() : '';
+				  echo $this -> showNumber() ? '<br/>Number: '.$this -> showNumber() : '';
+				  echo $this -> showSeries() ? '<br/>Series: '.$this -> showSeries() : '';
+				  echo $this -> showEdition() ? '<br/>Edition: '.$this -> showEdition() : '';
+				  echo $this -> showHowpublished() ? '<br/>How published: '.$this -> showHowpublished() : '';
+				  echo $this -> showType() ? '<br/>Type: '.$this -> showType() : '';
+				  ?>
+</p>
 
-	<?php if ($this -> showAbstract()) { ?>
-	<h2>Abstract</h2>
-	<p><?php echo $this -> showAbstract() ?></p>
-	<?php } ?>
+<?php if ($this -> showAbstract()) { ?>
+<h2>Abstract</h2>
+<p><?php echo $this -> showAbstract() ?></p>
+<?php } ?>
 
-	<?php if ($this -> showReferences()) { ?>
-	<h2>References</h2>
-	<ul><?php echo $this -> showReferences() ?></ul>
-	<?php } ?>
+<?php if ($this -> showReferences()) { ?>
+<h2>References</h2>
+<ul><?php echo $this -> showReferences() ?></ul>
+<?php } ?>
 
-	<?php if ($this -> showKeywords()) { ?>
-	<h2>Keywords</h2>
-	<p><?php echo $this -> showKeywords() ?></p>
-	<?php } ?>
+<?php if ($this -> showKeywords()) { ?>
+<h2>Keywords</h2>
+<p><?php echo $this -> showKeywords() ?></p>
+<?php } ?>
+
+<h2>Export this publication</h2>
+<div class="export">
+	<ul>
+		<li>
+			<a href="#" class="bibtex">BibTeX</a><br/>
+			<textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this -> showExport('Bibtex') ?></textarea>
+		</li>
+		<li>
+			<a href="#" class="ris">RIS</a><br/>
+			<textarea class="ris" rows="10" cols="80" readonly><?php echo $this -> showExport('RIS') ?></textarea>
+		</li>
+	</ul>
+</div>
+
+<h2>Search this publication in</h2>
+<ul><?php echo $this -> showBibLinks() ?></ul>
 
 
-	<h2>Export this publication</h2>
-	<div class="export">
-		<ul>
-			<li>
-				<a href="#" class="bibtex">BibTeX</a><br/>
-				<textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this -> showExport('Bibtex') ?></textarea>
-			</li>
-			<li>
-				<a href="#" class="ris">RIS</a><br/>
-				<textarea class="ris" rows="10" cols="80" readonly><?php echo $this -> showExport('RIS') ?></textarea>
-			</li>
-		</ul>
-	</div>
+<?php } else { ?>
+<p><a href="<?php echo $this->showLinkToSelf() ?>">Back to publication page</a></p>
+<h2>Edit this publication</h2>
+<div class="form">
+	<form action="#" method="post" accept-charset="utf-8">
+
+		<input type="hidden" name="action" value="edit"/>
+		<input type="submit" value="Update"/>
+		<input type="reset" value="Reset changes"/>
+	</form>
+</div>
+<br/>
+
+<h2>Add or remove authors</h2>
+<ul>
+	<?php echo $this->showEditAuthors(); ?>
+</ul>
 
 
-	<h2>Search this publication in</h2>
-	<ul><?php echo $this -> showBibLinks() ?></ul>
+<h2>Add or remove keywords</h2>
+<ul>
+	<?php echo $this->showEditKeywords(); ?>
+</ul>
+
+
+<h2>Delete this publication</h2>
+<p>This will try to delete this publication.</p>
+<form action="#" method="post" accept-charset="utf-8">
+	<input type="checkbox" name="delete" id="delete" value="yes"/>
+	<label for="delete">Delete the publication <b><?php echo $this->showTitle() ?></b></label>
+	<br/>
+	<input type="hidden" name="action" value="delete"/>
+	<input type="submit" value="Delete">
+</form>
+<?php } ?>

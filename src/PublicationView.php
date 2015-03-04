@@ -21,11 +21,35 @@ class PublicationView extends View {
 	 * Constructs the publication view.
 	 *
 	 * @param Publication $publication
+	 * @param bool        $edit_mode
 	 */
-	public function __construct(Publication $publication) {
+	public function __construct(Publication $publication, $edit_mode = false) {
 
 		parent::__construct('publication');
 		$this->publication = $publication;
+		$this->edit_mode = $edit_mode;
+	}
+
+
+	public function isEditMode() {
+
+		return $this->edit_mode;
+	}
+
+
+	public function showLinkToSelf($mode = '') {
+
+		$url = '?p=publication&amp;id=';
+		$mode_url = '&amp;m='.$mode;
+		//$url = Request::createUrl(array('p' => 'publication', 'm' => $mode, 'id' => $this->publication->getId()));
+		//return $url;
+
+		if (empty($mode)) {
+			return $url.$this->publication->getId();
+		}
+		else {
+			return $url.$this->publication->getId().$mode_url;
+		}
 	}
 
 
@@ -386,6 +410,61 @@ class PublicationView extends View {
 		else {
 			return false;
 		}
+	}
+
+
+	public function showEditKeywords() {
+
+		$keywords = $this->publication->getKeywords();
+		$string = '';
+
+		foreach ($keywords as $keyword) {
+			$string .= '<li>
+						<form action="#" method="post" accept-charset="utf-8">
+						'.$keyword->getName().'
+						<input type="hidden" name="keyword_id" value="'.$keyword->getId().'"/>
+						<input type="hidden" name="action" value="removeKeyword"/>
+						<input type="submit" value="x"/>
+						</form>
+						</li>';
+		}
+
+		$string .= '<li><form action="#" method="post" accept-charset="utf-8">
+					<input name="name" type="text" placeholder="Keyword"/>
+					<input type="hidden" name="action" value="addKeyword"/>
+					<input type="submit" value="Add"/>
+					</form></li>';
+
+		return $string;
+	}
+
+
+	public function showEditAuthors() {
+
+		$authors = $this->publication->getAuthors();
+		$string = '';
+
+		foreach ($authors as $author) {
+			$string .= '<li>
+						<form action="#" method="post" accept-charset="utf-8">
+						'.$author->getName().'
+						<input type="hidden" name="author_id" value="'.$author->getId().'"/>
+						<input type="hidden" name="action" value="removeAuthor"/>
+						<input type="submit" value="x"/>
+						</form>
+						</li>';
+		}
+
+		$string .= '<li>
+					<form action="#" method="post" accept-charset="utf-8">
+					<input type="text" name="given" placeholder="Given Name(s)" />
+					<input type="text" name="family" placeholder="Family Name" />
+					<input type="hidden" name="action" value="addAuthor"/>
+					<input type="submit" value="Add"/>
+					</form>
+					</li>';
+
+		return $string;
 	}
 
 
