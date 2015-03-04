@@ -55,19 +55,14 @@ class Validator {
 
 		foreach ($this->rules as $field => $rule) {
 
-			if (empty($input[$field]) && $rule['required'] == true) {
-				$this->errors[] = $rule['error_msg'];
-			}
-			else if (isset($input[$field])) {
+			if (isset($input[$field])) {
+				$value = $input[$field];
 
-				$temp = $input[$field];
-
-				// TODO: refactor these into single methods?
 				switch ($rule['type']) {
 
 					case 'number':
-						if ($this->sanitizeNumber($temp)) {
-							$result[$field] = $this->sanitizeNumber($temp);
+						if ($this->sanitizeNumber($value)) {
+							$result[$field] = $this->sanitizeNumber($value);
 						}
 						else if ($rule['required'] == true) {
 							$this->errors[] = $rule['error_msg'];
@@ -78,8 +73,8 @@ class Validator {
 						break;
 
 					case 'text':
-						if ($this->sanitizeText($temp)) {
-							$result[$field] = $this->sanitizeText($temp);
+						if ($this->sanitizeText($value)) {
+							$result[$field] = $this->sanitizeText($value);
 						}
 						else if ($rule['required'] == true) {
 							$this->errors[] = $rule['error_msg'];
@@ -90,8 +85,8 @@ class Validator {
 						break;
 
 					case 'date':
-						if ($this->sanitizeDate($temp)) {
-							$result[$field] = $this->sanitizeDate($temp);
+						if ($this->sanitizeDate($value)) {
+							$result[$field] = $this->sanitizeDate($value);
 						}
 						else if ($rule['required'] == true) {
 							$this->errors[] = $rule['error_msg'];
@@ -102,8 +97,8 @@ class Validator {
 						break;
 
 					case 'url':
-						if ($this->sanitizeUrl($temp)) {
-							$result[$field] = $this->sanitizeUrl($temp);
+						if ($this->sanitizeUrl($value)) {
+							$result[$field] = $this->sanitizeUrl($value);
 						}
 						else if ($rule['required'] == true) {
 							$this->errors[] = $rule['error_msg'];
@@ -114,8 +109,8 @@ class Validator {
 						break;
 
 					case 'email':
-						if ($this->sanitizeEmail($temp)) {
-							$result[$field] = $this->sanitizeEmail($temp);
+						if ($this->sanitizeEmail($value)) {
+							$result[$field] = $this->sanitizeEmail($value);
 						}
 						else if ($rule['required'] == true) {
 							$this->errors[] = $rule['error_msg'];
@@ -129,6 +124,9 @@ class Validator {
 						throw new InvalidArgumentException('unknown validation rule '.$rule['type']);
 						break;
 				}
+			}
+			else if ($rule['required'] == true) {
+				$this->errors[] = $rule['error_msg'];
 			}
 		}
 
