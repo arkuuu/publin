@@ -26,22 +26,24 @@ class Request {
 	}
 
 
-	public static function createUrl(array $get) {
+	public static function createUrl(array $parameters) {
 
-		$baseUrl = '/';
+		$baseUrl = '';
 		$delimiter = '&amp;';
 
-		$parameters = '';
-		foreach ($get as $key => $value) {
-			$parameters .= $key.'='.$value.$delimiter;
+		$url = '';
+		foreach ($parameters as $key => $value) {
+			if (!empty($value)) {
+				$url .= $key.'='.$value.$delimiter;
+			}
 		}
-		$parameters = substr($parameters, 0, -strlen($delimiter));
+		$url = substr($url, 0, -strlen($delimiter));
 
-		if (empty($parameters)) {
+		if (empty($url)) {
 			return $baseUrl;
 		}
 		else {
-			return $baseUrl.'?'.$parameters;
+			return $baseUrl.'?'.$url;
 		}
 	}
 
@@ -86,7 +88,7 @@ class Request {
 	 */
 	public function get($name = '') {
 
-		if (!empty($name) && isset($this->get[$name])) {
+		if (!empty($name) && !empty($this->get[$name])) {
 
 			// TODO: maybe trim?
 			return $this->get[$name];
