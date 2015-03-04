@@ -52,6 +52,7 @@
 		<label for="text">About:</label>
 		<textarea name="text" id="text" rows="5" cols="50"><?php echo $this->showText() ?></textarea>
 		<br/>
+		<input type="hidden" name="action" value="edit"/>
 		<input type="submit" value="Update"/>
 		<input type="reset" value="Reset changes"/>
 	</form>
@@ -67,6 +68,7 @@
 	<input type="checkbox" name="delete" id="delete" value="yes"/>
 	<label for="delete">Delete the author <?php echo $this->showName() ?></label>
 	<br/>
+	<input type="hidden" name="action" value="delete"/>
 	<input type="submit" value="Delete">
 </form>
 <?php } ?>

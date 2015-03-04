@@ -16,31 +16,41 @@ class AuthorController {
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws \Exception
+	 * @throws exceptions\NotFoundException
+	 */
 	public function run(Request $request) {
 
+		if ($request->post('action')) {
+			$method = $request->post('action');
+			if (method_exists($this, $method)) {
+				$this->$method($request);
+			}
+		}
+
+		$authors = $this->model->fetch(true, array('id' => $request->get('id')));
+
 		if ($request->get('m') === 'edit') {
-
-			if ($request->post('delete')) {
-				$this->delete($request);
-				// TODO: header()
-			}
-			else {
-				$this->edit($request);
-			}
-
-			$author = $this->model->fetch(true, array('id' => $request->get('id')));
-			$view = new AuthorView($author[0], true);
+			$view = new AuthorView($authors[0], true);
 		}
 		else {
-			$author = $this->model->fetch(true, array('id' => $request->get('id')));
-			$view = new AuthorView($author[0]);
+			$view = new AuthorView($authors[0]);
 		}
 
 		return $view->display();
 	}
 
 
-	public function delete(Request $request) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function delete(Request $request) {
 
 		if ($request->post('delete') == 'yes' && $request->get('id')) {
 			return $this->model->delete($request->get('id'));
@@ -51,16 +61,16 @@ class AuthorController {
 	}
 
 
-	public function edit(Request $request) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool|int
+	 */
+	private function edit(Request $request) {
 
 		if ($request->post()) {
 
-			$validator = new Validator();
-			$validator->addRule('given', 'text', true, 'Given name is required but invalid');
-			$validator->addRule('family', 'text', true, 'Family name is required but invalid');
-			$validator->addRule('website', 'url', false, 'Website URL is invalid');
-			$validator->addRule('contact', 'text', false, 'Contact info is invalid');
-			$validator->addRule('text', 'text', false, 'Text is invalid');
+			$validator = $this->model->getValidator();
 
 			if ($validator->validate($request->post())) {
 				$input = $validator->getSanitizedResult();

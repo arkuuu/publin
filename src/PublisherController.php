@@ -18,20 +18,10 @@ class PublisherController {
 
 	public function run(Request $request) {
 
-		if ($request->post('delete') === 'yes') {
-			$this->model->delete($request->get('id'));
-		}
-		else if ($request->get('m') === 'edit' && $request->post()) {
-
-			$validator = new Validator();
-			$validator->addRule('name', 'text', true, 'Name is required but invalid');
-
-			if ($validator->validate($request->post())) {
-				$input = $validator->getSanitizedResult();
-				$success = $this->model->update($request->get('id'), $input);
-			}
-			else {
-				print_r($validator->getErrors());
+		if ($request->post('action')) {
+			$method = $request->post('action');
+			if (method_exists($this, $method)) {
+				$this->$method($request);
 			}
 		}
 
@@ -45,5 +35,49 @@ class PublisherController {
 		}
 
 		return $view->display();
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function delete(Request $request) {
+
+		if ($request->post('delete') == 'yes' && $request->get('id')) {
+			return $this->model->delete($request->get('id'));
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool|int
+	 */
+	private function edit(Request $request) {
+
+		if ($request->post()) {
+
+			$validator = $this->model->getValidator();
+
+			if ($validator->validate($request->post())) {
+				$input = $validator->getSanitizedResult();
+
+				return $this->model->update($request->get('id'), $input);
+			}
+			else {
+				print_r($validator->getErrors());
+
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
 	}
 }

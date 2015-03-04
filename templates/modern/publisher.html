@@ -23,6 +23,7 @@
 		<label for="name">Name:</label>
 		<input type="text" name="name" id="name" value="<?php echo $this->showName() ?>"/>
 		<br/>
+		<input type="hidden" name="action" value="edit"/>
 		<input type="submit" value="Update"/>
 		<input type="reset" value="Reset changes"/>
 	</form>
@@ -38,6 +39,7 @@
 	<input type="checkbox" name="delete" id="delete" value="yes"/>
 	<label for="delete">Delete the publisher <b><?php echo $this->showName() ?></b></label>
 	<br/>
+	<input type="hidden" name="action" value="delete"/>
 	<input type="submit" value="Delete">
 </form>
 <?php } ?>
