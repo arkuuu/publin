@@ -3,7 +3,7 @@
 <?php if (!$this->isEditMode()) { ?>
 
 <?php if ($this->hasPermission('author_edit')) { ?>
-<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit or add data</a></p>
+<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit author</a></p>
 <?php } ?>
 
 <?php if ($this->showWebsite()) { ?>
@@ -33,7 +33,7 @@
 </ul>
 
 <?php } else { ?>
-<p><a href="<?php echo $this->showLinkToSelf() ?>">Back to author page</a></p>
+<p><a href="<?php echo $this->showLinkToSelf() ?>">Return to author</a></p>
 <h2>Edit this author</h2>
 <div class="form">
 	<form action="#" method="post" accept-charset="utf-8">

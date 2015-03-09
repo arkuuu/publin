@@ -18,8 +18,8 @@ class PRISMTags {
 		//$fields[] = array('prism.title', $publication->getTitle()); // TODO: valid? Isn't it part of the dc subset of prism?
 		$fields[] = array('prism.publicationDate', $publication->getDatePublished('Y-m-d'));
 		$fields[] = array('prism.publicationYear', $publication->getDatePublished('Y'));
-		$fields[] = array('prism.publicationName', $publication->getJournalName());
-		$fields[] = array('prism.publicationName', $publication->getBookName());
+		$fields[] = array('prism.publicationName', $publication->getJournal());
+		$fields[] = array('prism.publicationName', $publication->getBooktitle());
 		$fields[] = array('prism.volume', $publication->getVolume());
 		$fields[] = array('prism.number', $publication->getNumber());
 		$fields[] = array('prism.edition', $publication->getEdition());

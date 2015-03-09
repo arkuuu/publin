@@ -23,15 +23,15 @@ class DublinCoreTags {
 		$fields[] = array('dc.title', $publication->getTitle());
 		// TODO: not dcterms.issued and YYYY-MM-DD according to https://wiki.whatwg.org/wiki/MetaExtensions?
 		$fields[] = array('dc.issued', $publication->getDatePublished('Y/m/d'));
-		$fields[] = array('dc.relation.ispartof', $publication->getJournalName());
-		$fields[] = array('dc.relation.ispartof', $publication->getBookName());
+		$fields[] = array('dc.relation.ispartof', $publication->getJournal());
+		$fields[] = array('dc.relation.ispartof', $publication->getBooktitle());
 		$fields[] = array('dc.citation.volume', $publication->getVolume());
 		$fields[] = array('dc.citation.issue', $publication->getNumber());
 		$fields[] = array('dc.citation.spage', $publication->getFirstPage());
 		$fields[] = array('dc.citation.epage', $publication->getLastPage());
 		//$fields[] = array('dc.identifier', 'todo'); // TODO: link to pdf
 		$fields[] = array('dc.publisher', $publication->getInstitution()); // used for institution, too
-		$fields[] = array('dc.publisher', $publication->getPublisherName());
+		$fields[] = array('dc.publisher', $publication->getPublisher());
 		$fields[] = array('dc.identifier', $publication->getDoi());
 
 		$result = '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />'."\n";

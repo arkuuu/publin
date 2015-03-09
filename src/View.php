@@ -203,8 +203,8 @@ class View {
 		$citation .= ' <span class="year">('.$publication->getDatePublished('Y').')</span><br/>';
 
 		/* shows journal or booktitle and additional data*/
-		if ($publication->getJournalName()) {
-			$citation .= '<span class="journal">'.$publication->getJournalName().'</span>';
+		if ($publication->getJournal()) {
+			$citation .= '<span class="journal">'.$publication->getJournal().'</span>';
 
 			if ($publication->getVolume()) {
 				$citation .= ', <span class="volume">'.$publication->getVolume().'</span>';
@@ -217,8 +217,8 @@ class View {
 				$citation .= ', <span class="pages">'.$publication->getPages('-').'</span>';
 			}
 		}
-		else if ($publication->getBookName()) {
-			$citation .= 'In: <span class="booktitle">'.$publication->getBookName().'</span>';
+		else if ($publication->getBooktitle()) {
+			$citation .= 'In: <span class="booktitle">'.$publication->getBooktitle().'</span>';
 
 			if ($publication->getPages('-')) {
 				$citation .= ', <span class="pages">'.$publication->getPages('-').'</span>';

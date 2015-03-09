@@ -44,14 +44,14 @@ class RIS {
 			}
 		}
 		$fields[] = array('T1', $publication->getTitle()); // TODO: check if valid
-		$fields[] = array('JA', $publication->getJournalName()); // TODO: check if valid
-		$fields[] = array('TI', $publication->getBookName()); // TODO: check if valid
+		$fields[] = array('JA', $publication->getJournal()); // TODO: check if valid
+		$fields[] = array('TI', $publication->getBooktitle()); // TODO: check if valid
 		$fields[] = array('VL', $publication->getVolume());
 		$fields[] = array('IS', $publication->getNumber());
 		$fields[] = array('SP', $publication->getFirstPage());
 		$fields[] = array('EP', $publication->getLastPage());
 		$fields[] = array('PY', $publication->getDatePublished('Y/m/d'));
-		$fields[] = array('PB', $publication->getPublisherName());
+		$fields[] = array('PB', $publication->getPublisher());
 		$fields[] = array('N1', $publication->getNote());
 		//$fields[] = array('L1', false); // TODO: link to pdf
 		$fields[] = array('UR', $publication->getDoi()); // TODO: link to doi or link to publin page

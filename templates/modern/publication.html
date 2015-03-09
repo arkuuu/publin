@@ -14,14 +14,14 @@
 <?php if (!$this->isEditMode()) { ?>
 
 <?php if ($this->hasPermission('publication_edit')) { ?>
-<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit or add data</a></p>
+<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit publication</a></p>
 <?php } ?>
 <p>
 	<?php
 	echo $this -> showDatePublished() ? $this -> showDatePublished() : '';
 				  echo $this -> showAuthors() ? '<br/>By: '.$this -> showAuthors() : '';
-				  echo $this -> showJournal() ? '<br/>In: '.$this -> showJournal() : '';
-				  echo $this -> showBook() ? '<br/>In: '.$this -> showBook() : '';
+				  echo $this -> showJournal() ? '<br/>In: <i>'.$this -> showJournal().'</i>' : '';
+				  echo $this -> showBooktitle() ? '<br/>In: '.$this -> showBooktitle() : '';
 				  echo $this -> showPublisher() ? '<br/>Publisher: '.$this -> showPublisher() : '';
 				  echo $this -> showInstitution() ? '<br/>Institution: '.$this -> showInstitution() : '';
 				  echo $this -> showSchool() ? '<br/>School: '.$this -> showSchool() : '';
@@ -69,15 +69,10 @@
 
 
 <?php } else { ?>
-<p><a href="<?php echo $this->showLinkToSelf() ?>">Back to publication page</a></p>
+<p><a href="<?php echo $this->showLinkToSelf() ?>">Return to publication</a></p>
 <h2>Edit this publication</h2>
 <div class="form">
-	<form action="#" method="post" accept-charset="utf-8">
-
-		<input type="hidden" name="action" value="edit"/>
-		<input type="submit" value="Update"/>
-		<input type="reset" value="Reset changes"/>
-	</form>
+	<?php echo $this->showEditForm(); ?>
 </div>
 <br/>
 

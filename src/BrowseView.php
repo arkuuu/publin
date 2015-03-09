@@ -47,14 +47,6 @@ class BrowseView extends View {
 					'name'       => 'Types',
 					'url'        => './?p=browse&amp;by=type',
 					'result_url' => './?p=browse&amp;by=type&amp;id='),
-				'journal'     => array(
-					'name'       => 'Journals',
-					'url'        => './?p=browse&amp;by=journal',
-					'result_url' => './?p=journal&amp;id='),
-				'publisher'   => array(
-					'name'       => 'Publishers',
-					'url'        => './?p=browse&amp;by=publisher',
-					'result_url' => './?p=publisher&amp;id='),
 				'year'        => array(
 					'name'       => 'Years',
 					'url'        => './?p=browse&amp;by=year',

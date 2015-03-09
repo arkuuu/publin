@@ -27,8 +27,8 @@ class HighwirePressTags {
 			}
 		}
 		$fields[] = array('citation_publication_date', $publication->getDatePublished('Y/m/d'));
-		$fields[] = array('citation_journal_title', $publication->getJournalName());
-		$fields[] = array('citation_conference_title', $publication->getBookName());
+		$fields[] = array('citation_journal_title', $publication->getJournal());
+		$fields[] = array('citation_conference_title', $publication->getBooktitle());
 		$fields[] = array('citation_volume', $publication->getVolume());
 		if ($publication->getTypeName() == 'techreport') {
 			$fields[] = array('citation_technical_report_number', $publication->getNumber());
@@ -41,7 +41,7 @@ class HighwirePressTags {
 		//$fields[] = array('citation_pdf_url', false); // TODO: link to pdf
 		//$fields[] = array('citation_issn', false); // TODO
 		$fields[] = array('citation_isbn', $publication->getIsbn());
-		$fields[] = array('citation_publisher', $publication->getPublisherName());
+		$fields[] = array('citation_publisher', $publication->getPublisher());
 		if ($publication->getTypeName() == 'techreport') {
 			$fields[] = array('citation_technical_report_institution', $publication->getInstitution());
 		}

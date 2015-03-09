@@ -51,23 +51,6 @@ class Publication extends Object {
 	}
 
 
-	/**
-	 * @return array|bool
-	 */
-	public function getJournalId() {
-
-		return $this->getData('journal_id');
-	}
-
-
-	/**
-	 * @return array|bool
-	 */
-	public function getPublisherId() {
-
-		return $this->getData('publisher_id');
-	}
-
 
 	/**
 	 * @return string
@@ -93,15 +76,6 @@ class Publication extends Object {
 	public function getCopyright() {
 
 		return $this->getData('copyright');
-	}
-
-
-	/**
-	 * @return array|bool
-	 */
-	public function getBookId() {
-
-		return $this->getData('book_id');
 	}
 
 
@@ -151,52 +125,6 @@ class Publication extends Object {
 		else {
 			return false;
 		}
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function toArray() {
-
-		$data = array();
-		$authors = array();
-		$keywords = array();
-
-		foreach ($this->getAuthors() as $author) {
-			$authors[] = array('given' => $author->getFirstName(), 'family' => $author->getLastName());
-		}
-
-		foreach ($this->getKeywords() as $keyword) {
-			$keywords[] = $keyword->getName();
-		}
-
-		$data['type'] = $this->getTypeName();
-		$data['cite_key'] = 'todo';
-		$data['title'] = $this->getTitle();
-		$data['authors'] = $authors;
-		$data['journal'] = $this->getJournalName();
-		$data['booktitle'] = $this->getBookName();
-		$data['publisher'] = $this->getPublisherName();
-		$data['edition'] = $this->getEdition();
-		$data['institution'] = $this->getInstitution();
-		$data['school'] = $this->getSchool();
-		$data['howpublished'] = $this->getHowpublished();
-		$data['year'] = $this->getDatePublished('Y');
-		$data['month'] = $this->getDatePublished('F');
-		$data['volume'] = $this->getVolume();
-		$data['pages']['from'] = $this->getData('pages_from');
-		$data['pages']['to'] = $this->getData('pages_to');
-		$data['number'] = $this->getNumber();
-		$data['series'] = $this->getSeries();
-		$data['abstract'] = $this->getAbstract();
-		$data['note'] = $this->getNote();
-		$data['address'] = $this->getAddress();
-		$data['bibsource'] = 'publin alpha';
-		// some more missing
-		$data['keywords'] = $keywords;
-
-		return $data;
 	}
 
 
@@ -295,7 +223,7 @@ class Publication extends Object {
 	/**
 	 * @return string
 	 */
-	public function getJournalName() {
+	public function getJournal() {
 
 		return $this->getData('journal');
 	}
@@ -304,7 +232,7 @@ class Publication extends Object {
 	/**
 	 * @return string
 	 */
-	public function getBookName() {
+	public function getBooktitle() {
 
 		return $this->getData('booktitle');
 	}
@@ -313,7 +241,7 @@ class Publication extends Object {
 	/**
 	 * @return string
 	 */
-	public function getPublisherName() {
+	public function getPublisher() {
 
 		return $this->getData('publisher');
 	}

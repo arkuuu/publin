@@ -69,16 +69,6 @@ class BrowseModel {
 					}
 					break;
 
-				case 'journal':
-					$model = new JournalModel($this->db);
-					$this->browse_list = $model->fetch(false);
-					break;
-
-				case 'publisher':
-					$model = new PublisherModel($this->db);
-					$this->browse_list = $model->fetch(false);
-					break;
-
 				case 'year':
 					if ($id > 0) {
 

@@ -15,6 +15,10 @@ class PublicationView extends View {
 	 * @var    Publication
 	 */
 	private $publication;
+	/**
+	 * @var bool
+	 */
+	private $edit_mode;
 
 
 	/**
@@ -37,6 +41,7 @@ class PublicationView extends View {
 	}
 
 
+	// TODO: error when used for previewing a submitted publication
 	public function showLinkToSelf($mode = '') {
 
 		$url = '?p=publication&amp;id=';
@@ -178,52 +183,6 @@ class PublicationView extends View {
 
 
 	/**
-	 * Shows the publication's journal name.
-	 *
-	 * @return    string
-	 */
-	public function showJournal() {
-
-		$url = '?p=journal&amp;id=';
-		$journal_name = $this->publication->getJournalName();
-		$journal_id = $this->publication->getJournalId();
-
-		if ($journal_id && $journal_name) {
-			return '<a href="'.$url.$journal_id.'">'.$journal_name.'</a>';
-		}
-		else if ($journal_name) {
-			return $journal_name;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/**
-	 * Shows the publication's book name.
-	 *
-	 * @return    string
-	 */
-	public function showBook() {
-
-		$url = '?p=publication&amp;id=';
-		$book_name = $this->publication->getBookName();
-		$book_id = $this->publication->getBookId();
-
-		if ($book_id && $book_name) {
-			return '<a href="'.$url.$book_id.'">'.$book_name.'</a>';
-		}
-		else if ($book_name) {
-			return $book_name;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/**
 	 * @param string $divider
 	 *
 	 * @return string
@@ -235,50 +194,11 @@ class PublicationView extends View {
 
 
 	/**
-	 * @return bool|string
-	 */
-	public function showPublisher() {
-
-		$url = '?p=publisher&amp;id=';
-		$publisher_name = $this->publication->getPublisherName();
-		$publisher_id = $this->publication->getPublisherId();
-
-		if ($publisher_id && $publisher_name) {
-			return '<a href="'.$url.$publisher_id.'">'.$publisher_name.'</a>';
-		}
-		else if ($publisher_name) {
-			return $publisher_name;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showInstitution() {
-
-		return $this->publication->getInstitution();
-	}
-
-
-	/**
 	 * @return string
 	 */
 	public function showSchool() {
 
 		return $this->publication->getSchool();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showHowpublished() {
-
-		return $this->publication->getHowpublished();
 	}
 
 
@@ -315,42 +235,6 @@ class PublicationView extends View {
 	public function showNote() {
 
 		return $this->publication->getNote();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showSeries() {
-
-		return $this->publication->getSeries();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showNumber() {
-
-		return $this->publication->getNumber();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showVolume() {
-
-		return $this->publication->getVolume();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showEdition() {
-
-		return $this->publication->getEdition();
 	}
 
 
@@ -496,5 +380,180 @@ class PublicationView extends View {
 	public function showExport($format) {
 
 		return FormatHandler::export($this->publication, $format);
+	}
+
+
+	public function showEditForm() {
+
+		$type = $this->publication->getTypeName();
+
+		$string = '<form action="#" method="post" accept-charset="utf-8">
+	<label for="date_published">Publication Date:</label>
+	<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
+		   value="'.$this->publication->getDatePublished('Y-m-d').'"/><br/>
+	<label for="title">Title:</label>
+	<input type="text" name="title" id="title" maxlength="200" value="'.$this->publication->getTitle().'"/><br/>';
+
+		if ($type == 'article') {
+			$string .= '<label for="journal">Journal:</label>
+	<input type="text" name="journal" id="journal" maxlength="200"
+		   value="'.$this->publication->getJournal().'"/><br/>';
+		}
+
+		if ($type == 'incollection' || $type == 'inproceedings') {
+			$string .= '<label for="booktitle">Book Title:</label>
+	<input type="text" name="booktitle" id="booktitle" maxlength="200"
+		   value="'.$this->publication->getBooktitle().'"/><br/>
+	<label for="pages_from">Pages:</label>
+	<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12"
+		   value="'.$this->publication->getFirstPage().'"/>
+	<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23"
+		   value="'.$this->publication->getLastPage().'"/><br/>';
+		}
+
+		if (in_array($type, array('article', 'book', 'incollection', 'inproceedings'))) {
+			$string .= '<label for="publisher">Publisher:</label>
+	<input type="text" name="publisher" id="publisher" maxlength="200"
+		   value="'.$this->publication->getPublisher().'"/><br/>';
+		}
+
+		if ($type == 'book') {
+			$string .= '<label for="edition">Edition:</label>
+	<input type="text" name="edition" id="edition" value="'.$this->publication->getEdition().'"/>
+	<br/><label for="series">Series:</label>
+	<input type="number" name="series" id="series" min="0"
+		   value="'.$this->publication->getSeries().'"/><br/>';
+		}
+
+		if (in_array($type, array('masterthesis', 'phdthesis', 'techreport'))) {
+			$string .= '<label for="institution">Institution:</label>
+	<input type="text" name="institution" id="institution" maxlength="200"
+		   value="'.$this->publication->getInstitution().'"/><br/>';
+		}
+
+		if ($type == 'misc') {
+			$string .= '<label for="howpublished">How published:</label>
+	<input type="text" name="howpublished" id="howpublished" maxlength="200"
+		   value="'.$this->publication->getHowpublished().'"/><br/>';
+		}
+
+		if ($type == 'article' || $type == 'book') {
+			$string .= '<label for="volume">Volume:</label>
+	<input type="number" name="volume" id="volume" min="0"
+		   value="'.$this->publication->getVolume().'"/><br/>';
+		}
+
+		if ($type == 'article' || $type == 'techreport') {
+			$string .= '<label for="number">Number:</label>
+	<input type="number" name="number" id="number" min="0"
+		   value="'.$this->publication->getNumber().'"/><br/>';
+		}
+
+		$string .= '<label for="abstract">Abstract:</label>
+		<textarea name="abstract" id="abstract" rows="5" cols="50">'.$this->publication->getAbstract().'</textarea><br/>';
+
+		$string .= '<input type="hidden" name="action" value="edit"/>
+<input type="submit" value="Update"/>
+<input type="reset" value="Reset changes"/>
+</form>';
+
+		return $string;
+	}
+
+
+	/**
+	 * Shows the publication's journal name.
+	 *
+	 * @return    string
+	 */
+	public function showJournal() {
+
+		return $this->publication->getJournal();
+	}
+
+
+	/**
+	 * Shows the publication's book name.
+	 *
+	 * @return    string
+	 */
+	public function showBooktitle() {
+
+		return $this->publication->getBooktitle();
+	}
+
+
+	/**
+	 * @return bool|string
+	 */
+	public function showPublisher() {
+
+		return $this->publication->getPublisher();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showEdition() {
+
+		return $this->publication->getEdition();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showInstitution() {
+
+		return $this->publication->getInstitution();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showHowpublished() {
+
+		return $this->publication->getHowpublished();
+	}
+
+
+	public function showFirstPage() {
+
+		return $this->publication->getFirstPage();
+	}
+
+
+	public function showLastPage() {
+
+		return $this->publication->getLastPage();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showVolume() {
+
+		return $this->publication->getVolume();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showNumber() {
+
+		return $this->publication->getNumber();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showSeries() {
+
+		return $this->publication->getSeries();
 	}
 }

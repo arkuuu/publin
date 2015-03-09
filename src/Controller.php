@@ -154,32 +154,6 @@ class Controller {
 	 * @param Request $request
 	 *
 	 * @return string
-	 */
-	private function journal(Request $request) {
-
-		$controller = new JournalController($this->db);
-
-		return $controller->run($request);
-	}
-
-
-	/** @noinspection PhpUnusedPrivateMethodInspection
-	 * @param Request $request
-	 *
-	 * @return string
-	 */
-	private function publisher(Request $request) {
-
-		$controller = new PublisherController($this->db);
-
-		return $controller->run($request);
-	}
-
-
-	/** @noinspection PhpUnusedPrivateMethodInspection
-	 * @param Request $request
-	 *
-	 * @return string
 	 * @throws Exception
 	 * @throws NotFoundException
 	 */

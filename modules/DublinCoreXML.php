@@ -20,7 +20,7 @@ class DublinCoreXML {
 		}
 		$fields[] = array('dcterms:issued', $publication->getDatePublished('Y-m-d'));
 		//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
-		$fields[] = array('dc:publisher', $publication->getPublisherName());
+		$fields[] = array('dc:publisher', $publication->getPublisher());
 		$fields[] = array('dc:identifier', $publication->getDoi());
 
 		$dom = new DOMDocument('1.0', 'utf-8');

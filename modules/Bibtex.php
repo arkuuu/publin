@@ -135,8 +135,8 @@ class Bibtex {
 		$fields = array();
 		$fields[] = array('author', $authors);
 		$fields[] = array('title', $publication->getTitle());
-		$fields[] = array('journal', $publication->getJournalName());
-		$fields[] = array('booktitle', $publication->getBookName());
+		$fields[] = array('journal', $publication->getJournal());
+		$fields[] = array('booktitle', $publication->getBooktitle());
 		$fields[] = array('volume', $publication->getVolume());
 		$fields[] = array('number', $publication->getNumber());
 		$fields[] = array('series', $publication->getSeries());
@@ -149,7 +149,7 @@ class Bibtex {
 		$fields[] = array('isbn', $publication->getIsbn());
 		$fields[] = array('institution', $publication->getInstitution());
 		$fields[] = array('school', $publication->getSchool());
-		$fields[] = array('publisher', $publication->getPublisherName());
+		$fields[] = array('publisher', $publication->getPublisher());
 		$fields[] = array('doi', $publication->getDoi());
 		$fields[] = array('address', $publication->getAddress());
 		$fields[] = array('howpublished', $publication->getHowpublished());
