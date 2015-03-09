@@ -173,6 +173,11 @@ class PublicationModel {
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
+
+		$where = array('publication_id' => $id);
+		$this->db->deleteData('rel_publ_to_authors', $where);
+		$this->db->deleteData('rel_publication_keywords', $where);
+
 		$where = array('id' => $id);
 		$rows = $this->db->deleteData('list_publications', $where);
 
@@ -181,7 +186,7 @@ class PublicationModel {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting role '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting publication '.$id.': '.$this->db->error);
 		}
 	}
 
@@ -231,6 +236,7 @@ class PublicationModel {
 	public function getValidator() {
 
 		$validator = new Validator();
+		// TODO: use Id's instead of text? as this will be in the db
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
 		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid');

@@ -174,4 +174,20 @@ class PublicationController {
 			return false;
 		}
 	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function delete(Request $request) {
+
+		if ($request->post('delete') == 'yes' && $request->get('id')) {
+			return $this->model->delete($request->get('id'));
+		}
+		else {
+			return false;
+		}
+	}
 }
