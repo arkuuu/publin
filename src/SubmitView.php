@@ -10,7 +10,7 @@ class SubmitView extends View {
 
 	public function __construct(SubmitModel $model, $submit_mode) {
 
-		if (in_array($submit_mode, array('start', 'form', 'preview', 'done', 'bibtex'))) {
+		if (in_array($submit_mode, array('start', 'import', 'form'))) {
 			$this->submit_mode = $submit_mode;
 		}
 
@@ -30,31 +30,9 @@ class SubmitView extends View {
 	}
 
 
-	public function isBibtex() {
+	public function isImport() {
 
-		if ($this->submit_mode == 'bibtex') {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	public function isPreview() {
-
-		if ($this->submit_mode == 'preview') {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	public function isDone() {
-
-		if ($this->submit_mode == 'done') {
+		if ($this->submit_mode == 'import') {
 			return true;
 		}
 		else {
@@ -69,25 +47,10 @@ class SubmitView extends View {
 	}
 
 
-	public function showPreview() {
-
-		$publication = $this->model->getPublication();
-
-		if (!empty($publication)) {
-			$sub_view = new PublicationView($publication);
-
-			return $sub_view->displayContentOnly();
-		}
-		else {
-			return false;
-		}
-	}
-
-
 	public function listTypeOptions() {
 
 		$types = $this->model->createTypes();
-		$selected = $this->showPostValue('type');
+		$selected = $this->show('type');
 
 		if ($selected) {
 			$string = '<option value disabled>Select...</option>';
@@ -104,14 +67,13 @@ class SubmitView extends View {
 			else {
 				$string .= '<option value="'.$type->getName().'">'.$type->getName().'</option>';
 			}
-
 		}
 
 		return $string;
 	}
 
 
-	public function showPostValue($field, $field2 = null, $field3 = null) {
+	public function show($field, $field2 = null, $field3 = null) {
 
 		if (isset($field2)) {
 			if (isset($field3)) {
@@ -124,14 +86,13 @@ class SubmitView extends View {
 		else {
 			return isset($_SESSION['input'][$field]) ? $_SESSION['input'][$field] : false;
 		}
-
 	}
 
 
 	public function listStudyFieldOptions() {
 
 		$study_fields = $this->model->createStudyFields();
-		$selected = $this->showPostValue('study_field');
+		$selected = $this->show('study_field');
 
 		if ($selected) {
 			$string = '<option value disabled>Select...</option>';
@@ -148,7 +109,6 @@ class SubmitView extends View {
 			else {
 				$string .= '<option value="'.$study_field->getName().'">'.$study_field->getName().'</option>';
 			}
-
 		}
 
 		return $string;
@@ -157,7 +117,8 @@ class SubmitView extends View {
 
 	public function listErrors() {
 
-		$errors = $this->model->getErrors();
+		$errors = array();
+		// TODO
 
 		if (!empty($errors)) {
 			$string = '';
@@ -176,12 +137,12 @@ class SubmitView extends View {
 	public function listKeywords() {
 
 		$string = '';
-		$keywords = $this->showPostValue('keywords');
+		$keywords = $this->show('keywords');
 		if ($keywords) {
 			/* @var $keywords Keyword[] */
 			foreach ($keywords as $key => $value) {
 				$string .= '<li class="multi-field">
-						<input type="text" name="keywords[]" placeholder="Keyword" value="'.$this->showPostValue('keywords', $key).'"/>
+						<input type="text" name="keywords[]" placeholder="Keyword" value="'.$this->show('keywords', $key).'"/>
 						<button type="button" class="remove-field">x</button>
 						</li>';
 			}
@@ -200,13 +161,13 @@ class SubmitView extends View {
 	public function listAuthors() {
 
 		$string = '';
-		$authors = $this->showPostValue('authors');
+		$authors = $this->show('authors');
 		if ($authors) {
 			/* @var $authors Author[] */
 			foreach ($authors as $key => $value) {
 				$string .= '<li class="multi-field">
-				<input type="text" name="authors[given][]" placeholder="Given Name(s)" value="'.$this->showPostValue('authors', $key, 'given').'"/>
-				<input type="text" name="authors[family][]" placeholder="Family Name" value="'.$this->showPostValue('authors', $key, 'family').'"/>
+				<input type="text" name="authors[given][]" placeholder="Given Name(s)" value="'.$this->show('authors', $key, 'given').'"/>
+				<input type="text" name="authors[family][]" placeholder="Family Name" value="'.$this->show('authors', $key, 'family').'"/>
 				<button type="button" class="remove-field">x</button>
 				</li>';
 			}
@@ -221,5 +182,4 @@ class SubmitView extends View {
 
 		return $string;
 	}
-
 }

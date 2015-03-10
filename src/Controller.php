@@ -172,7 +172,7 @@ class Controller {
 		if ($this->auth->checkLoginStatus()) {
 			$controller = new SubmitController($this->db);
 
-			return $controller->run();
+			return $controller->run($request);
 		}
 		else {
 			return $this->login($request);
