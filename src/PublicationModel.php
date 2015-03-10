@@ -239,35 +239,48 @@ class PublicationModel {
 	public function getValidator($type) {
 
 		$validator = new Validator();
-		$validator->addRule('type', 'text', true, 'Type is required but invalid');
-		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
-		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid');
+
 		$validator->addRule('title', 'text', true, 'Title is required but invalid');
+
+		$validator->addRule('journal', 'text', false, 'Journal is required but invalid');
+		$validator->addRule('volume', 'number', false, 'Volume is invalid');
+		$validator->addRule('number', 'number', false, 'Number is invalid');
+		$validator->addRule('booktitle', 'text', false, 'Booktitle is required but invalid');
+		$validator->addRule('series', 'text', false, 'Series is invalid');
+		$validator->addRule('edition', 'text', false, 'Edition is invalid');
+		$validator->addRule('pages_from', 'number', false, 'First page is invalid');
+		$validator->addRule('pages_to', 'number', false, 'Last page is invalid');
+		$validator->addRule('note', 'text', false, 'Note is invalid');
+		$validator->addRule('location', 'text', false, 'Location is invalid');
+
+		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid');
+
+		$validator->addRule('publisher', 'text', false, 'Publisher is invalid');
+		$validator->addRule('institution', 'text', false, 'Institution is invalid');
+		$validator->addRule('school', 'text', false, 'School is invalid');
+		$validator->addRule('address', 'text', false, 'Address is invalid');
+		$validator->addRule('howpublished', 'text', false, 'Howpublished is invalid');
+		$validator->addRule('copyright', 'text', false, 'Copyright is invalid');
+		$validator->addRule('doi', 'text', false, 'DOI is invalid'); // TODO: validate DOI
+		$validator->addRule('isbn', 'text', false, 'ISBN invalid'); // TODO: validate ISBN
+
+		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
+		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
 
+		/* Overwrite rules with required rules depending on type */
 		switch ($type) {
 			case 'article':
 				$validator->addRule('journal', 'text', true, 'Journal is required but invalid');
-				$validator->addRule('publisher', 'text', false, 'Publisher is invalid');
-				$validator->addRule('volume', 'number', false, 'Volume is invalid');
-				$validator->addRule('number', 'number', false, 'Number is invalid');
-				$validator->addRule('pages_from', 'number', false, 'First page is invalid');
-				$validator->addRule('pages_to', 'number', false, 'Last page is invalid');
 				break;
 
 			case 'book':
 				$validator->addRule('publisher', 'text', true, 'Publisher is required but invalid');
-				$validator->addRule('volume', 'number', false, 'Volume is invalid');
-				$validator->addRule('series', 'text', false, 'Series is invalid');
-				$validator->addRule('edition', 'text', false, 'Edition is invalid');
 				break;
 
 			case 'incollection':
 			case 'inproceedings':
 				$validator->addRule('booktitle', 'text', true, 'Booktitle is required but invalid');
-				$validator->addRule('publisher', 'text', false, 'Publisher is invalid');
-			$validator->addRule('pages_from', 'number', false, 'First page is invalid');
-			$validator->addRule('pages_to', 'number', false, 'Last page is invalid');
 				break;
 
 			case 'masterthesis':
@@ -281,7 +294,6 @@ class PublicationModel {
 
 			case 'techreport':
 				$validator->addRule('institution', 'text', true, 'Institution is required but invalid');
-				$validator->addRule('number', 'number', false, 'Number is invalid');
 				break;
 
 			case 'unpublished':
