@@ -203,3 +203,13 @@ div.citation .booktitle { }
 
 div.citation .pages { }
 
+table.publicationDetails {
+}
+
+table.publicationDetails th {
+	text-align: left;
+	font-weight: normal;
+	font-size: small;
+	padding-right: 5px;
+}
+

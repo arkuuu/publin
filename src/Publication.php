@@ -51,7 +51,6 @@ class Publication extends Object {
 	}
 
 
-
 	/**
 	 * @return string
 	 */
@@ -354,5 +353,11 @@ class Publication extends Object {
 	public function getAddress() {
 
 		return $this->getData('address');
+	}
+
+
+	public function getLocation() {
+
+		return $this->getData('location');
 	}
 }

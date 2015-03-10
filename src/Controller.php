@@ -19,9 +19,6 @@ class Controller {
 	/**
 	 * Constructs the controller and the needed Model and View.
 	 *
-	 * TODO: change parameters to one array with all parameters
-	 *
-	 *
 	 */
 	public function __construct() {
 

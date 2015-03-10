@@ -156,12 +156,13 @@ class PublicationController {
 	 */
 	private function edit(Request $request) {
 
-		if ($request->post()) {
-			$validator = new Validator();
-			// TODO validation
+		if ($request->post() && $request->post('type')) {
+			$validator = $this->model->getValidator($request->post('type'));
+
 			if ($validator->validate($request->post())) {
-				//$input = $validator->getSanitizedResult();
-				//$success = $this->model->update($request->get('id'), $input);
+				$input = $validator->getSanitizedResult();
+				$success = $this->model->update($request->get('id'), $input);
+				print_r($success);
 				return true;
 			}
 			else {

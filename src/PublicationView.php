@@ -211,12 +211,26 @@ class PublicationView extends View {
 	}
 
 
+	public function showLocation() {
+
+		return $this->publication->getLocation();
+	}
+
+
 	/**
 	 * @return string
 	 */
 	public function showDoi() {
 
-		return $this->publication->getDoi();
+		$url = 'http://dx.doi.org/';
+		$doi = $this->publication->getDoi();
+
+		if ($doi) {
+			return '<a href="'.$url.$doi.'" target="_blank">'.$doi.'</a>';
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -385,74 +399,72 @@ class PublicationView extends View {
 
 	public function showEditForm() {
 
-		$type = $this->publication->getTypeName();
-
 		$string = '<form action="#" method="post" accept-charset="utf-8">
-	<label for="date_published">Publication Date:</label>
-	<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
-		   value="'.$this->publication->getDatePublished('Y-m-d').'"/><br/>
+
 	<label for="title">Title:</label>
 	<input type="text" name="title" id="title" maxlength="200" value="'.$this->publication->getTitle().'"/><br/>';
 
-		if ($type == 'article') {
-			$string .= '<label for="journal">Journal:</label>
+		$string .= '<label for="journal">Journal:</label>
 	<input type="text" name="journal" id="journal" maxlength="200"
-		   value="'.$this->publication->getJournal().'"/><br/>';
-		}
-
-		if ($type == 'incollection' || $type == 'inproceedings') {
-			$string .= '<label for="booktitle">Book Title:</label>
-	<input type="text" name="booktitle" id="booktitle" maxlength="200"
-		   value="'.$this->publication->getBooktitle().'"/><br/>
-	<label for="pages_from">Pages:</label>
-	<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12"
-		   value="'.$this->publication->getFirstPage().'"/>
-	<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23"
-		   value="'.$this->publication->getLastPage().'"/><br/>';
-		}
-
-		if (in_array($type, array('article', 'book', 'incollection', 'inproceedings'))) {
-			$string .= '<label for="publisher">Publisher:</label>
-	<input type="text" name="publisher" id="publisher" maxlength="200"
-		   value="'.$this->publication->getPublisher().'"/><br/>';
-		}
-
-		if ($type == 'book') {
-			$string .= '<label for="edition">Edition:</label>
-	<input type="text" name="edition" id="edition" value="'.$this->publication->getEdition().'"/>
-	<br/><label for="series">Series:</label>
-	<input type="number" name="series" id="series" min="0"
-		   value="'.$this->publication->getSeries().'"/><br/>';
-		}
-
-		if (in_array($type, array('masterthesis', 'phdthesis', 'techreport'))) {
-			$string .= '<label for="institution">Institution:</label>
-	<input type="text" name="institution" id="institution" maxlength="200"
-		   value="'.$this->publication->getInstitution().'"/><br/>';
-		}
-
-		if ($type == 'misc') {
-			$string .= '<label for="howpublished">How published:</label>
-	<input type="text" name="howpublished" id="howpublished" maxlength="200"
-		   value="'.$this->publication->getHowpublished().'"/><br/>';
-		}
-
-		if ($type == 'article' || $type == 'book') {
-			$string .= '<label for="volume">Volume:</label>
+		   value="'.$this->publication->getJournal().'"/><br/>
+		   <label for="volume">Volume:</label>
 	<input type="number" name="volume" id="volume" min="0"
-		   value="'.$this->publication->getVolume().'"/><br/>';
-		}
-
-		if ($type == 'article' || $type == 'techreport') {
-			$string .= '<label for="number">Number:</label>
+		   value="'.$this->publication->getVolume().'"/><br/>
+		   <label for="number">Number:</label>
 	<input type="number" name="number" id="number" min="0"
 		   value="'.$this->publication->getNumber().'"/><br/>';
-		}
+
+		$string .= '<label for="booktitle">Book Title:</label>
+	<input type="text" name="booktitle" id="booktitle" maxlength="200"
+		   value="'.$this->publication->getBooktitle().'"/><br/>
+		   <label for="series">Series:</label>
+	<input type="text" name="series" id="series" min="0" value="'.$this->publication->getSeries().'"/><br/>
+		   <label for="edition">Edition:</label>
+	<input type="text" name="edition" id="edition" value="'.$this->publication->getEdition().'"/><br/>';
+
+		$string .= '<label for="pages_from">Pages:</label>
+	<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12" value="'.$this->publication->getFirstPage().'"/>
+	<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23" value="'.$this->publication->getLastPage().'"/><br/>
+		   <label for="note">Note:</label>
+	<input type="text" name="note" id="note" maxlength="200" value="'.$this->publication->getNote().'"/><br/>
+	<label for="location">Location:</label>
+	<input type="text" name="location" id="location" maxlength="200" value="'.$this->publication->getLocation().'"/><br/>';
+
+		$string .= '<label for="date_published">Date:</label>
+	<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
+		   value="'.$this->publication->getDatePublished('Y-m-d').'"/><br/>';
+
+		$string .= '<label for="publisher">Publisher:</label>
+	<input type="text" name="publisher" id="publisher" maxlength="200"
+		   value="'.$this->publication->getPublisher().'"/><br/>
+		   <label for="institution">Institution:</label>
+	<input type="text" name="institution" id="institution" maxlength="200"
+		   value="'.$this->publication->getInstitution().'"/><br/>
+		   <label for="school">School:</label>
+	<input type="text" name="school" id="school" maxlength="200"
+		   value="'.$this->publication->getSchool().'"/><br/>
+		   <label for="address">Address:</label>
+	<input type="text" name="address" id="address" maxlength="200"
+		   value="'.$this->publication->getAddress().'"/><br/>
+		   <label for="howpublished">How published:</label>
+	<input type="text" name="howpublished" id="howpublished" maxlength="200"
+		   value="'.$this->publication->getHowpublished().'"/><br/>
+		    <label for="copyright">Copyright:</label>
+	<input type="text" name="copyright" id="copyright" maxlength="200"
+		   value="'.$this->publication->getCopyright().'"/><br/>
+		    <label for="doi">DOI:</label>
+	<input type="text" name="doi" id="doi" maxlength="200"
+		   value="'.$this->publication->getDoi().'"/><br/>
+		    <label for="isbn">ISBN:</label>
+	<input type="text" name="isbn" id="isbn" maxlength="200"
+		   value="'.$this->publication->getIsbn().'"/><br/>';
 
 		$string .= '<label for="abstract">Abstract:</label>
 		<textarea name="abstract" id="abstract" rows="5" cols="50">'.$this->publication->getAbstract().'</textarea><br/>';
 
 		$string .= '<input type="hidden" name="action" value="edit"/>
+<input type="hidden" name="type" value="'.$this->publication->getTypeName().'"/>
+<input type="hidden" name="study_field" value="'.$this->publication->getStudyField().'"/>
 <input type="submit" value="Update"/>
 <input type="reset" value="Reset changes"/>
 </form>';
@@ -531,6 +543,12 @@ class PublicationView extends View {
 	}
 
 
+	public function showStudyField() {
+
+		return $this->publication->getStudyField();
+	}
+
+
 	/**
 	 * @return string
 	 */
@@ -555,5 +573,11 @@ class PublicationView extends View {
 	public function showSeries() {
 
 		return $this->publication->getSeries();
+	}
+
+
+	public function showCopyright() {
+
+		return $this->publication->getCopyright();
 	}
 }

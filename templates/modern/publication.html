@@ -16,24 +16,141 @@
 <?php if ($this->hasPermission('publication_edit')) { ?>
 <p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit publication</a></p>
 <?php } ?>
-<p>
+
+<h2>Details</h2>
+<table class="publicationDetails">
 	<?php
-	echo $this -> showDatePublished() ? $this -> showDatePublished() : '';
-				  echo $this -> showAuthors() ? '<br/>By: '.$this -> showAuthors() : '';
-				  echo $this -> showJournal() ? '<br/>In: <i>'.$this -> showJournal().'</i>' : '';
-				  echo $this -> showBooktitle() ? '<br/>In: '.$this -> showBooktitle() : '';
-				  echo $this -> showPublisher() ? '<br/>Publisher: '.$this -> showPublisher() : '';
-				  echo $this -> showInstitution() ? '<br/>Institution: '.$this -> showInstitution() : '';
-				  echo $this -> showSchool() ? '<br/>School: '.$this -> showSchool() : '';
-				  echo $this -> showPages() ? '<br/>Pages: '.$this -> showPages() : '';
-				  echo $this -> showVolume() ? '<br/>Volume: '.$this -> showVolume() : '';
-				  echo $this -> showNumber() ? '<br/>Number: '.$this -> showNumber() : '';
-				  echo $this -> showSeries() ? '<br/>Series: '.$this -> showSeries() : '';
-				  echo $this -> showEdition() ? '<br/>Edition: '.$this -> showEdition() : '';
-				  echo $this -> showHowpublished() ? '<br/>How published: '.$this -> showHowpublished() : '';
-				  echo $this -> showType() ? '<br/>Type: '.$this -> showType() : '';
+	echo $this -> showAuthors() ? '
+	<tr>
+		<th>Authors</th>
+		<td>'.$this -> showAuthors().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showJournal() ? '
+	<tr>
+		<th>Journal</th>
+		<td>'.$this -> showJournal().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showVolume() ? '
+	<tr>
+		<th>Volume</th>
+		<td>'.$this -> showVolume().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showNumber() ? '
+	<tr>
+		<th>Number</th>
+		<td>'.$this -> showNumber().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showBooktitle() ? '
+	<tr>
+		<th>Booktitle</th>
+		<td>'.$this -> showBooktitle().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showSeries() ? '
+	<tr>
+		<th>Series</th>
+		<td>'.$this -> showSeries().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showEdition() ? '
+	<tr>
+		<th>Edition</th>
+		<td>'.$this -> showEdition().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showPages() ? '
+	<tr>
+		<th>Pages</th>
+		<td>'.$this -> showPages().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showNote() ? '
+	<tr>
+		<th>Note</th>
+		<td>'.$this -> showNote().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showLocation() ? '
+	<tr>
+		<th>Location</th>
+		<td>'.$this -> showLocation().'</td>
+	</tr>
+				  ' : '';
+
+				  echo $this -> showDatePublished() ? '
+	<tr>
+		<th>Date</th>
+		<td>'.$this -> showDatePublished().'</td>
+	</tr>
+				  ' : '';
+
+				  echo $this -> showPublisher() ? '
+	<tr>
+		<th>Publisher</th>
+		<td>'.$this -> showPublisher().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showInstitution() ? '
+	<tr>
+		<th>Institution</th>
+		<td>'.$this -> showInstitution().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showSchool() ? '
+	<tr>
+		<th>School</th>
+		<td>'.$this -> showSchool().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showAddress() ? '
+	<tr>
+		<th>Address</th>
+		<td>'.$this -> showAddress().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showHowpublished() ? '
+	<tr>
+		<th>Howpublished</th>
+		<td>'.$this -> showHowpublished().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showCopyright() ? '
+	<tr>
+		<th>Copyright</th>
+		<td>'.$this -> showCopyright().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showDoi() ? '
+	<tr>
+		<th>DOI</th>
+		<td>'.$this -> showDoi().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showIsbn() ? '
+	<tr>
+		<th>ISBN</th>
+		<td>'.$this -> showIsbn().'</td>
+	</tr>
+				  ' : '';
+
+				  echo $this -> showStudyField() ? '
+	<tr>
+		<th>Field of Study</th>
+		<td>'.$this -> showStudyField().'</td>
+	</tr>
+				  ' : '';
+				  echo $this -> showType() ? '
+	<tr>
+		<th>Type</th>
+		<td>'.$this -> showType().'</td>
+	</tr>
+				  ' : '';
 				  ?>
-</p>
+</table>
 
 <?php if ($this -> showAbstract()) { ?>
 <h2>Abstract</h2>
@@ -50,7 +167,7 @@
 <p><?php echo $this -> showKeywords() ?></p>
 <?php } ?>
 
-<h2>Export this publication</h2>
+<h2>Cite this publication</h2>
 <div class="export">
 	<ul>
 		<li>
@@ -89,7 +206,7 @@
 
 
 <h2>Delete this publication</h2>
-<p>This will try to delete this publication.</p>
+<p>Be careful! This will permanently delete this publication.</p>
 <form action="#" method="post" accept-charset="utf-8">
 	<input type="checkbox" name="delete" id="delete" value="yes"/>
 	<label for="delete">Delete the publication <b><?php echo $this->showTitle() ?></b></label>

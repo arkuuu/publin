@@ -609,9 +609,10 @@ class Database extends mysqli {
 	 */
 	public function fetchPublications(array $filter = array()) {
 
-		$select = 'SELECT t.`name` AS `type`, p.*';
+		$select = 'SELECT t.`name` AS `type`, s.`name` AS `study_field`, p.*';
 		$from = 'FROM `list_publications` p';
 		$join = 'LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)';
+		$join .= 'LEFT JOIN `list_study_fields` s ON (s.`id` = p.`study_field_id`)';
 		$where = '';
 		$order = 'ORDER BY `date_added` DESC';
 		$limit = '';

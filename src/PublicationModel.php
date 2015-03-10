@@ -150,6 +150,23 @@ class PublicationModel {
 
 
 	public function update($id, array $data) {
+
+		/* Stores the type */
+		if (isset($data['type'])) {
+			$model = new TypeModel($this->db);
+			$type = new Type(array('name' => $data['type']));
+			$data['type_id'] = $model->store($type);
+			unset($data['type']);
+		}
+		/* Stores the study field */
+		if (isset($data['study_field'])) {
+			$model = new StudyFieldModel($this->db);
+			$study_field = new StudyField(array('name' => $data['study_field']));
+			$data['study_field_id'] = $model->store($study_field);
+			unset($data['study_field']);
+		}
+
+		return $this->db->updateData('list_publications', array('id' => $id), $data);
 	}
 
 
@@ -222,26 +239,26 @@ class PublicationModel {
 	public function getValidator($type) {
 
 		$validator = new Validator();
-		// TODO: use Id's instead of text? as this will be in the db
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
 		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid');
 		$validator->addRule('title', 'text', true, 'Title is required but invalid');
-		// TODO: validate array with authors?
+		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
+
 		switch ($type) {
 			case 'article':
 				$validator->addRule('journal', 'text', true, 'Journal is required but invalid');
 				$validator->addRule('publisher', 'text', false, 'Publisher is invalid');
 				$validator->addRule('volume', 'number', false, 'Volume is invalid');
 				$validator->addRule('number', 'number', false, 'Number is invalid');
-				$validator->addRule('pages_from', 'pages', false, 'First page is invalid');
-				$validator->addRule('pages_to', 'pages', false, 'Last page is invalid');
+				$validator->addRule('pages_from', 'number', false, 'First page is invalid');
+				$validator->addRule('pages_to', 'number', false, 'Last page is invalid');
 				break;
 
 			case 'book':
 				$validator->addRule('publisher', 'text', true, 'Publisher is required but invalid');
 				$validator->addRule('volume', 'number', false, 'Volume is invalid');
-				$validator->addRule('series', 'number', false, 'Series is invalid');
+				$validator->addRule('series', 'text', false, 'Series is invalid');
 				$validator->addRule('edition', 'text', false, 'Edition is invalid');
 				break;
 
@@ -249,8 +266,8 @@ class PublicationModel {
 			case 'inproceedings':
 				$validator->addRule('booktitle', 'text', true, 'Booktitle is required but invalid');
 				$validator->addRule('publisher', 'text', false, 'Publisher is invalid');
-				$validator->addRule('pages_from', 'pages', false, 'First page is invalid');
-				$validator->addRule('pages_to', 'pages', false, 'Last page is invalid');
+			$validator->addRule('pages_from', 'number', false, 'First page is invalid');
+			$validator->addRule('pages_to', 'number', false, 'Last page is invalid');
 				break;
 
 			case 'masterthesis':
