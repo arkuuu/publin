@@ -10,8 +10,10 @@ View the thesis here: http://www.ifis.uni-luebeck.de/index.php?id=363
 Planned Features (WIP)
 ======
 * [x] Submit publications, via web form or BibTeX import
+* [x] Edit publication and author metadata
 * [x] Browse and view publications, authors, journals etc
-* [ ] Edit publication and author metadata
+* [ ] Search function (full text search)
+* [ ] Full text file up- and download
 * [x] Export publications to various formats (e.g. BibTeX, RIS, ...)
 * [x] Meta tag support for getting indexed by search engines (e.g. Dublin Core, HighwirePress Tags)
 * [x] Modular system for easy extension of export, import or meta tag formats
