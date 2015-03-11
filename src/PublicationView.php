@@ -41,19 +41,18 @@ class PublicationView extends View {
 	}
 
 
-	// TODO: error when used for previewing a submitted publication
 	public function showLinkToSelf($mode = '') {
 
-		$url = '?p=publication&amp;id=';
-		$mode_url = '&amp;m='.$mode;
+		$url = '?p=publication&id=';
+		$mode_url = '&m='.$mode;
 		//$url = Request::createUrl(array('p' => 'publication', 'm' => $mode, 'id' => $this->publication->getId()));
 		//return $url;
 
 		if (empty($mode)) {
-			return $url.$this->publication->getId();
+			return $this->html($url.$this->publication->getId());
 		}
 		else {
-			return $url.$this->publication->getId().$mode_url;
+			return $this->html($url.$this->publication->getId().$mode_url);
 		}
 	}
 
@@ -65,7 +64,7 @@ class PublicationView extends View {
 	 */
 	public function showPageTitle() {
 
-		return $this->showTitle();
+		return $this->html($this->publication->getTitle());
 	}
 
 
@@ -76,7 +75,7 @@ class PublicationView extends View {
 	 */
 	public function showTitle() {
 
-		return $this->publication->getTitle();
+		return $this->html($this->publication->getTitle());
 	}
 
 
@@ -112,15 +111,15 @@ class PublicationView extends View {
 			$i = 1;
 			foreach ($authors as $author) {
 
-				$url = '?p=author&amp;id=';
-				$author_id = $author->getId();
-				$author_name = $author->getName();
+				$url = '?p=author&id=';
+				$id = $author->getId();
+				$name = $author->getName();
 
-				if ($author_id && $author_name) {
-					$author = '<a href="'.$url.$author_id.'">'.$author_name.'</a>';
+				if ($id && $name) {
+					$author = '<a href="'.$this->html($url.$id).'">'.$this->html($name).'</a>';
 				}
-				else if ($author_name) {
-					$author = $author_name;
+				else if ($name) {
+					$author = $this->html($name);
 				}
 				else {
 					$author = 'Unknown Author';
@@ -155,7 +154,7 @@ class PublicationView extends View {
 	 */
 	public function showDatePublished($format = 'F Y') {
 
-		return $this->publication->getDatePublished($format);
+		return $this->html($this->publication->getDatePublished($format));
 	}
 
 
@@ -166,15 +165,15 @@ class PublicationView extends View {
 	 */
 	public function showType() {
 
-		$url = '?p=browse&amp;by=type&amp;id=';
-		$type_name = $this->publication->getTypeName();
-		$type_id = $this->publication->getTypeId();
+		$url = '?p=browse&by=type&id=';
+		$id = $this->publication->getTypeId();
+		$name = $this->publication->getTypeName();
 
-		if ($type_id && $type_name) {
-			return '<a href="'.$url.$type_id.'">'.$type_name.'</a>';
+		if ($id && $name) {
+			return '<a href="'.$this->html($url.$id).'">'.$this->html($name).'</a>';
 		}
-		else if ($type_name) {
-			return $type_name;
+		else if ($name) {
+			return $this->html($name);
 		}
 		else {
 			return false;
@@ -189,7 +188,7 @@ class PublicationView extends View {
 	 */
 	public function showPages($divider = '-') {
 
-		return $this->publication->getPages($divider);
+		return $this->html($this->publication->getPages($divider));
 	}
 
 
@@ -198,7 +197,7 @@ class PublicationView extends View {
 	 */
 	public function showSchool() {
 
-		return $this->publication->getSchool();
+		return $this->html($this->publication->getSchool());
 	}
 
 
@@ -207,13 +206,13 @@ class PublicationView extends View {
 	 */
 	public function showAddress() {
 
-		return $this->publication->getAddress();
+		return $this->html($this->publication->getAddress());
 	}
 
 
 	public function showLocation() {
 
-		return $this->publication->getLocation();
+		return $this->html($this->publication->getLocation());
 	}
 
 
@@ -226,7 +225,7 @@ class PublicationView extends View {
 		$doi = $this->publication->getDoi();
 
 		if ($doi) {
-			return '<a href="'.$url.$doi.'" target="_blank">'.$doi.'</a>';
+			return '<a href="'.$this->html($url.$doi).'" target="_blank">'.$this->html($doi).'</a>';
 		}
 		else {
 			return false;
@@ -239,7 +238,7 @@ class PublicationView extends View {
 	 */
 	public function showIsbn() {
 
-		return $this->publication->getIsbn();
+		return $this->html($this->publication->getIsbn());
 	}
 
 
@@ -248,7 +247,7 @@ class PublicationView extends View {
 	 */
 	public function showNote() {
 
-		return $this->publication->getNote();
+		return $this->html($this->publication->getNote());
 	}
 
 
@@ -259,21 +258,9 @@ class PublicationView extends View {
 	 */
 	public function showAbstract() {
 
-		return $this->publication->getAbstract();
+		return nl2br($this->html($this->publication->getAbstract()));
 	}
 
-
-	/**
-	 * Shows the publication's references.
-	 *
-	 * TODO: implement
-	 *
-	 * @return    string
-	 */
-	public function showReferences() {
-
-		return false;
-	}
 
 
 	/**
@@ -288,18 +275,18 @@ class PublicationView extends View {
 		if (!empty($keywords)) {
 
 			$string = '';
-			$url = '?p=keyword&amp;id=';
+			$url = '?p=keyword&id=';
 
 			foreach ($keywords as $keyword) {
 
-				$keyword_id = $keyword->getId();
-				$keyword_name = $keyword->getName();
+				$id = $keyword->getId();
+				$name = $keyword->getName();
 
-				if ($keyword_id && $keyword_name) {
-					$string .= '<a href="'.$url.$keyword_id.'">'.$keyword_name.'</a>'.$separator;
+				if ($id && $name) {
+					$string .= '<a href="'.$this->html($url.$id).'">'.$this->html($name).'</a>'.$separator;
 				}
-				else if ($keyword_name) {
-					$string .= $keyword_name.$separator;
+				else if ($name) {
+					$string .= $this->html($name).$separator;
 				}
 			}
 
@@ -377,7 +364,7 @@ class PublicationView extends View {
 
 		foreach (BibLink::getServices() as $service) {
 			$url = BibLink::getPublicationsLink($this->publication, $service);
-			$string .= '<li><a href="'.$url.'" target="_blank">'.$service.'</a></li>';
+			$string .= '<li><a href="'.$this->html($url).'" target="_blank">'.$this->html($service).'</a></li>';
 		}
 
 		return $string;
@@ -385,7 +372,7 @@ class PublicationView extends View {
 
 
 	/**
-	 * Shows links to export formats.
+	 * Shows export formats.
 	 *
 	 * @param    string $format The export format
 	 *
@@ -480,7 +467,7 @@ class PublicationView extends View {
 	 */
 	public function showJournal() {
 
-		return $this->publication->getJournal();
+		return $this->html($this->publication->getJournal());
 	}
 
 
@@ -491,7 +478,7 @@ class PublicationView extends View {
 	 */
 	public function showBooktitle() {
 
-		return $this->publication->getBooktitle();
+		return $this->html($this->publication->getBooktitle());
 	}
 
 
@@ -500,7 +487,7 @@ class PublicationView extends View {
 	 */
 	public function showPublisher() {
 
-		return $this->publication->getPublisher();
+		return $this->html($this->publication->getPublisher());
 	}
 
 
@@ -509,7 +496,7 @@ class PublicationView extends View {
 	 */
 	public function showEdition() {
 
-		return $this->publication->getEdition();
+		return $this->html($this->publication->getEdition());
 	}
 
 
@@ -518,7 +505,7 @@ class PublicationView extends View {
 	 */
 	public function showInstitution() {
 
-		return $this->publication->getInstitution();
+		return $this->html($this->publication->getInstitution());
 	}
 
 
@@ -527,25 +514,25 @@ class PublicationView extends View {
 	 */
 	public function showHowpublished() {
 
-		return $this->publication->getHowpublished();
+		return $this->html($this->publication->getHowpublished());
 	}
 
 
 	public function showFirstPage() {
 
-		return $this->publication->getFirstPage();
+		return $this->html($this->publication->getFirstPage());
 	}
 
 
 	public function showLastPage() {
 
-		return $this->publication->getLastPage();
+		return $this->html($this->publication->getLastPage());
 	}
 
 
 	public function showStudyField() {
 
-		return $this->publication->getStudyField();
+		return $this->html($this->publication->getStudyField());
 	}
 
 
@@ -554,7 +541,7 @@ class PublicationView extends View {
 	 */
 	public function showVolume() {
 
-		return $this->publication->getVolume();
+		return $this->html($this->publication->getVolume());
 	}
 
 
@@ -563,7 +550,7 @@ class PublicationView extends View {
 	 */
 	public function showNumber() {
 
-		return $this->publication->getNumber();
+		return $this->html($this->publication->getNumber());
 	}
 
 
@@ -572,12 +559,12 @@ class PublicationView extends View {
 	 */
 	public function showSeries() {
 
-		return $this->publication->getSeries();
+		return $this->html($this->publication->getSeries());
 	}
 
 
 	public function showCopyright() {
 
-		return $this->publication->getCopyright();
+		return $this->html($this->publication->getCopyright());
 	}
 }

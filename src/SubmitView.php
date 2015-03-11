@@ -5,13 +5,16 @@ namespace publin\src;
 class SubmitView extends View {
 
 	private $model;
-	private $submit_mode = 'form';
+	private $submit_mode;
 
 
 	public function __construct(SubmitModel $model, $submit_mode) {
 
 		if (in_array($submit_mode, array('start', 'import', 'form'))) {
 			$this->submit_mode = $submit_mode;
+		}
+		else {
+			$this->submit_mode = 'start';
 		}
 
 		parent::__construct('submit');
@@ -50,9 +53,9 @@ class SubmitView extends View {
 	public function listTypeOptions() {
 
 		$types = $this->model->createTypes();
-		$selected = $this->show('type');
+		$selected_name = $this->show('type');
 
-		if ($selected) {
+		if ($selected_name) {
 			$string = '<option value disabled>Select...</option>';
 		}
 		else {
@@ -61,12 +64,15 @@ class SubmitView extends View {
 
 		/* @var $type Type */
 		foreach ($types as $type) {
-			if ($type->getName() == $selected) {
-				$string .= '<option value="'.$type->getName().'" selected>'.$type->getName().'</option>';
+			if ($type->getName() == $selected_name) {
+				$selected = 'selected';
 			}
 			else {
-				$string .= '<option value="'.$type->getName().'">'.$type->getName().'</option>';
+				$selected = '';
 			}
+
+			$string .= '<option value="'.$this->html($type->getName()).'" '.$selected.'>'
+				.$this->html($type->getName()).'</option>';
 		}
 
 		return $string;
@@ -92,9 +98,9 @@ class SubmitView extends View {
 	public function listStudyFieldOptions() {
 
 		$study_fields = $this->model->createStudyFields();
-		$selected = $this->show('study_field');
+		$selected_name = $this->show('study_field');
 
-		if ($selected) {
+		if ($selected_name) {
 			$string = '<option value disabled>Select...</option>';
 		}
 		else {
@@ -103,12 +109,15 @@ class SubmitView extends View {
 
 		/* @var $study_field StudyField */
 		foreach ($study_fields as $study_field) {
-			if ($study_field->getName() == $selected) {
-				$string .= '<option value="'.$study_field->getName().'" selected>'.$study_field->getName().'</option>';
+			if ($study_field->getName() == $selected_name) {
+				$selected = 'selected';
 			}
 			else {
-				$string .= '<option value="'.$study_field->getName().'">'.$study_field->getName().'</option>';
+				$selected = '';
 			}
+
+			$string .= '<option value="'.$this->html($study_field->getName()).'" '.$selected.'>'
+				.$this->html($study_field->getName()).'</option>';
 		}
 
 		return $string;
@@ -123,7 +132,7 @@ class SubmitView extends View {
 		if (!empty($errors)) {
 			$string = '';
 			foreach ($errors as $error) {
-				$string .= '<li>'.$error.'</li>';
+				$string .= '<li>'.$this->html($error).'</li>';
 			}
 
 			return $string;

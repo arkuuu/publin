@@ -27,7 +27,7 @@ class ViewWithPublications extends View {
 	 */
 	public function showPageTitle() {
 
-		return $this->showName();
+		return $this->html($this->showName());
 	}
 
 
@@ -39,7 +39,7 @@ class ViewWithPublications extends View {
 		$name = $this->object->getName();
 
 		if ($name) {
-			return $name;
+			return $this->html($name);
 		}
 		else {
 			// TODO: maybe log here because this should never happen?

@@ -159,8 +159,8 @@ class Validator {
 
 		if (is_string($text)) {
 			$text = trim($text);
-			$text = stripslashes($text);
-			$text = htmlspecialchars($text);
+			//$text = stripslashes($text);
+			//$text = strip_tags($text); TODO: check if useful
 
 			return $text;
 		}

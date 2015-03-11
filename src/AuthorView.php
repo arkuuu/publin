@@ -42,27 +42,27 @@ class AuthorView extends ViewWithPublications {
 
 	public function showLinkToSelf($mode = '') {
 
-		$url = '?p=author&amp;id=';
-		$mode_url = '&amp;m='.$mode;
+		$url = '?p=author&id=';
+		$mode_url = '&m='.$mode;
 
 		if (empty($mode)) {
-			return $url.$this->author->getId();
+			return $this->html($url.$this->author->getId());
 		}
 		else {
-			return $url.$this->author->getId().$mode_url;
+			return $this->html($url.$this->author->getId().$mode_url);
 		}
 	}
 
 
 	public function showGivenName() {
 
-		return $this->author->getFirstName();
+		return $this->html($this->author->getFirstName());
 	}
 
 
 	public function showFamilyName() {
 
-		return $this->author->getLastName();
+		return $this->html($this->author->getLastName());
 	}
 
 
@@ -73,7 +73,7 @@ class AuthorView extends ViewWithPublications {
 	 */
 	public function showWebsite() {
 
-		return $this->author->getWebsite();
+		return $this->html($this->author->getWebsite());
 	}
 
 
@@ -84,7 +84,7 @@ class AuthorView extends ViewWithPublications {
 	 */
 	public function showContact() {
 
-		return $this->author->getContact();
+		return nl2br($this->html($this->author->getContact()));
 	}
 
 
@@ -95,7 +95,7 @@ class AuthorView extends ViewWithPublications {
 	 */
 	public function showText() {
 
-		return $this->author->getText();
+		return nl2br($this->html($this->author->getText()));
 	}
 
 
@@ -110,7 +110,7 @@ class AuthorView extends ViewWithPublications {
 
 		foreach (BibLink::getServices() as $service) {
 			$url = BibLink::getAuthorsLink($this->author, $service);
-			$string .= '<li><a href="'.$url.'" target="_blank">'.$service.'</a></li>';
+			$string .= '<li><a href="'.$this->html($url).'" target="_blank">'.$this->html($service).'</a></li>';
 		}
 
 		return $string;

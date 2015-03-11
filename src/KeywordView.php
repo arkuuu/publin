@@ -31,14 +31,14 @@ class KeywordView extends ViewWithPublications {
 
 	public function showLinkToSelf($mode = '') {
 
-		$url = '?p=keyword&amp;id=';
-		$mode_url = '&amp;m='.$mode;
+		$url = '?p=keyword&id=';
+		$mode_url = '&m='.$mode;
 
 		if (empty($mode)) {
-			return $url.$this->keyword->getId();
+			return $this->html($url.$this->keyword->getId());
 		}
 		else {
-			return $url.$this->keyword->getId().$mode_url;
+			return $this->html($url.$this->keyword->getId().$mode_url);
 		}
 	}
 }

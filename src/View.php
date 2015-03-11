@@ -99,7 +99,13 @@ class View {
 		$string = ucfirst($this->content);    // TODO: doesn't work with non UTF chars
 		$string = str_replace('_', ' ', $string);
 
-		return $string;
+		return $this->html($string);
+	}
+
+
+	public function html($input) {
+
+		return htmlspecialchars($input);
 	}
 
 
@@ -120,7 +126,7 @@ class View {
 			/* @var $user User */
 			$user = $_SESSION['user'];
 
-			return $user->getName();
+			return $this->html($user->getName());
 		}
 		else {
 			return false;
@@ -149,21 +155,21 @@ class View {
 	public function showLink($page, $title) {
 
 		if ($this->content == $page) {
-			return '<a href="./?p='.$page.'" class="active">'.$title.'</a>';
+			return '<a href="./?p='.$this->html($page).'" class="active">'.$this->html($title).'</a>';
 		}
 		else {
-			return '<a href="./?p='.$page.'">'.$title.'</a>';
+			return '<a href="./?p='.$this->html($page).'">'.$this->html($title).'</a>';
 		}
 	}
 
 
 	public function showCitation(Publication $publication, $max_authors = 6) {
 
-		$url = './?p=publication&amp;id='.$publication->getId();
-		$citation = '<div class="citation"">';
+		$url = './?p=publication&id='.$publication->getId();
+		$citation = '<div class="citation">';
 
 		/* shows the title and links to the publication page */
-		$citation .= '<a href="'.$url.'" class="title">'.$publication->getTitle().'</a><br/>';
+		$citation .= '<a href="'.$this->html($url).'" class="title">'.$this->html($publication->getTitle()).'</a><br/>';
 
 		/* creates list of authors */
 		$authors = $publication->getAuthors();
@@ -197,31 +203,31 @@ class View {
 		}
 
 		/* shows list of authors */
-		$citation .= '<span class="authors">'.$authors_string.'</span>';
+		$citation .= '<span class="authors">'.$this->html($authors_string).'</span>';
 
 		/* appends publish date behind the authors */
-		$citation .= ' <span class="year">('.$publication->getDatePublished('Y').')</span><br/>';
+		$citation .= ' <span class="year">('.$this->html($publication->getDatePublished('Y')).')</span><br/>';
 
 		/* shows journal or booktitle and additional data*/
 		if ($publication->getJournal()) {
-			$citation .= '<span class="journal">'.$publication->getJournal().'</span>';
+			$citation .= '<span class="journal">'.$this->html($publication->getJournal()).'</span>';
 
 			if ($publication->getVolume()) {
-				$citation .= ', <span class="volume">'.$publication->getVolume().'</span>';
+				$citation .= ', <span class="volume">'.$this->html($publication->getVolume()).'</span>';
 
 				if ($publication->getNumber()) {
-					$citation .= ' <span class="number">('.$publication->getNumber().')</span>';
+					$citation .= ' <span class="number">('.$this->html($publication->getNumber()).')</span>';
 				}
 			}
 			if ($publication->getPages('-')) {
-				$citation .= ', <span class="pages">'.$publication->getPages('-').'</span>';
+				$citation .= ', <span class="pages">'.$this->html($publication->getPages('-')).'</span>';
 			}
 		}
 		else if ($publication->getBooktitle()) {
-			$citation .= 'In: <span class="booktitle">'.$publication->getBooktitle().'</span>';
+			$citation .= 'In: <span class="booktitle">'.$this->html($publication->getBooktitle()).'</span>';
 
 			if ($publication->getPages('-')) {
-				$citation .= ', <span class="pages">'.$publication->getPages('-').'</span>';
+				$citation .= ', <span class="pages">'.$this->html($publication->getPages('-')).'</span>';
 			}
 		}
 
