@@ -36,27 +36,7 @@
 <p><a href="<?php echo $this->showLinkToSelf() ?>">Return to author</a></p>
 <h2>Edit this author</h2>
 <div class="form">
-	<!-- TODO: problem when using show() methods, use object instead -->
-	<form action="#" method="post" accept-charset="utf-8">
-		<label for="given">Given Name:</label>
-		<input type="text" name="given" id="given" value="<?php echo $this->showGivenName() ?>"/>
-		<br/>
-		<label for="family">Family Name:</label>
-		<input type="text" name="family" id="family" value="<?php echo $this->showFamilyName() ?>"/>
-		<br/>
-		<label for="website">Website:</label>
-		<input type="text" name="website" id="website" value="<?php echo $this->showWebsite() ?>"/>
-		<br/>
-		<label for="contact">Contact:</label>
-		<textarea name="contact" id="contact" rows="5" cols="50"><?php echo $this->showContact() ?></textarea>
-		<br/>
-		<label for="text">About:</label>
-		<textarea name="text" id="text" rows="5" cols="50"><?php echo $this->showText() ?></textarea>
-		<br/>
-		<input type="hidden" name="action" value="edit"/>
-		<input type="submit" value="Update"/>
-		<input type="reset" value="Reset changes"/>
-	</form>
+	<?php echo $this->showEditForm(); ?>
 </div>
 <br/>
 <h2>Delete this author</h2>

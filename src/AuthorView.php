@@ -115,4 +115,29 @@ class AuthorView extends ViewWithPublications {
 
 		return $string;
 	}
+
+
+	public function showEditForm() {
+
+		return '<form action="#" method="post" accept-charset="utf-8">
+	<label for="given">Given Name:</label>
+	<input type="text" name="given" id="given" value="'.$this->author->getFirstName().'"/>
+	<br/>
+	<label for="family">Family Name:</label>
+	<input type="text" name="family" id="family" value="'.$this->author->getLastName().'"/>
+	<br/>
+	<label for="website">Website:</label>
+	<input type="text" name="website" id="website" value="'.$this->author->getWebsite().'"/>
+	<br/>
+	<label for="contact">Contact:</label>
+	<textarea name="contact" id="contact" rows="5" cols="50">'.$this->author->getContact().'</textarea>
+	<br/>
+	<label for="text">About:</label>
+	<textarea name="text" id="text" rows="5" cols="50">'.$this->author->getText().'</textarea>
+	<br/>
+	<input type="hidden" name="action" value="edit"/>
+	<input type="submit" value="Update"/>
+	<input type="reset" value="Reset changes"/>
+</form>';
+	}
 }
