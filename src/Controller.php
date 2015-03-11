@@ -55,7 +55,7 @@ class Controller {
 		}
 		catch (NotFoundException $e) {
 			// TODO: header(..)
-			return '404 - Sorry, something missing here: '.$e->getMessage();
+			return '404 - Sorry, something missing here: '.htmlspecialchars($e->getMessage());
 		}
 		catch (Exception $e) {
 
@@ -64,7 +64,7 @@ class Controller {
 				ob_end_clean();
 			}
 
-			return 'Sorry, there is an uncaught Exception: '.$e->getMessage();
+			return 'Sorry, there is an uncaught Exception: '.htmlspecialchars($e->getMessage());
 		}
 	}
 
