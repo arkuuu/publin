@@ -56,6 +56,8 @@ class View {
 	 */
 	public function display() {
 
+		header('Content-Type: text/html; charset=UTF-8');
+
 		$header = './templates/'.$this->template.'/header.html';
 		$menu = './templates/'.$this->template.'/menu.html';
 		$content = './templates/'.$this->template.'/'.$this->content.'.html';
