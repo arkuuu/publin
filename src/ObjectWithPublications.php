@@ -5,7 +5,7 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-class ObjectWithPublications extends Object {
+class ObjectWithPublications {
 
 	/**
 	 * @var Publication[]
@@ -21,7 +21,11 @@ class ObjectWithPublications extends Object {
 	 */
 	public function __construct(array $data, array $publications = array()) {
 
-		parent::__construct($data);
+		foreach ($data as $property => $value) {
+			if (property_exists($this, $property)) {
+				$this->$property = $value;
+			}
+		}
 		$this->setPublications($publications);
 	}
 

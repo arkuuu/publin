@@ -2,13 +2,44 @@
 
 namespace publin\src;
 
-class Role extends Object {
+class Role {
 
-
-	/**
-	 * @var array
-	 */
+	private $id;
+	private $name;
 	private $permissions = array();
+
+
+	public function __construct(array $data) {
+
+		foreach ($data as $property => $value) {
+			if (property_exists($this, $property)) {
+				$this->$property = $value;
+			}
+		}
+	}
+
+
+	public function getId() {
+
+		return $this->id;
+	}
+
+
+	public function getData() {
+
+		$data = array();
+		foreach (get_class_vars($this) as $property => $value) {
+			$data[$property] = $value;
+		}
+
+		return $data;
+	}
+
+
+	public function getName() {
+
+		return $this->name;
+	}
 
 
 	/**
@@ -36,5 +67,4 @@ class Role extends Object {
 
 		return false;
 	}
-
 }

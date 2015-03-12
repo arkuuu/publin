@@ -9,6 +9,21 @@ namespace publin\src;
  */
 class Author extends ObjectWithPublications {
 
+	protected $id;
+	protected $user_id;
+	protected $academic_title;
+	protected $family;
+	protected $given;
+	protected $website;
+	protected $contact;
+	protected $about;
+
+
+	public function getId() {
+
+		return $this->id;
+	}
+
 
 	/**
 	 * Returns the user id or 0, if there is no user id.
@@ -17,7 +32,18 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getUserId() {
 
-		return $this->getData('user_id');
+		return $this->user_id;
+	}
+
+
+	public function getData() {
+
+		$data = array();
+		foreach (get_class_vars($this) as $property => $value) {
+			$data[$property] = $value;
+		}
+
+		return $data;
 	}
 
 
@@ -28,12 +54,8 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getName() {
 
-		// $academic_title = $this -> getData('academic_title');
-		$given = $this->getData('given');
-		$family = $this->getData('family');
-
-		if ($given && $family) {
-			return $given.' '.$family;
+		if ($this->given && $this->family) {
+			return $this->given.' '.$this->family;
 		}
 		else {
 			return false;
@@ -48,7 +70,7 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getLastName() {
 
-		return $this->getData('family');
+		return $this->family;
 	}
 
 
@@ -61,10 +83,9 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getFirstName($short = false) {
 
-		$given = $this->getData('given');
-
-		if ($given && $short) {
-			$names = preg_split("/\s+/", $given);
+		if ($this->given && $short) {
+			// TODO: check preg_split vs. implode
+			$names = preg_split("/\s+/", $this->given);
 			$string = '';
 			foreach ($names as $name) {
 				$string .= mb_substr($name, 0, 1).'.';
@@ -72,8 +93,8 @@ class Author extends ObjectWithPublications {
 
 			return $string;
 		}
-		else if ($given) {
-			return $given;
+		else if ($this->given) {
+			return $this->given;
 		}
 		else {
 			return false;
@@ -88,7 +109,7 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getWebsite() {
 
-		return $this->getData('website');
+		return $this->website;
 	}
 
 
@@ -99,7 +120,7 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getContact() {
 
-		return $this->getData('contact');
+		return $this->contact;
 	}
 
 
@@ -110,6 +131,6 @@ class Author extends ObjectWithPublications {
 	 */
 	public function getText() {
 
-		return $this->getData('text');
+		return $this->about;
 	}
 }

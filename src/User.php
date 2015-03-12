@@ -2,9 +2,15 @@
 
 namespace publin\src;
 
-class User extends Object {
+class User {
 
 
+	private $id;
+	private $name;
+	private $mail;
+	private $active;
+	private $date_register;
+	private $date_last_login;
 	/**
 	 * @var Role[]
 	 */
@@ -14,9 +20,26 @@ class User extends Object {
 
 	public function __construct(array $data, array $roles = array(), array $permissions = array()) {
 
+		foreach ($data as $property => $value) {
+			if (property_exists($this, $property)) {
+				$this->$property = $value;
+			}
+		}
+
 		$this->setPermissions($permissions);
 		$this->setRoles($roles);
-		parent::__construct($data);
+	}
+
+
+	public function getId() {
+
+		return $this->id;
+	}
+
+
+	public function getName() {
+
+		return $this->name;
 	}
 
 
@@ -90,16 +113,17 @@ class User extends Object {
 		}
 	}
 
+
 	public function getMail() {
 
-		return $this->getData('mail');
+		return $this->mail;
 	}
 
 
 	public function getDateRegister($format) {
 
-		if ($this->getData('date_register')) {
-			return date($format, strtotime($this->getData('date_register')));
+		if ($this->date_register) {
+			return date($format, strtotime($this->date_register));
 		}
 		else {
 			return false;
@@ -109,8 +133,8 @@ class User extends Object {
 
 	public function getDateLastLogin($format) {
 
-		if ($this->getData('date_last_login')) {
-			return date($format, strtotime($this->getData('date_last_login')));
+		if ($this->date_last_login) {
+			return date($format, strtotime($this->date_last_login));
 		}
 		else {
 			return false;
@@ -120,6 +144,11 @@ class User extends Object {
 
 	public function isActive() {
 
-		return $this->getData('active');
+		if ($this->active) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

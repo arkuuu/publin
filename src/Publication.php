@@ -9,25 +9,67 @@ use InvalidArgumentException;
  *
  * TODO: comment
  */
-class Publication extends Object {
+class Publication {
 
-	/**
-	 * @var    Author[]
-	 */
+	private $id;
+	private $date_added;
+	private $type_id;
+	private $type;
+	private $study_field;
+	private $study_field_id;
+	private $title;
 	private $authors;
-
-
-	/**
-	 * @var    Keyword[]
-	 */
+	private $journal;
+	private $volume;
+	private $number;
+	private $booktitle;
+	private $series;
+	private $edition;
+	private $pages_from;
+	private $pages_to;
+	private $note;
+	private $location;
+	private $date_published;
+	private $publisher;
+	private $institution;
+	private $school;
+	private $address;
+	private $howpublished;
+	private $copyright;
+	private $doi;
+	private $isbn;
+	private $abstract;
 	private $keywords;
+	private $files;
 
 
 	public function __construct(array $data, array $authors, array $keywords = array()) {
 
-		parent::__construct($data);
+		foreach ($data as $property => $value) {
+			if (property_exists($this, $property)) {
+				$this->$property = $value;
+			}
+		}
+
 		$this->setAuthors($authors);
 		$this->setKeywords($keywords);
+	}
+
+
+	public function getId() {
+
+		return $this->id;
+	}
+
+
+	public function getData() {
+
+		$data = array();
+		foreach (get_class_vars($this) as $property => $value) {
+			$data[$property] = $value;
+		}
+
+		return $data;
 	}
 
 
@@ -36,7 +78,7 @@ class Publication extends Object {
 	 */
 	public function getTypeId() {
 
-		return $this->getData('type_id');
+		return $this->type_id;
 	}
 
 
@@ -47,7 +89,7 @@ class Publication extends Object {
 	 */
 	public function getStudyField() {
 
-		return $this->getData('study_field');
+		return $this->study_field;
 	}
 
 
@@ -56,7 +98,7 @@ class Publication extends Object {
 	 */
 	public function getIsbn() {
 
-		return $this->getData('isbn');
+		return $this->isbn;
 	}
 
 
@@ -65,7 +107,7 @@ class Publication extends Object {
 	 */
 	public function getDoi() {
 
-		return $this->getData('doi');
+		return $this->doi;
 	}
 
 
@@ -74,7 +116,7 @@ class Publication extends Object {
 	 */
 	public function getCopyright() {
 
-		return $this->getData('copyright');
+		return $this->copyright;
 	}
 
 
@@ -85,11 +127,8 @@ class Publication extends Object {
 	 */
 	public function getPages($divider) {
 
-		$pages_from = $this->getData('pages_from');
-		$pages_to = $this->getData('pages_to');
-
-		if ($pages_from && $pages_to) {
-			return $pages_from.$divider.$pages_to;
+		if ($this->pages_from && $this->pages_to) {
+			return $this->pages_from.$divider.$this->pages_to;
 		}
 		else {
 			return false;
@@ -99,13 +138,13 @@ class Publication extends Object {
 
 	public function getFirstPage() {
 
-		return $this->getData('pages_from');
+		return $this->pages_from;
 	}
 
 
 	public function getLastPage() {
 
-		return $this->getData('pages_to');
+		return $this->pages_to;
 	}
 
 
@@ -118,8 +157,8 @@ class Publication extends Object {
 	 */
 	public function getDateAdded($format) {
 
-		if ($this->getData('date_added')) {
-			return date($format, strtotime($this->getData('date_added')));
+		if ($this->date_added) {
+			return date($format, strtotime($this->date_added));
 		}
 		else {
 			return false;
@@ -140,7 +179,7 @@ class Publication extends Object {
 
 
 	/**
-	 * @param array $authors
+	 * @param Author[] $authors
 	 *
 	 * @return bool
 	 */
@@ -155,6 +194,39 @@ class Publication extends Object {
 			}
 			else {
 				throw new InvalidArgumentException('must be array with Author objects');
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @return    File[]
+	 */
+	public function getFiles() {
+
+		return $this->files;
+	}
+
+
+	/**
+	 * @param File[] $files
+	 *
+	 * @return bool
+	 *
+	 */
+	public function setFiles(array $files) {
+
+		$this->files = array();
+
+		foreach ($files as $file) {
+
+			if ($file instanceof File) {
+				$this->files[] = $file;
+			}
+			else {
+				throw new InvalidArgumentException('must be array with File objects');
 			}
 		}
 
@@ -204,7 +276,7 @@ class Publication extends Object {
 	 */
 	public function getTypeName() {
 
-		return $this->getData('type');
+		return $this->type;
 	}
 
 
@@ -215,7 +287,7 @@ class Publication extends Object {
 	 */
 	public function getTitle() {
 
-		return $this->getData('title');
+		return $this->title;
 	}
 
 
@@ -224,7 +296,7 @@ class Publication extends Object {
 	 */
 	public function getJournal() {
 
-		return $this->getData('journal');
+		return $this->journal;
 	}
 
 
@@ -233,7 +305,7 @@ class Publication extends Object {
 	 */
 	public function getBooktitle() {
 
-		return $this->getData('booktitle');
+		return $this->booktitle;
 	}
 
 
@@ -242,7 +314,7 @@ class Publication extends Object {
 	 */
 	public function getPublisher() {
 
-		return $this->getData('publisher');
+		return $this->publisher;
 	}
 
 
@@ -251,7 +323,7 @@ class Publication extends Object {
 	 */
 	public function getEdition() {
 
-		return $this->getData('edition');
+		return $this->edition;
 	}
 
 
@@ -260,7 +332,7 @@ class Publication extends Object {
 	 */
 	public function getInstitution() {
 
-		return $this->getData('institution');
+		return $this->institution;
 	}
 
 
@@ -269,7 +341,7 @@ class Publication extends Object {
 	 */
 	public function getSchool() {
 
-		return $this->getData('school');
+		return $this->school;
 	}
 
 
@@ -278,7 +350,7 @@ class Publication extends Object {
 	 */
 	public function getHowpublished() {
 
-		return $this->getData('howpublished');
+		return $this->howpublished;
 	}
 
 
@@ -291,8 +363,8 @@ class Publication extends Object {
 	 */
 	public function getDatePublished($format) {
 
-		if ($this->getData('date_published')) {
-			return date($format, strtotime($this->getData('date_published')));
+		if ($this->date_published) {
+			return date($format, strtotime($this->date_published));
 		}
 		else {
 			return false;
@@ -305,7 +377,7 @@ class Publication extends Object {
 	 */
 	public function getVolume() {
 
-		return $this->getData('volume');
+		return $this->volume;
 	}
 
 
@@ -314,7 +386,7 @@ class Publication extends Object {
 	 */
 	public function getNumber() {
 
-		return $this->getData('number');
+		return $this->number;
 	}
 
 
@@ -323,7 +395,7 @@ class Publication extends Object {
 	 */
 	public function getSeries() {
 
-		return $this->getData('series');
+		return $this->series;
 	}
 
 
@@ -334,7 +406,7 @@ class Publication extends Object {
 	 */
 	public function getAbstract() {
 
-		return $this->getData('abstract');
+		return $this->abstract;
 	}
 
 
@@ -343,7 +415,7 @@ class Publication extends Object {
 	 */
 	public function getNote() {
 
-		return $this->getData('note');
+		return $this->note;
 	}
 
 
@@ -352,12 +424,12 @@ class Publication extends Object {
 	 */
 	public function getAddress() {
 
-		return $this->getData('address');
+		return $this->address;
 	}
 
 
 	public function getLocation() {
 
-		return $this->getData('location');
+		return $this->location;
 	}
 }
