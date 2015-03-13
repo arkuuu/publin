@@ -27,10 +27,7 @@ class FileHandler {
 
 		if ($file['error'] === UPLOAD_ERR_OK) {
 
-			$file_info = new finfo();
-			$mime_type = $file_info->file($file['tmp_name'], FILEINFO_MIME_TYPE);
-
-			if (self::getFileExtension($mime_type)) {
+			if (self::getFileExtension($file['tmp_name'])) {
 				$file_name = self::generateFileName();
 				$success = move_uploaded_file($file['tmp_name'], self::PATH.$file_name);
 
@@ -60,12 +57,12 @@ class FileHandler {
 	}
 
 
-	private static function getFileExtension($mime_type) {
+	private static function getFileExtension($file) {
 
-		$allowed = self::getAllowedFiles();
-
-		if (isset($allowed[$mime_type])) {
-			return $allowed[$mime_type];
+		$mime_type = self::getMimeType($file);
+		$extension = self::getAllowedTypes();
+		if (isset($extension[$mime_type])) {
+			return $extension[$mime_type];
 		}
 		else {
 			return false;
@@ -73,9 +70,19 @@ class FileHandler {
 	}
 
 
-	public static function getAllowedFiles() {
+	private static function getMimeType($file) {
 
-		return array('application/pdf' => '.pdf');
+		$file_info = new finfo();
+		$mime_type = $file_info->file($file, FILEINFO_MIME_TYPE);
+
+		return $mime_type;
+	}
+
+
+	public static function getAllowedTypes() {
+
+		return array('application/pdf' => '.pdf',
+					 'image/png'       => '.png');
 	}
 
 
@@ -90,20 +97,41 @@ class FileHandler {
 	}
 
 
-	public static function download($file_name) {
+	public static function download($file_name, $download_name = 'file') {
 
 		$file = self::PATH.$file_name;
+
 		if (file_exists($file)) {
-			// TODO
-			return $file;
+
+			header('Content-Type: '.self::getMimeType($file));
+			header('Content-Disposition: inline; filename="'.$download_name.self::getFileExtension($file).'"');
+			header('Expires: 0'); // TODO: check all this
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			header('Content-Length: '.filesize($file));
+			readfile($file);
+			exit;
 		}
 		else {
-			return false;
+			throw new FileHandlerException('file does not exist');
 		}
 	}
 
 
 	public static function delete($file_name) {
-		// deletes a file
+
+		$file = self::PATH.$file_name;
+
+		if (file_exists($file)) {
+			if (unlink($file)) {
+				return true;
+			}
+			else {
+				throw new FileHandlerException('file could not be deleted');
+			}
+		}
+		else {
+			throw new FileHandlerException('file does not exist');
+		}
 	}
 }
