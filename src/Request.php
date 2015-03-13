@@ -22,16 +22,15 @@ class Request {
 
 	public function getUrl() {
 
-		return $this->createUrl($_GET);
+		return $this->createUrl($this->get);
 	}
 
 
 	public static function createUrl(array $parameters) {
 
-		$baseUrl = '';
-		$delimiter = '&amp;';
-
+		$delimiter = '&';
 		$url = '';
+
 		foreach ($parameters as $key => $value) {
 			if (!empty($value)) {
 				$url .= $key.'='.$value.$delimiter;
@@ -40,22 +39,10 @@ class Request {
 		$url = substr($url, 0, -strlen($delimiter));
 
 		if (empty($url)) {
-			return $baseUrl;
+			return '';
 		}
 		else {
-			return $baseUrl.'?'.$url;
-		}
-	}
-
-
-	public function isPost() {
-
-		// TODO: this will not work when both GET and POST is requested
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			return true;
-		}
-		else {
-			return false;
+			return '?'.$url;
 		}
 	}
 
