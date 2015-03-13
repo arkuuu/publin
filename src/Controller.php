@@ -3,7 +3,9 @@
 namespace publin\src;
 
 use Exception;
+use publin\src\exceptions\LoginRequiredException;
 use publin\src\exceptions\NotFoundException;
+use publin\src\exceptions\PermissionRequiredException;
 
 /**
  * Controls everything.
@@ -12,8 +14,10 @@ use publin\src\exceptions\NotFoundException;
  */
 class Controller {
 
-	private $auth;
+	const BASE_URL = '/publin/';
+
 	private $db;
+	private $auth;
 
 
 	/**
@@ -52,8 +56,15 @@ class Controller {
 				return $this->staticPage($request);
 			}
 		}
+		catch (LoginRequiredException $e) {
+			$this->redirect('?p=login', $request->getUrl());
+
+			return 'Redirecting to login page';
+		}
+		catch (PermissionRequiredException $e) {
+			return 'Permission '.$e->getMessage().' is required to do this';
+		}
 		catch (NotFoundException $e) {
-			// TODO: header(..)
 			return '404 - Sorry, something missing here: '.htmlspecialchars($e->getMessage());
 		}
 		catch (Exception $e) {
@@ -85,6 +96,18 @@ class Controller {
 		}
 
 		return $view->display();
+	}
+
+
+	private function redirect($destination, $referrer = '') {
+
+		if (!isset($_SESSION)) {
+			session_start();
+		}
+		$_SESSION['referrer'] = $referrer;
+
+		header('Location: '.self::BASE_URL.$destination, true);
+		exit();
 	}
 
 
@@ -127,7 +150,7 @@ class Controller {
 	 */
 	private function publication(Request $request) {
 
-		$controller = new PublicationController($this->db);
+		$controller = new PublicationController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -165,6 +188,7 @@ class Controller {
 	 * @param Request $request
 	 *
 	 * @return string
+	 * @throws LoginRequiredException
 	 */
 	private function submit(Request $request) {
 
@@ -174,12 +198,12 @@ class Controller {
 			return $controller->run($request);
 		}
 		else {
-			return $this->login($request);
+			throw new LoginRequiredException();
 		}
 	}
 
 
-	/**
+	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
 	 *
 	 * @return string
@@ -188,11 +212,11 @@ class Controller {
 	 */
 	private function login(Request $request) {
 
-		// TODO: redirect if already logged in
 		if ($request->post('username') && $request->post('password')) {
 			if ($this->auth->login($request->post('username'), $request->post('password'))) {
-				// header();
-				print_r('success');
+
+				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : '?p=start';
+				$this->redirect($destination, $request->getUrl());
 			}
 			else {
 				print_r('incorrect login');
@@ -208,6 +232,7 @@ class Controller {
 	 * @param Request $request
 	 *
 	 * @return string
+	 * @throws LoginRequiredException
 	 */
 	private function manage(Request $request) {
 
@@ -217,7 +242,7 @@ class Controller {
 			return $controller->run($request);
 		}
 		else {
-			return $this->login($request);
+			throw new LoginRequiredException();
 		}
 	}
 

@@ -2,7 +2,12 @@
 
 namespace publin\src;
 
+use publin\src\exceptions\LoginRequiredException;
+
 class Auth {
+
+	const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
+	const EDIT_PUBLICATION = 'publication_edit';
 
 	private $db;
 	private $session_expire_time = 1000;
@@ -43,7 +48,6 @@ class Auth {
 		else {
 			return false;
 		}
-
 	}
 
 
@@ -86,7 +90,7 @@ class Auth {
 			}
 		}
 		else {
-			return false;
+			throw new LoginRequiredException();
 		}
 	}
 
