@@ -99,6 +99,7 @@ class FileHandler {
 
 	public static function download($file_name, $download_name = 'file') {
 
+		$file_name = pathinfo($file_name, PATHINFO_BASENAME);
 		$file = self::PATH.$file_name;
 
 		if (file_exists($file)) {
@@ -120,6 +121,7 @@ class FileHandler {
 
 	public static function delete($file_name) {
 
+		$file_name = pathinfo($file_name, PATHINFO_BASENAME);
 		$file = self::PATH.$file_name;
 
 		if (file_exists($file)) {

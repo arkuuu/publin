@@ -24,9 +24,10 @@ class FileModel {
 	 */
 	public function fetch($publication_id) {
 
-		$query = 'SELECT `id`, `name`, `restricted`
+		$query = 'SELECT *
 		FROM `files`
-		WHERE `publication_id` = '.$publication_id.';';
+		WHERE `publication_id` = '.$publication_id.'
+		ORDER BY `full_text` DESC;';
 
 		$data = $this->db->getData($query);
 		$files = array();
@@ -73,10 +74,12 @@ class FileModel {
 	}
 
 
-	public function addFile($publication_id, $name, $restricted) {
+	public function addFile($publication_id, $file_name, $title, $restricted, $full_text) {
 
 		$data = array('publication_id' => $publication_id,
-					  'name'           => $name,
+					  'name'      => $file_name,
+					  'title'     => $title,
+					  'full_text' => $full_text,
 					  'restricted'     => $restricted);
 
 		return $this->db->insertData('files', $data);

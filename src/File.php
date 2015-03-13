@@ -7,6 +7,8 @@ class File {
 
 	private $id;
 	private $name;
+	private $title;
+	private $full_text;
 	private $restricted;
 
 
@@ -31,6 +33,22 @@ class File {
 		return $this->name;
 	}
 
+
+	public function getTitle() {
+
+		return $this->title;
+	}
+
+
+	public function isFullText() {
+
+		if ($this->full_text) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	public function isRestricted() {
 
