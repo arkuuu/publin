@@ -157,6 +157,13 @@
 <p><?php echo $this -> showAbstract() ?></p>
 <?php } ?>
 
+<?php if ($this -> showFiles()) { ?>
+<h2>Downloads</h2>
+<ul>
+	<?php echo $this -> showFiles() ?>
+</ul>
+<?php } ?>
+
 <?php if ($this -> showKeywords()) { ?>
 <h2>Keywords</h2>
 <p><?php echo $this -> showKeywords() ?></p>

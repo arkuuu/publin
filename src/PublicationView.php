@@ -262,7 +262,6 @@ class PublicationView extends View {
 	}
 
 
-
 	/**
 	 * @param string $separator
 	 *
@@ -566,5 +565,31 @@ class PublicationView extends View {
 	public function showCopyright() {
 
 		return $this->html($this->publication->getCopyright());
+	}
+
+
+	public function showFiles() {
+
+		$files = $this->publication->getFiles();
+		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file=';
+		$string = '';
+
+		foreach ($files as $file) {
+
+			if ($file->isFullText()) {
+				$title = 'Full text';
+			}
+			else if ($file->getTitle()) {
+				$title = $file->getTitle();
+			}
+			else {
+				$title = 'Unnamed file';
+			}
+			$restricted = $file->isRestricted() ? ' (restricted)' : '';
+
+			$string .= '<li><a href="'.$this->html($url.$file->getId()).'">'.$this->html($title).'</a>'.$this->html($restricted).'</li>';
+		}
+
+		return $string;
 	}
 }

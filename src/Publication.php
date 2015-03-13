@@ -43,7 +43,7 @@ class Publication {
 	private $files;
 
 
-	public function __construct(array $data, array $authors, array $keywords = array()) {
+	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array()) {
 
 		foreach ($data as $property => $value) {
 			if (property_exists($this, $property)) {
@@ -53,6 +53,7 @@ class Publication {
 
 		$this->setAuthors($authors);
 		$this->setKeywords($keywords);
+		$this->setFiles($files);
 	}
 
 

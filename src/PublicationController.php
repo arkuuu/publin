@@ -3,15 +3,20 @@
 
 namespace publin\src;
 
+use Exception;
+use publin\src\exceptions\PermissionRequiredException;
+
 class PublicationController {
 
 	private $db;
+	private $auth;
 	private $model;
 
 
-	public function __construct(Database $db) {
+	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
+		$this->auth = $auth;
 		$this->model = new PublicationModel($db);
 	}
 
@@ -20,7 +25,7 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return string
-	 * @throws \Exception
+	 * @throws Exception
 	 * @throws exceptions\NotFoundException
 	 */
 	public function run(Request $request) {
@@ -34,6 +39,10 @@ class PublicationController {
 
 		$publications = $this->model->fetch(true, array('id' => $request->get('id')));
 
+		if ($request->get('m') === 'file') {
+			$this->download($request);
+		}
+
 		if ($request->get('m') === 'edit') {
 			$view = new PublicationView($publications[0], true);
 		}
@@ -42,6 +51,34 @@ class PublicationController {
 		}
 
 		return $view->display();
+	}
+
+
+	/**
+	 * @param Request $request
+	 *
+	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\FileHandlerException
+	 */
+	private function download(Request $request) {
+
+		if ($request->get('file')) {
+			$file_model = new FileModel($this->db);
+			$file = $file_model->fetchById($request->get('file'));
+
+			if (!$file->isRestricted() || $this->auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
+				FileHandler::download($file->getName(), $file->getTitle());
+
+				return true;
+			}
+			else {
+				throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
+			}
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -163,6 +200,7 @@ class PublicationController {
 				$input = $validator->getSanitizedResult();
 				$success = $this->model->update($request->get('id'), $input);
 				print_r($success);
+
 				return true;
 			}
 			else {

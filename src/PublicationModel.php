@@ -48,12 +48,17 @@ class PublicationModel {
 				/* Gets the publications' keywords */
 				$model = new KeywordModel($this->db);
 				$keywords = $model->fetch(false, array('publication_id' => $value['id']));
+
+				/* Gets the publications' files */
+				$model = new FileModel($this->db);
+				$files = $model->fetch($value['id']);
 			}
 			else {
 				$keywords = array();
+				$files = array();
 			}
 
-			$publication = new Publication($value, $authors, $keywords);
+			$publication = new Publication($value, $authors, $keywords, $files);
 			$publications[] = $publication;
 		}
 
