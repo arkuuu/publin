@@ -4,6 +4,7 @@
 namespace publin\src;
 
 use Exception;
+use InvalidArgumentException;
 use publin\src\exceptions\PermissionRequiredException;
 
 class PublicationController {
@@ -228,5 +229,28 @@ class PublicationController {
 		else {
 			return false;
 		}
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function removeFile(Request $request) {
+
+		if ($request->post('file_id')) {
+			$file_model = new FileModel($this->db);
+			$file = $file_model->fetchById($request->post('file_id'));
+
+			return $file_model->delete($file->getId());
+		}
+		else {
+			throw new InvalidArgumentException();
+		}
+	}
+
+
+	private function addFile(Request $request) {
 	}
 }

@@ -3,6 +3,7 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 class FileModel {
@@ -27,7 +28,7 @@ class FileModel {
 		$query = 'SELECT *
 		FROM `files`
 		WHERE `publication_id` = '.$publication_id.'
-		ORDER BY `full_text` DESC;';
+		ORDER BY `full_text` DESC, `restricted` ASC;';
 
 		$data = $this->db->getData($query);
 		$files = array();
@@ -40,30 +41,28 @@ class FileModel {
 	}
 
 
-	/**
-	 * @param $id
-	 *
-	 * @return File
-	 * @throws exceptions\SQLException
-	 */
-	public function fetchById($id) {
+	public function addFile($publication_id, $file_name, $title, $restricted, $full_text) {
 
-		$query = 'SELECT `id`, `name`, `restricted`
-		FROM `files`
-		WHERE `id` = '.$id.'
-		LIMIT 0,1;';
+		$data = array('publication_id' => $publication_id,
+					  'name'           => $file_name,
+					  'title'          => $title,
+					  'full_text'      => $full_text,
+					  'restricted'     => $restricted);
 
-		$data = $this->db->getData($query);
-		$file = new File($data[0]);
-
-		return $file;
+		return $this->db->insertData('files', $data);
 	}
 
 
-	public function removeFile($name) {
+	public function delete($id) {
 
-		$where = array('name' => $name);
-		$rows = $this->db->deleteData('files', $where);
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException('id must be numeric');
+		}
+
+		$file = $this->fetchById($id);
+
+		FileHandler::delete($file->getName());
+		$rows = $this->db->deleteData('files', array('id' => $file->getId()));
 
 		if ($rows == 1) {
 			return true;
@@ -74,14 +73,42 @@ class FileModel {
 	}
 
 
-	public function addFile($publication_id, $file_name, $title, $restricted, $full_text) {
+	/**
+	 * @param $id
+	 *
+	 * @return File
+	 * @throws exceptions\SQLException
+	 */
+	public function fetchById($id) {
 
-		$data = array('publication_id' => $publication_id,
-					  'name'      => $file_name,
-					  'title'     => $title,
-					  'full_text' => $full_text,
-					  'restricted'     => $restricted);
+		$query = 'SELECT *
+		FROM `files`
+		WHERE `id` = '.$id.'
+		LIMIT 0,1;';
 
-		return $this->db->insertData('files', $data);
+		$data = $this->db->getData($query);
+		$file = new File($data[0]); // TODO: error when empty array
+
+		return $file;
 	}
+
+
+//	public function download($id, Auth $auth){
+//
+//		if (!is_numeric($id)) {
+//			throw new InvalidArgumentException('id must be numeric');
+//		}
+//
+//		$file = $this->fetchById($id);
+//
+//		if (!$file->isRestricted() || $auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
+//			FileHandler::download($file->getName(), $file->getTitle());
+//
+//			return true;
+//		}
+//		else {
+//			throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
+//		}
+//
+//	}
 }

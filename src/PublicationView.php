@@ -305,8 +305,8 @@ class PublicationView extends View {
 		foreach ($keywords as $keyword) {
 			$string .= '<li>
 						<form action="#" method="post" accept-charset="utf-8">
-						'.$keyword->getName().'
-						<input type="hidden" name="keyword_id" value="'.$keyword->getId().'"/>
+						'.$this->html($keyword->getName()).'
+						<input type="hidden" name="keyword_id" value="'.$this->html($keyword->getId()).'"/>
 						<input type="hidden" name="action" value="removeKeyword"/>
 						<input type="submit" value="x"/>
 						</form>
@@ -331,8 +331,8 @@ class PublicationView extends View {
 		foreach ($authors as $author) {
 			$string .= '<li>
 						<form action="#" method="post" accept-charset="utf-8">
-						'.$author->getName().'
-						<input type="hidden" name="author_id" value="'.$author->getId().'"/>
+						'.$this->html($author->getName()).'
+						<input type="hidden" name="author_id" value="'.$this->html($author->getId()).'"/>
 						<input type="hidden" name="action" value="removeAuthor"/>
 						<input type="submit" value="x"/>
 						</form>
@@ -589,6 +589,42 @@ class PublicationView extends View {
 
 			$string .= '<li><a href="'.$this->html($url.$file->getId()).'">'.$this->html($title).'</a>'.$this->html($restricted).'</li>';
 		}
+
+		return $string;
+	}
+
+
+	public function showEditFiles() {
+
+		$files = $this->publication->getFiles();
+		$string = '';
+
+		foreach ($files as $file) {
+
+			$full_text = $file->isFullText() ? ' (full text)' : '';
+			$restricted = $file->isRestricted() ? ' (restricted)' : '';
+			$string .= '<li>
+						<form action="#" method="post" accept-charset="utf-8">
+						'.$this->html($file->getTitle().$full_text.$restricted).'
+						<input type="hidden" name="file_id" value="'.$this->html($file->getId()).'"/>
+						<input type="hidden" name="action" value="removeFile"/>
+						<input type="submit" value="x"/>
+						</form>
+						</li>';
+		}
+
+		$string .= '<li><form action="#" method="post" enctype="multipart/form-data">
+	<label for="file">File:</label>
+	<input type="file" name="file"><br/>
+	<label for="title">Title/Description:</label>
+	<input type="text" name="title"><br/>
+	<input type="checkbox" name="full_text" value="yes">
+	<label for="full_text">Full Text</label>
+	<input type="checkbox" name="restricted" id="restricted" value="yes"/>
+	<label for="restricted">Access Restricted</label><br/>
+	<input type="hidden" name="action" value="addFile"/>
+	<input type="submit" value="Upload File"/>
+</form></li>';
 
 		return $string;
 	}
