@@ -120,6 +120,18 @@ class Validator {
 						}
 						break;
 
+					case 'boolean':
+						if ($this->sanitizeBoolean($value)) {
+							$result[$field] = $this->sanitizeBoolean($value);
+						}
+						else if ($rule['required'] == true) {
+							$this->errors[] = $rule['error_msg'];
+						}
+						else {
+							$result[$field] = '';
+						}
+						break;
+
 					default:
 						throw new InvalidArgumentException('unknown validation rule '.$rule['type']);
 						break;
@@ -208,6 +220,29 @@ class Validator {
 		}
 		else {
 			return false;
+		}
+	}
+
+
+	public static function sanitizeBoolean($boolean) {
+
+		if (is_string($boolean)) {
+			$boolean = trim($boolean);
+			$boolean = strtolower($boolean);
+
+			switch ($boolean) {
+				case '1':
+				case 'true':
+				case 'yes':
+				case 'y':
+				case 'on':
+					return true;
+				default:
+					return false;
+			}
+		}
+		else {
+			return (bool)$boolean;
 		}
 	}
 }
