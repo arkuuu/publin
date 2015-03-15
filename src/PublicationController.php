@@ -4,7 +4,7 @@
 namespace publin\src;
 
 use Exception;
-use InvalidArgumentException;
+use publin\src\exceptions\FileHandlerException;
 use publin\src\exceptions\PermissionRequiredException;
 
 class PublicationController {
@@ -241,16 +241,48 @@ class PublicationController {
 
 		if ($request->post('file_id')) {
 			$file_model = new FileModel($this->db);
-			$file = $file_model->fetchById($request->post('file_id'));
 
-			return $file_model->delete($file->getId());
+			return $file_model->delete($request->post('file_id'));
 		}
 		else {
-			throw new InvalidArgumentException();
+			return false;
 		}
 	}
 
 
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
 	private function addFile(Request $request) {
+
+		if ($request->post()) {
+			$file_model = new FileModel($this->db);
+			$validator = $file_model->getValidator();
+			if ($validator->validate($request->post())) {
+				$file = new File($validator->getSanitizedResult());
+				try {
+					$success = $file_model->store($_FILES['file'], $file, $request->get('id'));
+
+					return $success;
+				}
+				catch (FileHandlerException $e) {
+					print_r($e->getMessage());
+
+					return false;
+				}
+			}
+			else {
+				print_r($validator->getErrors());
+
+				return false;
+			}
+		}
+		else {
+			print_r('fail');
+
+			return false;
+		}
 	}
 }

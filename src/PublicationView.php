@@ -587,7 +587,7 @@ class PublicationView extends View {
 			}
 			$restricted = $file->isRestricted() ? ' (restricted)' : '';
 
-			$string .= '<li><a href="'.$this->html($url.$file->getId()).'">'.$this->html($title).'</a>'.$this->html($restricted).'</li>';
+			$string .= '<li><a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($title).'</a>'.$this->html($restricted).'</li>';
 		}
 
 		return $string;
@@ -597,6 +597,7 @@ class PublicationView extends View {
 	public function showEditFiles() {
 
 		$files = $this->publication->getFiles();
+		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file=';
 		$string = '';
 
 		foreach ($files as $file) {
@@ -605,7 +606,7 @@ class PublicationView extends View {
 			$restricted = $file->isRestricted() ? ' (restricted)' : '';
 			$string .= '<li>
 						<form action="#" method="post" accept-charset="utf-8">
-						'.$this->html($file->getTitle().$full_text.$restricted).'
+						<a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$restricted).'
 						<input type="hidden" name="file_id" value="'.$this->html($file->getId()).'"/>
 						<input type="hidden" name="action" value="removeFile"/>
 						<input type="submit" value="x"/>
@@ -616,7 +617,7 @@ class PublicationView extends View {
 		$string .= '<li><form action="#" method="post" enctype="multipart/form-data">
 	<label for="file">File:</label>
 	<input type="file" name="file"><br/>
-	<label for="title">Title/Description:</label>
+	<label for="title">Description:</label>
 	<input type="text" name="title"><br/>
 	<input type="checkbox" name="full_text" value="yes">
 	<label for="full_text">Full Text</label>

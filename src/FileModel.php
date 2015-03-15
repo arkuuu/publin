@@ -41,15 +41,22 @@ class FileModel {
 	}
 
 
-	public function addFile($publication_id, $file_name, $title, $restricted, $full_text) {
+	public function store(array $file_data, File $file, $publication_id) {
 
-		$data = array('publication_id' => $publication_id,
-					  'name'           => $file_name,
-					  'title'          => $title,
-					  'full_text'      => $full_text,
-					  'restricted'     => $restricted);
+		$file_name = FileHandler::upload($file_data);
 
-		return $this->db->insertData('files', $data);
+		if ($file_name) {
+			$data = array('publication_id' => $publication_id,
+						  'name'           => $file_name,
+						  'title'          => $file->getTitle(),
+						  'full_text'      => $file->isFullText(),
+						  'restricted'     => $file->isRestricted());
+
+			return $this->db->insertData('files', $data);
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -60,10 +67,9 @@ class FileModel {
 		}
 
 		$file = $this->fetchById($id);
-
 		FileHandler::delete($file->getName());
-		$rows = $this->db->deleteData('files', array('id' => $file->getId()));
 
+		$rows = $this->db->deleteData('files', array('id' => $file->getId()));
 		if ($rows == 1) {
 			return true;
 		}
@@ -111,4 +117,16 @@ class FileModel {
 //		}
 //
 //	}
+
+	public function getValidator() {
+
+		$validator = new Validator();
+
+		$validator->addRule('name', 'text', false, 'File name is invalid');
+		$validator->addRule('title', 'text', true, 'File title is required but invalid');
+		$validator->addRule('full_text', 'boolean', false, 'Full text is required but invalid');
+		$validator->addRule('restricted', 'boolean', false, 'Full text is required but invalid');
+
+		return $validator;
+	}
 }
