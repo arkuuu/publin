@@ -136,24 +136,26 @@ class Bibtex {
 		$fields[] = array('author', $authors);
 		$fields[] = array('title', $publication->getTitle());
 		$fields[] = array('journal', $publication->getJournal());
-		$fields[] = array('booktitle', $publication->getBooktitle());
 		$fields[] = array('volume', $publication->getVolume());
 		$fields[] = array('number', $publication->getNumber());
+		$fields[] = array('booktitle', $publication->getBooktitle());
 		$fields[] = array('series', $publication->getSeries());
 		$fields[] = array('edition', $publication->getEdition());
 		$fields[] = array('pages', $publication->getPages('--'));
+		$fields[] = array('note', $publication->getNote());
+		$fields[] = array('location', $publication->getLocation());
 		$fields[] = array('month', $publication->getDatePublished('F'));
 		$fields[] = array('year', $publication->getDatePublished('Y'));
 		//$fields[] = array('url', false); // TODO: link to pdf
 		//$fields[] = array('issn', false); // TODO
-		$fields[] = array('isbn', $publication->getIsbn());
+		$fields[] = array('publisher', $publication->getPublisher());
 		$fields[] = array('institution', $publication->getInstitution());
 		$fields[] = array('school', $publication->getSchool());
-		$fields[] = array('publisher', $publication->getPublisher());
-		$fields[] = array('doi', $publication->getDoi());
 		$fields[] = array('address', $publication->getAddress());
 		$fields[] = array('howpublished', $publication->getHowpublished());
-		$fields[] = array('note', $publication->getNote());
+		$fields[] = array('copyright', $publication->getCopyright());
+		$fields[] = array('doi', $publication->getDoi());
+		$fields[] = array('isbn', $publication->getIsbn());
 		$fields[] = array('abstract', $publication->getAbstract());
 		$fields[] = array('bibsource', $this->bibsource);
 		$fields[] = array('biburl', $this->url.$publication->getId());
@@ -270,15 +272,17 @@ class Bibtex {
 	 */
 	private function encodeSpecialChars($string) {
 
-		$string = str_replace('ü', '\"{u}', $string);
-		$string = str_replace('ä', '\"{a}', $string);
-		$string = str_replace('ö', '\"{o}', $string);
-		$string = str_replace('Ü', '\"{U}', $string);
-		$string = str_replace('Ä', '\"{A}', $string);
-		$string = str_replace('Ö', '\"{O}', $string);
+		$string = str_replace('ü', '{\"u}', $string);
+		$string = str_replace('ä', '{\"a}', $string);
+		$string = str_replace('ö', '{\"o}', $string);
+		$string = str_replace('Ü', '{\"U}', $string);
+		$string = str_replace('Ä', '{\"A}', $string);
+		$string = str_replace('Ö', '{\"O}', $string);
 
-		$string = str_replace('ç', '\c{c}', $string);
-		$string = str_replace('Ç', '\c{C}', $string);
+		$string = str_replace('ç', '{\c c}', $string);
+		$string = str_replace('Ç', '{\c C}', $string);
+		$string = str_replace('ú', '{\'u}', $string);
+		$string = str_replace('ñ', '{\~n}', $string);
 
 		// TODO continue
 
@@ -344,6 +348,8 @@ class Bibtex {
 
 						if ($pages) {
 							$result[$your_field] = $pages;
+							$result[$this->pages_fields['from']] = $pages[0];
+							$result[$this->pages_fields['to']] = $pages[1];
 						}
 					}
 					/* The rest */
@@ -372,8 +378,10 @@ class Bibtex {
 		$string = str_replace(array('\"A', '\"{A}', '{\"A}'), 'Ä', $string);
 		$string = str_replace(array('\"O', '\"{O}', '{\"O}'), 'Ö', $string);
 
-		$string = str_replace('\c{c}', 'ç', $string);
-		$string = str_replace('\c{C}', 'Ç', $string);
+		$string = str_replace(array('\c{c}', '{\c c}'), 'ç', $string);
+		$string = str_replace(array('\c{C}', '{\c C}'), 'ç', $string);
+		$string = str_replace(array('\'{u}', '{\' u}', '{\'u}'), 'ú', $string);
+		$string = str_replace(array('\~{n}', '{\~ n}', '{\~u}'), 'ñ', $string);
 
 		// TODO continue
 
@@ -505,8 +513,8 @@ class Bibtex {
 		$strings = explode('--', $string);
 
 		if (count($strings) == 2) {
-			$pages[$this->pages_fields['from']] = trim($strings[0]);
-			$pages[$this->pages_fields['to']] = trim($strings[1]);
+			$pages[0] = trim($strings[0]);
+			$pages[1] = trim($strings[1]);
 		}
 
 		return $pages;
