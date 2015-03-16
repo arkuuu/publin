@@ -41,22 +41,18 @@ class FileModel {
 	}
 
 
-	public function store(array $file_data, File $file, $publication_id) {
+	public function store(File $file, $publication_id) {
 
-		$file_name = FileHandler::upload($file_data);
-
-		if ($file_name) {
-			$data = array('publication_id' => $publication_id,
-						  'name'           => $file_name,
-						  'title'          => $file->getTitle(),
-						  'full_text'      => $file->isFullText(),
-						  'restricted'     => $file->isRestricted());
-
-			return $this->db->insertData('files', $data);
+		if (!is_numeric($publication_id)) {
+			throw new InvalidArgumentException('publication id must be numeric');
 		}
-		else {
-			return false;
-		}
+		$data = array('publication_id' => $publication_id,
+					  'name'           => $file->getName(),
+					  'title'          => $file->getTitle(),
+					  'full_text'      => $file->isFullText(),
+					  'restricted'     => $file->isRestricted());
+
+		return $this->db->insertData('files', $data);
 	}
 
 
@@ -66,10 +62,7 @@ class FileModel {
 			throw new InvalidArgumentException('id must be numeric');
 		}
 
-		$file = $this->fetchById($id);
-		FileHandler::delete($file->getName());
-
-		$rows = $this->db->deleteData('files', array('id' => $file->getId()));
+		$rows = $this->db->deleteData('files', array('id' => $id));
 		if ($rows == 1) {
 			return true;
 		}
@@ -98,25 +91,6 @@ class FileModel {
 		return $file;
 	}
 
-
-//	public function download($id, Auth $auth){
-//
-//		if (!is_numeric($id)) {
-//			throw new InvalidArgumentException('id must be numeric');
-//		}
-//
-//		$file = $this->fetchById($id);
-//
-//		if (!$file->isRestricted() || $auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
-//			FileHandler::download($file->getName(), $file->getTitle());
-//
-//			return true;
-//		}
-//		else {
-//			throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
-//		}
-//
-//	}
 
 	public function getValidator() {
 

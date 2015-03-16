@@ -4,6 +4,7 @@
 namespace publin\src;
 
 use Exception;
+use InvalidArgumentException;
 use publin\src\exceptions\FileHandlerException;
 use publin\src\exceptions\PermissionRequiredException;
 
@@ -211,7 +212,7 @@ class PublicationController {
 			}
 		}
 		else {
-			return false;
+			throw new InvalidArgumentException();
 		}
 	}
 
@@ -236,36 +237,24 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
-	 */
-	private function removeFile(Request $request) {
-
-		if ($request->post('file_id')) {
-			$file_model = new FileModel($this->db);
-
-			return $file_model->delete($request->post('file_id'));
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/** @noinspection PhpUnusedPrivateMethodInspection
-	 * @param Request $request
-	 *
-	 * @return bool
+	 * @throws FileHandlerException
 	 */
 	private function addFile(Request $request) {
 
-		if ($request->post()) {
+		if (isset($_FILES['file'])) {
 			$file_model = new FileModel($this->db);
 			$validator = $file_model->getValidator();
-			if ($validator->validate($request->post())) {
-				$file = new File($validator->getSanitizedResult());
-				try {
-					$success = $file_model->store($_FILES['file'], $file, $request->get('id'));
 
-					return $success;
+			if ($validator->validate($request->post())) {
+
+				try {
+					$file_name = FileHandler::upload($_FILES['file']);
+					$data = $validator->getSanitizedResult();
+					$data['name'] = $file_name;
+					$file = new File($data);
+					$file_model->store($file, $request->get('id'));
+
+					return true;
 				}
 				catch (FileHandlerException $e) {
 					print_r($e->getMessage());
@@ -280,9 +269,27 @@ class PublicationController {
 			}
 		}
 		else {
-			print_r('fail');
+			throw new InvalidArgumentException();
+		}
+	}
 
-			return false;
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function removeFile(Request $request) {
+
+		if ($request->post('file_id')) {
+			$file_model = new FileModel($this->db);
+			$file = $file_model->fetchById($request->post('file_id'));
+			FileHandler::delete($file->getName());
+
+			return $file_model->delete($request->post('file_id'));
+		}
+		else {
+			throw new InvalidArgumentException();
 		}
 	}
 }
