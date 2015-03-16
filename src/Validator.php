@@ -159,7 +159,7 @@ class Validator {
 			$number = trim($number);
 		}
 		if (is_numeric($number) && $number >= 0) {
-			return $number;
+			return (int)$number;
 		}
 		else {
 			return false;
