@@ -36,6 +36,9 @@ class PublicationController {
 	public function run(Request $request) {
 
 		if ($request->post('action')) {
+			if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+				throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+			}
 			$method = $request->post('action');
 			if (method_exists($this, $method)) {
 				$this->$method($request);
@@ -69,7 +72,7 @@ class PublicationController {
 	 * @throws PermissionRequiredException
 	 * @throws exceptions\FileHandlerException
 	 */
-	private function download(Request $request) {
+	public function download(Request $request) {
 
 		if ($request->get('file')) {
 			$file_model = new FileModel($this->db);
@@ -102,7 +105,7 @@ class PublicationController {
 			return $this->model->removeKeyword($request->get('id'), $request->post('keyword_id'));
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -134,7 +137,7 @@ class PublicationController {
 			}
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -151,7 +154,7 @@ class PublicationController {
 			return $this->model->removeAuthor($request->get('id'), $request->post('author_id'));
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -184,7 +187,7 @@ class PublicationController {
 			}
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -212,7 +215,7 @@ class PublicationController {
 			}
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -236,7 +239,7 @@ class PublicationController {
 			}
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -277,7 +280,7 @@ class PublicationController {
 			}
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -297,7 +300,7 @@ class PublicationController {
 			return $file_model->delete($request->post('file_id'));
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException;
 		}
 	}
 }

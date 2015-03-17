@@ -62,20 +62,20 @@ class Controller {
 			return 'Redirecting to login page';
 		}
 		catch (PermissionRequiredException $e) {
-			return 'Permission '.$e->getMessage().' is required to do this';
+			return 'Permission '.htmlspecialchars($e->getMessage()).' is required to do this';
 		}
 		catch (NotFoundException $e) {
 			return '404 - Sorry, something missing here: '.htmlspecialchars($e->getMessage());
 		}
-		catch (Exception $e) {
-
-			/* Deactivates output buffering if active */
-			if (ob_get_contents()) {
-				ob_end_clean();
-			}
-
-			return 'Sorry, there is an uncaught Exception: '.htmlspecialchars($e->getMessage());
-		}
+//		catch (Exception $e) {
+//
+//			/* Deactivates output buffering if active */
+//			if (ob_get_contents()) {
+//				ob_end_clean();
+//			}
+//
+//			return 'Sorry, there is an uncaught Exception: '.htmlspecialchars($e->getMessage());
+//		}
 	}
 
 
@@ -135,7 +135,7 @@ class Controller {
 	 */
 	private function author(Request $request) {
 
-		$controller = new AuthorController($this->db);
+		$controller = new AuthorController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}
