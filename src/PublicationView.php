@@ -25,11 +25,12 @@ class PublicationView extends View {
 	 * Constructs the publication view.
 	 *
 	 * @param Publication $publication
+	 * @param array       $errors
 	 * @param bool        $edit_mode
 	 */
-	public function __construct(Publication $publication, $edit_mode = false) {
+	public function __construct(Publication $publication, array $errors, $edit_mode = false) {
 
-		parent::__construct('publication');
+		parent::__construct('publication', $errors);
 		$this->publication = $publication;
 		$this->edit_mode = $edit_mode;
 	}

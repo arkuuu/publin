@@ -21,10 +21,13 @@ class View {
 
 	protected $content;
 
+	protected $errors;
 
-	public function __construct($content) {
+
+	public function __construct($content, $errors = array()) {
 
 		$this->content = $content;
+		$this->errors = $errors;
 	}
 
 
@@ -234,5 +237,21 @@ class View {
 		}
 
 		return $citation.'</div>';
+	}
+
+
+	public function showErrors() {
+
+		if (!empty($this->errors)) {
+			$string = '<div class="error">Following error(s) occurred while processing your request<ul>';
+			foreach ($this->errors as $error) {
+				$string .= '<li>'.$this->html($error).'</li>';
+			}
+
+			return $string.'</ul></div>';
+		}
+		else {
+			return false;
+		}
 	}
 }

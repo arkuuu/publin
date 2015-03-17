@@ -32,27 +32,28 @@ class FileHandler {
 				$success = move_uploaded_file($file['tmp_name'], self::PATH.$file_name);
 
 				if (!$success) {
-					throw new FileHandlerException('error while uploading file');
+					throw new FileHandlerException('Error while uploading file to server');
 				}
 
 				// TODO: chmod -x
 				return $file_name;
 			}
 			else {
-				throw new FileHandlerException('disallowed file type');
+				throw new FileHandlerException('Disallowed file type');
 			}
 		}
 		else if ($file['error'] === UPLOAD_ERR_NO_FILE) {
-			return false;
+			throw new FileHandlerException('No file given');
 		}
 		else if ($file['error'] === UPLOAD_ERR_INI_SIZE
 			|| $file['error'] === UPLOAD_ERR_FORM_SIZE
 			|| $file['size'] > self::MAX_SIZE
 		) {
-			throw new FileHandlerException('file is too big, error '.$file['error']);
+			throw new FileHandlerException('File is too big');
 		}
 		else {
-			throw new FileHandlerException('error '.$file['error']);
+			// TODO: change this error message
+			throw new FileHandlerException('Unknown error #'.$file['error']);
 		}
 	}
 

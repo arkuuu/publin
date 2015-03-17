@@ -13,11 +13,12 @@ class ViewWithPublications extends View {
 
 	/**
 	 * @param ObjectWithPublications $object
-	 * @param                        $type
+	 * @param array                  $type
+	 * @param array                  $errors
 	 */
-	public function __construct(ObjectWithPublications $object, $type) {
+	public function __construct(ObjectWithPublications $object, $type, array $errors = array()) {
 
-		parent::__construct($type);
+		parent::__construct($type, $errors);
 		$this->object = $object;
 	}
 

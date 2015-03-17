@@ -175,6 +175,18 @@ input, label {
 	font-size: small;
 }
 
+.error {
+	color: darkred;
+	background-color: rgba(187, 6, 15, 0.27);
+	border: 1px solid darkred;
+	padding-top: 5px;
+	text-align: center;
+}
+
+.success {
+	color: greenyellow;
+}
+
 /* Citation stuff */
 div.citation {
 	padding-bottom: 10px;

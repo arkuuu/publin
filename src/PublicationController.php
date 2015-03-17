@@ -3,6 +3,7 @@
 
 namespace publin\src;
 
+use BadMethodCallException;
 use Exception;
 use InvalidArgumentException;
 use publin\src\exceptions\FileHandlerException;
@@ -13,6 +14,7 @@ class PublicationController {
 	private $db;
 	private $auth;
 	private $model;
+	private $errors;
 
 
 	public function __construct(Database $db, Auth $auth) {
@@ -20,6 +22,7 @@ class PublicationController {
 		$this->db = $db;
 		$this->auth = $auth;
 		$this->model = new PublicationModel($db);
+		$this->errors = array();
 	}
 
 
@@ -37,6 +40,9 @@ class PublicationController {
 			if (method_exists($this, $method)) {
 				$this->$method($request);
 			}
+			else {
+				throw new BadMethodCallException;
+			}
 		}
 
 		$publications = $this->model->fetch(true, array('id' => $request->get('id')));
@@ -46,10 +52,10 @@ class PublicationController {
 		}
 
 		if ($request->get('m') === 'edit') {
-			$view = new PublicationView($publications[0], true);
+			$view = new PublicationView($publications[0], $this->errors, true);
 		}
 		else {
-			$view = new PublicationView($publications[0]);
+			$view = new PublicationView($publications[0], $this->errors);
 		}
 
 		return $view->display();
@@ -79,7 +85,7 @@ class PublicationController {
 			}
 		}
 		else {
-			return false;
+			throw new InvalidArgumentException;
 		}
 	}
 
@@ -96,9 +102,7 @@ class PublicationController {
 			return $this->model->removeKeyword($request->get('id'), $request->post('keyword_id'));
 		}
 		else {
-			print_r('ERROR');
-
-			return false;
+			throw new InvalidArgumentException();
 		}
 	}
 
@@ -110,28 +114,27 @@ class PublicationController {
 	 */
 	private function addKeyword(Request $request) {
 
-		$keyword_model = new KeywordModel($this->db);
-		$validator = $keyword_model->getValidator();
+		if ($request->get('id')) {
 
-		if ($validator->validate($request->post())) {
-			$data = $validator->getSanitizedResult();
-			$keyword = new Keyword($data);
-			$keyword_id = $keyword_model->store($keyword);
+			$keyword_model = new KeywordModel($this->db);
+			$validator = $keyword_model->getValidator();
 
-			if ($keyword_id && $request->get('id')) {
-				// TODO: priority?
-				return $this->model->addKeyword($request->get('id'), $keyword_id, 0);
+			if ($validator->validate($request->post())) {
+				$data = $validator->getSanitizedResult();
+				$keyword = new Keyword($data);
+				$keyword_id = $keyword_model->store($keyword);
+				$this->model->addKeyword($request->get('id'), $keyword_id, 0);
+
+				return true;
 			}
 			else {
-				print_r('ERROR');
+				$this->errors = array_merge($this->errors, $validator->getErrors());
 
 				return false;
 			}
 		}
 		else {
-			print_r($validator->getErrors());
-
-			return false;
+			throw new InvalidArgumentException();
 		}
 	}
 
@@ -148,9 +151,7 @@ class PublicationController {
 			return $this->model->removeAuthor($request->get('id'), $request->post('author_id'));
 		}
 		else {
-			print_r('ERROR');
-
-			return false;
+			throw new InvalidArgumentException();
 		}
 	}
 
@@ -162,28 +163,28 @@ class PublicationController {
 	 */
 	private function addAuthor(Request $request) {
 
-		$author_model = new AuthorModel($this->db);
-		$validator = $author_model->getValidator();
+		if ($request->get('id')) {
 
-		if ($validator->validate($request->post())) {
-			$data = $validator->getSanitizedResult();
-			$author = new Author($data);
-			$author_id = $author_model->store($author);
+			$author_model = new AuthorModel($this->db);
+			$validator = $author_model->getValidator();
 
-			if ($author_id && $request->get('id')) {
+			if ($validator->validate($request->post())) {
+				$data = $validator->getSanitizedResult();
+				$author = new Author($data);
+				$author_id = $author_model->store($author);
 				// TODO: priority?
-				return $this->model->addAuthor($request->get('id'), $author_id, 0);
+				$this->model->addAuthor($request->get('id'), $author_id, 0);
+
+				return true;
 			}
 			else {
-				print_r('ERROR');
+				$this->errors = array_merge($this->errors, $validator->getErrors());
 
 				return false;
 			}
 		}
 		else {
-			print_r($validator->getErrors());
-
-			return false;
+			throw new InvalidArgumentException();
 		}
 	}
 
@@ -195,18 +196,17 @@ class PublicationController {
 	 */
 	private function edit(Request $request) {
 
-		if ($request->post() && $request->post('type')) {
+		if ($request->get('id') && $request->post('type')) {
 			$validator = $this->model->getValidator($request->post('type'));
 
 			if ($validator->validate($request->post())) {
 				$input = $validator->getSanitizedResult();
-				$success = $this->model->update($request->get('id'), $input);
-				print_r($success);
+				$this->model->update($request->get('id'), $input);
 
 				return true;
 			}
 			else {
-				print_r($validator->getErrors());
+				$this->errors = array_merge($this->errors, $validator->getErrors());
 
 				return false;
 			}
@@ -224,11 +224,19 @@ class PublicationController {
 	 */
 	private function delete(Request $request) {
 
-		if ($request->post('delete') == 'yes' && $request->get('id')) {
-			return $this->model->delete($request->get('id'));
+		if ($request->get('id')) {
+			$confirmed = Validator::sanitizeBoolean($request->post('delete'));
+			if ($confirmed) {
+				$this->model->delete($request->get('id'));
+
+				return true;
+			}
+			else {
+				$this->errors[] = 'Please confirm the deletion';
+			}
 		}
 		else {
-			return false;
+			throw new InvalidArgumentException();
 		}
 	}
 
@@ -241,7 +249,7 @@ class PublicationController {
 	 */
 	private function addFile(Request $request) {
 
-		if (isset($_FILES['file'])) {
+		if ($request->get('id') && isset($_FILES['file'])) {
 			$file_model = new FileModel($this->db);
 			$validator = $file_model->getValidator();
 
@@ -257,13 +265,13 @@ class PublicationController {
 					return true;
 				}
 				catch (FileHandlerException $e) {
-					print_r($e->getMessage());
+					$this->errors[] = $e->getMessage();
 
 					return false;
 				}
 			}
 			else {
-				print_r($validator->getErrors());
+				$this->errors = array_merge($this->errors, $validator->getErrors());
 
 				return false;
 			}
