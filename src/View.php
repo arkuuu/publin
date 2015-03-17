@@ -243,7 +243,9 @@ class View {
 	public function showErrors() {
 
 		if (!empty($this->errors)) {
-			$string = '<div class="error">Following error(s) occurred while processing your request<ul>';
+			$string = '<div class="error">
+	<span class="message">Following error(s) occurred while processing your request</span>
+	<ul>';
 			foreach ($this->errors as $error) {
 				$string .= '<li>'.$this->html($error).'</li>';
 			}

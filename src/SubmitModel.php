@@ -23,7 +23,7 @@ class SubmitModel {
 				$value = $this->rewriteArray($value);
 				$value = array_filter($value);
 				if ($value) {
-					$result['authors'] = $value;
+					$result[$key] = $value;
 				}
 			}
 			if ($key == 'keywords' && !empty($value)) {

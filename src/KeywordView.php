@@ -15,9 +15,9 @@ class KeywordView extends ViewWithPublications {
 	private $edit_mode;
 
 
-	public function __construct(Keyword $keyword, $edit_mode = false) {
+	public function __construct(Keyword $keyword, array $errors, $edit_mode = false) {
 
-		parent::__construct($keyword, 'keyword');
+		parent::__construct($keyword, 'keyword', $errors);
 		$this->keyword = $keyword;
 		$this->edit_mode = $edit_mode;
 	}

@@ -163,7 +163,7 @@ class Controller {
 	 */
 	private function keyword(Request $request) {
 
-		$controller = new KeywordController($this->db);
+		$controller = new KeywordController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -193,7 +193,7 @@ class Controller {
 	private function submit(Request $request) {
 
 		if ($this->auth->checkLoginStatus()) {
-			$controller = new SubmitController($this->db);
+			$controller = new SubmitController($this->db, $this->auth);
 
 			return $controller->run($request);
 		}

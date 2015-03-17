@@ -8,6 +8,9 @@ class Auth {
 
 	const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
 	const EDIT_PUBLICATION = 'publication_edit';
+	const SUBMIT_PUBLICATION = 'publication_submit';
+	const EDIT_AUTHOR = 'author_edit';
+	const EDIT_KEYWORD = 'keyword_edit';
 
 	private $db;
 	private $session_expire_time = 1000;

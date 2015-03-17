@@ -24,11 +24,12 @@ class AuthorView extends ViewWithPublications {
 	 * Constructs the author view.
 	 *
 	 * @param Author $author
+	 * @param array  $errors
 	 * @param bool   $edit_mode
 	 */
-	public function __construct(Author $author, $edit_mode = false) {
+	public function __construct(Author $author, array $errors, $edit_mode = false) {
 
-		parent::__construct($author, 'author');
+		parent::__construct($author, 'author', $errors);
 		$this->author = $author;
 		$this->edit_mode = $edit_mode;
 	}

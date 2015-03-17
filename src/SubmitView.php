@@ -8,7 +8,7 @@ class SubmitView extends View {
 	private $submit_mode;
 
 
-	public function __construct(SubmitModel $model, $submit_mode) {
+	public function __construct(SubmitModel $model, $submit_mode, array $errors) {
 
 		if (in_array($submit_mode, array('start', 'import', 'form'))) {
 			$this->submit_mode = $submit_mode;
@@ -17,7 +17,7 @@ class SubmitView extends View {
 			$this->submit_mode = 'start';
 		}
 
-		parent::__construct('submit');
+		parent::__construct('submit', $errors);
 		$this->model = $model;
 	}
 
@@ -121,25 +121,6 @@ class SubmitView extends View {
 		}
 
 		return $string;
-	}
-
-
-	public function listErrors() {
-
-		$errors = array();
-		// TODO
-
-		if (!empty($errors)) {
-			$string = '';
-			foreach ($errors as $error) {
-				$string .= '<li>'.$this->html($error).'</li>';
-			}
-
-			return $string;
-		}
-		else {
-			return false;
-		}
 	}
 
 
