@@ -69,6 +69,12 @@ class PublicationModel {
 	public function store(Publication $publication) {
 
 		$data = $publication->getData();
+		foreach ($data as $property => $value) {
+			if (empty($value) || is_array($value)) {
+				unset($data[$property]);
+			}
+		}
+
 		$authors = $publication->getAuthors();
 		$keywords = $publication->getKeywords();
 

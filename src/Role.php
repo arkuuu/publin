@@ -27,12 +27,7 @@ class Role {
 
 	public function getData() {
 
-		$data = array();
-		foreach (get_class_vars($this) as $property => $value) {
-			$data[$property] = $value;
-		}
-
-		return $data;
+		return get_object_vars($this);
 	}
 
 

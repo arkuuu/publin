@@ -46,6 +46,11 @@ class TypeModel {
 	public function store(Type $type) {
 
 		$data = $type->getData();
+		foreach ($data as $property => $value) {
+			if (empty($value) || is_array($value)) {
+				unset($data[$property]);
+			}
+		}
 
 		return $this->db->insertData('list_types', $data);
 	}

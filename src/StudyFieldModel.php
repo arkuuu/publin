@@ -55,6 +55,11 @@ class StudyFieldModel {
 	public function store(StudyField $study_field) {
 
 		$data = $study_field->getData();
+		foreach ($data as $property => $value) {
+			if (empty($value) || is_array($value)) {
+				unset($data[$property]);
+			}
+		}
 
 		return $this->db->insertData('list_study_fields', $data);
 	}

@@ -10,7 +10,6 @@ namespace publin\src;
 class Author extends ObjectWithPublications {
 
 	protected $id;
-	protected $user_id;
 	protected $academic_title;
 	protected $family;
 	protected $given;
@@ -25,25 +24,11 @@ class Author extends ObjectWithPublications {
 	}
 
 
-	/**
-	 * Returns the user id or 0, if there is no user id.
-	 *
-	 * @return    int
-	 */
-	public function getUserId() {
-
-		return $this->user_id;
-	}
 
 
 	public function getData() {
 
-		$data = array();
-		foreach (get_class_vars($this) as $property => $value) {
-			$data[$property] = $value;
-		}
-
-		return $data;
+		return get_object_vars($this);
 	}
 
 

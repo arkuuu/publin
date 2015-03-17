@@ -55,6 +55,11 @@ class KeywordModel {
 	public function store(Keyword $keyword) {
 
 		$data = $keyword->getData();
+		foreach ($data as $property => $value) {
+			if (empty($value) || is_array($value)) {
+				unset($data[$property]);
+			}
+		}
 
 		return $this->db->insertData('list_keywords', $data);
 	}

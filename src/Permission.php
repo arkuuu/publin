@@ -19,6 +19,12 @@ class Permission {
 	}
 
 
+	public function getData() {
+
+		return get_object_vars($this);
+	}
+
+
 	public function getId() {
 
 		return $this->id;

@@ -34,6 +34,11 @@ class RoleModel {
 		// TODO: store permissions too?
 
 		$data = $role->getData();
+		foreach ($data as $property => $value) {
+			if (empty($value) || is_array($value)) {
+				unset($data[$property]);
+			}
+		}
 
 		return $this->db->insertData('list_roles', $data);
 	}
