@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class Validator {
 
@@ -133,7 +133,7 @@ class Validator {
 						break;
 
 					default:
-						throw new InvalidArgumentException('unknown validation rule '.$rule['type']);
+						throw new UnexpectedValueException('unknown validation rule '.$rule['type']);
 						break;
 				}
 			}
@@ -153,13 +153,13 @@ class Validator {
 	}
 
 
-	public static function sanitizeNumber($number) {
+	public static function sanitizeNumber($input) {
 
-		if (is_string($number)) {
-			$number = trim($number);
+		if (is_string($input)) {
+			$input = trim($input);
 		}
-		if (is_numeric($number) && $number >= 0) {
-			return (int)$number;
+		if (is_numeric($input) && $input >= 0) {
+			return (int)$input;
 		}
 		else {
 			return false;
@@ -167,14 +167,14 @@ class Validator {
 	}
 
 
-	public static function sanitizeText($text) {
+	public static function sanitizeText($input) {
 
-		if (is_string($text)) {
-			$text = trim($text);
+		if (is_string($input)) {
+			$input = trim($input);
 			//$text = stripslashes($text);
 			//$text = strip_tags($text); TODO: check if useful
 
-			return $text;
+			return $input;
 		}
 		else {
 			return false;
@@ -182,13 +182,13 @@ class Validator {
 	}
 
 
-	public static function sanitizeDate($date) {
+	public static function sanitizeDate($input) {
 
-		if (is_string($date)) {
-			$date = trim($date);
+		if (is_string($input)) {
+			$input = trim($input);
 
 			// TODO
-			return $date;
+			return $input;
 		}
 		else {
 			return false;
@@ -196,13 +196,13 @@ class Validator {
 	}
 
 
-	public static function sanitizeUrl($url) {
+	public static function sanitizeUrl($input) {
 
-		if (is_string($url)) {
-			$url = trim($url);
+		if (is_string($input)) {
+			$input = trim($input);
 
 			// TODO
-			return $url;
+			return $input;
 		}
 		else {
 			return false;
@@ -210,13 +210,13 @@ class Validator {
 	}
 
 
-	public static function sanitizeEmail($email) {
+	public static function sanitizeEmail($input) {
 
-		if (is_string($email)) {
-			$email = trim($email);
+		if (is_string($input)) {
+			$input = trim($input);
 
 			// TODO
-			return $email;
+			return $input;
 		}
 		else {
 			return false;
@@ -224,13 +224,13 @@ class Validator {
 	}
 
 
-	public static function sanitizeBoolean($boolean) {
+	public static function sanitizeBoolean($input) {
 
-		if (is_string($boolean)) {
-			$boolean = trim($boolean);
-			$boolean = strtolower($boolean);
+		if (is_string($input)) {
+			$input = trim($input);
+			$input = strtolower($input);
 
-			switch ($boolean) {
+			switch ($input) {
 				case '1':
 				case 'true':
 				case 'yes':
@@ -242,7 +242,7 @@ class Validator {
 			}
 		}
 		else {
-			return (bool)$boolean;
+			return (bool)$input;
 		}
 	}
 }
