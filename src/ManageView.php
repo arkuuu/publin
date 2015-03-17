@@ -11,9 +11,9 @@ class ManageView extends View {
 
 	public function __construct(ManageModel $model, $success = null) {
 
+		parent::__construct('manage');
 		$this->model = $model;
 		$this->success = $success;
-		parent::__construct('manage');
 	}
 
 

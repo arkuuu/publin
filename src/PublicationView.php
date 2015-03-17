@@ -617,10 +617,10 @@ class PublicationView extends View {
 
 		$string .= '<li><form action="#" method="post" enctype="multipart/form-data">
 	<label for="file">File:</label>
-	<input type="file" name="file"><br/>
+	<input type="file" name="file" id="file"><br/>
 	<label for="title">Description:</label>
-	<input type="text" name="title"><br/>
-	<input type="checkbox" name="full_text" value="yes">
+	<input type="text" name="title" id="title"><br/>
+	<input type="checkbox" name="full_text" id="full_text" value="yes">
 	<label for="full_text">Full Text</label>
 	<input type="checkbox" name="restricted" id="restricted" value="yes"/>
 	<label for="restricted">Access Restricted</label><br/>

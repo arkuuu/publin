@@ -69,7 +69,7 @@ class Database extends mysqli {
 	public function insertData($table, array $data) {
 
 		if (empty($data)) {
-			throw new InvalidArgumentException('where must not be empty when deleting');
+			throw new InvalidArgumentException('where must not be empty when inserting');
 		}
 
 		parent::change_user($this->writeonly_user,

@@ -77,6 +77,8 @@ class KeywordController {
 			}
 			else {
 				$this->errors[] = 'Please confirm the deletion';
+
+				return false;
 			}
 		}
 		else {

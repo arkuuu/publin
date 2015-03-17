@@ -64,6 +64,11 @@ class SubmitController {
 	}
 
 
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
 	private function import(Request $request) {
 
 		if ($request->post('format') && $request->post('input')) {
@@ -79,6 +84,12 @@ class SubmitController {
 	}
 
 
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
 	private function submit(Request $request) {
 
 		$input = $this->model->formatPost($request->post());
