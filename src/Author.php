@@ -114,7 +114,7 @@ class Author extends ObjectWithPublications {
 	 *
 	 * @return    string
 	 */
-	public function getText() {
+	public function getAbout() {
 
 		return $this->about;
 	}

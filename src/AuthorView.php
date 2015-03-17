@@ -94,9 +94,9 @@ class AuthorView extends ViewWithPublications {
 	 *
 	 * @return    string
 	 */
-	public function showText() {
+	public function showAbout() {
 
-		return nl2br($this->html($this->author->getText()));
+		return nl2br($this->html($this->author->getAbout()));
 	}
 
 
@@ -133,8 +133,8 @@ class AuthorView extends ViewWithPublications {
 	<label for="contact">Contact:</label>
 	<textarea name="contact" id="contact" rows="5" cols="50">'.$this->author->getContact().'</textarea>
 	<br/>
-	<label for="text">About:</label>
-	<textarea name="text" id="text" rows="5" cols="50">'.$this->author->getText().'</textarea>
+	<label for="about">About:</label>
+	<textarea name="about" id="about" rows="5" cols="50">'.$this->author->getAbout().'</textarea>
 	<br/>
 	<input type="hidden" name="action" value="edit"/>
 	<input type="submit" value="Update"/>

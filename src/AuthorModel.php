@@ -101,7 +101,7 @@ class AuthorModel {
 		$validator->addRule('family', 'text', true, 'Family name is required but invalid');
 		$validator->addRule('website', 'url', false, 'Website URL is invalid');
 		$validator->addRule('contact', 'text', false, 'Contact info is invalid');
-		$validator->addRule('text', 'text', false, 'Text is invalid');
+		$validator->addRule('about', 'text', false, 'About text is invalid');
 
 		return $validator;
 	}
