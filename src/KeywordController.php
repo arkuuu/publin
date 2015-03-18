@@ -4,8 +4,8 @@
 namespace publin\src;
 
 use BadMethodCallException;
-use InvalidArgumentException;
 use publin\src\exceptions\PermissionRequiredException;
+use UnexpectedValueException;
 
 class KeywordController {
 
@@ -68,21 +68,21 @@ class KeywordController {
 	 */
 	private function delete(Request $request) {
 
-		if ($request->get('id')) {
-			$confirmed = Validator::sanitizeBoolean($request->post('delete'));
-			if ($confirmed) {
-				$this->model->delete($request->get('id'));
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
 
-				return true;
-			}
-			else {
-				$this->errors[] = 'Please confirm the deletion';
+		$confirmed = Validator::sanitizeBoolean($request->post('delete'));
+		if ($confirmed) {
+			$this->model->delete($id);
 
-				return false;
-			}
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors[] = 'Please confirm the deletion';
+
+			return false;
 		}
 	}
 
@@ -94,23 +94,22 @@ class KeywordController {
 	 */
 	private function edit(Request $request) {
 
-		if ($request->get('id')) {
-			$validator = $this->model->getValidator();
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
 
-			if ($validator->validate($request->post())) {
-				$input = $validator->getSanitizedResult();
-				$this->model->update($request->get('id'), $input);
+		$validator = $this->model->getValidator();
+		if ($validator->validate($request->post())) {
+			$input = $validator->getSanitizedResult();
+			$this->model->update($id, $input);
 
-				return true;
-			}
-			else {
-				$this->errors = array_merge($this->errors, $validator->getErrors());
-
-				return false;
-			}
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
 		}
 	}
 }

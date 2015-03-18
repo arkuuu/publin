@@ -5,9 +5,9 @@ namespace publin\src;
 
 use BadMethodCallException;
 use Exception;
-use InvalidArgumentException;
 use publin\src\exceptions\FileHandlerException;
 use publin\src\exceptions\PermissionRequiredException;
+use UnexpectedValueException;
 
 class PublicationController {
 
@@ -74,21 +74,21 @@ class PublicationController {
 	 */
 	public function download(Request $request) {
 
-		if ($request->get('file')) {
-			$file_model = new FileModel($this->db);
-			$file = $file_model->fetchById($request->get('file'));
+		$file_id = Validator::sanitizeNumber($request->get('file_id'));
+		if (!$file_id) {
+			throw new UnexpectedValueException;
+		}
 
-			if (!$file->isRestricted() || $this->auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
-				FileHandler::download($file->getName(), $file->getTitle());
+		$file_model = new FileModel($this->db);
+		$file = $file_model->fetchById($file_id);
 
-				return true;
-			}
-			else {
-				throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
-			}
+		if (!$file->isRestricted() || $this->auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
+			FileHandler::download($file->getName(), $file->getTitle());
+
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
 		}
 	}
 
@@ -100,13 +100,13 @@ class PublicationController {
 	 */
 	private function removeKeyword(Request $request) {
 
-		if ($request->post('keyword_id') && $request->get('id')) {
+		$id = Validator::sanitizeNumber($request->get('id'));
+		$keyword_id = Validator::sanitizeNumber($request->post('keyword_id'));
+		if (!$id || !$keyword_id) {
+			throw new UnexpectedValueException;
+		}
 
-			return $this->model->removeKeyword($request->get('id'), $request->post('keyword_id'));
-		}
-		else {
-			throw new InvalidArgumentException;
-		}
+		return $this->model->removeKeyword($id, $keyword_id);
 	}
 
 
@@ -117,27 +117,26 @@ class PublicationController {
 	 */
 	private function addKeyword(Request $request) {
 
-		if ($request->get('id')) {
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
 
-			$keyword_model = new KeywordModel($this->db);
-			$validator = $keyword_model->getValidator();
+		$keyword_model = new KeywordModel($this->db);
+		$validator = $keyword_model->getValidator();
 
-			if ($validator->validate($request->post())) {
-				$data = $validator->getSanitizedResult();
-				$keyword = new Keyword($data);
-				$keyword_id = $keyword_model->store($keyword);
-				$this->model->addKeyword($request->get('id'), $keyword_id, 0);
+		if ($validator->validate($request->post())) {
+			$data = $validator->getSanitizedResult();
+			$keyword = new Keyword($data);
+			$keyword_id = $keyword_model->store($keyword);
+			$this->model->addKeyword($id, $keyword_id, 0);
 
-				return true;
-			}
-			else {
-				$this->errors = array_merge($this->errors, $validator->getErrors());
-
-				return false;
-			}
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
 		}
 	}
 
@@ -149,13 +148,13 @@ class PublicationController {
 	 */
 	private function removeAuthor(Request $request) {
 
-		if ($request->post('author_id') && $request->get('id')) {
+		$id = Validator::sanitizeNumber($request->get('id'));
+		$author_id = Validator::sanitizeNumber($request->post('author_id'));
+		if (!$id || !$author_id) {
+			throw new UnexpectedValueException;
+		}
 
-			return $this->model->removeAuthor($request->get('id'), $request->post('author_id'));
-		}
-		else {
-			throw new InvalidArgumentException;
-		}
+		return $this->model->removeAuthor($id, $author_id);
 	}
 
 
@@ -166,28 +165,27 @@ class PublicationController {
 	 */
 	private function addAuthor(Request $request) {
 
-		if ($request->get('id')) {
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
 
-			$author_model = new AuthorModel($this->db);
-			$validator = $author_model->getValidator();
+		$author_model = new AuthorModel($this->db);
+		$validator = $author_model->getValidator();
 
-			if ($validator->validate($request->post())) {
-				$data = $validator->getSanitizedResult();
-				$author = new Author($data);
-				$author_id = $author_model->store($author);
-				// TODO: priority?
-				$this->model->addAuthor($request->get('id'), $author_id, 0);
+		if ($validator->validate($request->post())) {
+			$data = $validator->getSanitizedResult();
+			$author = new Author($data);
+			$author_id = $author_model->store($author);
+			// TODO: priority?
+			$this->model->addAuthor($id, $author_id, 0);
 
-				return true;
-			}
-			else {
-				$this->errors = array_merge($this->errors, $validator->getErrors());
-
-				return false;
-			}
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
 		}
 	}
 
@@ -199,23 +197,24 @@ class PublicationController {
 	 */
 	private function edit(Request $request) {
 
-		if ($request->get('id') && $request->post('type')) {
-			$validator = $this->model->getValidator($request->post('type'));
+		$id = Validator::sanitizeNumber($request->get('id'));
+		$type = Validator::sanitizeText($request->post('type'));
+		if (!$id || !$type) {
+			throw new UnexpectedValueException;
+		}
 
-			if ($validator->validate($request->post())) {
-				$input = $validator->getSanitizedResult();
-				$this->model->update($request->get('id'), $input);
+		$validator = $this->model->getValidator($type);
 
-				return true;
-			}
-			else {
-				$this->errors = array_merge($this->errors, $validator->getErrors());
+		if ($validator->validate($request->post())) {
+			$input = $validator->getSanitizedResult();
+			$this->model->update($id, $input);
 
-				return false;
-			}
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
 		}
 	}
 
@@ -227,21 +226,21 @@ class PublicationController {
 	 */
 	private function delete(Request $request) {
 
-		if ($request->get('id')) {
-			$confirmed = Validator::sanitizeBoolean($request->post('delete'));
-			if ($confirmed) {
-				$this->model->delete($request->get('id'));
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
 
-				return true;
-			}
-			else {
-				$this->errors[] = 'Please confirm the deletion';
+		$confirmed = Validator::sanitizeBoolean($request->post('delete'));
+		if ($confirmed) {
+			$this->model->delete($id);
 
-				return false;
-			}
+			return true;
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors[] = 'Please confirm the deletion';
+
+			return false;
 		}
 	}
 
@@ -254,35 +253,35 @@ class PublicationController {
 	 */
 	private function addFile(Request $request) {
 
-		if ($request->get('id') && isset($_FILES['file'])) {
-			$file_model = new FileModel($this->db);
-			$validator = $file_model->getValidator();
+		$id = Validator::sanitizeNumber($request->get('id'));
+		$file_data = isset($_FILES['file']) ? (array)$_FILES['file'] : false;
+		if (!$id || !$file_data) {
+			throw new UnexpectedValueException;
+		}
 
-			if ($validator->validate($request->post())) {
+		$file_model = new FileModel($this->db);
+		$validator = $file_model->getValidator();
 
-				try {
-					$file_name = FileHandler::upload($_FILES['file']);
-					$data = $validator->getSanitizedResult();
-					$data['name'] = $file_name;
-					$file = new File($data);
-					$file_model->store($file, $request->get('id'));
+		if ($validator->validate($request->post())) {
+			try {
+				$file_name = FileHandler::upload($file_data);
+				$data = $validator->getSanitizedResult();
+				$data['name'] = $file_name;
+				$file = new File($data);
+				$file_model->store($file, $id);
 
-					return true;
-				}
-				catch (FileHandlerException $e) {
-					$this->errors[] = $e->getMessage();
-
-					return false;
-				}
+				return true;
 			}
-			else {
-				$this->errors = array_merge($this->errors, $validator->getErrors());
+			catch (FileHandlerException $e) {
+				$this->errors[] = $e->getMessage();
 
 				return false;
 			}
 		}
 		else {
-			throw new InvalidArgumentException;
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
 		}
 	}
 
@@ -294,15 +293,15 @@ class PublicationController {
 	 */
 	private function removeFile(Request $request) {
 
-		if ($request->post('file_id')) {
-			$file_model = new FileModel($this->db);
-			$file = $file_model->fetchById($request->post('file_id'));
-			FileHandler::delete($file->getName());
+		$file_id = Validator::sanitizeNumber($request->get('file_id'));
+		if (!$file_id) {
+			throw new UnexpectedValueException;
+		}
 
-			return $file_model->delete($request->post('file_id'));
-		}
-		else {
-			throw new InvalidArgumentException;
-		}
+		$file_model = new FileModel($this->db);
+		$file = $file_model->fetchById($file_id);
+		FileHandler::delete($file->getName());
+
+		return $file_model->delete($file_id);
 	}
 }

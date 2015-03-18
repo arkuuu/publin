@@ -99,7 +99,7 @@ class Controller {
 	}
 
 
-	private function redirect($destination, $referrer = '') {
+	public static function redirect($destination, $referrer = '') {
 
 		if (!isset($_SESSION)) {
 			session_start();
@@ -192,14 +192,9 @@ class Controller {
 	 */
 	private function submit(Request $request) {
 
-		if ($this->auth->checkLoginStatus()) {
-			$controller = new SubmitController($this->db, $this->auth);
+		$controller = new SubmitController($this->db, $this->auth);
 
-			return $controller->run($request);
-		}
-		else {
-			throw new LoginRequiredException();
-		}
+		return $controller->run($request);
 	}
 
 
@@ -240,14 +235,9 @@ class Controller {
 	 */
 	private function manage(Request $request) {
 
-		if ($this->auth->checkLoginStatus()) {
-			$controller = new ManageController($this->db);
+		$controller = new ManageController($this->db);
 
-			return $controller->run($request);
-		}
-		else {
-			throw new LoginRequiredException();
-		}
+		return $controller->run($request);
 	}
 
 

@@ -572,7 +572,7 @@ class PublicationView extends View {
 	public function showFiles() {
 
 		$files = $this->publication->getFiles();
-		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file=';
+		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file_id=';
 		$string = '';
 
 		foreach ($files as $file) {
@@ -598,7 +598,7 @@ class PublicationView extends View {
 	public function showEditFiles() {
 
 		$files = $this->publication->getFiles();
-		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file=';
+		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file_id=';
 		$string = '';
 
 		foreach ($files as $file) {
