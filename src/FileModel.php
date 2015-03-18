@@ -28,7 +28,7 @@ class FileModel {
 		$query = 'SELECT *
 		FROM `files`
 		WHERE `publication_id` = '.$publication_id.'
-		ORDER BY `full_text` DESC, `restricted` ASC;';
+		ORDER BY `full_text` DESC, `hidden` ASC, `restricted` ASC;';
 
 		$data = $this->db->getData($query);
 		$files = array();
@@ -50,7 +50,8 @@ class FileModel {
 					  'name'           => $file->getName(),
 					  'title'          => $file->getTitle(),
 					  'full_text'      => $file->isFullText(),
-					  'restricted'     => $file->isRestricted());
+					  'restricted' => $file->isRestricted(),
+					  'hidden'     => $file->isHidden());
 
 		return $this->db->insertData('files', $data);
 	}
@@ -98,8 +99,9 @@ class FileModel {
 
 		$validator->addRule('name', 'text', false, 'File name is invalid');
 		$validator->addRule('title', 'text', true, 'File title is required but invalid');
-		$validator->addRule('full_text', 'boolean', false, 'Full text is required but invalid');
-		$validator->addRule('restricted', 'boolean', false, 'Full text is required but invalid');
+		$validator->addRule('full_text', 'boolean', false, 'Full text flag must be boolean');
+		$validator->addRule('restricted', 'boolean', false, 'Restricted flag must be boolean');
+		$validator->addRule('hidden', 'boolean', false, 'Hidden flag must be boolean');
 
 		return $validator;
 	}

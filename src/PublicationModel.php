@@ -192,6 +192,7 @@ class PublicationModel {
 		$this->db->deleteData('rel_publ_to_authors', $where);
 		$this->db->deleteData('rel_publication_keywords', $where);
 
+		// TODO: delete files
 		$where = array('id' => $id);
 		$rows = $this->db->deleteData('list_publications', $where);
 

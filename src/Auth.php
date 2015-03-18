@@ -7,10 +7,12 @@ use publin\src\exceptions\LoginRequiredException;
 class Auth {
 
 	const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
+	const ACCESS_HIDDEN_FILES = 'access_hidden_files';
 	const EDIT_PUBLICATION = 'publication_edit';
 	const SUBMIT_PUBLICATION = 'publication_submit';
 	const EDIT_AUTHOR = 'author_edit';
 	const EDIT_KEYWORD = 'keyword_edit';
+	const MANAGE = 'manage';
 
 	private $db;
 	private $session_expire_time = 1000;

@@ -10,6 +10,7 @@ class File {
 	private $title;
 	private $full_text;
 	private $restricted;
+	private $hidden;
 
 
 	public function __construct(array $data) {
@@ -53,6 +54,17 @@ class File {
 	public function isRestricted() {
 
 		if ($this->restricted) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function isHidden() {
+
+		if ($this->hidden) {
 			return true;
 		}
 		else {

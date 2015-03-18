@@ -7,13 +7,42 @@ use finfo;
 use InvalidArgumentException;
 use publin\src\exceptions\FileHandlerException;
 
+/**
+ * Class FileHandler
+ *
+ * @package publin\src
+ */
 class FileHandler {
 
-	const PATH = '/Applications/MAMP/uploads/'; // set this to somewhere outside the web-accessible folders
-	const PREFIX = 'publin_'; // file prefix (optional)
-	const MAX_SIZE = 200; // check php.ini for max file upload, too TODO: not working!
+	/**
+	 * The location where the uploaded files will be stored.
+	 * Set this to somewhere outside the web-accessible folders of your server.
+	 *
+	 * @var string
+	 */
+	const PATH = '/Applications/MAMP/uploads/';
+
+	/**
+	 * Optional prefix for file names.
+	 *
+	 * @var string
+	 */
+	const PREFIX = 'publin_';
+
+	/**
+	 * Maximum file size. Also check your php.ini for maximum file size.
+	 *
+	 * @var int
+	 */
+	const MAX_SIZE = 200; //TODO: not working!
 
 
+	/**
+	 * @param array $file
+	 *
+	 * @return string
+	 * @throws FileHandlerException
+	 */
 	public static function upload(array $file) {
 
 		if (!(isset($file['name'])
@@ -58,6 +87,11 @@ class FileHandler {
 	}
 
 
+	/**
+	 * @param $file
+	 *
+	 * @return bool
+	 */
 	private static function getFileExtension($file) {
 
 		$mime_type = self::getMimeType($file);
@@ -71,6 +105,11 @@ class FileHandler {
 	}
 
 
+	/**
+	 * @param $file
+	 *
+	 * @return string
+	 */
 	private static function getMimeType($file) {
 
 		$file_info = new finfo();
@@ -80,6 +119,9 @@ class FileHandler {
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public static function getAllowedTypes() {
 
 		return array('application/pdf' => '.pdf',
@@ -87,6 +129,9 @@ class FileHandler {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	private static function generateFileName() {
 
 		do {
@@ -98,6 +143,12 @@ class FileHandler {
 	}
 
 
+	/**
+	 * @param string $file_name
+	 * @param string $download_name
+	 *
+	 * @throws FileHandlerException
+	 */
 	public static function download($file_name, $download_name = 'file') {
 
 		$file_name = pathinfo($file_name, PATHINFO_BASENAME);
@@ -120,6 +171,12 @@ class FileHandler {
 	}
 
 
+	/**
+	 * @param $file_name
+	 *
+	 * @return bool
+	 * @throws FileHandlerException
+	 */
 	public static function delete($file_name) {
 
 		$file_name = pathinfo($file_name, PATHINFO_BASENAME);

@@ -82,14 +82,16 @@ class PublicationController {
 		$file_model = new FileModel($this->db);
 		$file = $file_model->fetchById($file_id);
 
-		if (!$file->isRestricted() || $this->auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
-			FileHandler::download($file->getName(), $file->getTitle());
-
-			return true;
+		if ($file->isHidden() && !$this->auth->checkPermission(Auth::ACCESS_HIDDEN_FILES)) {
+			throw new PermissionRequiredException(Auth::ACCESS_HIDDEN_FILES);
 		}
-		else {
+		if ($file->isRestricted() && !$this->auth->checkPermission(Auth::ACCESS_RESTRICTED_FILES)) {
 			throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
 		}
+
+		FileHandler::download($file->getName(), $file->getTitle());
+
+		return true;
 	}
 
 

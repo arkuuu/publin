@@ -576,19 +576,13 @@ class PublicationView extends View {
 		$string = '';
 
 		foreach ($files as $file) {
+			if (!$file->isHidden() || $this->hasPermission(Auth::ACCESS_HIDDEN_FILES)) {
+				$full_text = $file->isFullText() ? ' (full text)' : '';
+				$hidden = $file->isHidden() ? ' (hidden)' : '';
+				$restricted = $file->isRestricted() ? ' (restricted)' : '';
 
-			if ($file->isFullText()) {
-				$title = 'Full text';
+				$string .= '<li><a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'</li>';
 			}
-			else if ($file->getTitle()) {
-				$title = $file->getTitle();
-			}
-			else {
-				$title = 'Unnamed file';
-			}
-			$restricted = $file->isRestricted() ? ' (restricted)' : '';
-
-			$string .= '<li><a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($title).'</a>'.$this->html($restricted).'</li>';
 		}
 
 		return $string;
@@ -604,10 +598,12 @@ class PublicationView extends View {
 		foreach ($files as $file) {
 
 			$full_text = $file->isFullText() ? ' (full text)' : '';
+			$hidden = $file->isHidden() ? ' (hidden)' : '';
 			$restricted = $file->isRestricted() ? ' (restricted)' : '';
+
 			$string .= '<li>
 						<form action="#" method="post" accept-charset="utf-8">
-						<a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$restricted).'
+						<a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'
 						<input type="hidden" name="file_id" value="'.$this->html($file->getId()).'"/>
 						<input type="hidden" name="action" value="removeFile"/>
 						<input type="submit" value="x"/>
@@ -623,7 +619,9 @@ class PublicationView extends View {
 	<input type="checkbox" name="full_text" id="full_text" value="yes">
 	<label for="full_text">Full Text</label>
 	<input type="checkbox" name="restricted" id="restricted" value="yes"/>
-	<label for="restricted">Access Restricted</label><br/>
+	<label for="restricted">Access Restricted</label>
+	<input type="checkbox" name="hidden" id="hidden" value="yes"/>
+	<label for="hidden">Hidden</label><br/>
 	<input type="hidden" name="action" value="addFile"/>
 	<input type="submit" value="Upload File"/>
 </form></li>';
