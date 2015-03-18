@@ -212,17 +212,21 @@ class Controller {
 	 */
 	private function login(Request $request) {
 
+		$errors = array();
+
 		if ($request->post('username') && $request->post('password')) {
-			if ($this->auth->login($request->post('username'), $request->post('password'))) {
+			$username = Validator::sanitizeText($request->post('username'));
+			$password = Validator::sanitizeText($request->post('password'));
+			if ($this->auth->login($username, $password)) {
 
 				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : '?p=start';
 				$this->redirect($destination, $request->getUrl());
 			}
 			else {
-				print_r('incorrect login');
+				$errors[] = 'Invalid user name or password';
 			}
 		}
-		$view = new View('login');
+		$view = new View('login', $errors);
 
 		return $view->display();
 	}
