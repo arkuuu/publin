@@ -70,18 +70,6 @@ class Bibtex {
 			'note'         => 'note',
 			'keywords'     => 'keywords',
 		);
-
-		$this->author_fields = array(
-			/* parser field => your field */
-			'given'  => 'given',
-			'family' => 'family',
-		);
-
-		$this->pages_fields = array(
-			/* parser field => your field */
-			'from' => 'from',
-			'to'   => 'to',
-		);
 	}
 
 
@@ -186,6 +174,31 @@ class Bibtex {
 	}
 
 
+	/**
+	 * @param $string
+	 *
+	 * @return mixed
+	 */
+	private function encodeSpecialChars($string) {
+
+		$string = str_replace('ü', '{\"u}', $string);
+		$string = str_replace('ä', '{\"a}', $string);
+		$string = str_replace('ö', '{\"o}', $string);
+		$string = str_replace('Ü', '{\"U}', $string);
+		$string = str_replace('Ä', '{\"A}', $string);
+		$string = str_replace('Ö', '{\"O}', $string);
+
+		$string = str_replace('ç', '{\c c}', $string);
+		$string = str_replace('Ç', '{\c C}', $string);
+		$string = str_replace('ú', '{\'u}', $string);
+		$string = str_replace('ñ', '{\~n}', $string);
+
+		// TODO continue
+
+		return $string;
+	}
+
+
 
 //	public function exportOld(Publication $publication) {
 //
@@ -265,30 +278,6 @@ class Bibtex {
 //		return $result;
 //	}
 
-	/**
-	 * @param $string
-	 *
-	 * @return mixed
-	 */
-	private function encodeSpecialChars($string) {
-
-		$string = str_replace('ü', '{\"u}', $string);
-		$string = str_replace('ä', '{\"a}', $string);
-		$string = str_replace('ö', '{\"o}', $string);
-		$string = str_replace('Ü', '{\"U}', $string);
-		$string = str_replace('Ä', '{\"A}', $string);
-		$string = str_replace('Ö', '{\"O}', $string);
-
-		$string = str_replace('ç', '{\c c}', $string);
-		$string = str_replace('Ç', '{\c C}', $string);
-		$string = str_replace('ú', '{\'u}', $string);
-		$string = str_replace('ñ', '{\~n}', $string);
-
-		// TODO continue
-
-		return $string;
-	}
-
 
 	/**
 	 * @param $input
@@ -347,9 +336,8 @@ class Bibtex {
 						$pages = self::extractPages($value);
 
 						if ($pages) {
-							$result[$your_field] = $pages;
-							$result[$this->pages_fields['from']] = $pages[0];
-							$result[$this->pages_fields['to']] = $pages[1];
+							$result['pages_from'] = $pages[0];
+							$result['pages_to'] = $pages[1];
 						}
 					}
 					/* The rest */
@@ -359,7 +347,12 @@ class Bibtex {
 				}
 			}
 		}
+		if (!empty($result[$this->fields['year']]) && !empty($result[$this->fields['month']])) {
+			$result['date_published'] = self::extractDate($result[$this->fields['year']], $result[$this->fields['month']]);
+			print_r($result['date_published']);
+		}
 
+		//print_r($result);
 		return $result;
 	}
 
@@ -470,8 +463,8 @@ class Bibtex {
 				$family = '';
 			}
 
-			$author[$this->author_fields['given']] = trim($given);
-			$author[$this->author_fields['family']] = trim($family);
+			$author['given'] = trim($given);
+			$author['family'] = trim($family);
 
 			$authors[] = $author;
 		}
@@ -518,5 +511,21 @@ class Bibtex {
 		}
 
 		return $pages;
+	}
+
+
+	private function extractDate($input_year, $input_month) {
+
+		$words = str_word_count($input_month, 1);
+		$input_month = $words[0];
+		print_r($words);
+		$date = strtotime($input_year.' '.$input_month);
+
+		if ($date) {
+			return date('Y-m-d', $date);
+		}
+		else {
+			return false;
+		}
 	}
 }
