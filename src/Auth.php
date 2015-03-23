@@ -30,7 +30,16 @@ class Auth {
 
 	public static function generatePassword() {
 
-		return 'todo_generate_password';
+		$chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+		$password_length = 10;
+		$password = '';
+
+		for ($i = 0; $i < $password_length; $i++) {
+			$n = rand(0, strlen($chars) - 1);
+			$password .= $chars[$n];
+		}
+
+		return $password;
 	}
 
 
@@ -38,7 +47,7 @@ class Auth {
 
 		$user_name = $this->db->real_escape_string($user_name);
 		$password = $this->db->real_escape_string($password);
-		// TODO: use password hash instead of clear password!
+		$password = $this->hashPassword($password);
 
 		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$user_name.'" AND `password` = "'.$password.'";';
 		$result = $this->db->getData($query);
@@ -62,6 +71,13 @@ class Auth {
 		else {
 			return false;
 		}
+	}
+
+
+	public static function hashPassword($password) {
+
+		// TODO: implement
+		return $password;
 	}
 
 
