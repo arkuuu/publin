@@ -10,12 +10,12 @@
 		padding: 5px;
 	}
 
-	.green {
+	td.green {
 		background: lightgreen;
 		text-align: center;
 	}
 
-	.red {
+	td.red {
 		background: lightcoral;
 		text-align: center;
 	}
@@ -24,17 +24,24 @@
 		margin: 0;
 	}
 </style>
-<h1>Access Control Center</h1>
+<h1>Manage</h1>
 <p>A list of available Roles with their permissions.</p>
-<?php echo $this-> showMessage() ?>
 
-<h2>List view</h2>
-<?php echo $this -> showRoles() ?>
+<h2>Permissions</h2>
+<?php echo $this -> showPermissions() ?>
 
-<h2>Table view</h2>
-<?php echo $this -> showRoles('table') ?>
+<h2>Roles</h2>
+<p>Create a new role</p>
+<form action="#" method="post" accept-charset="utf8">
+	<label for="name">Role name:</label>
+	<input type="text" name="name" id="name">
+	<input type="hidden" name="action" value="addRole">
+	<input type="submit" value="Create Role">
+</form>
+<p>Delete existing roles:</p>
+<?php echo $this->showRoles() ?>
 
 <h2>Users</h2>
-<?php echo $this -> showUsers('table') ?>
+<?php echo $this -> showUsers() ?>
 
 

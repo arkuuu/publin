@@ -6,14 +6,12 @@ namespace publin\src;
 class ManageView extends View {
 
 	private $model;
-	private $success;
 
 
-	public function __construct(ManageModel $model, $success = null) {
+	public function __construct(ManageModel $model, array $errors) {
 
-		parent::__construct('manage');
+		parent::__construct('manage', $errors);
 		$this->model = $model;
-		$this->success = $success;
 	}
 
 
@@ -24,90 +22,69 @@ class ManageView extends View {
 	 */
 	public function showPageTitle() {
 
-		return 'Manage DEV';
+		return 'Manage';
 	}
 
 
-	public function showRoles($mode = 'list') {
+	public function showPermissions() {
 
 		$roles = $this->model->getRoles();
 		$permissions = $this->model->getPermissions();
 
-		/* List view */
-		if ($mode == 'list') {
-			$string = '<ul>';
-			/* @var $role Role */
-			foreach ($roles as $role) {
-				$role_permissions = $role->getPermissions();
-
-				$string .= '<li>'.$role->getName();
-				if (empty($role_permissions)) {
-					$string .= ' <a href="./?p=manage&amp;m=rmr&amp;id='.$role->getId().'">(delete)</a>';
-				}
-				$string .= '<ul>';
-
-				foreach ($role_permissions as $permission) {
-					$string .= '<li>'.$permission['name'].'
- <a href="./?p=manage&amp;m=rmp&amp;id='.$permission['id'].'&amp;rid='.$role->getId().'">(remove)</a></li>';
-				}
-				$string .= '<li><form action="./?p=manage" method="post"><select name="permission_id">
-							<option selected disabled>Select permission...</option>';
-
-				foreach ($permissions as $permission) {
-					if (!$role->hasPermission($permission['id'])) {
-						$string .= '<option value="'.$permission['id'].'">'.$permission['name'].'</option>';
-					}
-				}
-
-				$string .= '</select>
-							<input type="hidden" name="role_id" value="'.$role->getId().'">
-							<input type="submit" value="Add">
-							</form></li></ul></li>';
-			}
-			$string .= '<li><form action="./?p=manage" method="post">
-						<input name="role_name" type="text" placeholder="New role"/>
-						<input type="submit" value="Create">
-						</form></li></ul>';
+		$string = '<form action="./?p=manage" method="post">';
+		$string .= '<table><tr><th>Permission</th>';
+		/* @var $role Role */
+		foreach ($roles as $role) {
+			$string .= '<th>'.$role->getName().'</th>';
 		}
+		$string .= '</tr>';
 
-		/* Table view */
-		else if ($mode == 'table') {
-			$string = '<form action="./?p=manage" method="post">';
-			$string .= '<table><tr><th>Permission</th>';
-			/* @var $role Role */
+		foreach ($permissions as $permission) {
+			$string .= '<tr><td>'.$permission['name'].'</td>';
 			foreach ($roles as $role) {
-				$string .= '<th>'.$role->getName().'</th>';
+				if ($role->hasPermission($permission['id'])) {
+					$string .= '<td class="green"><input type="checkbox" name="permissions['.$role->getId().']['.$permission['id'].']" checked></td>';
+				}
+				else {
+					$string .= '<td class="red"><input type="checkbox" name="permissions['.$role->getId().']['.$permission['id'].']"></td>';
+				}
 			}
 			$string .= '</tr>';
-
-			foreach ($permissions as $permission) {
-				$string .= '<tr><td>'.$permission['name'].'</td>';
-				foreach ($roles as $role) {
-					if ($role->hasPermission($permission['id'])) {
-						$string .= '<td class="green"><input type="checkbox" name="role_perm['.$role->getId().']['.$permission['id'].']" checked></td>';
-					}
-					else {
-						$string .= '<td class="red"><input type="checkbox" name="role_perm['.$role->getId().']['.$permission['id'].']"></td>';
-					}
-				}
-				$string .= '</tr>';
-			}
-			$string .= '</table><input type="submit" value="Submit changes"><input type="reset" value="Reset changes"></form>';
 		}
-
-		else {
-			$string = 'ERROR';
-		}
+		$string .= '</table>
+<input type="hidden" name="action" value="updatePermissions">
+<input type="submit" value="Submit changes">
+<input type="reset" value="Reset changes">
+</form>';
 
 		return $string;
-
 	}
 
 
-	public function showUsers($mode = 'table') {
+	public function showRoles() {
 
-		if ($mode == 'table') {
-			$string = '<table>
+		$roles = $this->model->getRoles();
+		$string = '<ul>';
+
+		/** @var Role $role */
+		foreach ($roles as $role) {
+			$string .= '<li>
+						<form action="#" method="post" accept-charset="utf-8">
+						'.$this->html($role->getName()).'
+						<input type="hidden" name="role_id" value="'.$this->html($role->getId()).'"/>
+						<input type="hidden" name="action" value="deleteRole"/>
+						<input type="submit" value="x"/>
+						</form>
+						</li>';
+		}
+
+		return $string.'</ul>';
+	}
+
+
+	public function showUsers() {
+
+		$string = '<table>
 							<tr>
 								<th>Name</th>
 								<th>Email</th>
@@ -116,60 +93,38 @@ class ManageView extends View {
 								<th>Last login</th>
 								<th>Assigned Roles</th>
 							</tr>';
-			/* @var $user User */
-			foreach ($this->model->getUsers() as $user) {
-				$string .= '<tr>
+		/* @var $user User */
+		foreach ($this->model->getUsers() as $user) {
+			$string .= '<tr>
 								<td>'.$user->getName().'</td>
 								<td>'.$user->getMail().'</td>
 								<td>'.$user->getDateRegister('Y-m-d').'</td>
 								<td>'.$user->isActive().'</td>
 								<td>'.$user->getDateLastLogin('Y-m-d').'</td>
 								<td>';
-				foreach ($user->getRoles() as $role) {
-					$string .= $role->getName().' <a href="./?p=manage&amp;m=rmur&amp;id='.$role->getId().'&amp;uid='.$user->getId().'">(remove)</a><br/>';
-				}
-				$string .= '<form action="./?p=manage" method="post"><select name="role_id">
+			foreach ($user->getRoles() as $role) {
+				$string .= $role->getName().' <a href="./?p=manage&amp;m=rmur&amp;id='.$role->getId().'&amp;uid='.$user->getId().'">(remove)</a><br/>';
+			}
+			$string .= '<form action="./?p=manage" method="post"><select name="role_id">
 							<option selected disabled>Select role...</option>';
 
-				/* @var $role Role */
-				foreach ($this->model->getRoles() as $role) {
-					if (!$user->hasRole($role->getId())) {
-						$string .= '<option value="'.$role->getId().'">'.$role->getName().'</option>';
-					}
+			/* @var $role Role */
+			foreach ($this->model->getRoles() as $role) {
+				if (!$user->hasRole($role->getId())) {
+					$string .= '<option value="'.$role->getId().'">'.$role->getName().'</option>';
 				}
+			}
 
-				$string .= '</select>
+			$string .= '</select>
 							<input type="hidden" name="user_id" value="'.$user->getId().'">
 							<input type="submit" value="Add">
 							</form>';
 
-				$string .= '</td></tr>';
-			}
-
-			$string .= '</table>';
-
-			return $string;
-		}
-		else {
-			return 'ERROR';
+			$string .= '</td></tr>';
 		}
 
+		$string .= '</table>';
+
+		return $string;
 	}
-
-
-	public function showMessage() {
-
-		if ($this->success == true) {
-			return '<div class="green"><p>Update successful</p></div>';
-		}
-		else if ($this->success === false) {
-			return '<div class="red"><p>An Error occurred!</p></div>';
-		}
-		else {
-			//TODO: better return false?
-			return '';
-		}
-	}
-
-
 }

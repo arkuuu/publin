@@ -2,81 +2,77 @@
 
 namespace publin\src;
 
-use Exception;
+use BadMethodCallException;
+use publin\src\exceptions\PermissionRequiredException;
+use UnexpectedValueException;
 
 class ManageController {
 
 	private $db;
+	private $auth;
+	private $errors;
 
 
-	public function __construct($db) {
+	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
+		$this->auth = $auth;
+		$this->errors = array();
 	}
 
 
 	public function run(Request $request) {
 
-		// TODO: input safety!!
-		// TODO: use Request
-		// TODO: check for user permission to this!
-
-		try {
-			if ($request->get('m')) {
-				$mode = $request->get('m');
-
-				if ($mode == 'rmp' && $request->get('id') && $request->get('rid')) {
-					$success = $this->removePermissionFromRole($request->get('rid'), $request->get('id'));
-				}
-
-				else if ($mode == 'rmr' && $request->get('id')) {
-					$success = $this->deleteRole($request->get('id'));
-				}
-				if ($mode == 'rmur' && $request->get('id') && $request->get('uid')) {
-					$success = $this->removeRoleFromUser($request->get('uid'), $request->get('id'));
-				}
-			}
-
-			else if ($request->post('role_id') && $request->post('permission_id')) {
-				$success = $this->addPermissionToRole($request->post('role_id'), $request->post('permission_id'));
-			}
-
-			else if ($request->post('role_id') && $request->post('user_id')) {
-				$success = $this->addRoleToUser($request->post('user_id'), $request->post('role_id'));
-			}
-
-			else if ($request->post('role_name')) {
-				$success = $this->newRole($request->post('role_name'));
-			}
-
-			else if ($request->post('role_perm')) {
-				$success = $this->updateRolePermissions($request->post('role_perm'));
-			}
-			else {
-				$success = null;
-			}
-		} catch (Exception $e) {
-			print_r($e->getMessage());
-			$success = false;
+		if (!$this->auth->checkPermission(Auth::MANAGE)) {
+			throw new PermissionRequiredException(Auth::MANAGE);
 		}
 
-		var_dump($success);
+		if ($request->post('action')) {
+			$method = $request->post('action');
+			if (method_exists($this, $method)) {
+				$this->$method($request);
+			}
+			else {
+				throw new BadMethodCallException;
+			}
+		}
+
 		$model = new ManageModel($this->db);
-		$view = new ManageView($model, $success);
+		$view = new ManageView($model, $this->errors);
 
 		return $view->display();
 	}
 
 
-	public function removePermissionFromRole($role_id, $permission_id) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+//	private function removePermissionFromRole(Request $request) {
+//
+//		$role_id = Validator::sanitizeNumber($request->post('role_id'));
+//		$permission_id = Validator::sanitizeNumber($request->post('permission_id'));
+//		if (!$role_id || !$permission_id) {
+//			throw new UnexpectedValueException;
+//		}
+//
+//		$model = new RoleModel($this->db);
+//
+//		return $model->removePermission($role_id, $permission_id);
+//	}
 
-		$model = new RoleModel($this->db);
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function deleteRole(Request $request) {
 
-		return $model->removePermission($role_id, $permission_id);
-	}
-
-
-	public function deleteRole($role_id) {
+		$role_id = Validator::sanitizeNumber($request->post('role_id'));
+		if (!$role_id) {
+			throw new UnexpectedValueException;
+		}
 
 		$model = new RoleModel($this->db);
 
@@ -84,23 +80,54 @@ class ManageController {
 	}
 
 
-	public function removeRoleFromUser($user_id, $role_id) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function removeRoleFromUser(Request $request) {
 
+		$user_id = Validator::sanitizeNumber($request->post('user_id'));
+		$role_id = Validator::sanitizeNumber($request->post('role_id'));
+		if (!$user_id || !$role_id) {
+			throw new UnexpectedValueException;
+		}
 		$model = new UserModel($this->db);
 
 		return $model->removeRole($user_id, $role_id);
 	}
 
 
-	public function addPermissionToRole($role_id, $permission_id) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return mixed
+	 */
+//	private function addPermissionToRole(Request $request) {
+//
+//		$role_id = Validator::sanitizeNumber($request->post('role_id'));
+//		$permission_id = Validator::sanitizeNumber($request->post('permission_id'));
+//		if (!$role_id || !$permission_id) {
+//			throw new UnexpectedValueException;
+//		}
+//
+//		$model = new RoleModel($this->db);
+//
+//		return $model->addPermission($role_id, $permission_id);
+//	}
 
-		$model = new RoleModel($this->db);
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return mixed
+	 */
+	private function addRoleToUser(Request $request) {
 
-		return $model->addPermission($role_id, $permission_id);
-	}
-
-
-	public function addRoleToUser($user_id, $role_id) {
+		$user_id = Validator::sanitizeNumber($request->post('user_id'));
+		$role_id = Validator::sanitizeNumber($request->post('role_id'));
+		if (!$user_id || !$role_id) {
+			throw new UnexpectedValueException;
+		}
 
 		$model = new UserModel($this->db);
 
@@ -108,19 +135,44 @@ class ManageController {
 	}
 
 
-	public function newRole($role_name) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return mixed
+	 */
+	private function addRole(Request $request) {
 
-		$model = new RoleModel($this->db);
-		$role = new Role(array('name' => $role_name));
+		$role_model = new RoleModel($this->db);
+		$validator = $role_model->getValidator();
 
-		return $model->store($role);
+		if ($validator->validate($request->post())) {
+			$data = $validator->getSanitizedResult();
+			$keyword = new Role($data);
+
+			return $role_model->store($keyword);
+		}
+		else {
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
+		}
 	}
 
 
-	public function updateRolePermissions(array $role_permissions) {
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function updatePermissions(Request $request) {
+
+		$permissions = $request->post('permissions');
+		if (!is_array($permissions)) {
+			throw new UnexpectedValueException;
+		}
 
 		$model = new ManageModel($this->db);
 
-		return $model->updatePermissions($role_permissions);
+		return $model->updatePermissions($permissions);
 	}
 }

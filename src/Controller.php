@@ -235,7 +235,7 @@ class Controller {
 	 */
 	private function manage(Request $request) {
 
-		$controller = new ManageController($this->db);
+		$controller = new ManageController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}

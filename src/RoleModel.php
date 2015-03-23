@@ -56,6 +56,11 @@ class RoleModel {
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
+
+		$where = array('role_id' => $id);
+		$this->db->deleteData('rel_roles_permissions', $where);
+		// TODO: rel_user_roles
+
 		$where = array('id' => $id);
 		$rows = $this->db->deleteData('list_roles', $where);
 
@@ -180,5 +185,14 @@ class RoleModel {
 		}
 
 		return $roles;
+	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('name', 'text', true, 'Role name is required but invalid');
+
+		return $validator;
 	}
 }
