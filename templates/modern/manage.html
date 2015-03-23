@@ -33,8 +33,8 @@
 <h2>Roles</h2>
 <p>Create a new role</p>
 <form action="#" method="post" accept-charset="utf8">
-	<label for="name">Role name:</label>
-	<input type="text" name="name" id="name">
+	<label for="role_name">Role name:</label>
+	<input type="text" name="name" id="role_name">
 	<input type="hidden" name="action" value="addRole">
 	<input type="submit" value="Create Role">
 </form>
@@ -43,5 +43,18 @@
 
 <h2>Users</h2>
 <?php echo $this -> showUsers() ?>
+<p>Register a new user</p>
+<div class="form">
+	<form action="#" method="post" accept-charset="utf8">
+		<label for="user_name">Username:</label>
+		<input type="text" name="name" id="user_name"><br/>
+		<label for="mail">E-mail:</label>
+		<input type="text" name="mail" id="mail">
 
+		<p>A password will be generated randomly and can be changed by the user later. The user will be notified via
+		   e-mail.</p>
+		<input type="hidden" name="action" value="addUser">
+		<input type="submit" value="Register User">
+	</form>
+</div>
 

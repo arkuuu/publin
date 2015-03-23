@@ -31,23 +31,28 @@ class ManageView extends View {
 		$roles = $this->model->getRoles();
 		$permissions = $this->model->getPermissions();
 
-		$string = '<form action="./?p=manage" method="post">';
+		$string = '<form action="#" method="post" accept-charset="utf-8">';
 		$string .= '<table><tr><th>Permission</th>';
 		/* @var $role Role */
 		foreach ($roles as $role) {
-			$string .= '<th>'.$role->getName().'</th>';
+			$string .= '<th>'.$this->html($role->getName()).'</th>';
 		}
 		$string .= '</tr>';
 
 		foreach ($permissions as $permission) {
-			$string .= '<tr><td>'.$permission['name'].'</td>';
+			$string .= '<tr><td>'.$this->html($permission['name']).'</td>';
 			foreach ($roles as $role) {
 				if ($role->hasPermission($permission['id'])) {
-					$string .= '<td class="green"><input type="checkbox" name="permissions['.$role->getId().']['.$permission['id'].']" checked></td>';
+					$class = 'green';
+					$checked = 'checked';
 				}
 				else {
-					$string .= '<td class="red"><input type="checkbox" name="permissions['.$role->getId().']['.$permission['id'].']"></td>';
+					$class = 'red';
+					$checked = '';
 				}
+				$string .= '<td class="'.$class.'">
+	<input type="checkbox" name="permissions['.$this->html($role->getId()).']['.$this->html($permission['id']).']" '.$checked.'>
+</td>';
 			}
 			$string .= '</tr>';
 		}
@@ -92,35 +97,60 @@ class ManageView extends View {
 								<th>Active</th>
 								<th>Last login</th>
 								<th>Assigned Roles</th>
+								<th>Actions</th>
 							</tr>';
 		/* @var $user User */
 		foreach ($this->model->getUsers() as $user) {
+			$is_active = $user->isActive() ? 'yes' : 'no';
 			$string .= '<tr>
-								<td>'.$user->getName().'</td>
-								<td>'.$user->getMail().'</td>
-								<td>'.$user->getDateRegister('Y-m-d').'</td>
-								<td>'.$user->isActive().'</td>
-								<td>'.$user->getDateLastLogin('Y-m-d').'</td>
+								<td>'.$this->html($user->getName()).'</td>
+								<td>'.$this->html($user->getMail()).'</td>
+								<td>'.$this->html($user->getDateRegister('Y-m-d')).'</td>
+								<td>'.$this->html($is_active).'</td>
+								<td>'.$this->html($user->getDateLastLogin('Y-m-d')).'</td>
 								<td>';
 			foreach ($user->getRoles() as $role) {
-				$string .= $role->getName().' <a href="./?p=manage&amp;m=rmur&amp;id='.$role->getId().'&amp;uid='.$user->getId().'">(remove)</a><br/>';
+				$string .= '
+						<form action="#" method="post" accept-charset="utf-8">
+						'.$this->html($role->getName()).'
+						<input type="hidden" name="role_id" value="'.$this->html($role->getId()).'"/>
+						<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'"/>
+						<input type="hidden" name="action" value="removeRoleFromUser"/>
+						<input type="submit" value="x"/>
+						</form>';
 			}
-			$string .= '<form action="./?p=manage" method="post"><select name="role_id">
-							<option selected disabled>Select role...</option>';
+
+			$string .= '
+	<form action="#" method="post" accept-charset="utf-8">
+		<select name="role_id">
+			<option selected disabled>Role...</option>';
 
 			/* @var $role Role */
 			foreach ($this->model->getRoles() as $role) {
 				if (!$user->hasRole($role->getId())) {
-					$string .= '<option value="'.$role->getId().'">'.$role->getName().'</option>';
+					$string .= '<option value="'.$this->html($role->getId()).'">'.$this->html($role->getName()).'</option>';
 				}
 			}
 
 			$string .= '</select>
-							<input type="hidden" name="user_id" value="'.$user->getId().'">
-							<input type="submit" value="Add">
-							</form>';
+<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'">
+<input type="hidden" name="action" value="addRoleToUser">
+<input type="submit" value="Add">
+</form>';
 
-			$string .= '</td></tr>';
+			$string .= '</td><td>
+	<form action="#" method="post" accept-charset="utf-8">
+		<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'">
+		<input type="hidden" name="action" value="deleteUser">
+		<input type="submit" value="Delete">
+	</form>
+	<form>
+		<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'">
+		<input type="hidden" name="action" value="sendNewPassword">
+		<input type="submit" value="Send new password">
+	</form>
+</td>
+</tr>';
 		}
 
 		$string .= '</table>';

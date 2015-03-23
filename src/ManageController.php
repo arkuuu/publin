@@ -4,6 +4,7 @@ namespace publin\src;
 
 use BadMethodCallException;
 use publin\src\exceptions\PermissionRequiredException;
+use publin\src\exceptions\SQLDuplicateEntryException;
 use UnexpectedValueException;
 
 class ManageController {
@@ -49,24 +50,6 @@ class ManageController {
 	 *
 	 * @return bool
 	 */
-//	private function removePermissionFromRole(Request $request) {
-//
-//		$role_id = Validator::sanitizeNumber($request->post('role_id'));
-//		$permission_id = Validator::sanitizeNumber($request->post('permission_id'));
-//		if (!$role_id || !$permission_id) {
-//			throw new UnexpectedValueException;
-//		}
-//
-//		$model = new RoleModel($this->db);
-//
-//		return $model->removePermission($role_id, $permission_id);
-//	}
-
-	/** @noinspection PhpUnusedPrivateMethodInspection
-	 * @param Request $request
-	 *
-	 * @return bool
-	 */
 	private function deleteRole(Request $request) {
 
 		$role_id = Validator::sanitizeNumber($request->post('role_id'));
@@ -103,24 +86,6 @@ class ManageController {
 	 *
 	 * @return mixed
 	 */
-//	private function addPermissionToRole(Request $request) {
-//
-//		$role_id = Validator::sanitizeNumber($request->post('role_id'));
-//		$permission_id = Validator::sanitizeNumber($request->post('permission_id'));
-//		if (!$role_id || !$permission_id) {
-//			throw new UnexpectedValueException;
-//		}
-//
-//		$model = new RoleModel($this->db);
-//
-//		return $model->addPermission($role_id, $permission_id);
-//	}
-
-	/** @noinspection PhpUnusedPrivateMethodInspection
-	 * @param Request $request
-	 *
-	 * @return mixed
-	 */
 	private function addRoleToUser(Request $request) {
 
 		$user_id = Validator::sanitizeNumber($request->post('user_id'));
@@ -147,9 +112,9 @@ class ManageController {
 
 		if ($validator->validate($request->post())) {
 			$data = $validator->getSanitizedResult();
-			$keyword = new Role($data);
+			$role = new Role($data);
 
-			return $role_model->store($keyword);
+			return $role_model->store($role);
 		}
 		else {
 			$this->errors = array_merge($this->errors, $validator->getErrors());
@@ -174,5 +139,54 @@ class ManageController {
 		$model = new ManageModel($this->db);
 
 		return $model->updatePermissions($permissions);
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool|mixed
+	 */
+	private function addUser(Request $request) {
+
+		$user_model = new UserModel($this->db);
+		$validator = $user_model->getValidator();
+
+		if ($validator->validate($request->post())) {
+			$data = $validator->getSanitizedResult();
+			$user = new User($data);
+
+			try {
+				return $user_model->store($user);
+			}
+			catch (SQLDuplicateEntryException $e) {
+				$this->errors[] = 'This username or email is already in use, please choose another one';
+
+				return false;
+			}
+		}
+		else {
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
+		}
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function deleteUser(Request $request) {
+
+		$user_id = Validator::sanitizeNumber($request->post('user_id'));
+		if (!$user_id) {
+			throw new UnexpectedValueException;
+		}
+
+		$model = new UserModel($this->db);
+
+		return $model->delete($user_id);
 	}
 }

@@ -54,7 +54,27 @@ class UserModel {
 
 	public function store(User $user) {
 
-		// TODO
+		$data = $user->getData();
+		foreach ($data as $property => $value) {
+			if (empty($value) || is_array($value)) {
+				unset($data[$property]);
+			}
+		}
+		// TODO: password generation
+		$data['password'] = Auth::hashPassword(Auth::generatePassword());
+
+		return $this->db->insert('list_users', $data);
+		// TODO: this does not fail
+	}
+
+
+	public function update($id, array $data) {
+
+		if (isset($data['password'])) {
+			$data['password'] = Auth::hashPassword($data['password']);
+		}
+
+		return $this->db->updateData('list_users', array('id' => $id), $data);
 	}
 
 
@@ -87,6 +107,10 @@ class UserModel {
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
+
+		$where = array('user_id' => $id);
+		$this->db->deleteData('rel_user_roles', $where);
+
 		$where = array('id' => $id);
 		$rows = $this->db->deleteData('list_users', $where);
 
@@ -97,5 +121,16 @@ class UserModel {
 		else {
 			throw new RuntimeException('Error while deleting user '.$id.': '.$this->db->error);
 		}
+	}
+
+
+	public function getValidator() {
+
+		$validator = new Validator();
+		$validator->addRule('name', 'text', true, 'Username is required but invalid');
+		$validator->addRule('mail', 'email', true, 'E-mail is required but invalid');
+		$validator->addRule('active', 'boolean', false, 'Active is invalid');
+
+		return $validator;
 	}
 }
