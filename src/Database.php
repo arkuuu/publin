@@ -5,6 +5,7 @@ namespace publin\src;
 use InvalidArgumentException;
 use mysqli;
 use mysqli_result;
+use publin\src\exceptions\SQLDuplicateEntryException;
 use publin\src\exceptions\SQLException;
 use publin\src\exceptions\SQLForeignKeyException;
 
@@ -135,12 +136,47 @@ class Database extends mysqli {
 		if (($result === true || $result instanceof mysqli_result) && empty($this->error)) {
 			return $result;
 		}
+		else if (strpos($this->error, 'Duplicate entry') !== false) {
+			throw new SQLDuplicateEntryException($this->error);
+		}
 		else if (strpos($this->error, 'foreign key constraint fails') !== false) {
 			throw new SQLForeignKeyException($this->error);
 		}
 		else {
 			throw new SQLException($this->error);
 		}
+	}
+
+
+	public function insert($table, array $data) {
+
+		if (empty($data)) {
+			throw new InvalidArgumentException('where must not be empty when inserting');
+		}
+
+		$this->changeToWriteUser();
+
+		$into = array_keys($data);
+		$values = array_values($data);
+		$query = 'INSERT INTO `'.$table.'`(';
+
+		foreach ($into as $field) {
+			$query .= '`'.$field.'`, ';
+		}
+		$query = substr($query, 0, -2);
+
+		$query .= ') VALUES (';
+
+		foreach ($values as $value) {
+			$query .= '"'.$value.'", ';
+		}
+		$query = substr($query, 0, -2);
+
+		$query .= ');';
+
+		$this->query($query);
+
+		return $this->insert_id;
 	}
 
 
