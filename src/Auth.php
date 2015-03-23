@@ -28,6 +28,12 @@ class Auth {
 	}
 
 
+	public static function generatePassword() {
+
+		return 'todo_generate_password';
+	}
+
+
 	public function login($user_name, $password) {
 
 		$user_name = $this->db->real_escape_string($user_name);
@@ -39,7 +45,6 @@ class Auth {
 
 		if ($this->db->getNumRows() == 1) {
 
-			//TODO: write Login date to DB
 			$user = new User($result[0]);
 			$user->setPermissions($this->getPermissions($user));
 
@@ -47,6 +52,10 @@ class Auth {
 			$_SESSION['user'] = $user;
 			$_SESSION['created'] = time();
 			$_SESSION['last_activity'] = time();
+
+			$query = 'UPDATE `list_users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';
+			$this->db->changeToWriteUser();
+			$this->db->query($query);
 
 			return true;
 		}
