@@ -4,7 +4,9 @@ namespace publin\src;
 
 use InvalidArgumentException;
 use mysqli;
+use mysqli_result;
 use publin\src\exceptions\SQLException;
+use publin\src\exceptions\SQLForeignKeyException;
 
 /**
  * Handles all database communication.
@@ -13,15 +15,17 @@ use publin\src\exceptions\SQLException;
  */
 class Database extends mysqli {
 
-	// TODO: get these from a config file
-	private $host = 'localhost';
-	private $readonly_user = 'readonly';
-	private $readonly_password = 'readonly';
-	private $writeonly_user = 'root';    // TODO: change
-	private $writeonly_password = 'root';
-	private $database = 'dev';
-	private $charset = 'utf8';
+	const HOST = 'localhost';
+	const READONLY_USER = 'readonly';
+	const READONLY_PASSWORD = 'readonly';
+	const WRITEONLY_USER = 'root';
+	const WRITEONLY_PASSWORD = 'root';
+	const DATABASE = 'dev';
+	const CHARSET = 'utf8';
 
+	/**
+	 * @var int
+	 */
 	private $num_rows;
 
 
@@ -31,28 +35,32 @@ class Database extends mysqli {
 	public function __construct() {
 
 		/* Calls the constructor of mysqli and creates a connection */
-		parent::__construct($this->host,
-							$this->readonly_user,
-							$this->readonly_password,
-							$this->database);
+		parent::__construct(self::HOST,
+							self::READONLY_USER,
+							self::READONLY_PASSWORD,
+							self::DATABASE);
 
 		/* Stops if the connection cannot be established */
 		if ($this->connect_errno) {
 			throw new SQLException($this->connect_error);
 		}
 		/* Sets the charset used for transmission */
-		parent::set_charset($this->charset);
+		parent::set_charset(self::CHARSET);
 	}
 
 
-	// TODO DOC
+	/**
+	 *
+	 */
 	public function __destruct() {
 
 		parent::close();    // TODO: really as destructor? Not a real method?
 	}
 
 
-	// TODO DOC
+	/**
+	 * @return mixed
+	 */
 	public function getNumRows() {
 
 		return $this->num_rows;
@@ -72,9 +80,7 @@ class Database extends mysqli {
 			throw new InvalidArgumentException('where must not be empty when inserting');
 		}
 
-		parent::change_user($this->writeonly_user,
-							$this->writeonly_password,
-							$this->database);
+		$this->changeToWriteUser();
 
 		$into = array_keys($data);
 		$values = array_values($data);
@@ -94,7 +100,29 @@ class Database extends mysqli {
 
 		$query .= ') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
 
-		// DEV: write query to log
+		$this->query($query);
+
+		return $this->insert_id;
+	}
+
+
+	public function changeToWriteUser() {
+
+		$success = parent::change_user(self::WRITEONLY_USER,
+									   self::WRITEONLY_PASSWORD,
+									   self::DATABASE);
+
+		if ($success && empty($this->error)) {
+			return true;
+		}
+		else {
+			throw new SQLException('could not change user: '.$this->error);
+		}
+	}
+
+
+	public function query($query) {
+
 		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
 		$msg = str_replace("\t", '', $msg);
 		$file = fopen('./logs/sql.log', 'a');
@@ -104,11 +132,15 @@ class Database extends mysqli {
 
 		$result = parent::query($query);
 
-		if (!$result) {
+		if (($result === true || $result instanceof mysqli_result) && empty($this->error)) {
+			return $result;
+		}
+		else if (strpos($this->error, 'foreign key constraint fails') !== false) {
+			throw new SQLForeignKeyException($this->error);
+		}
+		else {
 			throw new SQLException($this->error);
 		}
-
-		return $this->insert_id;
 	}
 
 
@@ -125,9 +157,7 @@ class Database extends mysqli {
 			throw new InvalidArgumentException('where must not be empty when deleting');
 		}
 
-		parent::change_user($this->writeonly_user,
-							$this->writeonly_password,
-							$this->database);
+		$this->changeToWriteUser();
 
 		$query = 'DELETE FROM `'.$table.'`';
 		$query .= ' WHERE';
@@ -137,32 +167,27 @@ class Database extends mysqli {
 		}
 		$query = substr($query, 0, -3);
 
-		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-		$msg = str_replace("\t", '', $msg);
-		$file = fopen('./logs/sql.log', 'a');
-		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-					.$msg."\n");
-		fclose($file);
-
-		$result = parent::query($query);
-
-		if (!$result) {
-			throw new SQLException($this->error);
-		}
+		$this->query($query);
 
 		return $this->affected_rows;
 	}
 
 
+	/**
+	 * @param       $table
+	 * @param array $where
+	 * @param array $data
+	 *
+	 * @return int
+	 * @throws SQLException
+	 */
 	public function updateData($table, array $where, array $data) {
 
 		if (empty($where) || empty($data)) {
 			throw new InvalidArgumentException('where and data must not be empty when updating');
 		}
 
-		parent::change_user($this->writeonly_user,
-							$this->writeonly_password,
-							$this->database);
+		$this->changeToWriteUser();
 
 		$query = 'UPDATE `'.$table.'`';
 
@@ -180,30 +205,17 @@ class Database extends mysqli {
 		}
 		$query = substr($query, 0, -3);
 
-		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-		$msg = str_replace("\t", '', $msg);
-		$file = fopen('./logs/sql.log', 'a');
-		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-					.$msg."\n");
-		fclose($file);
-
-		$result = parent::query($query);
-
-		if (!$result) {
-			throw new SQLException($this->error);
-		}
+		$this->query($query);
 
 		return $this->affected_rows;
 	}
 
 
 	/**
-	 * Returns an array with types. All Columns are returned.
-	 * A filter can be specified with the optional parameter $filter.
+	 * @param array $filter
 	 *
-	 * @param    array $filter Optional filter array
-	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
 	public function fetchTypes(array $filter = array()) {
 
@@ -243,32 +255,15 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns data from query. Returns an array (rows) with arrays (columns) inside.
-	 * The last fetched data can be recovered using getLastData().
-	 * The last executed query can be recovered using getLastQuery().
-	 * This method must not be used directly.
-	 *
-	 * @param    string $query The SQL query
+	 * @param $query
 	 *
 	 * @return array
 	 * @throws SQLException
 	 */
 	public function getData($query) {
 
-		// DEV: write query to log
-		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-		$msg = str_replace("\t", '', $msg);
-		$file = fopen('./logs/sql.log', 'a');
-		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-					.$msg."\n");
-		fclose($file);
-
 		/* Sends query to database */
-		$result = parent::query($query);
-
-		if (!is_object($result)) {
-			throw new SQLException($this->error);
-		}
+		$result = $this->query($query);
 		$this->num_rows = $result->num_rows;
 
 		/* Fetches the results */
@@ -283,12 +278,10 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with key terms. All Columns are returned.
-	 * A filter can be specified with the optional parameter $filter.
+	 * @param array $filter
 	 *
-	 * @param    array $filter Optional filter array
-	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
 	public function fetchKeywords(array $filter = array()) {
 
@@ -337,12 +330,10 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with study fields. All Columns are returned.
-	 * A filter can be specified with the optional parameter $filter.
+	 * @param array $filter
 	 *
-	 * @param    array $filter Optional filter array
-	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
 	public function fetchStudyFields(array $filter = array()) {
 
@@ -382,87 +373,11 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with journals. All Columns are returned.
-	 * A filter can be specified with the optional parameter $filter.
+	 * @param array $filter
 	 *
-	 * @param    array $filter Optional filter array
-	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
-	public function fetchJournals(array $filter = array()) {
-
-		$select = 'SELECT j.*';
-		$from = 'FROM `list_journals` j';
-		$where = '';
-		$order = 'ORDER BY `name` ASC';
-		$limit = '';
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Creates the LIMIT clause */
-			if (array_key_exists('limit', $filter)) {
-				$limit = 'LIMIT '.$filter['limit'];
-				unset($filter['limit']);
-			}
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the WHERE clause from the rest of the filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' j.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
-	public function fetchPublishers(array $filter = array()) {
-
-		$select = 'SELECT p.*';
-		$from = 'FROM `list_publishers` p';
-		$where = '';
-		$order = 'ORDER BY `name` ASC';
-		$limit = '';
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Creates the LIMIT clause */
-			if (array_key_exists('limit', $filter)) {
-				$limit = 'LIMIT '.$filter['limit'];
-				unset($filter['limit']);
-			}
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the WHERE clause from the rest of the filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
 	public function fetchUsers(array $filter = array()) {
 
 		$select = 'SELECT u.*';
@@ -501,9 +416,8 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with all years.
-	 *
 	 * @return array
+	 * @throws SQLException
 	 */
 	public function fetchYears() {
 
@@ -516,30 +430,10 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with all months of a specified year.
+	 * @param array $filter
 	 *
-	 * @param    string $year The year which months should be returned.
-	 *
-	 * @return    array
-	 */
-	// public function fetchMonths($year) {
-
-	// 	$query = 'SELECT `month`
-	// 				FROM `list_publications`
-	// 				WHERE `year` LIKE '.$year.'
-	// 				GROUP BY `month`
-	// 				ORDER BY `month` DESC';
-
-	// 	return $this -> getData($query);
-	// }
-
-	/**
-	 * Returns an array with authors. All Columns are returned.
-	 * A filter can be specified with the optional parameter $filter.
-	 *
-	 * @param    array $filter Optional filter array
-	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
 	public function fetchAuthors(array $filter = array()) {
 
@@ -552,17 +446,6 @@ class Database extends mysqli {
 
 		/* Checks if any filter is set */
 		if (!empty($filter)) {
-
-			// /* Creates the SELECT clause */
-			// if (array_key_exists('select', $filter)) {
-			// 	$select = 'SELECT';
-
-			// 	foreach ($filter['select'] as $key => $value) {
-			// 		$select .= ' a.`'.$value.'`,';
-			// 	}
-			// 	$select = substr($select, 0, -1);
-			// 	unset($filter['select']);
-			// }
 
 			/* Creates the LIMIT clause */
 			if (array_key_exists('limit', $filter)) {
@@ -600,12 +483,10 @@ class Database extends mysqli {
 
 
 	/**
-	 * Returns an array with publications.
-	 * A filter can be specified with the optional parameter $filter.
+	 * @param array $filter
 	 *
-	 * @param    array $filter Optional filter array
-	 *
-	 * @return    array
+	 * @return array
+	 * @throws SQLException
 	 */
 	public function fetchPublications(array $filter = array()) {
 
@@ -666,6 +547,12 @@ class Database extends mysqli {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return array
+	 * @throws SQLException
+	 */
 	public function fetchRoles(array $filter = array()) {
 
 		$select = 'SELECT r.`id`, r.`name`';
@@ -697,6 +584,12 @@ class Database extends mysqli {
 	}
 
 
+	/**
+	 * @param array $filter
+	 *
+	 * @return array
+	 * @throws SQLException
+	 */
 	public function fetchPermissions(array $filter = array()) {
 
 		$select = 'SELECT p.`id`, p.`name`';
