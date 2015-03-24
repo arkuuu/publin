@@ -4,7 +4,11 @@
 namespace publin\oai;
 
 use DOMDocument;
+use DOMElement;
 use publin\src\Database;
+use publin\src\Publication;
+use publin\src\PublicationModel;
+use publin\src\Request;
 
 class OAIParser {
 
@@ -31,59 +35,51 @@ class OAIParser {
 
 	public function __construct() {
 
-		$this->db = new Database();
+		$this->db = new Database(false);
 	}
 
 
-	public function run($request) {
+	public function run(Request $request) {
 
-		if (isset($request['verb'])) {
-			switch ($request['verb']) {
-				case 'Identify':
-					return $this->identify();
-					break;
+		switch ($request->get('verb')) {
+			case 'Identify':
+				$dom = $this->identify();
+				break;
 
-				case 'ListMetadataFormats':
-					return $this->listMetadataFormats();
-					break;
+			case 'ListMetadataFormats':
+				$dom = $this->listMetadataFormats();
+				break;
 
-				case 'ListSets':
-					return $this->listSets();
-					break;
+			case 'ListSets':
+				$dom = $this->listSets();
+				break;
 
-				case 'GetRecord':
-					return $this->getRecord();
-					break;
+			case 'ListIdentifiers':
+				$dom = $this->listIdentifiers();
+				break;
 
-				default:
-					return false;
-					break;
-			}
+			case 'ListRecords':
+				$dom = $this->listRecords($request);
+				break;
+
+			case 'GetRecord':
+				$dom = $this->getRecord($request);
+				break;
+
+			default:
+				$dom = $this->badVerb();
+				break;
 		}
-		else {
-			return false;
-		}
+
+		return $dom->saveXML();
 	}
 
 
 	public function identify() {
 
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$oai = $dom->createElement('OAI-PMH');
-		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
-		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-		$oai->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
-		$dom->appendChild($oai);
-
-		$oai->appendChild($dom->createElement('responseDate', date('Y-m-d')));
-
-		$request = $dom->createElement('request', $this->baseURL);
-		$request->setAttribute('verb', 'Identify');
-		$oai->appendChild($request);
+		$dom = new DOMDocument('1.0', 'UTF-8');
 
 		$identify = $dom->createElement('Identify');
-		$oai->appendChild($identify);
-
 		$identify->appendChild($dom->createElement('repositoryName', $this->repositoryName));
 		$identify->appendChild($dom->createElement('baseURL', $this->baseURL));
 		$identify->appendChild($dom->createElement('protocolVersion', $this->protocolVersion));
@@ -93,6 +89,7 @@ class OAIParser {
 		$identify->appendChild($dom->createElement('earliestDatestamp', $this->earliestDatestamp));
 		$identify->appendChild($dom->createElement('deletedRecord', $this->deletedRecord));
 		$identify->appendChild($dom->createElement('granularity', $this->granularity));
+		//$identify->appendChild($dom->createElement('compression', '')); //optional
 
 		$description = $dom->createElement('description');
 		$identify->appendChild($description);
@@ -107,75 +104,250 @@ class OAIParser {
 		$oai_identifier->appendChild($dom->createElement('delimiter', ':'));
 		$oai_identifier->appendChild($dom->createElement('sampleIdentifier', 'oai:'.$this->repositoryIdentifier.':TODO'));
 
-		return $dom->saveXML();
+		return $this->createResponse(array('verb' => 'Identify'), $identify);
+	}
+
+
+	private function createResponse(array $request_parameters, DOMElement $content) {
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+		$oai = $dom->createElement('OAI-PMH');
+		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
+		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+		$oai->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
+		$dom->appendChild($oai);
+		$oai->appendChild($dom->createElement('responseDate', date('Y-m-d')));
+
+		$request = $dom->createElement('request', $this->baseURL);
+		foreach ($request_parameters as $name => $value) {
+			if (!empty($value)) {
+				$request->setAttribute($name, $value);
+			}
+		}
+
+		$oai->appendChild($request);
+		$oai->appendChild($dom->importNode($content, true));
+
+		return $dom;
 	}
 
 
 	public function listMetadataFormats() {
 
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$oai = $dom->createElement('OAI-PMH');
-		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
-		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-		$oai->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
-		$dom->appendChild($oai);
-
-		$oai->appendChild($dom->createElement('responseDate', date('Y-m-d')));
-
-		$request = $dom->createElement('request', $this->baseURL);
-		$request->setAttribute('verb', 'ListMetadataFormats');
-		$oai->appendChild($request);
+		$dom = new DOMDocument('1.0', 'UTF-8');
 
 		$listMetadataFormats = $dom->createElement('ListMetadataFormats');
-		$oai->appendChild($listMetadataFormats);
 
 		foreach ($this->metadataFormats as $data) {
 			$metadataFormat = $dom->createElement('metadataFormat');
-			$listMetadataFormats->appendChild($metadataFormat);
-
 			$metadataFormat->appendChild($dom->createElement('metadataPrefix', $data['metadataPrefix']));
 			$metadataFormat->appendChild($dom->createElement('schema', $data['schema']));
 			$metadataFormat->appendChild($dom->createElement('metadataNamespace', $data['metadataNamespace']));
+			$listMetadataFormats->appendChild($metadataFormat);
 		}
 
-		return $dom->saveXML();
+		return $this->createResponse(array('verb' => 'ListMetadataFormats'), $listMetadataFormats);
 	}
 
 
 	public function listSets() {
 
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$oai = $dom->createElement('OAI-PMH');
-		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
-		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-		$oai->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
-		$dom->appendChild($oai);
+		$sets = array(
+			array('setSpec' => 'todo',
+				  'setName' => 'name'),
+		); //TODO: replace with database?
 
-		$oai->appendChild($dom->createElement('responseDate', date('Y-m-d')));
-
-		$request = $dom->createElement('request', $this->baseURL);
-		$request->setAttribute('verb', 'ListSets');
-		$oai->appendChild($request);
+		$dom = new DOMDocument('1.0', 'UTF-8');
 
 		$listSets = $dom->createElement('ListSets');
-		$oai->appendChild($listSets);
+		foreach ($sets as $data) {
+			$set = $dom->createElement('set');
+			$set->appendChild($dom->createElement('setSpec', $data['setSpec']));
+			$set->appendChild($dom->createElement('setName', $data['setName']));
+			$listSets->appendChild($set);
+		}
 
-		return $dom->saveXML();
-	}
-
-
-	public function getRecord() {
+		return $this->createResponse(array('verb' => 'ListSets'), $listSets);
 	}
 
 
 	public function listIdentifiers() {
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+
+		$listIdentifiers = $dom->createElement('ListIdentifiers');
+
+		$header = $dom->createElement('header');
+		$listIdentifiers->appendChild($header);
+
+		$resumptionToken = $dom->createElement('resumptionToken');
+		$listIdentifiers->appendChild($resumptionToken);
+
+		return $this->createResponse(array('verb' => 'ListIdentifiers'), $listIdentifiers);
 	}
 
 
-	public function listRecords() {
+	public function listRecords(Request $request) {
+
+		if ($request->get('metadataPrefix')) {
+			if (!array_key_exists($request->get('metadataPrefix'), $this->metadataFormats)) {
+				return $this->cannotDisseminateFormat();
+			}
+		}
+		else if ($request->get('resumptionToken')) {
+			// TODO;
+		}
+		else {
+			return $this->badArgument();
+		}
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+
+		$listRecords = $dom->createElement('ListRecords');
+
+		$record = $dom->createElement('record');
+		$listRecords->appendChild($record);
+
+		$resumptionToken = $dom->createElement('resumptionToken');
+		$listRecords->appendChild($resumptionToken);
+
+		$parameters = array('verb'            => 'ListRecords',
+							'metadataPrefix'  => $request->get('metadataPrefix'),
+							'resumptionToken' => $request->get('resumptionToken'));
+
+		return $this->createResponse($parameters, $listRecords);
 	}
 
 
-	public function createXML($request_verb) {
+	public function cannotDisseminateFormat() {
+
+		$dom = $this->createErrorResponse('cannotDisseminateFormat');
+
+		return $dom;
+	}
+
+
+	private function createErrorResponse($error_type) {
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+
+		$error = $dom->createElement('error');
+		$error->setAttribute('code', $error_type);
+
+		return $this->createResponse(array(), $error);
+	}
+
+
+	public function badArgument() {
+
+		return $this->createErrorResponse('badArgument');
+	}
+
+
+	public function getRecord(Request $request) {
+
+		if (!$request->get('identifier') || !$request->get('metadataPrefix')) {
+			return $this->badArgument();
+		}
+
+		if (!array_key_exists($request->get('metadataPrefix'), $this->metadataFormats)) {
+			return $this->cannotDisseminateFormat();
+		}
+
+		$db = new Database();
+		$model = new PublicationModel($db);
+		$publication = $model->fetch(true, array('id' => $request->get('identifier')));
+
+		if (count($publication) == 0) {
+			return $this->idDoesNotExist();
+		}
+		$publication = $publication[0];
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+
+		$parameters = array('verb'           => 'GetRecord',
+							'identifier'     => $request->get('identifier'),
+							'metadataPrefix' => $request->get('metadataPrefix'));
+
+		$get_record = $dom->createElement('GetRecord');
+		$get_record->appendChild($dom->importNode($this->export($publication), true));
+
+		return $this->createResponse($parameters, $get_record);
+	}
+
+
+	public function idDoesNotExist() {
+
+		return $this->createErrorResponse('idDoesNotExist');
+	}
+
+
+	private function export(Publication $publication) {
+
+		$dom = new DOMDocument('1.0', 'utf-8');
+		$record = $dom->createElement('record');
+		$header = $record->appendChild($dom->createElement('header'));
+		$header->appendChild($dom->createElement('identifier', $publication->getId()));
+		$header->appendChild($dom->createElement('datestamp', $publication->getDatePublished('Y-m-d')));
+		$header->appendChild($dom->createElement('setSpec', 'TODO'));
+
+		$metadata = $record->appendChild($dom->createElement('metadata'));
+		$oai_dc = $dom->createElement('oai_dc:dc');
+		$oai_dc->setAttribute('xmlns:oai_dc', 'http://www.openarchives.org/OAI/2.0/oai_dc/');
+		$oai_dc->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1');
+		$oai_dc->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+		$oai_dc->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
+		$metadata->appendChild($oai_dc);
+
+		$fields = array();
+		$fields[] = array('dc:type', 'Text');
+		$fields[] = array('dc:title', $publication->getTitle());
+		foreach ($publication->getAuthors() as $author) {
+			if ($author->getLastName() && $author->getFirstName()) {
+				$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName(true));
+			}
+		}
+		//$fields[] = array('dcterms:issued', $publication->getDatePublished('Y-m-d'));
+		//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
+		$fields[] = array('dc:publisher', $publication->getPublisher());
+		$fields[] = array('dc:identifier', $publication->getDoi());
+
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$oai_dc->appendChild($dom->createElement($field[0], $field[1]));
+			}
+		}
+
+		return $record;
+	}
+
+
+	public function badVerb() {
+
+		return $this->createErrorResponse('badVerb');
+	}
+
+
+	public function noMetadataFormats() {
+
+		return $this->createErrorResponse('noMetadataFormats');
+	}
+
+
+	public function noRecordsMatch() {
+
+		return $this->createErrorResponse('noRecordsMatch');
+	}
+
+
+	public function badResumptionToken() {
+
+		return $this->createErrorResponse('badResumptionToken');
+	}
+
+
+	public function noSetHierarchy() {
+
+		return $this->createErrorResponse('noSetHierarchy');
 	}
 }
