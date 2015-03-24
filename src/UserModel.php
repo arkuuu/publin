@@ -41,6 +41,7 @@ class UserModel {
 			if ($mode) {
 				$model = new RoleModel($this->db);
 				$roles = $model->fetch(false, array('user_id' => $value['id']));
+				// TODO: load permissions?
 			}
 			else {
 				$roles = array();
@@ -49,6 +50,34 @@ class UserModel {
 		}
 
 		return $users;
+	}
+
+
+	public function fetchById($id) {
+
+		if (!is_numeric($id)) {
+			throw new InvalidArgumentException;
+		}
+
+		$query = 'SELECT * FROM `list_users` WHERE `id` ='.$id.';';
+		$data = $this->db->getData($query);
+		$data = $data[0];
+
+		$model = new RoleModel($this->db);
+		$roles = $model->fetch(false, array('user_id' => $id));
+		$model = new PermissionModel($this->db);
+		$permissions = array();
+
+		foreach ($roles as $role) {
+			$role_permissions = $model->fetchByRole($role->getId());
+			foreach ($role_permissions as $role_permission) {
+				if (!in_array($role_permission, $permissions)) {
+					$permissions[] = $role_permission;
+				}
+			}
+		}
+
+		return new User($data, $roles, $permissions);
 	}
 
 
@@ -63,7 +92,6 @@ class UserModel {
 		$data['password'] = Auth::hashPassword(Auth::generatePassword());
 
 		return $this->db->insert('list_users', $data);
-		// TODO: this does not fail
 	}
 
 
@@ -102,7 +130,6 @@ class UserModel {
 
 	public function delete($id) {
 
-		//TODO: this only works when no foreign key constraints fail
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
@@ -127,7 +154,7 @@ class UserModel {
 
 		$validator = new Validator();
 		$validator->addRule('name', 'text', true, 'Username is required but invalid');
-		$validator->addRule('mail', 'email', true, 'E-mail is required but invalid');
+		$validator->addRule('mail', 'email', true, 'Email address is required but invalid');
 		$validator->addRule('active', 'boolean', false, 'Active is invalid');
 
 		return $validator;
