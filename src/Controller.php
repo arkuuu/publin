@@ -245,6 +245,19 @@ class Controller {
 	 * @param Request $request
 	 *
 	 * @return string
+	 */
+	private function user(Request $request) {
+
+		$controller = new UserController($this->db, $this->auth);
+
+		return $controller->run($request);
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
 	 * @throws Exception
 	 * @throws NotFoundException
 	 */

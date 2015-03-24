@@ -12,7 +12,7 @@
 			<div id="login">
 				<ul>
 					<?php if ($this->showUserName()) {echo '
-					<li><a href="#">'.$this -> showUserName().'</a></li>
+					<li>'.$this->showLink('user', $this->showUserName()).'</li>
 									 ';}?>
 					<?php if ($this->hasPermission('publication_submit')) {echo '
 					<li>'.$this->showLink('submit', 'Submit').'</li>
