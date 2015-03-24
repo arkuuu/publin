@@ -40,7 +40,7 @@ class RoleModel {
 			}
 		}
 
-		return $this->db->insertData('list_roles', $data);
+		return $this->db->insert('list_roles', $data);
 	}
 
 
@@ -57,9 +57,9 @@ class RoleModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 
-		$where = array('role_id' => $id);
-		$this->db->deleteData('rel_roles_permissions', $where);
-		// TODO: rel_user_roles
+//		$where = array('role_id' => $id);
+//		$this->db->deleteData('rel_roles_permissions', $where);
+		// TODO: sql commit stuff
 
 		$where = array('id' => $id);
 		$rows = $this->db->deleteData('list_roles', $where);

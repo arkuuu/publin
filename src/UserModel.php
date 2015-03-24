@@ -60,7 +60,6 @@ class UserModel {
 				unset($data[$property]);
 			}
 		}
-		// TODO: password generation
 		$data['password'] = Auth::hashPassword(Auth::generatePassword());
 
 		return $this->db->insert('list_users', $data);

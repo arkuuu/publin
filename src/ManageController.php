@@ -5,6 +5,7 @@ namespace publin\src;
 use BadMethodCallException;
 use publin\src\exceptions\PermissionRequiredException;
 use publin\src\exceptions\SQLDuplicateEntryException;
+use publin\src\exceptions\SQLForeignKeyException;
 use UnexpectedValueException;
 
 class ManageController {
@@ -59,7 +60,14 @@ class ManageController {
 
 		$model = new RoleModel($this->db);
 
-		return $model->delete($role_id);
+		try {
+			return $model->delete($role_id);
+		}
+		catch (SQLForeignKeyException $e) {
+			$this->errors[] = 'This role is assigned to a user or permission and cannot be deleted.';
+
+			return false;
+		}
 	}
 
 
@@ -114,7 +122,14 @@ class ManageController {
 			$data = $validator->getSanitizedResult();
 			$role = new Role($data);
 
-			return $role_model->store($role);
+			try {
+				return $role_model->store($role);
+			}
+			catch (SQLDuplicateEntryException $e) {
+				$this->errors[] = 'This role name is already in use, please choose another one';
+
+				return false;
+			}
 		}
 		else {
 			$this->errors = array_merge($this->errors, $validator->getErrors());
@@ -147,7 +162,7 @@ class ManageController {
 	 *
 	 * @return bool|mixed
 	 */
-	private function addUser(Request $request) {
+	private function registerUser(Request $request) {
 
 		$user_model = new UserModel($this->db);
 		$validator = $user_model->getValidator();
@@ -157,6 +172,7 @@ class ManageController {
 			$user = new User($data);
 
 			try {
+				// TODO: send email to user email
 				return $user_model->store($user);
 			}
 			catch (SQLDuplicateEntryException $e) {
