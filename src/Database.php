@@ -124,12 +124,14 @@ class Database extends mysqli {
 
 	public function query($query) {
 
-		$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-		$msg = str_replace("\t", '', $msg);
-		$file = fopen('./logs/sql.log', 'a');
-		fwrite($file, '['.date('d.m.Y H:i:s').'] '
-					.$msg."\n");
-		fclose($file);
+		if (false) {
+			$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
+			$msg = str_replace("\t", '', $msg);
+			$file = fopen('./logs/sql.log', 'a');
+			fwrite($file, '['.date('d.m.Y H:i:s').'] '
+						.$msg."\n");
+			fclose($file);
+		}
 
 		$result = parent::query($query);
 
