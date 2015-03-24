@@ -28,6 +28,9 @@ class Auth {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public static function generatePassword() {
 
 		$chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
@@ -43,13 +46,35 @@ class Auth {
 	}
 
 
-	public function login($user_name, $password) {
+	/**
+	 * @return bool|User
+	 * @throws LoginRequiredException
+	 */
+	public static function getCurrentUser() {
 
-		$user_name = $this->db->real_escape_string($user_name);
+		if (isset($_SESSION['user'])) {
+			return $_SESSION['user'];
+		}
+		else {
+			throw new LoginRequiredException();
+		}
+	}
+
+
+	/**
+	 * @param $username
+	 * @param $password
+	 *
+	 * @return bool
+	 * @throws exceptions\SQLException
+	 */
+	public function login($username, $password) {
+
+		$username = $this->db->real_escape_string($username);
 		$password = $this->db->real_escape_string($password);
 		$password = $this->hashPassword($password);
 
-		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$user_name.'" AND `password` = "'.$password.'";';
+		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
 		$result = $this->db->getData($query);
 
 		if ($this->db->getNumRows() == 1) {
@@ -59,7 +84,7 @@ class Auth {
 
 			session_regenerate_id(true);
 			$_SESSION['user'] = $user;
-			$_SESSION['created'] = time();
+			$_SESSION['created'] = time(); // TODO: needed?
 			$_SESSION['last_activity'] = time();
 
 			$query = 'UPDATE `list_users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';
@@ -74,6 +99,11 @@ class Auth {
 	}
 
 
+	/**
+	 * @param $password
+	 *
+	 * @return mixed
+	 */
 	public static function hashPassword($password) {
 
 		// TODO: implement
@@ -81,6 +111,11 @@ class Auth {
 	}
 
 
+	/**
+	 * @param User $user
+	 *
+	 * @return array
+	 */
 	public function getPermissions(User $user) {
 
 		$user_id = $this->db->real_escape_string($user->getId());
@@ -96,6 +131,31 @@ class Auth {
 	}
 
 
+	public function validateLogin($username, $password) {
+
+		$username = $this->db->real_escape_string($username);
+		$password = $this->db->real_escape_string($password);
+		$password = $this->hashPassword($password);
+
+		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
+		$this->db->getData($query);
+
+		if ($this->db->getNumRows() == 1) {
+
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	/**
+	 * @param $permission_name
+	 *
+	 * @return bool
+	 * @throws LoginRequiredException
+	 */
 	public function checkPermission($permission_name) {
 
 		if ($this->checkLoginStatus()) {
@@ -125,6 +185,9 @@ class Auth {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function checkLoginStatus() {
 
 		if (isset($_SESSION['user']) && isset($_SESSION['last_activity'])) {
@@ -145,6 +208,9 @@ class Auth {
 	}
 
 
+	/**
+	 *
+	 */
 	public function logout() {
 
 		session_unset();
