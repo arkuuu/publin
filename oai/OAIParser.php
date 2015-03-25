@@ -13,6 +13,7 @@ use publin\src\Request;
 class OAIParser {
 
 	private $db;
+	private $use_stylesheet = true;
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
 	private $baseURL = 'http://localhost/publin/oai/';
@@ -55,7 +56,7 @@ class OAIParser {
 				break;
 
 			case 'ListIdentifiers':
-				$dom = $this->listIdentifiers();
+				$dom = $this->listIdentifiers($request);
 				break;
 
 			case 'ListRecords':
@@ -96,7 +97,7 @@ class OAIParser {
 
 		$oai_identifier = $dom->createElement('oai-identifier');
 		$oai_identifier->setAttribute('xsi:schemaLocation',
-									  '<oai-identifier xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd');
+									  'http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd');
 		$description->appendChild($oai_identifier);
 
 		$oai_identifier->appendChild($dom->createElement('scheme', 'oai'));
@@ -110,15 +111,21 @@ class OAIParser {
 
 	private function createResponse(array $request_parameters, DOMElement $content) {
 
-		$dom = new DOMDocument('1.0', 'UTF-8');
-		$oai = $dom->createElement('OAI-PMH');
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		if ($this->use_stylesheet) {
+			$xsl = $xml->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="oai2.xsl"');
+			$xml->appendChild($xsl);
+		}
+
+		$oai = $xml->createElement('OAI-PMH');
 		$oai->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
 		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 		$oai->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
-		$dom->appendChild($oai);
-		$oai->appendChild($dom->createElement('responseDate', date('Y-m-d')));
+		$xml->appendChild($oai);
+		$oai->appendChild($xml->createElement('responseDate', date('Y-m-d')));
 
-		$request = $dom->createElement('request', $this->baseURL);
+		$request = $xml->createElement('request', $this->baseURL);
 		foreach ($request_parameters as $name => $value) {
 			if (!empty($value)) {
 				$request->setAttribute($name, $value);
@@ -126,9 +133,9 @@ class OAIParser {
 		}
 
 		$oai->appendChild($request);
-		$oai->appendChild($dom->importNode($content, true));
+		$oai->appendChild($xml->importNode($content, true));
 
-		return $dom;
+		return $xml;
 	}
 
 
@@ -171,19 +178,51 @@ class OAIParser {
 	}
 
 
-	public function listIdentifiers() {
+	public function listIdentifiers(Request $request) {
+
+		if (!$request->get('metadataPrefix')) {
+			return $this->badArgument();
+		}
+
+		$model = new PublicationModel($this->db);
+		$publications = $model->fetch(false);
 
 		$dom = new DOMDocument('1.0', 'UTF-8');
 
 		$listIdentifiers = $dom->createElement('ListIdentifiers');
 
-		$header = $dom->createElement('header');
-		$listIdentifiers->appendChild($header);
+		foreach ($publications as $publication) {
+			$header = $dom->createElement('header');
+			$header->appendChild($dom->createElement('identifier', $publication->getId()));
+			$header->appendChild($dom->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
+			$header->appendChild($dom->createElement('setSpec', $publication->getStudyField()));
+			$listIdentifiers->appendChild($header);
+		}
 
 		$resumptionToken = $dom->createElement('resumptionToken');
 		$listIdentifiers->appendChild($resumptionToken);
 
-		return $this->createResponse(array('verb' => 'ListIdentifiers'), $listIdentifiers);
+		$parameters = array('verb'           => 'ListIdentifiers',
+							'metadataPrefix' => $request->get('metadataPrefix'));
+
+		return $this->createResponse($parameters, $listIdentifiers);
+	}
+
+
+	public function badArgument() {
+
+		return $this->createErrorResponse('badArgument');
+	}
+
+
+	private function createErrorResponse($error_type) {
+
+		$dom = new DOMDocument('1.0', 'UTF-8');
+
+		$error = $dom->createElement('error');
+		$error->setAttribute('code', $error_type);
+
+		return $this->createResponse(array(), $error);
 	}
 
 
@@ -224,23 +263,6 @@ class OAIParser {
 		$dom = $this->createErrorResponse('cannotDisseminateFormat');
 
 		return $dom;
-	}
-
-
-	private function createErrorResponse($error_type) {
-
-		$dom = new DOMDocument('1.0', 'UTF-8');
-
-		$error = $dom->createElement('error');
-		$error->setAttribute('code', $error_type);
-
-		return $this->createResponse(array(), $error);
-	}
-
-
-	public function badArgument() {
-
-		return $this->createErrorResponse('badArgument');
 	}
 
 
@@ -289,7 +311,7 @@ class OAIParser {
 		$header = $record->appendChild($dom->createElement('header'));
 		$header->appendChild($dom->createElement('identifier', $publication->getId()));
 		$header->appendChild($dom->createElement('datestamp', $publication->getDatePublished('Y-m-d')));
-		$header->appendChild($dom->createElement('setSpec', 'TODO'));
+		$header->appendChild($dom->createElement('setSpec', $publication->getStudyField()));
 
 		$metadata = $record->appendChild($dom->createElement('metadata'));
 		$oai_dc = $dom->createElement('oai_dc:dc');
