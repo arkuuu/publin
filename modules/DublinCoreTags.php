@@ -11,9 +11,24 @@ class DublinCoreTags {
 
 		// http://www.mendeley.com/import/information-for-publishers/
 		// NOTE: DublinCore tags are not valid HTML5
-		// NOTE: dc.citation.* are non standard tags recommended by Google Scholar
+
 		// TODO: <link rel="schema.dcterms" href="http://purl.org/dc/terms/"> when using dcterms.*, e.g. abstract, bibliographic citation
 
+		$result = '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />'."\n";
+		$fields = $this->createFields($publication);
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
+			}
+		}
+
+		return $result;
+	}
+
+
+	private function createFields(Publication $publication) {
+
+		// NOTE: dc.citation.* are non standard tags recommended by Google Scholar
 		$fields = array();
 		foreach ($publication->getAuthors() as $author) {
 			if ($author->getLastName() && $author->getFirstName()) {
@@ -34,13 +49,6 @@ class DublinCoreTags {
 		$fields[] = array('dc.publisher', $publication->getPublisher());
 		$fields[] = array('dc.identifier', $publication->getDoi());
 
-		$result = '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />'."\n";
-		foreach ($fields as $field) {
-			if ($field[1]) {
-				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
-			}
-		}
-
-		return $result;
+		return $fields;
 	}
 }

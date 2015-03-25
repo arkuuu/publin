@@ -11,13 +11,20 @@ class HighwirePressTags {
 
 		// http://www.mendeley.com/import/information-for-publishers/
 
-		$keywords = '';
-		foreach ($publication->getKeywords() as $keyword) {
-			if ($keyword->getName()) {
-				$keywords .= $keyword->getName().'; ';
+		$result = '';
+
+		$fields = $this->createFields($publication);
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
 			}
 		}
-		$keywords = substr($keywords, 0, -2);
+
+		return $result;
+	}
+
+
+	private function createFields(Publication $publication) {
 
 		$fields = array();
 		$fields[] = array('citation_title', $publication->getTitle());
@@ -49,15 +56,16 @@ class HighwirePressTags {
 			$fields[] = array('citation_dissertation_institution', $publication->getInstitution());
 		}
 		$fields[] = array('citation_doi', $publication->getDoi());
-		$fields[] = array('citation_keywords', $keywords);
 
-		$result = '';
-		foreach ($fields as $field) {
-			if ($field[1]) {
-				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
+		$keywords = '';
+		foreach ($publication->getKeywords() as $keyword) {
+			if ($keyword->getName()) {
+				$keywords .= $keyword->getName().'; ';
 			}
 		}
+		$keywords = substr($keywords, 0, -2);
+		$fields[] = array('citation_keywords', $keywords);
 
-		return $result;
+		return $fields;
 	}
 }

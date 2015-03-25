@@ -18,8 +18,8 @@ class DBLPXML {
 	 */
 	public function exportMultiple(array $publications) {
 
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$dblp = $dom->appendChild($dom->createElement('dblp'));
+		$xml = new DOMDocument('1.0', 'utf-8');
+		$dblp = $xml->appendChild($xml->createElement('dblp'));
 
 		foreach ($publications as $publication) {
 
@@ -28,7 +28,7 @@ class DBLPXML {
 					throw new Exception('publication type missing');
 				}
 
-				$entry = $dom->createElement($publication->getTypeName());
+				$entry = $xml->createElement($publication->getTypeName());
 				$entry->setAttribute('key', 'todo'); // TODO
 				$entry->setAttribute('mdate', 'todo'); // TODO
 				$dblp->appendChild($entry);
@@ -36,7 +36,9 @@ class DBLPXML {
 				$fields = $this->createFields($publication);
 				foreach ($fields as $field) {
 					if ($field[1]) {
-						$entry->appendChild($dom->createElement($field[0], $field[1]));
+						$element = $xml->createElement($field[0]);
+						$element->appendChild($xml->createTextNode($field[1]));
+						$entry->appendChild($element);
 					}
 				}
 			}
@@ -45,7 +47,7 @@ class DBLPXML {
 			}
 		}
 
-		return $dom->saveXML();
+		return $xml->saveXML();
 	}
 
 
@@ -102,9 +104,9 @@ class DBLPXML {
 			throw new Exception('publication type missing');
 		}
 
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$dblp = $dom->appendChild($dom->createElement('dblp'));
-		$entry = $dom->createElement($publication->getTypeName());
+		$xml = new DOMDocument('1.0', 'utf-8');
+		$dblp = $xml->appendChild($xml->createElement('dblp'));
+		$entry = $xml->createElement($publication->getTypeName());
 		$entry->setAttribute('key', 'todo'); // TODO
 		$entry->setAttribute('mdate', 'todo'); // TODO
 		$dblp->appendChild($entry);
@@ -112,10 +114,10 @@ class DBLPXML {
 		$fields = $this->createFields($publication);
 		foreach ($fields as $field) {
 			if ($field[1]) {
-				$entry->appendChild($dom->createElement($field[0], $field[1]));
+				$entry->appendChild($xml->createElement($field[0], htmlspecialchars($field[1])));
 			}
 		}
 
-		return $dom->saveXML();
+		return $xml->saveXML();
 	}
 }

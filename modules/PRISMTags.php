@@ -14,6 +14,21 @@ class PRISMTags {
 		// http://www.mendeley.com/import/information-for-publishers/
 		// NOTE: PRISM tags are not valid HTML5
 
+		$result = '';
+
+		$fields = $this->createFields($publication);
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
+			}
+		}
+
+		return $result;
+	}
+
+
+	private function createFields(Publication $publication) {
+
 		$fields = array();
 		//$fields[] = array('prism.title', $publication->getTitle()); // TODO: valid? Isn't it part of the dc subset of prism?
 		$fields[] = array('prism.publicationDate', $publication->getDatePublished('Y-m-d'));
@@ -32,13 +47,6 @@ class PRISMTags {
 		$fields[] = array('prism.organization', $publication->getInstitution()); // TODO: check if valid usage
 		$fields[] = array('prism.doi', $publication->getDoi());
 
-		$result = '';
-		foreach ($fields as $field) {
-			if ($field[1]) {
-				$result .= '<meta name="'.$field[0].'" content="'.htmlspecialchars($field[1]).'" />'."\n";
-			}
-		}
-
-		return $result;
+		return $fields;
 	}
 }

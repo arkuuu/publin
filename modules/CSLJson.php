@@ -10,6 +10,20 @@ class CSLJson {
 
 	public function export(Publication $publication) {
 
+		$fields = $this->createFields($publication);
+		foreach ($fields as $key => $value) {
+			if (empty($value)) {
+				unset ($fields[$key]);
+			}
+		}
+
+		//return json_encode(array($fields), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); // TODO: needs PHP>5.4
+		return json_encode(array($fields));
+	}
+
+
+	private function createFields(Publication $publication) {
+
 		$fields = array();
 		$fields['type'] = $this->encodeTypes($publication->getTypeName());
 		$fields['id'] = 'TODO_'.$publication->getId(); // TODO
@@ -44,14 +58,7 @@ class CSLJson {
 		$fields['note'] = $publication->getNote();
 		$fields['publisher'] = $publication->getPublisher();
 
-		foreach ($fields as $key => $value) {
-			if (empty($value)) {
-				unset ($fields[$key]);
-			}
-		}
-
-		//return json_encode(array($fields), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); // TODO: needs PHP>5.4
-		return json_encode(array($fields));
+		return $fields;
 	}
 
 

@@ -36,6 +36,23 @@ class RIS {
 	public function export(Publication $publication) {
 
 		// http://de.wikipedia.org/wiki/RIS_%28Dateiformat%29
+
+		$result = '';
+
+		$fields = $this->createFields($publication);
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$result .= "\n".$field[0].'  - '.htmlspecialchars($field[1]);
+			}
+		}
+		$result .= "\n".'ER  -';
+
+		return $result;
+	}
+
+
+	private function createFields(Publication $publication) {
+
 		$fields = array();
 		$fields[] = array('TY', $this->encodeType($publication->getTypeName()));
 		foreach ($publication->getAuthors() as $keyword) {
@@ -61,15 +78,7 @@ class RIS {
 			$fields[] = array('KW', $keyword->getName());
 		}
 
-		$result = '';
-		foreach ($fields as $field) {
-			if ($field[1]) {
-				$result .= "\n".$field[0].'  - '.htmlspecialchars($field[1]);
-			}
-		}
-		$result .= "\n".'ER  -';
-
-		return $result;
+		return $fields;
 	}
 
 
