@@ -5,6 +5,14 @@ namespace publin\oai;
 
 use DOMDocument;
 use DOMElement;
+use publin\oai\exceptions\BadArgumentException;
+use publin\oai\exceptions\BadResumptionTokenException;
+use publin\oai\exceptions\BadVerbException;
+use publin\oai\exceptions\CannotDisseminateFormatException;
+use publin\oai\exceptions\IdDoesNotExistException;
+use publin\oai\exceptions\NoMetadataFormatsException;
+use publin\oai\exceptions\NoRecordsMatchException;
+use publin\oai\exceptions\NoSetHierarchyException;
 use publin\src\Database;
 use publin\src\Publication;
 use publin\src\PublicationModel;
@@ -12,8 +20,7 @@ use publin\src\Request;
 
 class OAIParser {
 
-	private $db;
-	private $use_stylesheet = true;
+	private $use_stylesheet = false;
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
 	private $baseURL = 'http://localhost/publin/oai/';
@@ -35,81 +42,114 @@ class OAIParser {
 
 
 	public function __construct() {
-
-		$this->db = new Database(false);
 	}
 
 
 	public function run(Request $request) {
 
-		switch ($request->get('verb')) {
-			case 'Identify':
-				$dom = $this->identify();
-				break;
+		try {
+			switch ($request->get('verb')) {
+				case 'Identify':
+					$xml = $this->identify();
+					break;
 
-			case 'ListMetadataFormats':
-				$dom = $this->listMetadataFormats();
-				break;
+				case 'ListMetadataFormats':
+					$xml = $this->listMetadataFormats();
+					break;
 
-			case 'ListSets':
-				$dom = $this->listSets();
-				break;
+				case 'ListSets':
+					$xml = $this->listSets();
+					break;
 
-			case 'ListIdentifiers':
-				$dom = $this->listIdentifiers($request);
-				break;
+				case 'ListIdentifiers':
+					$xml = $this->listIdentifiers($request->get('metadataPrefix'),
+												  $request->get('from'),
+												  $request->get('until'),
+												  $request->get('set'),
+												  $request->get('resumptionToken'));
+					break;
 
-			case 'ListRecords':
-				$dom = $this->listRecords($request);
-				break;
+				case 'ListRecords':
+					$xml = $this->listRecords($request->get('metadataPrefix'),
+											  $request->get('from'),
+											  $request->get('until'),
+											  $request->get('set'),
+											  $request->get('resumptionToken'));
+					break;
 
-			case 'GetRecord':
-				$dom = $this->getRecord($request);
-				break;
+				case 'GetRecord':
+					$xml = $this->getRecord($request->get('identifier'),
+											$request->get('metadataPrefix'));
+					break;
 
-			default:
-				$dom = $this->badVerb();
-				break;
+				default:
+					throw new BadVerbException;
+					break;
+			}
+		}
+		catch (BadArgumentException $e) {
+			$xml = $this->createErrorResponse('badArgument');
+		}
+		catch (BadResumptionTokenException $e) {
+			$xml = $this->createErrorResponse('badResumptionToken');
+		}
+		catch (BadVerbException $e) {
+			$xml = $this->createErrorResponse('badVerb');
+		}
+		catch (CannotDisseminateFormatException $e) {
+			$xml = $this->createErrorResponse('cannotDisseminateFormat');
+		}
+		catch (IdDoesNotExistException $e) {
+			$xml = $this->createErrorResponse('idDoesNotExist');
+		}
+		catch (NoMetadataFormatsException $e) {
+			$xml = $this->createErrorResponse('noMetadataFormats');
+		}
+		catch (NoRecordsMatchException $e) {
+			$xml = $this->createErrorResponse('noRecordsMatch');
+		}
+		catch (NoSetHierarchyException $e) {
+			$xml = $this->createErrorResponse('noSetHierarchy');
 		}
 
-		return $dom->saveXML();
+		return $xml->saveXML();
 	}
 
 
 	public function identify() {
 
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$xml = new DOMDocument('1.0', 'UTF-8');
 
-		$identify = $dom->createElement('Identify');
-		$identify->appendChild($dom->createElement('repositoryName', $this->repositoryName));
-		$identify->appendChild($dom->createElement('baseURL', $this->baseURL));
-		$identify->appendChild($dom->createElement('protocolVersion', $this->protocolVersion));
+		$identify = $xml->createElement('Identify');
+		$identify->appendChild($xml->createElement('repositoryName', $this->repositoryName));
+		$identify->appendChild($xml->createElement('baseURL', $this->baseURL));
+		$identify->appendChild($xml->createElement('protocolVersion', $this->protocolVersion));
 		foreach ($this->adminEmail as $adminEmail) {
-			$identify->appendChild($dom->createElement('adminEmail', $adminEmail));
+			$identify->appendChild($xml->createElement('adminEmail', $adminEmail));
 		}
-		$identify->appendChild($dom->createElement('earliestDatestamp', $this->earliestDatestamp));
-		$identify->appendChild($dom->createElement('deletedRecord', $this->deletedRecord));
-		$identify->appendChild($dom->createElement('granularity', $this->granularity));
+		$identify->appendChild($xml->createElement('earliestDatestamp', $this->earliestDatestamp));
+		$identify->appendChild($xml->createElement('deletedRecord', $this->deletedRecord));
+		$identify->appendChild($xml->createElement('granularity', $this->granularity));
 		//$identify->appendChild($dom->createElement('compression', '')); //optional
 
-		$description = $dom->createElement('description');
+		$description = $xml->createElement('description');
 		$identify->appendChild($description);
 
-		$oai_identifier = $dom->createElement('oai-identifier');
+		$oai_identifier = $xml->createElement('oai-identifier');
 		$oai_identifier->setAttribute('xsi:schemaLocation',
 									  'http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd');
 		$description->appendChild($oai_identifier);
 
-		$oai_identifier->appendChild($dom->createElement('scheme', 'oai'));
-		$oai_identifier->appendChild($dom->createElement('repositoryIdentifier', $this->repositoryIdentifier));
-		$oai_identifier->appendChild($dom->createElement('delimiter', ':'));
-		$oai_identifier->appendChild($dom->createElement('sampleIdentifier', 'oai:'.$this->repositoryIdentifier.':TODO'));
+		$oai_identifier->appendChild($xml->createElement('scheme', 'oai'));
+		$oai_identifier->appendChild($xml->createElement('repositoryIdentifier', $this->repositoryIdentifier));
+		$oai_identifier->appendChild($xml->createElement('delimiter', ':'));
+		$oai_identifier->appendChild($xml->createElement('sampleIdentifier', 'oai:'.$this->repositoryIdentifier.':TODO'));
 
 		return $this->createResponse(array('verb' => 'Identify'), $identify);
 	}
 
 
-	private function createResponse(array $request_parameters, DOMElement $content) {
+	private function createResponse(array $request, DOMElement $content) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
@@ -125,14 +165,14 @@ class OAIParser {
 		$xml->appendChild($oai);
 		$oai->appendChild($xml->createElement('responseDate', date('Y-m-d')));
 
-		$request = $xml->createElement('request', $this->baseURL);
-		foreach ($request_parameters as $name => $value) {
+		$request_element = $xml->createElement('request', $this->baseURL);
+		foreach ($request as $name => $value) {
 			if (!empty($value)) {
-				$request->setAttribute($name, $value);
+				$request_element->setAttribute($name, $value);
 			}
 		}
 
-		$oai->appendChild($request);
+		$oai->appendChild($request_element);
 		$oai->appendChild($xml->importNode($content, true));
 
 		return $xml;
@@ -141,15 +181,15 @@ class OAIParser {
 
 	public function listMetadataFormats() {
 
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$xml = new DOMDocument('1.0', 'UTF-8');
 
-		$listMetadataFormats = $dom->createElement('ListMetadataFormats');
+		$listMetadataFormats = $xml->createElement('ListMetadataFormats');
 
 		foreach ($this->metadataFormats as $data) {
-			$metadataFormat = $dom->createElement('metadataFormat');
-			$metadataFormat->appendChild($dom->createElement('metadataPrefix', $data['metadataPrefix']));
-			$metadataFormat->appendChild($dom->createElement('schema', $data['schema']));
-			$metadataFormat->appendChild($dom->createElement('metadataNamespace', $data['metadataNamespace']));
+			$metadataFormat = $xml->createElement('metadataFormat');
+			$metadataFormat->appendChild($xml->createElement('metadataPrefix', $data['metadataPrefix']));
+			$metadataFormat->appendChild($xml->createElement('schema', $data['schema']));
+			$metadataFormat->appendChild($xml->createElement('metadataNamespace', $data['metadataNamespace']));
 			$listMetadataFormats->appendChild($metadataFormat);
 		}
 
@@ -164,13 +204,13 @@ class OAIParser {
 				  'setName' => 'name'),
 		); //TODO: replace with database?
 
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$xml = new DOMDocument('1.0', 'UTF-8');
 
-		$listSets = $dom->createElement('ListSets');
+		$listSets = $xml->createElement('ListSets');
 		foreach ($sets as $data) {
-			$set = $dom->createElement('set');
-			$set->appendChild($dom->createElement('setSpec', $data['setSpec']));
-			$set->appendChild($dom->createElement('setName', $data['setName']));
+			$set = $xml->createElement('set');
+			$set->appendChild($xml->createElement('setSpec', $data['setSpec']));
+			$set->appendChild($xml->createElement('setName', $data['setName']));
 			$listSets->appendChild($set);
 		}
 
@@ -178,148 +218,149 @@ class OAIParser {
 	}
 
 
-	public function listIdentifiers(Request $request) {
+	public function listIdentifiers($metadataPrefix, $from = '', $until = '', $set = '', $resumptionToken = '') {
 
-		if (!$request->get('metadataPrefix')) {
-			return $this->badArgument();
+		if ($resumptionToken) {
+			// TODO assign parameters from token db
+			$metadataPrefix = 'oai_dc';
+			$from = '';
+			$until = '';
+			$set = '';
 		}
 
-		$model = new PublicationModel($this->db);
-		$publications = $model->fetch(false);
+		if (!$metadataPrefix) {
+			throw new BadArgumentException;
+		}
+		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+			throw new CannotDisseminateFormatException;
+		}
 
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$publications = $this->fetchRecords($from, $until, $set);
 
-		$listIdentifiers = $dom->createElement('ListIdentifiers');
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		$listIdentifiers = $xml->createElement('ListIdentifiers');
 
 		foreach ($publications as $publication) {
-			$header = $dom->createElement('header');
-			$header->appendChild($dom->createElement('identifier', $publication->getId()));
-			$header->appendChild($dom->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
-			$header->appendChild($dom->createElement('setSpec', $publication->getStudyField()));
+			$header = $xml->createElement('header');
+			$header->appendChild($xml->createElement('identifier', $publication->getId()));
+			$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
+			$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
 			$listIdentifiers->appendChild($header);
 		}
 
-		$resumptionToken = $dom->createElement('resumptionToken');
-		$listIdentifiers->appendChild($resumptionToken);
+		$resumptionToken_element = $xml->createElement('resumptionToken');
+		$listIdentifiers->appendChild($resumptionToken_element);
 
-		$parameters = array('verb'           => 'ListIdentifiers',
-							'metadataPrefix' => $request->get('metadataPrefix'));
+		$request = array('verb'            => 'ListIdentifiers',
+						 'metadataPrefix'  => $metadataPrefix,
+						 'from'            => $from,
+						 'until'           => $until,
+						 'set'             => $set,
+						 'resumptionToken' => $resumptionToken);
 
-		return $this->createResponse($parameters, $listIdentifiers);
+		return $this->createResponse($request, $listIdentifiers);
 	}
 
 
-	public function badArgument() {
-
-		return $this->createErrorResponse('badArgument');
-	}
-
-
-	private function createErrorResponse($error_type) {
-
-		$dom = new DOMDocument('1.0', 'UTF-8');
-
-		$error = $dom->createElement('error');
-		$error->setAttribute('code', $error_type);
-
-		return $this->createResponse(array(), $error);
-	}
-
-
-	public function listRecords(Request $request) {
-
-		if ($request->get('metadataPrefix')) {
-			if (!array_key_exists($request->get('metadataPrefix'), $this->metadataFormats)) {
-				return $this->cannotDisseminateFormat();
-			}
-		}
-		else if ($request->get('resumptionToken')) {
-			// TODO;
-		}
-		else {
-			return $this->badArgument();
-		}
-
-		$dom = new DOMDocument('1.0', 'UTF-8');
-
-		$listRecords = $dom->createElement('ListRecords');
-
-		$record = $dom->createElement('record');
-		$listRecords->appendChild($record);
-
-		$resumptionToken = $dom->createElement('resumptionToken');
-		$listRecords->appendChild($resumptionToken);
-
-		$parameters = array('verb'            => 'ListRecords',
-							'metadataPrefix'  => $request->get('metadataPrefix'),
-							'resumptionToken' => $request->get('resumptionToken'));
-
-		return $this->createResponse($parameters, $listRecords);
-	}
-
-
-	public function cannotDisseminateFormat() {
-
-		$dom = $this->createErrorResponse('cannotDisseminateFormat');
-
-		return $dom;
-	}
-
-
-	public function getRecord(Request $request) {
-
-		if (!$request->get('identifier') || !$request->get('metadataPrefix')) {
-			return $this->badArgument();
-		}
-
-		if (!array_key_exists($request->get('metadataPrefix'), $this->metadataFormats)) {
-			return $this->cannotDisseminateFormat();
-		}
+	private function fetchRecords($from, $until, $set, $limit = 0) {
 
 		$db = new Database();
 		$model = new PublicationModel($db);
-		$publication = $model->fetch(true, array('id' => $request->get('identifier')));
 
-		if (count($publication) == 0) {
-			return $this->idDoesNotExist();
+		return $model->fetch(false);
+	}
+
+
+	public function listRecords($metadataPrefix, $from, $until, $set, $resumptionToken) {
+
+		if ($resumptionToken) {
+			// TODO assign parameters from token db
+			$metadataPrefix = 'oai_dc';
+			$from = '';
+			$until = '';
+			$set = '';
 		}
-		$publication = $publication[0];
 
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		if (!$metadataPrefix) {
+			throw new BadArgumentException;
+		}
+		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+			throw new CannotDisseminateFormatException;
+		}
 
-		$parameters = array('verb'           => 'GetRecord',
-							'identifier'     => $request->get('identifier'),
-							'metadataPrefix' => $request->get('metadataPrefix'));
+		$request = array('verb'            => 'ListRecords',
+						 'metadataPrefix'  => $metadataPrefix,
+						 'from'            => $from,
+						 'until'           => $until,
+						 'set'             => $set,
+						 'resumptionToken' => $resumptionToken);
 
-		$get_record = $dom->createElement('GetRecord');
-		$get_record->appendChild($dom->importNode($this->export($publication), true));
+		$xml = new DOMDocument('1.0', 'UTF-8');
 
-		return $this->createResponse($parameters, $get_record);
+		$listRecords = $xml->createElement('ListRecords');
+
+		$publications = $this->fetchRecords($from, $until, $set);
+		foreach ($publications as $publication) {
+			$listRecords->appendChild($xml->importNode($this->createRecord($publication), true));
+		}
+
+		$NewResumptionToken = $xml->createElement('resumptionToken', '123');
+		$listRecords->appendChild($NewResumptionToken);
+
+		return $this->createResponse($request, $listRecords);
 	}
 
 
-	public function idDoesNotExist() {
+	private function createRecord(Publication $publication) {
 
-		return $this->createErrorResponse('idDoesNotExist');
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		$record = $xml->createElement('record');
+		$record->appendChild($xml->importNode($this->createRecordHeader($publication), true));
+		$record->appendChild($xml->importNode($this->createRecordMetadata($publication), true));
+
+		return $record;
 	}
 
 
-	private function export(Publication $publication) {
+	private function createRecordHeader(Publication $publication) {
 
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$record = $dom->createElement('record');
-		$header = $record->appendChild($dom->createElement('header'));
-		$header->appendChild($dom->createElement('identifier', $publication->getId()));
-		$header->appendChild($dom->createElement('datestamp', $publication->getDatePublished('Y-m-d')));
-		$header->appendChild($dom->createElement('setSpec', $publication->getStudyField()));
+		$xml = new DOMDocument('1.0', 'UTF-8');
+		$header = $xml->createElement('header');
+		$header->appendChild($xml->createElement('identifier', $publication->getId()));
+		$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
+		$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
 
-		$metadata = $record->appendChild($dom->createElement('metadata'));
-		$oai_dc = $dom->createElement('oai_dc:dc');
+		return $header;
+	}
+
+
+	private function createRecordMetadata(Publication $publication) {
+
+		$xml = new DOMDocument('1.0', 'UTF-8');
+		$metadata = $xml->createElement('metadata');
+		$oai_dc = $xml->createElement('oai_dc:dc');
 		$oai_dc->setAttribute('xmlns:oai_dc', 'http://www.openarchives.org/OAI/2.0/oai_dc/');
 		$oai_dc->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1');
 		$oai_dc->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 		$oai_dc->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
 		$metadata->appendChild($oai_dc);
+
+		$fields = $this->createRecordMetadataFields($publication);
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				$element = $xml->createElement($field[0]);
+				$element->appendChild($xml->createTextNode($field[1]));
+				$oai_dc->appendChild($element);
+			}
+		}
+
+		return $metadata;
+	}
+
+
+	private function createRecordMetadataFields(Publication $publication) {
 
 		$fields = array();
 		$fields[] = array('dc:type', 'Text');
@@ -329,47 +370,77 @@ class OAIParser {
 				$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName(true));
 			}
 		}
-		//$fields[] = array('dcterms:issued', $publication->getDatePublished('Y-m-d'));
+		$fields[] = array('dc:description', $publication->getAbstract()); //TODO: check if correct
+		$fields[] = array('dc:date', $publication->getDatePublished('Y')); //TODO: check if correct
 		//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
 		$fields[] = array('dc:publisher', $publication->getPublisher());
 		$fields[] = array('dc:identifier', $publication->getDoi());
 
-		foreach ($fields as $field) {
-			if ($field[1]) {
-				$oai_dc->appendChild($dom->createElement($field[0], $field[1]));
-			}
+		return $fields;
+	}
+
+
+	public function getRecord($identifier, $metadataPrefix) {
+
+		if (!$identifier || !$metadataPrefix) {
+			throw new BadArgumentException;
 		}
 
-		return $record;
+		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+			throw new CannotDisseminateFormatException;
+		}
+
+		$db = new Database();
+		$model = new PublicationModel($db);
+		$publication = $model->fetch(true, array('id' => $identifier));
+
+		if (count($publication) == 0) {
+			throw new IdDoesNotExistException;
+		}
+		$publication = $publication[0];
+
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		$request = array('verb'           => 'GetRecord',
+						 'identifier'     => $identifier,
+						 'metadataPrefix' => $metadataPrefix);
+
+		$getRecord = $xml->createElement('GetRecord');
+		$getRecord->appendChild($xml->importNode($this->createRecord($publication), true));
+
+		return $this->createResponse($request, $getRecord);
 	}
 
 
-	public function badVerb() {
+	private function createErrorResponse($error_type) {
 
-		return $this->createErrorResponse('badVerb');
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		$error = $xml->createElement('error');
+		$error->setAttribute('code', $error_type);
+
+		return $this->createResponse(array(), $error);
 	}
 
 
-	public function noMetadataFormats() {
-
-		return $this->createErrorResponse('noMetadataFormats');
+	private function createResumptionToken($metadataPrefix, $from, $until, $set, $limit) {
+		// TODO store to db
 	}
 
 
-	public function noRecordsMatch() {
+	private function fetchResumptionToken($resumptionToken) {
 
-		return $this->createErrorResponse('noRecordsMatch');
+		// TODO fetch this from db
+		return array(
+			'metadataPrefix' => 'oai_dc',
+			'from'           => '',
+			'until'          => '',
+			'set'            => '',
+			'limit'          => 0,
+		);
 	}
 
 
-	public function badResumptionToken() {
-
-		return $this->createErrorResponse('badResumptionToken');
-	}
-
-
-	public function noSetHierarchy() {
-
-		return $this->createErrorResponse('noSetHierarchy');
+	private function createSet() {
 	}
 }

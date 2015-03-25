@@ -29,7 +29,7 @@ else {
 
 	echo '<html>
 <head>
-	<title>OAI test site</title>
+	<title>OAI Test Site</title>
 </head>
 <body>
 <h1>OAI test site</h1>
