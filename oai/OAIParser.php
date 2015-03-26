@@ -217,8 +217,6 @@ class OAIParser {
 			$completeListSize = count($sets) + 100;
 		}
 
-
-
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
 		$listSets = $xml->createElement('ListSets');
@@ -239,6 +237,46 @@ class OAIParser {
 		}
 
 		return $this->createResponse(array('verb' => 'ListSets'), $listSets);
+	}
+
+
+	public function fetchResumptionToken($token) {
+
+		$db = new PDODatabase();
+		$db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
+		$db->bind(':token', $token);
+		$db->execute();
+
+		$result = $db->fetchSingle();
+		if ($result !== false) {
+			return array(
+				'metadataPrefix'   => $result['metadata_prefix'],
+				'from'             => $result['from'],
+				'until'            => $result['until'],
+				'set'              => $result['set'],
+				'cursor'           => $result['cursor'],
+				'completeListSize' => $result['list_size'],
+			);
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
+
+		$db = new PDODatabase();
+		$db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
+		$db->bind(':metadata', $metadataPrefix);
+		$db->bind(':from', $from);
+		$db->bind(':until', $until);
+		$db->bind(':set', $set);
+		$db->bind(':cursor', $cursor);
+		$db->bind(':size', $completeListSize);
+		$db->execute();
+
+		return $db->lastInsertId();
 	}
 
 
@@ -295,30 +333,6 @@ class OAIParser {
 	}
 
 
-	public function fetchResumptionToken($token) {
-
-		$db = new PDODatabase();
-		$db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
-		$db->bind(':token', $token);
-		$db->execute();
-
-		$result = $db->fetchSingle();
-		if ($result !== false) {
-			return array(
-				'metadataPrefix'   => $result['metadata_prefix'],
-				'from'             => $result['from'],
-				'until'            => $result['until'],
-				'set'              => $result['set'],
-				'cursor'           => $result['cursor'],
-				'completeListSize' => $result['list_size'],
-			);
-		}
-		else {
-			return false;
-		}
-	}
-
-
 	public function countRecords($from, $until, $set) {
 
 		// TODO: Replace this with better counting without querying whole stuff
@@ -347,34 +361,6 @@ class OAIParser {
 		$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
 
 		return $header;
-	}
-
-
-	private function createRecordHeader(Publication $publication) {
-
-		$xml = new DOMDocument('1.0', 'UTF-8');
-		$header = $xml->createElement('header');
-		$header->appendChild($xml->createElement('identifier', $publication->getId()));
-		$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
-		$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
-
-		return $header;
-	}
-
-
-	public function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
-
-		$db = new PDODatabase();
-		$db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
-		$db->bind(':metadata', $metadataPrefix);
-		$db->bind(':from', $from);
-		$db->bind(':until', $until);
-		$db->bind(':set', $set);
-		$db->bind(':cursor', $cursor);
-		$db->bind(':size', $completeListSize);
-		$db->execute();
-
-		return $db->lastInsertId();
 	}
 
 
