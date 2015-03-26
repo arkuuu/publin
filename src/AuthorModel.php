@@ -42,16 +42,21 @@ class AuthorModel {
 			$author = new Author($value);
 
 			if ($mode) {
-				/* Gets the authors' publications */
-				$model = new PublicationModel($this->db);
-				$publications = $model->fetch(false, array('author_id' => $author->getId()));
-				$author->setPublications($publications);
+				$author->setPublications($this->fetchPublications($author->getId()));
 			}
 
 			$authors[] = $author;
 		}
 
 		return $authors;
+	}
+
+
+	public function fetchPublications($author_id) {
+
+		$model = new PublicationModel($this->db);
+
+		return $model->fetch(false, array('author_id' => $author_id));
 	}
 
 

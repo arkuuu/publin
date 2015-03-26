@@ -27,7 +27,7 @@ class FileModel {
 
 		$query = 'SELECT *
 		FROM `files`
-		WHERE `publication_id` = '.$publication_id.'
+		WHERE `publication_id` = "'.$publication_id.'"
 		ORDER BY `full_text` DESC, `hidden` ASC, `restricted` ASC;';
 
 		$data = $this->db->getData($query);

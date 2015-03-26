@@ -28,41 +28,57 @@ class PublicationModel {
 	 * @param       $mode
 	 * @param array $filter
 	 *
+	 * @param null $limit
+	 * @param int  $offset
+	 *
 	 * @return Publication[]
 	 */
-	public function fetch($mode, array $filter = array()) {
+	public function fetch($mode, array $filter = array(), $limit = null, $offset = 0) {
 
 		$publications = array();
 
 		/* Gets the publications */
-		$data = $this->db->fetchPublications($filter);
+		$data = $this->db->fetchPublications($filter, $limit, $offset);
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
 
-			/* Gets the publications' authors */
-			$model = new AuthorModel($this->db);
-			$authors = $model->fetch(false, array('publication_id' => $value['id']));
+			$publication = new Publication($value);
+			$publication->setAuthors($this->fetchAuthors($publication->getId()));
 
 			if ($mode) {
-				/* Gets the publications' keywords */
-				$model = new KeywordModel($this->db);
-				$keywords = $model->fetch(false, array('publication_id' => $value['id']));
-
-				/* Gets the publications' files */
-				$model = new FileModel($this->db);
-				$files = $model->fetch($value['id']);
-			}
-			else {
-				$keywords = array();
-				$files = array();
+				$publication->setKeywords($this->fetchKeywords($publication->getId()));
+				$publication->setFiles($this->fetchFiles($publication->getId()));
 			}
 
-			$publication = new Publication($value, $authors, $keywords, $files);
 			$publications[] = $publication;
 		}
 
 		return $publications;
+	}
+
+
+	public function fetchAuthors($publication_id) {
+
+		$model = new AuthorModel($this->db);
+
+		return $model->fetch(false, array('publication_id' => $publication_id));
+	}
+
+
+	public function fetchKeywords($publication_id) {
+
+		$model = new KeywordModel($this->db);
+
+		return $model->fetch(false, array('publication_id' => $publication_id));
+	}
+
+
+	public function fetchFiles($publication_id) {
+
+		$model = new FileModel($this->db);
+
+		return $model->fetch(false, array('publication_id' => $publication_id));
 	}
 
 
