@@ -14,13 +14,16 @@ use publin\oai\exceptions\NoMetadataFormatsException;
 use publin\oai\exceptions\NoRecordsMatchException;
 use publin\oai\exceptions\NoSetHierarchyException;
 use publin\src\Database;
+use publin\src\PDODatabase;
 use publin\src\Publication;
 use publin\src\PublicationModel;
 use publin\src\Request;
+use UnexpectedValueException;
 
 class OAIParser {
 
-	private $use_stylesheet = false;
+	private $use_stylesheet = true;
+	private $number_of_records = 5;
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
 	private $baseURL = 'http://localhost/publin/oai/';
@@ -197,12 +200,24 @@ class OAIParser {
 	}
 
 
-	public function listSets() {
+	public function listSets($resumptionToken = '') {
 
 		$sets = array(
 			array('setSpec' => 'todo',
 				  'setName' => 'name'),
 		); //TODO: replace with database?
+
+		if ($resumptionToken) {
+			$token = $this->fetchResumptionToken($resumptionToken);
+			$cursor = $token['cursor'];
+			$completeListSize = $token['completeListSize'];
+		}
+		else {
+			$cursor = 0;
+			$completeListSize = count($sets) + 100;
+		}
+
+
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
@@ -214,6 +229,15 @@ class OAIParser {
 			$listSets->appendChild($set);
 		}
 
+		$newCursor = $cursor + $this->number_of_records;
+		if ($newCursor < $completeListSize) {
+			$newToken = $this->storeResumptionToken(null, null, null, null, $newCursor, $completeListSize);
+			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
+			$resumptionToken_element->setAttribute('cursor', $newCursor);
+			$resumptionToken_element->setAttribute('completeListSize', $completeListSize);
+			$listSets->appendChild($resumptionToken_element);
+		}
+
 		return $this->createResponse(array('verb' => 'ListSets'), $listSets);
 	}
 
@@ -221,36 +245,44 @@ class OAIParser {
 	public function listIdentifiers($metadataPrefix, $from = '', $until = '', $set = '', $resumptionToken = '') {
 
 		if ($resumptionToken) {
-			// TODO assign parameters from token db
-			$metadataPrefix = 'oai_dc';
-			$from = '';
-			$until = '';
-			$set = '';
+			$token = $this->fetchResumptionToken($resumptionToken);
+			$metadataPrefix = $token['metadataPrefix'];
+			$from = $token['from'];
+			$until = $token['until'];
+			$set = $token['set'];
+			$cursor = $token['cursor'];
+			$completeListSize = $token['completeListSize'];
+		}
+		else {
+			if (!$metadataPrefix) {
+				throw new BadArgumentException;
+			}
+			if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+				throw new CannotDisseminateFormatException;
+			}
+
+			$cursor = 0;
+			$completeListSize = $this->countRecords($from, $until, $set);
 		}
 
-		if (!$metadataPrefix) {
-			throw new BadArgumentException;
-		}
-		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
-			throw new CannotDisseminateFormatException;
-		}
-
-		$publications = $this->fetchRecords($from, $until, $set);
+		$publications = $this->fetchRecords($from, $until, $set, $cursor);
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
 		$listIdentifiers = $xml->createElement('ListIdentifiers');
 
 		foreach ($publications as $publication) {
-			$header = $xml->createElement('header');
-			$header->appendChild($xml->createElement('identifier', $publication->getId()));
-			$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
-			$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
-			$listIdentifiers->appendChild($header);
+			$listIdentifiers->appendChild($xml->importNode($this->createRecordHeader($publication), true));
 		}
 
-		$resumptionToken_element = $xml->createElement('resumptionToken');
-		$listIdentifiers->appendChild($resumptionToken_element);
+		$newCursor = $cursor + $this->number_of_records;
+		if ($newCursor < $completeListSize) {
+			$newToken = $this->storeResumptionToken($metadataPrefix, $from, $until, $set, $newCursor, $completeListSize);
+			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
+			$resumptionToken_element->setAttribute('cursor', $newCursor);
+			$resumptionToken_element->setAttribute('completeListSize', $completeListSize);
+			$listIdentifiers->appendChild($resumptionToken_element);
+		}
 
 		$request = array('verb'            => 'ListIdentifiers',
 						 'metadataPrefix'  => $metadataPrefix,
@@ -263,64 +295,46 @@ class OAIParser {
 	}
 
 
-	private function fetchRecords($from, $until, $set, $limit = 0) {
+	public function fetchResumptionToken($token) {
+
+		$db = new PDODatabase();
+		$db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
+		$db->bind(':token', $token);
+		$db->execute();
+
+		$result = $db->fetchSingle();
+		if ($result !== false) {
+			return array(
+				'metadataPrefix'   => $result['metadata_prefix'],
+				'from'             => $result['from'],
+				'until'            => $result['until'],
+				'set'              => $result['set'],
+				'cursor'           => $result['cursor'],
+				'completeListSize' => $result['list_size'],
+			);
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function countRecords($from, $until, $set) {
+
+		// TODO: Replace this with better counting without querying whole stuff
+		$db = new Database();
+		$model = new PublicationModel($db);
+
+		return count($model->fetch(false, array()));
+	}
+
+
+	private function fetchRecords($from, $until, $set, $offset = 0) {
 
 		$db = new Database();
 		$model = new PublicationModel($db);
 
-		return $model->fetch(false);
-	}
-
-
-	public function listRecords($metadataPrefix, $from, $until, $set, $resumptionToken) {
-
-		if ($resumptionToken) {
-			// TODO assign parameters from token db
-			$metadataPrefix = 'oai_dc';
-			$from = '';
-			$until = '';
-			$set = '';
-		}
-
-		if (!$metadataPrefix) {
-			throw new BadArgumentException;
-		}
-		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
-			throw new CannotDisseminateFormatException;
-		}
-
-		$request = array('verb'            => 'ListRecords',
-						 'metadataPrefix'  => $metadataPrefix,
-						 'from'            => $from,
-						 'until'           => $until,
-						 'set'             => $set,
-						 'resumptionToken' => $resumptionToken);
-
-		$xml = new DOMDocument('1.0', 'UTF-8');
-
-		$listRecords = $xml->createElement('ListRecords');
-
-		$publications = $this->fetchRecords($from, $until, $set);
-		foreach ($publications as $publication) {
-			$listRecords->appendChild($xml->importNode($this->createRecord($publication), true));
-		}
-
-		$NewResumptionToken = $xml->createElement('resumptionToken', '123');
-		$listRecords->appendChild($NewResumptionToken);
-
-		return $this->createResponse($request, $listRecords);
-	}
-
-
-	private function createRecord(Publication $publication) {
-
-		$xml = new DOMDocument('1.0', 'UTF-8');
-
-		$record = $xml->createElement('record');
-		$record->appendChild($xml->importNode($this->createRecordHeader($publication), true));
-		$record->appendChild($xml->importNode($this->createRecordMetadata($publication), true));
-
-		return $record;
+		return $model->fetch(false, array(), $this->number_of_records, $offset);
 	}
 
 
@@ -336,7 +350,100 @@ class OAIParser {
 	}
 
 
-	private function createRecordMetadata(Publication $publication) {
+	private function createRecordHeader(Publication $publication) {
+
+		$xml = new DOMDocument('1.0', 'UTF-8');
+		$header = $xml->createElement('header');
+		$header->appendChild($xml->createElement('identifier', $publication->getId()));
+		$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
+		$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
+
+		return $header;
+	}
+
+
+	public function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
+
+		$db = new PDODatabase();
+		$db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
+		$db->bind(':metadata', $metadataPrefix);
+		$db->bind(':from', $from);
+		$db->bind(':until', $until);
+		$db->bind(':set', $set);
+		$db->bind(':cursor', $cursor);
+		$db->bind(':size', $completeListSize);
+		$db->execute();
+
+		return $db->lastInsertId();
+	}
+
+
+	public function listRecords($metadataPrefix, $from, $until, $set, $resumptionToken) {
+
+		if ($resumptionToken) {
+			$token = $this->fetchResumptionToken($resumptionToken);
+			$metadataPrefix = $token['metadataPrefix'];
+			$from = $token['from'];
+			$until = $token['until'];
+			$set = $token['set'];
+			$cursor = $token['cursor'];
+			$completeListSize = $token['completeListSize'];
+		}
+		else {
+			if (!$metadataPrefix) {
+				throw new BadArgumentException;
+			}
+			if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+				throw new CannotDisseminateFormatException;
+			}
+
+			$cursor = 0;
+			$completeListSize = $this->countRecords($from, $until, $set);
+		}
+
+		$publications = $this->fetchRecords($from, $until, $set, $cursor);
+
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		$listRecords = $xml->createElement('ListRecords');
+
+		foreach ($publications as $publication) {
+			$listRecords->appendChild($xml->importNode($this->createRecord($publication, $metadataPrefix), true));
+		}
+
+		$newCursor = $cursor + $this->number_of_records;
+		if ($newCursor < $completeListSize) {
+			$newToken = $this->storeResumptionToken($metadataPrefix, $from, $until, $set, $newCursor, $completeListSize);
+			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
+			$resumptionToken_element->setAttribute('cursor', $newCursor);
+			$resumptionToken_element->setAttribute('completeListSize', $completeListSize);
+			$listRecords->appendChild($resumptionToken_element);
+		}
+
+		$request = array('verb'            => 'ListRecords',
+						 'metadataPrefix'  => $metadataPrefix,
+						 'from'            => $from,
+						 'until'           => $until,
+						 'set'             => $set,
+						 'resumptionToken' => $resumptionToken);
+
+		return $this->createResponse($request, $listRecords);
+	}
+
+
+	private function createRecord(Publication $publication, $metadataPrefix) {
+
+		$xml = new DOMDocument('1.0', 'UTF-8');
+
+		$record = $xml->createElement('record');
+		$record->appendChild($xml->importNode($this->createRecordHeader($publication), true));
+		$record->appendChild($xml->importNode($this->createRecordMetadata($publication, $metadataPrefix), true));
+
+		return $record;
+	}
+
+
+	private function createRecordMetadata(Publication $publication, $metadataPrefix) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 		$metadata = $xml->createElement('metadata');
@@ -347,7 +454,7 @@ class OAIParser {
 		$oai_dc->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
 		$metadata->appendChild($oai_dc);
 
-		$fields = $this->createRecordMetadataFields($publication);
+		$fields = $this->createRecordMetadataFields($publication, $metadataPrefix);
 		foreach ($fields as $field) {
 			if ($field[1]) {
 				$element = $xml->createElement($field[0]);
@@ -360,23 +467,28 @@ class OAIParser {
 	}
 
 
-	private function createRecordMetadataFields(Publication $publication) {
+	private function createRecordMetadataFields(Publication $publication, $metadataPrefix) {
 
-		$fields = array();
-		$fields[] = array('dc:type', 'Text');
-		$fields[] = array('dc:title', $publication->getTitle());
-		foreach ($publication->getAuthors() as $author) {
-			if ($author->getLastName() && $author->getFirstName()) {
-				$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName(true));
+		if ($metadataPrefix == 'oai_dc') {
+			$fields = array();
+			$fields[] = array('dc:type', 'Text');
+			$fields[] = array('dc:title', $publication->getTitle());
+			foreach ($publication->getAuthors() as $author) {
+				if ($author->getLastName() && $author->getFirstName()) {
+					$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName(true));
+				}
 			}
-		}
-		$fields[] = array('dc:description', $publication->getAbstract()); //TODO: check if correct
-		$fields[] = array('dc:date', $publication->getDatePublished('Y')); //TODO: check if correct
-		//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
-		$fields[] = array('dc:publisher', $publication->getPublisher());
-		$fields[] = array('dc:identifier', $publication->getDoi());
+			$fields[] = array('dc:description', $publication->getAbstract()); //TODO: check if correct
+			$fields[] = array('dc:date', $publication->getDatePublished('Y')); //TODO: check if correct
+			//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
+			$fields[] = array('dc:publisher', $publication->getPublisher());
+			$fields[] = array('dc:identifier', $publication->getDoi());
 
-		return $fields;
+			return $fields;
+		}
+		else {
+			throw new UnexpectedValueException('This is not implemented yet');
+		}
 	}
 
 
@@ -406,7 +518,7 @@ class OAIParser {
 						 'metadataPrefix' => $metadataPrefix);
 
 		$getRecord = $xml->createElement('GetRecord');
-		$getRecord->appendChild($xml->importNode($this->createRecord($publication), true));
+		$getRecord->appendChild($xml->importNode($this->createRecord($publication, $metadataPrefix), true));
 
 		return $this->createResponse($request, $getRecord);
 	}
@@ -420,24 +532,6 @@ class OAIParser {
 		$error->setAttribute('code', $error_type);
 
 		return $this->createResponse(array(), $error);
-	}
-
-
-	private function createResumptionToken($metadataPrefix, $from, $until, $set, $limit) {
-		// TODO store to db
-	}
-
-
-	private function fetchResumptionToken($resumptionToken) {
-
-		// TODO fetch this from db
-		return array(
-			'metadataPrefix' => 'oai_dc',
-			'from'           => '',
-			'until'          => '',
-			'set'            => '',
-			'limit'          => 0,
-		);
 	}
 
 

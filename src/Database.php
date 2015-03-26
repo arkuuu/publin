@@ -578,7 +578,7 @@ class Database extends mysqli {
 		unset($filter);
 
 		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$limit.' '.$order.';';
+		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
 		return $this->getData($query);
 	}
