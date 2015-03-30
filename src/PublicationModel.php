@@ -471,4 +471,39 @@ class PublicationModel {
 
 		return $this->fetchResult($this->pdo->fetchAll());
 	}
+
+
+	public function findByDateAdded($min_date = null, $max_date = null, $limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		if (isset($min_date) && isset($max_date)) {
+			$query .= ' WHERE p.`date_added` >= :min_date';
+			$query .= ' AND p.`date_added` <= :max_date';
+		}
+		else if (isset($min_date)) {
+			$query .= ' WHERE p.`date_added` >= :min_date';
+		}
+		else if (isset($max_date)) {
+			$query .= ' WHERE p.`date_added` <= :max_date';
+		}
+		$query .= ' ORDER BY p.`date_added` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		if (isset($min_date)) {
+			$this->pdo->bindValue(':min_date', $min_date, \PDO::PARAM_STR);
+		}
+		if (isset($max_date)) {
+			$this->pdo->bindValue(':max_date', $max_date, \PDO::PARAM_STR);
+		}
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
+	}
 }
