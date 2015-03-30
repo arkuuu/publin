@@ -13,16 +13,16 @@ use publin\oai\exceptions\IdDoesNotExistException;
 use publin\oai\exceptions\NoMetadataFormatsException;
 use publin\oai\exceptions\NoRecordsMatchException;
 use publin\oai\exceptions\NoSetHierarchyException;
-use publin\src\Database;
 use publin\src\PDODatabase;
 use publin\src\Publication;
-use publin\src\PublicationModel;
+use publin\src\PublicationRepository;
 use publin\src\Request;
 use UnexpectedValueException;
 
 class OAIParser {
 
 	private $use_stylesheet = true;
+	private $db;
 	private $number_of_records = 5;
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
@@ -32,7 +32,6 @@ class OAIParser {
 	private $deletedRecord = 'no';
 	private $granularity = 'YYYY-MM-DD';
 	private $adminEmail = array('test@localhost', 'test@web.de');
-	//private $maxRecords = 10;
 	private $metadataFormats = array(
 		'oai_dc' => array(
 			'metadataPrefix'    => 'oai_dc',
@@ -45,6 +44,8 @@ class OAIParser {
 
 
 	public function __construct() {
+
+		$this->db = new PDODatabase();
 	}
 
 
@@ -242,12 +243,11 @@ class OAIParser {
 
 	public function fetchResumptionToken($token) {
 
-		$db = new PDODatabase();
-		$db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
-		$db->bindValue(':token', $token);
-		$db->execute();
+		$this->db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
+		$this->db->bindValue(':token', $token);
+		$this->db->execute();
 
-		$result = $db->fetchSingle();
+		$result = $this->db->fetchSingle();
 		if ($result !== false) {
 			return array(
 				'metadataPrefix'   => $result['metadata_prefix'],
@@ -266,17 +266,16 @@ class OAIParser {
 
 	public function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
 
-		$db = new PDODatabase();
-		$db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
-		$db->bindValue(':metadata', $metadataPrefix);
-		$db->bindValue(':from', $from);
-		$db->bindValue(':until', $until);
-		$db->bindValue(':set', $set);
-		$db->bindValue(':cursor', $cursor);
-		$db->bindValue(':size', $completeListSize);
-		$db->execute();
+		$this->db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
+		$this->db->bindValue(':metadata', $metadataPrefix);
+		$this->db->bindValue(':from', $from);
+		$this->db->bindValue(':until', $until);
+		$this->db->bindValue(':set', $set);
+		$this->db->bindValue(':cursor', $cursor);
+		$this->db->bindValue(':size', $completeListSize);
+		$this->db->execute();
 
-		return $db->lastInsertId();
+		return $this->db->lastInsertId();
 	}
 
 
@@ -333,22 +332,41 @@ class OAIParser {
 	}
 
 
-	public function countRecords($from, $until, $set) {
+	public function countRecords($from = null, $until = null, $set = null) {
 
-		// TODO: Replace this with better counting without querying whole stuff
-		$db = new Database();
-		$model = new PublicationModel($db);
+		$repo = new PublicationRepository($this->db);
+		$repo->select();
+		if (!empty($from)) {
+			$repo->where('date_added', '>=', $from.' 00:00:00');
+		}
+		if (!empty($until)) {
+			$repo->where('date_added', '<=', $until.' 23:59:59');
+		}
+		if (!empty($set)) {
+			//$repo->where();
+		}
 
-		return count($model->findAll());
+		return $repo->count();
 	}
 
 
-	private function fetchRecords($from, $until, $set, $offset = 0) {
+	private function fetchRecords($from = null, $until = null, $set = null, $offset = 0) {
 
-		$db = new Database();
-		$model = new PublicationModel($db);
+		$repo = new PublicationRepository($this->db);
+		$repo->select();
+		if (!empty($from)) {
+			$repo->where('date_added', '>=', $from.' 00:00:00');
+		}
+		if (!empty($until)) {
+			$repo->where('date_added', '<=', $until.' 23:59:59');
+		}
+		if (!empty($set)) {
+			//$repo->where();
+		}
+		$repo->order('date_added', 'DESC');
+		$repo->limit($this->number_of_records, (int)$offset);
 
-		return $model->findAll($this->number_of_records, $offset);
+		return $repo->go();
 	}
 
 
@@ -359,6 +377,7 @@ class OAIParser {
 		$header->appendChild($xml->createElement('identifier', $publication->getId()));
 		$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
 		$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
+		$header->appendChild($xml->createElement('setSpec', $publication->getTypeName()));
 
 		return $header;
 	}
@@ -464,11 +483,12 @@ class OAIParser {
 					$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName(true));
 				}
 			}
-			$fields[] = array('dc:description', $publication->getAbstract()); //TODO: check if correct
-			$fields[] = array('dc:date', $publication->getDatePublished('Y')); //TODO: check if correct
+			$fields[] = array('dc:description', $publication->getAbstract());
+			$fields[] = array('dc:date', $publication->getDatePublished('Y'));
 			//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
 			$fields[] = array('dc:publisher', $publication->getPublisher());
 			$fields[] = array('dc:identifier', $publication->getDoi());
+			$fields[] = array('dc:rights', $publication->getCopyright());
 
 			return $fields;
 		}
@@ -488,14 +508,13 @@ class OAIParser {
 			throw new CannotDisseminateFormatException;
 		}
 
-		$db = new Database();
-		$model = new PublicationModel($db);
-		$publication = $model->findById($identifier);
+		$repo = new PublicationRepository($this->db);
+		$publications = $repo->select()->where('id', '=', $identifier)->go();
 
-		if (count($publication) == 0) {
+		if (count($publications) == 0) {
 			throw new IdDoesNotExistException;
 		}
-		$publication = $publication[0];
+		$publication = $publications[0];
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
@@ -521,6 +540,6 @@ class OAIParser {
 	}
 
 
-	private function createSet() {
+	private function createSets() {
 	}
 }
