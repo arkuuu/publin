@@ -367,7 +367,7 @@ class PublicationModel {
 		$query = $this->getSelectQuery();
 		$query .= ' JOIN `rel_publ_to_authors` r ON (r.`publication_id` = p.`id`)';
 		$query .= ' WHERE r.`author_id` = :author_id';
-		$query .= ' ORDER BY p.`date_added` DESC';
+		$query .= ' ORDER BY p.`date_published` DESC';
 		if (isset($limit)) {
 			$query .= ' LIMIT :offset,:limit';
 		}
@@ -389,7 +389,7 @@ class PublicationModel {
 		$query = $this->getSelectQuery();
 		$query .= ' JOIN `rel_publication_keywords` r ON (r.`publication_id` = p.`id`)';
 		$query .= ' WHERE r.`keyword_id` = :keyword_id';
-		$query .= ' ORDER BY p.`date_added` DESC';
+		$query .= ' ORDER BY p.`date_published` DESC';
 		if (isset($limit)) {
 			$query .= ' LIMIT :offset,:limit';
 		}
@@ -410,7 +410,7 @@ class PublicationModel {
 
 		$query = $this->getSelectQuery();
 		$query .= ' WHERE p.`type_id` = :type_id';
-		$query .= ' ORDER BY p.`date_added` DESC';
+		$query .= ' ORDER BY p.`date_published` DESC';
 		if (isset($limit)) {
 			$query .= ' LIMIT :offset,:limit';
 		}
@@ -456,7 +456,7 @@ class PublicationModel {
 
 		$query = $this->getSelectQuery();
 		$query .= ' WHERE p.`study_field_id` = :study_field_id';
-		$query .= ' ORDER BY p.`date_added` DESC';
+		$query .= ' ORDER BY p.`date_published` DESC';
 		if (isset($limit)) {
 			$query .= ' LIMIT :offset,:limit';
 		}
