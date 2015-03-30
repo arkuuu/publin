@@ -37,30 +37,30 @@ class BrowseModel {
 				case 'recent':
 					$this->is_result = true;
 					$model = new PublicationModel($this->db);
-					$this->result = $model->fetch(false, array('limit' => '0,10'));
+					$this->result = $model->findAll(10);
 					$this->num = $model->getNum();
 					break;
 
 				case 'author':
 					$model = new AuthorModel($this->db);
-					$this->browse_list = $model->fetch(false);
+					$this->browse_list = $model->fetch();
 					break;
 
 				case 'keyword':
 					$model = new KeywordModel($this->db);
-					$this->browse_list = $model->fetch(false);
+					$this->browse_list = $model->fetch();
 					break;
 
 				case 'study_field':
 					$model = new StudyFieldModel($this->db);
-					$this->browse_list = $model->fetch(false);
+					$this->browse_list = $model->fetch();
 					break;
 
 				case 'type':
 					if ($id > 0) {
 						$this->is_result = true;
 						$model = new PublicationModel($this->db);
-						$this->result = $model->fetch(false, array('type_id' => $id));
+						$this->result = $model->findByType($id);
 						$this->num = $model->getNum();
 					}
 					else {
@@ -74,7 +74,7 @@ class BrowseModel {
 
 						$this->is_result = true;
 						$model = new PublicationModel($this->db);
-						$this->result = $model->fetch(false, array('year_published' => $id));
+						$this->result = $model->findByYear($id);
 						$this->num = $model->getNum();
 
 					}
@@ -94,7 +94,12 @@ class BrowseModel {
 
 	private function fetchYears() {
 
-		$data = $this->db->fetchYears();
+		$query = 'SELECT DISTINCT YEAR(`date_published`) AS `year`
+					FROM `list_publications`
+					ORDER BY `year` DESC';
+
+		$data = $this->db->getData($query);
+
 		$this->num = $this->db->getNumRows();
 
 		$years = array();

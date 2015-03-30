@@ -15,11 +15,23 @@ class KeywordView extends ViewWithPublications {
 	private $edit_mode;
 
 
-	public function __construct(Keyword $keyword, array $errors, $edit_mode = false) {
+	public function __construct(Keyword $keyword, array $publications, array $errors, $edit_mode = false) {
 
-		parent::__construct($keyword, 'keyword', $errors);
+		parent::__construct($publications, 'keyword', $errors);
 		$this->keyword = $keyword;
 		$this->edit_mode = $edit_mode;
+	}
+
+
+	public function showPageTitle() {
+
+		return $this->html($this->showName());
+	}
+
+
+	public function showName() {
+
+		return $this->html($this->keyword->getName());
 	}
 
 

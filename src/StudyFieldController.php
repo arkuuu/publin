@@ -18,8 +18,10 @@ class StudyFieldController {
 
 	public function run(Request $request) {
 
-		$study_fields = $this->model->fetch(true, array('id' => $request->get('id')));
-		$view = new StudyFieldView($study_fields[0]);
+		$study_fields = $this->model->fetch(array('id' => $request->get('id')));
+		$publications = $this->model->fetchPublications($request->get('id'));
+
+		$view = new StudyFieldView($study_fields[0], $publications);
 
 		return $view->display();
 	}

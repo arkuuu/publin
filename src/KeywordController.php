@@ -48,13 +48,14 @@ class KeywordController {
 			}
 		}
 
-		$keywords = $this->model->fetch(true, array('id' => $request->get('id')));
+		$keywords = $this->model->fetch(array('id' => $request->get('id')));
+		$publications = $this->model->fetchPublications($request->get('id'));
 
 		if ($request->get('m') === 'edit') {
-			$view = new KeywordView($keywords[0], $this->errors, true);
+			$view = new KeywordView($keywords[0], $publications, $this->errors, true);
 		}
 		else {
-			$view = new KeywordView($keywords[0], $this->errors);
+			$view = new KeywordView($keywords[0], $publications, $this->errors);
 		}
 
 		return $view->display();

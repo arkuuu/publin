@@ -9,76 +9,20 @@ use RuntimeException;
 class PublicationModel {
 
 	private $db;
+	private $pdo;
 	private $num;
 
 
 	public function __construct(Database $db) {
 
 		$this->db = $db;
+		$this->pdo = new PDODatabase();
 	}
 
 
 	public function getNum() {
 
 		return $this->num;
-	}
-
-
-	/**
-	 * @param       $mode
-	 * @param array $filter
-	 *
-	 * @param null $limit
-	 * @param int  $offset
-	 *
-	 * @return Publication[]
-	 */
-	public function fetch($mode, array $filter = array(), $limit = null, $offset = 0) {
-
-		$publications = array();
-
-		/* Gets the publications */
-		$data = $this->db->fetchPublications($filter, $limit, $offset);
-		$this->num = $this->db->getNumRows();
-
-		foreach ($data as $key => $value) {
-
-			$publication = new Publication($value);
-			$publication->setAuthors($this->fetchAuthors($publication->getId()));
-
-			if ($mode) {
-				$publication->setKeywords($this->fetchKeywords($publication->getId()));
-				$publication->setFiles($this->fetchFiles($publication->getId()));
-			}
-
-			$publications[] = $publication;
-		}
-
-		return $publications;
-	}
-
-
-	public function fetchAuthors($publication_id) {
-
-		$model = new AuthorModel($this->db);
-
-		return $model->fetch(false, array('publication_id' => $publication_id));
-	}
-
-
-	public function fetchKeywords($publication_id) {
-
-		$model = new KeywordModel($this->db);
-
-		return $model->fetch(false, array('publication_id' => $publication_id));
-	}
-
-
-	public function fetchFiles($publication_id) {
-
-		$model = new FileModel($this->db);
-
-		return $model->fetch(false, array('publication_id' => $publication_id));
 	}
 
 
@@ -170,7 +114,7 @@ class PublicationModel {
 		}
 
 		$data = array('publication_id' => $publication_id,
-					  'keyword_id' => $keyword_id);
+					  'keyword_id'     => $keyword_id);
 
 		return $this->db->insertData('rel_publication_keywords', $data);
 	}
@@ -250,7 +194,7 @@ class PublicationModel {
 		}
 
 		$where = array('publication_id' => $publication_id,
-					   'keyword_id' => $keyword_id);
+					   'keyword_id'     => $keyword_id);
 
 		$rows = $this->db->deleteData('rel_publication_keywords', $where);
 
@@ -330,5 +274,201 @@ class PublicationModel {
 		}
 
 		return $validator;
+	}
+
+
+	public function findAll($limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' ORDER BY p.`date_added` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
+	}
+
+
+	private function getSelectQuery() {
+
+		return 'SELECT t.`name` AS `type`, s.`name` AS `study_field`, p.*
+				FROM `list_publications` p
+				LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)
+				LEFT JOIN `list_study_fields` s ON (s.`id` = p.`study_field_id`)';
+	}
+
+
+	private function fetchResult(array $result, $full_mode = false) {
+
+		$publications = array();
+
+		foreach ($result as $row) {
+			$publication = new Publication($row);
+			$publication->setAuthors($this->fetchAuthors($publication->getId()));
+
+			if ($full_mode === true) {
+				$publication->setKeywords($this->fetchKeywords($publication->getId()));
+				$publication->setFiles($this->fetchFiles($publication->getId()));
+			}
+			$publications[] = $publication;
+		}
+
+		return $publications;
+	}
+
+
+	public function fetchAuthors($publication_id) {
+
+		$model = new AuthorModel($this->db);
+
+		return $model->fetch(array('publication_id' => $publication_id));
+	}
+
+
+	public function fetchKeywords($publication_id) {
+
+		$model = new KeywordModel($this->db);
+
+		return $model->fetch(array('publication_id' => $publication_id));
+	}
+
+
+	public function fetchFiles($publication_id) {
+
+		$model = new FileModel($this->db);
+
+		return $model->findByPublication($publication_id);
+	}
+
+
+	public function findById($id) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' WHERE p.`id` = :id';
+		$query .= ' LIMIT 0,1';
+
+		$this->pdo->prepare($query);
+		$this->pdo->bindValue(':id', $id, \PDO::PARAM_INT);
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll(), true);
+	}
+
+
+	public function findByAuthor($author_id, $limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' JOIN `rel_publ_to_authors` r ON (r.`publication_id` = p.`id`)';
+		$query .= ' WHERE r.`author_id` = :author_id';
+		$query .= ' ORDER BY p.`date_added` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		$this->pdo->bindValue(':author_id', $author_id, \PDO::PARAM_INT);
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
+	}
+
+
+	public function findByKeyword($keyword_id, $limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' JOIN `rel_publication_keywords` r ON (r.`publication_id` = p.`id`)';
+		$query .= ' WHERE r.`keyword_id` = :keyword_id';
+		$query .= ' ORDER BY p.`date_added` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		$this->pdo->bindValue(':keyword_id', $keyword_id, \PDO::PARAM_INT);
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
+	}
+
+
+	public function findByType($type_id, $limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' WHERE p.`type_id` = :type_id';
+		$query .= ' ORDER BY p.`date_added` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		$this->pdo->bindValue(':type_id', $type_id, \PDO::PARAM_INT);
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
+	}
+
+
+	public function findByMatch($search_string, $limit = null, $offset = 0) {
+	}
+
+
+	public function findByYear($year, $limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' WHERE YEAR(p.`date_published`) = :year';
+		$query .= ' ORDER BY p.`date_published` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		$this->pdo->bindValue(':year', $year, \PDO::PARAM_INT); // TODO really int?
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
+	}
+
+
+	public function findByStudyField($study_field_id, $limit = null, $offset = 0) {
+
+		$query = $this->getSelectQuery();
+		$query .= ' WHERE p.`study_field_id` = :study_field_id';
+		$query .= ' ORDER BY p.`date_added` DESC';
+		if (isset($limit)) {
+			$query .= ' LIMIT :offset,:limit';
+		}
+
+		$this->pdo->prepare($query);
+		$this->pdo->bindValue(':study_field_id', $study_field_id, \PDO::PARAM_INT);
+		if (isset($limit)) {
+			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+		}
+		$this->pdo->execute();
+
+		return $this->fetchResult($this->pdo->fetchAll());
 	}
 }

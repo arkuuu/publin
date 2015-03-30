@@ -25,12 +25,11 @@ class StudyFieldModel {
 
 
 	/**
-	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return StudyField[]
 	 */
-	public function fetch($mode, array $filter = array()) {
+	public function fetch(array $filter = array()) {
 
 		$study_fields = array();
 
@@ -38,17 +37,18 @@ class StudyFieldModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$study_field = new StudyField($value);
-
-			if ($mode) {
-				$model = new PublicationModel($this->db);
-				$publications = $model->fetch(false, array('study_field_id' => $study_field->getId()));
-				$study_field->setPublications($publications);
-			}
-			$study_fields[] = $study_field;
+			$study_fields[] = new StudyField($value);
 		}
 
 		return $study_fields;
+	}
+
+
+	public function fetchPublications($study_field_id) {
+
+		$model = new PublicationModel($this->db);
+
+		return $model->findByStudyField($study_field_id);
 	}
 
 

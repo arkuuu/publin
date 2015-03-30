@@ -4,7 +4,6 @@
 namespace publin\src;
 
 use PDO;
-use PDOException;
 use PDOStatement;
 
 class PDODatabase {
@@ -18,7 +17,7 @@ class PDODatabase {
 	/**
 	 * @var PDO
 	 */
-	private $pdo;
+	public $pdo;
 	/**
 	 * @var PDOStatement
 	 */
@@ -67,9 +66,9 @@ class PDODatabase {
 	}
 
 
-	public function bind($parameter, $value, $type = null) {
+	public function bindValue($parameter, $value, $type = null) {
 
-		if (is_null($type)) {
+		if (empty($type)) {
 			switch (true) {
 				case is_int($value):
 					$type = PDO::PARAM_INT;
@@ -91,9 +90,14 @@ class PDODatabase {
 	}
 
 
+	public function bindColumn($parameter, $column) {
+
+		return $this->stmt->bindColumn($parameter, $column, PDO::PARAM_STR);
+	}
+
+
 	public function fetchAll($fetch_style = PDO::FETCH_ASSOC) {
 
-		$this->execute(); // TODO: really here?
 
 		return $this->stmt->fetchAll($fetch_style);
 	}
@@ -101,18 +105,12 @@ class PDODatabase {
 
 	public function execute(array $parameters = null) {
 
-		try {
-			return $this->stmt->execute($parameters);
-		}
-		catch (PDOException $e) {
-			// TODO
-		}
+		return $this->stmt->execute($parameters);
 	}
 
 
 	public function fetchSingle($fetch_style = PDO::FETCH_ASSOC) {
 
-		$this->execute(); // TODO: really here?
 
 		return $this->stmt->fetch($fetch_style);
 	}
@@ -138,12 +136,7 @@ class PDODatabase {
 
 	public function executeAndReturnAffectedRows($query) {
 
-		try {
-			return $this->pdo->exec($query);
-		}
-		catch (PDOException $e) {
-			//TODO
-		}
+		return $this->pdo->exec($query);
 	}
 
 

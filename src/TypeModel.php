@@ -43,6 +43,14 @@ class TypeModel {
 	}
 
 
+	public function fetchPublications($type_id) {
+
+		$model = new PublicationModel($this->db);
+
+		return $model->findByType($type_id);
+	}
+
+
 	public function store(Type $type) {
 
 		$data = $type->getData();

@@ -48,7 +48,7 @@ class PublicationController {
 			}
 		}
 
-		$publications = $this->model->fetch(true, array('id' => $request->get('id')));
+		$publications = $this->model->findById($request->get('id'));
 
 		if ($request->get('m') === 'file') {
 			$this->download($request);
@@ -80,7 +80,7 @@ class PublicationController {
 		}
 
 		$file_model = new FileModel($this->db);
-		$file = $file_model->fetchById($file_id);
+		$file = $file_model->findById($file_id);
 
 		if ($file->isHidden() && !$this->auth->checkPermission(Auth::ACCESS_HIDDEN_FILES)) {
 			throw new PermissionRequiredException(Auth::ACCESS_HIDDEN_FILES);
@@ -301,7 +301,7 @@ class PublicationController {
 		}
 
 		$file_model = new FileModel($this->db);
-		$file = $file_model->fetchById($file_id);
+		$file = $file_model->findById($file_id);
 		FileHandler::delete($file->getName());
 
 		return $file_model->delete($file_id);

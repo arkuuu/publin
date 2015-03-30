@@ -46,13 +46,14 @@ class AuthorController {
 			}
 		}
 
-		$authors = $this->model->fetch(true, array('id' => $request->get('id')));
+		$authors = $this->model->fetch(array('id' => $request->get('id')));
+		$publications = $this->model->fetchPublications($request->get('id'));
 
 		if ($request->get('m') === 'edit') {
-			$view = new AuthorView($authors[0], $this->errors, true);
+			$view = new AuthorView($authors[0], $publications, $this->errors, true);
 		}
 		else {
-			$view = new AuthorView($authors[0], $this->errors);
+			$view = new AuthorView($authors[0], $publications, $this->errors);
 		}
 
 		return $view->display();

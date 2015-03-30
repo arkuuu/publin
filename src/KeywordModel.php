@@ -24,12 +24,11 @@ class KeywordModel {
 
 
 	/**
-	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return Keyword[]
 	 */
-	public function fetch($mode, array $filter = array()) {
+	public function fetch(array $filter = array()) {
 
 		$keywords = array();
 
@@ -37,18 +36,18 @@ class KeywordModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$keyword = new Keyword($value);
-
-			if ($mode) {
-				$model = new PublicationModel($this->db);
-				$publications = $model->fetch(false, array('keyword_id' => $keyword->getId()));
-				$keyword->setPublications($publications);
-			}
-
-			$keywords[] = $keyword;
+			$keywords[] = new Keyword($value);
 		}
 
 		return $keywords;
+	}
+
+
+	public function fetchPublications($keyword_id) {
+
+		$model = new PublicationModel($this->db);
+
+		return $model->findByKeyword($keyword_id);
 	}
 
 

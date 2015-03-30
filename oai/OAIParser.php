@@ -244,7 +244,7 @@ class OAIParser {
 
 		$db = new PDODatabase();
 		$db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
-		$db->bind(':token', $token);
+		$db->bindValue(':token', $token);
 		$db->execute();
 
 		$result = $db->fetchSingle();
@@ -268,12 +268,12 @@ class OAIParser {
 
 		$db = new PDODatabase();
 		$db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
-		$db->bind(':metadata', $metadataPrefix);
-		$db->bind(':from', $from);
-		$db->bind(':until', $until);
-		$db->bind(':set', $set);
-		$db->bind(':cursor', $cursor);
-		$db->bind(':size', $completeListSize);
+		$db->bindValue(':metadata', $metadataPrefix);
+		$db->bindValue(':from', $from);
+		$db->bindValue(':until', $until);
+		$db->bindValue(':set', $set);
+		$db->bindValue(':cursor', $cursor);
+		$db->bindValue(':size', $completeListSize);
 		$db->execute();
 
 		return $db->lastInsertId();
@@ -339,7 +339,7 @@ class OAIParser {
 		$db = new Database();
 		$model = new PublicationModel($db);
 
-		return count($model->fetch(false, array()));
+		return count($model->findAll());
 	}
 
 
@@ -348,7 +348,7 @@ class OAIParser {
 		$db = new Database();
 		$model = new PublicationModel($db);
 
-		return $model->fetch(false, array(), $this->number_of_records, $offset);
+		return $model->findAll($this->number_of_records, $offset);
 	}
 
 
@@ -490,7 +490,7 @@ class OAIParser {
 
 		$db = new Database();
 		$model = new PublicationModel($db);
-		$publication = $model->fetch(true, array('id' => $identifier));
+		$publication = $model->findById($identifier);
 
 		if (count($publication) == 0) {
 			throw new IdDoesNotExistException;

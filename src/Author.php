@@ -7,7 +7,7 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Author extends ObjectWithPublications {
+class Author {
 
 	protected $id;
 	protected $academic_title;
@@ -18,12 +18,20 @@ class Author extends ObjectWithPublications {
 	protected $about;
 
 
+	public function __construct(array $data) {
+
+		foreach ($data as $property => $value) {
+			if (property_exists($this, $property)) {
+				$this->$property = $value;
+			}
+		}
+	}
+
+
 	public function getId() {
 
 		return $this->id;
 	}
-
-
 
 
 	public function getData() {

@@ -454,20 +454,6 @@ class Database extends mysqli {
 
 
 	/**
-	 * @return array
-	 * @throws SQLException
-	 */
-	public function fetchYears() {
-
-		$query = 'SELECT DISTINCT YEAR(`date_published`) AS `year`
-					FROM `list_publications`
-					ORDER BY `year` DESC';
-
-		return $this->getData($query);
-	}
-
-
-	/**
 	 * @param array $filter
 	 *
 	 * @return array
@@ -507,70 +493,6 @@ class Database extends mysqli {
 				/* Creates the WHERE clause from the rest of the filter array */
 				foreach ($filter as $key => $value) {
 					$where .= ' a.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
-	/**
-	 * @param array  $filter
-	 *
-	 * @param string $limit
-	 *
-	 * @param int    $offset
-	 *
-	 * @return array
-	 */
-	public function fetchPublications(array $filter = array(), $limit = null, $offset = 0) {
-
-		$select = 'SELECT t.`name` AS `type`, s.`name` AS `study_field`, p.*';
-		$from = 'FROM `list_publications` p';
-		$join = 'LEFT JOIN `list_types` t ON (t.`id` = p.`type_id`)';
-		$join .= 'LEFT JOIN `list_study_fields` s ON (s.`id` = p.`study_field_id`)';
-		$where = '';
-		$order = 'ORDER BY `date_added` DESC';
-		if (isset($limit)) {
-			$limit = 'LIMIT '.$offset.','.$limit;
-		}
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the JOIN clause if needed */
-				if (array_key_exists('author_id', $filter)) {
-					$join .= ' JOIN `rel_publ_to_authors` ra ON (ra.`publication_id` = p.`id`)';
-					$where .= ' ra.`author_id` LIKE "'.$filter['author_id'].'" AND';
-					unset($filter['author_id']);
-				}
-				if (array_key_exists('keyword_id', $filter)) {
-					$join .= ' JOIN `rel_publication_keywords` rk ON (rk.`publication_id` = p.`id`)';
-					$where .= ' rk.`keyword_id` LIKE "'.$filter['keyword_id'].'" AND';
-					unset($filter['keyword_id']);
-				}
-				if (array_key_exists('year_published', $filter)) {
-					$where .= ' YEAR(p.`date_published`) LIKE "'.$filter['year_published'].'" AND';
-					unset($filter['year_published']);
-				}
-				if (array_key_exists('month_published', $filter)) {
-					$where .= ' MONTH(p.`date_published`) LIKE "'.$filter['month_published'].'" AND';
-					unset($filter['month_published']);
-				}
-
-				/* Creates the WHERE clause from the rest of filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
 				}
 				$where = substr($where, 0, -3);
 			}

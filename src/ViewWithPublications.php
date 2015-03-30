@@ -6,46 +6,20 @@ namespace publin\src;
 class ViewWithPublications extends View {
 
 	/**
-	 * @var ObjectWithPublications
+	 * @var Publication[]
 	 */
-	protected $object;
+	protected $publications;
 
 
 	/**
-	 * @param ObjectWithPublications $object
-	 * @param array                  $type
-	 * @param array                  $errors
+	 * @param array $publications
+	 * @param array $type
+	 * @param array $errors
 	 */
-	public function __construct(ObjectWithPublications $object, $type, array $errors = array()) {
+	public function __construct(array $publications, $type, array $errors = array()) {
 
 		parent::__construct($type, $errors);
-		$this->object = $object;
-	}
-
-
-	/**
-	 * @return    string
-	 */
-	public function showPageTitle() {
-
-		return $this->html($this->showName());
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showName() {
-
-		$name = $this->object->getName();
-
-		if ($name) {
-			return $this->html($name);
-		}
-		else {
-			// TODO: maybe log here because this should never happen?
-			return 'No name';
-		}
+		$this->publications = $publications;
 	}
 
 
@@ -56,7 +30,7 @@ class ViewWithPublications extends View {
 
 		$string = '';
 
-		foreach ($this->object->getPublications() as $publication) {
+		foreach ($this->publications as $publication) {
 			$string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
 		}
 
@@ -74,6 +48,6 @@ class ViewWithPublications extends View {
 	 */
 	public function showPublicationsNum() {
 
-		return $this->object->getPublicationsNum();
+		return count($this->publications);
 	}
 }

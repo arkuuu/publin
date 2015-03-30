@@ -25,12 +25,11 @@ class AuthorModel {
 
 
 	/**
-	 * @param       $mode
 	 * @param array $filter
 	 *
 	 * @return Author[]
 	 */
-	public function fetch($mode, array $filter = array()) {
+	public function fetch(array $filter = array()) {
 
 		$authors = array();
 
@@ -39,13 +38,7 @@ class AuthorModel {
 		$this->num = $this->db->getNumRows();
 
 		foreach ($data as $key => $value) {
-			$author = new Author($value);
-
-			if ($mode) {
-				$author->setPublications($this->fetchPublications($author->getId()));
-			}
-
-			$authors[] = $author;
+			$authors[] = new Author($value);
 		}
 
 		return $authors;
@@ -56,7 +49,7 @@ class AuthorModel {
 
 		$model = new PublicationModel($this->db);
 
-		return $model->fetch(false, array('author_id' => $author_id));
+		return $model->findByAuthor($author_id);
 	}
 
 
