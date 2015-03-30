@@ -116,6 +116,12 @@ class PDODatabase {
 	}
 
 
+	public function fetchColumn() {
+
+		return $this->stmt->fetchColumn();
+	}
+
+
 	public function resultCount() {
 
 		return $this->stmt->rowCount(); // TODO it's told to not work every time
