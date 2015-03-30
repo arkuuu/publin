@@ -246,6 +246,19 @@ class Controller {
 	 *
 	 * @return string
 	 */
+	private function search(Request $request) {
+
+		$controller = new SearchController($this->db);
+
+		return $controller->run($request);
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
 	private function user(Request $request) {
 
 		$controller = new UserController($this->db, $this->auth);
