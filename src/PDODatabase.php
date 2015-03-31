@@ -70,14 +70,14 @@ class PDODatabase {
 
 		if (empty($type)) {
 			switch (true) {
+				case is_null($value):
+					$type = PDO::PARAM_NULL;
+					break;
 				case is_int($value):
 					$type = PDO::PARAM_INT;
 					break;
 				case is_bool($value):
 					$type = PDO::PARAM_BOOL;
-					break;
-				case is_null($value):
-					$type = PDO::PARAM_NULL;
 					break;
 				default:
 					$type = PDO::PARAM_STR;
@@ -98,7 +98,6 @@ class PDODatabase {
 
 	public function fetchAll($fetch_style = PDO::FETCH_ASSOC) {
 
-
 		return $this->stmt->fetchAll($fetch_style);
 	}
 
@@ -110,7 +109,6 @@ class PDODatabase {
 
 
 	public function fetchSingle($fetch_style = PDO::FETCH_ASSOC) {
-
 
 		return $this->stmt->fetch($fetch_style);
 	}

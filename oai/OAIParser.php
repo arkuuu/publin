@@ -23,7 +23,8 @@ class OAIParser {
 
 	private $use_stylesheet = true;
 	private $db;
-	private $number_of_records = 5;
+	private $valid_days = 1;
+	private $records_per_request = 5;
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
 	private $baseURL = 'http://localhost/publin/oai/';
@@ -46,12 +47,15 @@ class OAIParser {
 	public function __construct() {
 
 		$this->db = new PDODatabase();
+		mb_internal_encoding('utf8');
 	}
 
 
 	public function run(Request $request) {
 
 		try {
+			$this->cleanResumptionTokens();
+
 			switch ($request->get('verb')) {
 				case 'Identify':
 					$xml = $this->identify();
@@ -62,7 +66,7 @@ class OAIParser {
 					break;
 
 				case 'ListSets':
-					$xml = $this->listSets();
+					$xml = $this->listSets($request->get('resumptionToken'));
 					break;
 
 				case 'ListIdentifiers':
@@ -117,6 +121,14 @@ class OAIParser {
 		}
 
 		return $xml->saveXML();
+	}
+
+
+	private function cleanResumptionTokens() {
+
+		$query = 'DELETE FROM `oai_tokens` WHERE `created` < NOW() - INTERVAL '.$this->valid_days.' DAY;';
+
+		return $this->db->executeAndReturnAffectedRows($query);
 	}
 
 
@@ -210,6 +222,9 @@ class OAIParser {
 
 		if ($resumptionToken) {
 			$token = $this->fetchResumptionToken($resumptionToken);
+			if (!$token) {
+				throw new BadResumptionTokenException;
+			}
 			$cursor = $token['cursor'];
 			$completeListSize = $token['completeListSize'];
 		}
@@ -228,7 +243,7 @@ class OAIParser {
 			$listSets->appendChild($set);
 		}
 
-		$newCursor = $cursor + $this->number_of_records;
+		$newCursor = $cursor + $this->records_per_request;
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken(null, null, null, null, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
@@ -241,7 +256,7 @@ class OAIParser {
 	}
 
 
-	public function fetchResumptionToken($token) {
+	private function fetchResumptionToken($token) {
 
 		$this->db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
 		$this->db->bindValue(':token', $token);
@@ -264,7 +279,7 @@ class OAIParser {
 	}
 
 
-	public function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
+	private function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
 
 		$this->db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
 		$this->db->bindValue(':metadata', $metadataPrefix);
@@ -279,10 +294,13 @@ class OAIParser {
 	}
 
 
-	public function listIdentifiers($metadataPrefix, $from = '', $until = '', $set = '', $resumptionToken = '') {
+	public function listIdentifiers($metadataPrefix, $from = null, $until = null, $set = null, $resumptionToken = null) {
 
 		if ($resumptionToken) {
 			$token = $this->fetchResumptionToken($resumptionToken);
+			if (!$token) {
+				throw new BadResumptionTokenException;
+			}
 			$metadataPrefix = $token['metadataPrefix'];
 			$from = $token['from'];
 			$until = $token['until'];
@@ -312,7 +330,7 @@ class OAIParser {
 			$listIdentifiers->appendChild($xml->importNode($this->createRecordHeader($publication), true));
 		}
 
-		$newCursor = $cursor + $this->number_of_records;
+		$newCursor = $cursor + $this->records_per_request;
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken($metadataPrefix, $from, $until, $set, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
@@ -332,17 +350,17 @@ class OAIParser {
 	}
 
 
-	public function countRecords($from = null, $until = null, $set = null) {
+	private function countRecords($from = null, $until = null, $set = null) {
 
 		$repo = new PublicationRepository($this->db);
 		$repo->select();
-		if (!empty($from)) {
+		if ($from) {
 			$repo->where('date_added', '>=', $from.' 00:00:00');
 		}
-		if (!empty($until)) {
+		if ($until) {
 			$repo->where('date_added', '<=', $until.' 23:59:59');
 		}
-		if (!empty($set)) {
+		if ($set) {
 			//$repo->where();
 		}
 
@@ -354,17 +372,17 @@ class OAIParser {
 
 		$repo = new PublicationRepository($this->db);
 		$repo->select();
-		if (!empty($from)) {
+		if ($from) {
 			$repo->where('date_added', '>=', $from.' 00:00:00');
 		}
-		if (!empty($until)) {
+		if ($until) {
 			$repo->where('date_added', '<=', $until.' 23:59:59');
 		}
-		if (!empty($set)) {
+		if ($set) {
 			//$repo->where();
 		}
 		$repo->order('date_added', 'DESC');
-		$repo->limit($this->number_of_records, (int)$offset);
+		$repo->limit($this->records_per_request, (int)$offset);
 
 		return $repo->go();
 	}
@@ -387,6 +405,9 @@ class OAIParser {
 
 		if ($resumptionToken) {
 			$token = $this->fetchResumptionToken($resumptionToken);
+			if (!$token) {
+				throw new BadResumptionTokenException;
+			}
 			$metadataPrefix = $token['metadataPrefix'];
 			$from = $token['from'];
 			$until = $token['until'];
@@ -416,7 +437,7 @@ class OAIParser {
 			$listRecords->appendChild($xml->importNode($this->createRecord($publication, $metadataPrefix), true));
 		}
 
-		$newCursor = $cursor + $this->number_of_records;
+		$newCursor = $cursor + $this->records_per_request;
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken($metadataPrefix, $from, $until, $set, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
@@ -493,7 +514,7 @@ class OAIParser {
 			return $fields;
 		}
 		else {
-			throw new UnexpectedValueException('This is not implemented yet');
+			throw new UnexpectedValueException('Implementation for '.$metadataPrefix.' missing!');
 		}
 	}
 
