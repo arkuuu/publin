@@ -28,10 +28,6 @@ class OAIParser {
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
 	private $baseURL = 'http://localhost/publin/oai/';
-	private $protocolVersion = '2.0';
-	private $earliestDatestamp = '2011-01-01'; // TODO: get from database
-	private $deletedRecord = 'no';
-	private $granularity = 'YYYY-MM-DD';
 	private $adminEmail = array('test@localhost', 'test@web.de');
 	private $metadataFormats = array(
 		'oai_dc' => array(
@@ -139,13 +135,13 @@ class OAIParser {
 		$identify = $xml->createElement('Identify');
 		$identify->appendChild($xml->createElement('repositoryName', $this->repositoryName));
 		$identify->appendChild($xml->createElement('baseURL', $this->baseURL));
-		$identify->appendChild($xml->createElement('protocolVersion', $this->protocolVersion));
+		$identify->appendChild($xml->createElement('protocolVersion', '2.0'));
 		foreach ($this->adminEmail as $adminEmail) {
 			$identify->appendChild($xml->createElement('adminEmail', $adminEmail));
 		}
-		$identify->appendChild($xml->createElement('earliestDatestamp', $this->earliestDatestamp));
-		$identify->appendChild($xml->createElement('deletedRecord', $this->deletedRecord));
-		$identify->appendChild($xml->createElement('granularity', $this->granularity));
+		$identify->appendChild($xml->createElement('earliestDatestamp', $this->getEarliestDatestamp()));
+		$identify->appendChild($xml->createElement('deletedRecord', 'no'));
+		$identify->appendChild($xml->createElement('granularity', 'YYYY-MM-DD'));
 		//$identify->appendChild($dom->createElement('compression', '')); //optional
 
 		$description = $xml->createElement('description');
@@ -159,9 +155,19 @@ class OAIParser {
 		$oai_identifier->appendChild($xml->createElement('scheme', 'oai'));
 		$oai_identifier->appendChild($xml->createElement('repositoryIdentifier', $this->repositoryIdentifier));
 		$oai_identifier->appendChild($xml->createElement('delimiter', ':'));
-		$oai_identifier->appendChild($xml->createElement('sampleIdentifier', 'oai:'.$this->repositoryIdentifier.':TODO'));
+		$oai_identifier->appendChild($xml->createElement('sampleIdentifier', 'oai:'.$this->repositoryIdentifier.':42'));
 
 		return $this->createResponse(array('verb' => 'Identify'), $identify);
+	}
+
+
+	private function getEarliestDatestamp() {
+
+		$query = 'SELECT MIN(`date_added`) FROM `list_publications`;';
+		$this->db->query($query);
+		$oldest_timestamp = $this->db->fetchColumn();
+
+		return date('Y-m-d', strtotime($oldest_timestamp));
 	}
 
 

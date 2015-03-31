@@ -30,6 +30,7 @@ class PDODatabase {
 		$options = array(
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 			//PDO::ATTR_PERSISTENT => false,
+			//PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 		);
 
 		$this->pdo = new PDO($dsn, self::USER, self::PASSWORD, $options);
@@ -61,7 +62,8 @@ class PDODatabase {
 	public function prepare($query) {
 
 		$this->stmt = $this->pdo->prepare($query);
-		// TODO: really no return?
+
+		return $this->stmt;
 
 	}
 
@@ -144,9 +146,10 @@ class PDODatabase {
 	}
 
 
-//	public function query($query){
-//
-//		$stmt = $this->pdo->query($query);
-//
-//	}
+	public function query($query) {
+
+		$this->stmt = $this->pdo->query($query);
+
+		return $this->stmt;
+	}
 }
