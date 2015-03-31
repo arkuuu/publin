@@ -57,12 +57,18 @@ class Publication {
 	}
 
 
+	/**
+	 * @return mixed
+	 */
 	public function getId() {
 
 		return $this->id;
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function getData() {
 
 		return get_object_vars($this);
@@ -86,6 +92,15 @@ class Publication {
 	public function getStudyField() {
 
 		return $this->study_field;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getStudyFieldId() {
+
+		return $this->study_field_id;
 	}
 
 
@@ -132,12 +147,18 @@ class Publication {
 	}
 
 
+	/**
+	 * @return mixed
+	 */
 	public function getFirstPage() {
 
 		return $this->pages_from;
 	}
 
 
+	/**
+	 * @return mixed
+	 */
 	public function getLastPage() {
 
 		return $this->pages_to;
@@ -424,6 +445,9 @@ class Publication {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function getLocation() {
 
 		return $this->location;

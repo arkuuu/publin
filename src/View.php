@@ -211,11 +211,11 @@ class View {
 		$citation .= '<span class="authors">'.$this->html($authors_string).'</span>';
 
 		/* appends publish date behind the authors */
-		$citation .= ' <span class="year">('.$this->html($publication->getDatePublished('Y')).')</span><br/>';
+		$citation .= ' <span class="year">('.$this->html($publication->getDatePublished('Y')).')</span>';
 
 		/* shows journal or booktitle and additional data*/
 		if ($publication->getJournal()) {
-			$citation .= '<span class="journal">'.$this->html($publication->getJournal()).'</span>';
+			$citation .= '<br/><span class="journal">'.$this->html($publication->getJournal()).'</span>';
 
 			if ($publication->getVolume()) {
 				$citation .= ', <span class="volume">'.$this->html($publication->getVolume()).'</span>';
@@ -229,11 +229,16 @@ class View {
 			}
 		}
 		else if ($publication->getBooktitle()) {
-			$citation .= 'In: <span class="booktitle">'.$this->html($publication->getBooktitle()).'</span>';
+			$citation .= '<br/>In: <span class="booktitle">'.$this->html($publication->getBooktitle()).'</span>';
 
 			if ($publication->getPages('-')) {
 				$citation .= ', <span class="pages">'.$this->html($publication->getPages('-')).'</span>';
 			}
+		}
+
+		/* shows DOI link */
+		if ($publication->getDoi()) {
+			$citation .= '<br/><span class="links"><a href="http://dx.doi.org/'.$publication->getDoi().'" target="_blank">DOI</a></span>';
 		}
 
 		return $citation.'</div>';
@@ -244,7 +249,7 @@ class View {
 
 		if (!empty($this->errors)) {
 			$string = '<div class="error">
-	<span class="message">Following error(s) occurred while processing your request</span>
+	<span class="message">Errors occurred while processing your request!</span>
 	<ul>';
 			foreach ($this->errors as $error) {
 				$string .= '<li>'.$this->html($error).'</li>';

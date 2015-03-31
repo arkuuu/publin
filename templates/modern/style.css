@@ -71,7 +71,10 @@ div#nav a, div#login a {
 	text-decoration: none;
 }
 
-div#nav a:hover, div#nav a.active, div#login a:hover, div#login a.active {
+div#nav a:hover,
+div#nav a.active,
+div#login a:hover,
+div#login a.active {
 	color: #004b5a;
 	background-color: white;
 }
@@ -133,41 +136,47 @@ input, label {
 }
 
 /*	Other stuff */
-.form ul {
+div.form ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.form label, .form input {
+div.form label, div.form input {
 	display: block;
 	width: 400px;
 	float: left;
 }
 
-.form label {
+div.form label {
 	width: 130px;
 	text-align: left;
 }
 
-.form li input {
+div.form li input {
 	width: 250px;
 	margin-bottom: 0;
 }
 
-.form br {
+div.form br {
 	clear: left;
 }
 
-.form input[type=number] {
+div.form p {
+	clear: left;
+}
+
+div.form input[type=number] {
 	width: 50px;
 }
 
-.form input[type=button], .form input[type=submit], .form input[type=reset] {
+div.form input[type=button],
+div.form input[type=submit],
+div.form input[type=reset] {
 	width: auto;
 }
 
-.form select {
+div.form select {
 	width: 200px;
 }
 
@@ -222,6 +231,10 @@ div.citation .number { }
 div.citation .booktitle { }
 
 div.citation .pages { }
+
+div.citation .links {
+	font-size: smaller;
+}
 
 table.publicationDetails {
 }

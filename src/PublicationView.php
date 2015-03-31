@@ -532,7 +532,19 @@ class PublicationView extends View {
 
 	public function showStudyField() {
 
-		return $this->html($this->publication->getStudyField());
+		$url = '?p=study_field&id=';
+		$id = $this->publication->getStudyFieldId();
+		$name = $this->publication->getStudyField();
+
+		if ($id && $name) {
+			return '<a href="'.$this->html($url.$id).'">'.$this->html($name).'</a>';
+		}
+		else if ($name) {
+			return $this->html($name);
+		}
+		else {
+			return false;
+		}
 	}
 
 
