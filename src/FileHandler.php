@@ -124,8 +124,17 @@ class FileHandler {
 	 */
 	public static function getAllowedTypes() {
 
-		return array('application/pdf' => '.pdf',
-					 'image/png'       => '.png');
+		return array('application/pdf'          => '.pdf',
+					 'application/zip'          => '.zip',
+					 'application/gzip'         => '.gz',
+					 'application/x-tar'        => '.tar',
+					 'application/x-gtar'       => '.gtar',
+					 'application/msword'       => '.doc',
+					 'application/mspowerpoint' => '.ppt',
+					 'text/plain'               => '.txt',
+					 'image/png'                => '.png',
+					 'image/jpeg'               => '.jpg',
+		);
 	}
 
 
