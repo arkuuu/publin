@@ -295,7 +295,7 @@ class PublicationController {
 	 */
 	private function removeFile(Request $request) {
 
-		$file_id = Validator::sanitizeNumber($request->get('file_id'));
+		$file_id = Validator::sanitizeNumber($request->post('file_id'));
 		if (!$file_id) {
 			throw new UnexpectedValueException;
 		}
