@@ -122,9 +122,9 @@ class PDODatabase {
 	}
 
 
-	public function resultCount() {
+	public function rowCount() {
 
-		return $this->stmt->rowCount(); // TODO it's told to not work every time
+		return $this->stmt->rowCount(); // TODO it's told to not work every time when SELECT
 	}
 
 

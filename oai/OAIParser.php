@@ -390,7 +390,7 @@ class OAIParser {
 		$repo->order('date_added', 'DESC');
 		$repo->limit($this->records_per_request, (int)$offset);
 
-		return $repo->go();
+		return $repo->find();
 	}
 
 
@@ -536,7 +536,7 @@ class OAIParser {
 		}
 
 		$repo = new PublicationRepository($this->db);
-		$publications = $repo->select()->where('id', '=', $identifier)->go();
+		$publications = $repo->select()->where('id', '=', $identifier)->find();
 
 		if (count($publications) == 0) {
 			throw new IdDoesNotExistException;

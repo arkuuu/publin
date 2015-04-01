@@ -26,9 +26,12 @@ class AuthorRepository extends QueryBuilder {
 	}
 
 
-	public function go() {
+	/**
+	 * @return Author[]
+	 */
+	public function find() {
 
-		$result = parent::go();
+		$result = parent::find();
 		$authors = array();
 
 		foreach ($result as $row) {
@@ -36,5 +39,16 @@ class AuthorRepository extends QueryBuilder {
 		}
 
 		return $authors;
+	}
+
+
+	/**
+	 * @return Author
+	 */
+	public function findSingle() {
+
+		$result = parent::findSingle();
+
+		return new Author($result);
 	}
 }

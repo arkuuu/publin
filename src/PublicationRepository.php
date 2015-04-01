@@ -36,26 +36,56 @@ class PublicationRepository extends QueryBuilder {
 	}
 
 
-	public function go($full = false) {
+	/**
+	 * @param bool $full
+	 *
+	 * @return Publication[]
+	 */
+	public function find($full = false) {
 
-		$result = parent::go();
+		$result = parent::find();
 		$publications = array();
 
 		foreach ($result as $row) {
 			$publication = new Publication($row);
 			$repo = new AuthorRepository($this->db);
-			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->go());
+			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->find());
 
 			if ($full === true) {
 				$repo = new KeywordRepository($this->db);
-				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->go());
+				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->find());
 
 				$repo = new FileRepository($this->db);
-				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->go());
+				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
 			}
 			$publications[] = $publication;
 		}
 
 		return $publications;
+	}
+
+
+	/**
+	 * @param bool $full
+	 *
+	 * @return Publication
+	 */
+	public function findSingle($full = false) {
+
+		$result = parent::findSingle();
+
+		$publication = new Publication($result);
+		$repo = new AuthorRepository($this->db);
+		$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->find());
+
+		if ($full === true) {
+			$repo = new KeywordRepository($this->db);
+			$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->find());
+
+			$repo = new FileRepository($this->db);
+			$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
+		}
+
+		return $publication;
 	}
 }

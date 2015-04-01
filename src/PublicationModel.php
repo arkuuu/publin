@@ -8,15 +8,15 @@ use RuntimeException;
 
 class PublicationModel {
 
+	private $old_db;
 	private $db;
-	private $pdo;
 	private $num;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-		$this->pdo = new PDODatabase();
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -40,32 +40,32 @@ class PublicationModel {
 
 		/* Stores the authors */
 		$author_ids = array();
-		$model = new AuthorModel($this->db);
+		$model = new AuthorModel($this->old_db);
 		foreach ($authors as $author) {
 			$author_ids[] = $model->store($author);
 		}
 		/* Stores the key terms */
 		$keyword_ids = array();
-		$model = new KeywordModel($this->db);
+		$model = new KeywordModel($this->old_db);
 		foreach ($keywords as $keyword) {
 			$keyword_ids[] = $model->store($keyword);
 		}
 		/* Stores the type */
 		if (isset($data['type'])) {
-			$model = new TypeModel($this->db);
+			$model = new TypeModel($this->old_db);
 			$type = new Type(array('name' => $data['type']));
 			$data['type_id'] = $model->store($type);
 			unset($data['type']);
 		}
 		/* Stores the study field */
 		if (isset($data['study_field'])) {
-			$model = new StudyFieldModel($this->db);
+			$model = new StudyFieldModel($this->old_db);
 			$study_field = new StudyField(array('name' => $data['study_field']));
 			$data['study_field_id'] = $model->store($study_field);
 			unset($data['study_field']);
 		}
 		/* Stores the publication */
-		$publication_id = $this->db->insertData('list_publications', $data);
+		$publication_id = $this->old_db->insertData('list_publications', $data);
 
 		if (!empty($publication_id)) {
 
@@ -103,7 +103,7 @@ class PublicationModel {
 					  'author_id'      => $author_id,
 					  'priority'       => $priority);
 
-		return $this->db->insertData('rel_publ_to_authors', $data);
+		return $this->old_db->insertData('rel_publ_to_authors', $data);
 	}
 
 
@@ -116,7 +116,7 @@ class PublicationModel {
 		$data = array('publication_id' => $publication_id,
 					  'keyword_id'     => $keyword_id);
 
-		return $this->db->insertData('rel_publication_keywords', $data);
+		return $this->old_db->insertData('rel_publication_keywords', $data);
 	}
 
 
@@ -124,20 +124,20 @@ class PublicationModel {
 
 		/* Stores the type */
 		if (isset($data['type'])) {
-			$model = new TypeModel($this->db);
+			$model = new TypeModel($this->old_db);
 			$type = new Type(array('name' => $data['type']));
 			$data['type_id'] = $model->store($type);
 			unset($data['type']);
 		}
 		/* Stores the study field */
 		if (isset($data['study_field'])) {
-			$model = new StudyFieldModel($this->db);
+			$model = new StudyFieldModel($this->old_db);
 			$study_field = new StudyField(array('name' => $data['study_field']));
 			$data['study_field_id'] = $model->store($study_field);
 			unset($data['study_field']);
 		}
 
-		return $this->db->updateData('list_publications', array('id' => $id), $data);
+		return $this->old_db->updateData('list_publications', array('id' => $id), $data);
 	}
 
 
@@ -149,19 +149,19 @@ class PublicationModel {
 		}
 
 		$where = array('publication_id' => $id);
-		$this->db->deleteData('rel_publ_to_authors', $where);
-		$this->db->deleteData('rel_publication_keywords', $where);
+		$this->old_db->deleteData('rel_publ_to_authors', $where);
+		$this->old_db->deleteData('rel_publication_keywords', $where);
 
 		// TODO: delete files
 		$where = array('id' => $id);
-		$rows = $this->db->deleteData('list_publications', $where);
+		$rows = $this->old_db->deleteData('list_publications', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting publication '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting publication '.$id.': '.$this->old_db->error);
 		}
 	}
 
@@ -175,14 +175,14 @@ class PublicationModel {
 		$where = array('publication_id' => $publication_id,
 					   'author_id'      => $author_id);
 
-		$rows = $this->db->deleteData('rel_publ_to_authors', $where);
+		$rows = $this->old_db->deleteData('rel_publ_to_authors', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error removing author '.$author_id.' from publication '.$publication_id.': '.$this->db->error);
+			throw new RuntimeException('Error removing author '.$author_id.' from publication '.$publication_id.': '.$this->old_db->error);
 		}
 	}
 
@@ -196,14 +196,14 @@ class PublicationModel {
 		$where = array('publication_id' => $publication_id,
 					   'keyword_id'     => $keyword_id);
 
-		$rows = $this->db->deleteData('rel_publication_keywords', $where);
+		$rows = $this->old_db->deleteData('rel_publication_keywords', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error removing keyword '.$keyword_id.' from publication '.$publication_id.': '.$this->db->error);
+			throw new RuntimeException('Error removing keyword '.$keyword_id.' from publication '.$publication_id.': '.$this->old_db->error);
 		}
 	}
 
@@ -285,14 +285,14 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
+		$this->db->prepare($query);
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 
 
@@ -326,7 +326,7 @@ class PublicationModel {
 
 	public function fetchAuthors($publication_id) {
 
-		$model = new AuthorModel($this->db);
+		$model = new AuthorModel($this->old_db);
 
 		return $model->fetch(array('publication_id' => $publication_id));
 	}
@@ -334,15 +334,15 @@ class PublicationModel {
 
 	public function fetchKeywords($publication_id) {
 
-		$model = new KeywordModel($this->db);
+		$repo = new KeywordRepository($this->db);
 
-		return $model->fetch(array('publication_id' => $publication_id));
+		return $repo->select()->where('publication_id', '=', $publication_id)->order('name', 'ASC')->find();
 	}
 
 
 	public function fetchFiles($publication_id) {
 
-		$model = new FileModel($this->db);
+		$model = new FileModel($this->old_db);
 
 		return $model->findByPublication($publication_id);
 	}
@@ -354,11 +354,11 @@ class PublicationModel {
 		$query .= ' WHERE p.`id` = :id';
 		$query .= ' LIMIT 0,1';
 
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':id', $id, \PDO::PARAM_INT);
-		$this->pdo->execute();
+		$this->db->prepare($query);
+		$this->db->bindValue(':id', $id, \PDO::PARAM_INT);
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll(), true);
+		return $this->fetchResult($this->db->fetchAll(), true);
 	}
 
 
@@ -372,15 +372,15 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':author_id', $author_id, \PDO::PARAM_INT);
+		$this->db->prepare($query);
+		$this->db->bindValue(':author_id', $author_id, \PDO::PARAM_INT);
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 
 
@@ -394,15 +394,15 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':keyword_id', $keyword_id, \PDO::PARAM_INT);
+		$this->db->prepare($query);
+		$this->db->bindValue(':keyword_id', $keyword_id, \PDO::PARAM_INT);
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 
 
@@ -415,15 +415,15 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':type_id', $type_id, \PDO::PARAM_INT);
+		$this->db->prepare($query);
+		$this->db->bindValue(':type_id', $type_id, \PDO::PARAM_INT);
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 
 
@@ -440,15 +440,15 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':year', $year, \PDO::PARAM_INT); // TODO really int?
+		$this->db->prepare($query);
+		$this->db->bindValue(':year', $year, \PDO::PARAM_INT); // TODO really int?
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 
 
@@ -461,15 +461,15 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':study_field_id', $study_field_id, \PDO::PARAM_INT);
+		$this->db->prepare($query);
+		$this->db->bindValue(':study_field_id', $study_field_id, \PDO::PARAM_INT);
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 
 
@@ -491,19 +491,19 @@ class PublicationModel {
 			$query .= ' LIMIT :offset,:limit';
 		}
 
-		$this->pdo->prepare($query);
+		$this->db->prepare($query);
 		if (isset($min_date)) {
-			$this->pdo->bindValue(':min_date', $min_date, \PDO::PARAM_STR);
+			$this->db->bindValue(':min_date', $min_date, \PDO::PARAM_STR);
 		}
 		if (isset($max_date)) {
-			$this->pdo->bindValue(':max_date', $max_date, \PDO::PARAM_STR);
+			$this->db->bindValue(':max_date', $max_date, \PDO::PARAM_STR);
 		}
 		if (isset($limit)) {
-			$this->pdo->bindValue(':offset', $offset, \PDO::PARAM_INT);
-			$this->pdo->bindValue(':limit', $limit, \PDO::PARAM_INT);
+			$this->db->bindValue(':offset', $offset, \PDO::PARAM_INT);
+			$this->db->bindValue(':limit', $limit, \PDO::PARAM_INT);
 		}
-		$this->pdo->execute();
+		$this->db->execute();
 
-		return $this->fetchResult($this->pdo->fetchAll());
+		return $this->fetchResult($this->db->fetchAll());
 	}
 }

@@ -29,9 +29,12 @@ class KeywordRepository extends QueryBuilder {
 	}
 
 
-	public function go() {
+	/**
+	 * @return Keyword[]
+	 */
+	public function find() {
 
-		$result = parent::go();
+		$result = parent::find();
 		$keywords = array();
 
 		foreach ($result as $row) {
@@ -39,5 +42,16 @@ class KeywordRepository extends QueryBuilder {
 		}
 
 		return $keywords;
+	}
+
+
+	/**
+	 * @return Keyword
+	 */
+	public function findSingle() {
+
+		$result = parent::findSingle();
+
+		return new Keyword($result);
 	}
 }

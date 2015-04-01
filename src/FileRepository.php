@@ -14,9 +14,12 @@ class FileRepository extends QueryBuilder {
 	}
 
 
-	public function go() {
+	/**
+	 * @return File[]
+	 */
+	public function find() {
 
-		$result = parent::go();
+		$result = parent::find();
 		$files = array();
 
 		foreach ($result as $row) {
@@ -24,5 +27,16 @@ class FileRepository extends QueryBuilder {
 		}
 
 		return $files;
+	}
+
+
+	/**
+	 * @return File
+	 */
+	public function findSingle() {
+
+		$result = parent::findSingle();
+
+		return new File($result);
 	}
 }

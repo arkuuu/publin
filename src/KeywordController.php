@@ -17,7 +17,7 @@ class KeywordController {
 
 	public function __construct(Database $db, Auth $auth) {
 
-		$this->db = $db;
+		$this->db = new PDODatabase();
 		$this->auth = $auth;
 		$this->model = new KeywordModel($db);
 		$this->errors = array();
@@ -48,14 +48,17 @@ class KeywordController {
 			}
 		}
 
-		$keywords = $this->model->fetch(array('id' => $request->get('id')));
-		$publications = $this->model->fetchPublications($request->get('id'));
+		$repo = new KeywordRepository($this->db);
+		$keyword = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
+
+		$repo = new PublicationRepository($this->db);
+		$publications = $repo->select()->where('keyword_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
 
 		if ($request->get('m') === 'edit') {
-			$view = new KeywordView($keywords[0], $publications, $this->errors, true);
+			$view = new KeywordView($keyword, $publications, $this->errors, true);
 		}
 		else {
-			$view = new KeywordView($keywords[0], $publications, $this->errors);
+			$view = new KeywordView($keyword, $publications, $this->errors);
 		}
 
 		return $view->display();

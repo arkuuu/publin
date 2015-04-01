@@ -6,6 +6,7 @@ use Exception;
 
 class BrowseModel {
 
+	private $old_db;
 	private $db;
 	private $browse_list = array();
 	private $result = array();
@@ -16,7 +17,8 @@ class BrowseModel {
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -36,35 +38,37 @@ class BrowseModel {
 
 				case 'recent':
 					$this->is_result = true;
-					$model = new PublicationModel($this->db);
-					$this->result = $model->findAll(10);
+					$model = new PublicationModel($this->old_db);
+					$this->result = $model->findAll(20);
 					$this->num = $model->getNum();
 					break;
 
 				case 'author':
-					$model = new AuthorModel($this->db);
+					$model = new AuthorModel($this->old_db);
 					$this->browse_list = $model->fetch();
 					break;
 
 				case 'keyword':
-					$model = new KeywordModel($this->db);
-					$this->browse_list = $model->fetch();
+//					$model = new KeywordModel($this->old_db);
+//					$this->browse_list = $model->fetch();
+					$repo = new KeywordRepository($this->db);
+					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
 					break;
 
 				case 'study_field':
-					$model = new StudyFieldModel($this->db);
+					$model = new StudyFieldModel($this->old_db);
 					$this->browse_list = $model->fetch();
 					break;
 
 				case 'type':
 					if ($id > 0) {
 						$this->is_result = true;
-						$model = new PublicationModel($this->db);
+						$model = new PublicationModel($this->old_db);
 						$this->result = $model->findByType($id);
 						$this->num = $model->getNum();
 					}
 					else {
-						$model = new TypeModel($this->db);
+						$model = new TypeModel($this->old_db);
 						$this->browse_list = $model->fetch();
 					}
 					break;
@@ -73,7 +77,7 @@ class BrowseModel {
 					if ($id > 0) {
 
 						$this->is_result = true;
-						$model = new PublicationModel($this->db);
+						$model = new PublicationModel($this->old_db);
 						$this->result = $model->findByYear($id);
 						$this->num = $model->getNum();
 
@@ -98,9 +102,9 @@ class BrowseModel {
 					FROM `list_publications`
 					ORDER BY `year` DESC';
 
-		$data = $this->db->getData($query);
+		$data = $this->old_db->getData($query);
 
-		$this->num = $this->db->getNumRows();
+		$this->num = $this->old_db->getNumRows();
 
 		$years = array();
 

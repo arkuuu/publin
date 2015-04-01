@@ -146,7 +146,6 @@ class QueryBuilder {
 //		return $this;
 //	}
 
-
 	public function join($foreign_table, $foreign_column, $comparator, $column, $join_type = null) {
 
 		if (!$comparator = $this->isAllowedComparator($comparator)) {
@@ -179,7 +178,7 @@ class QueryBuilder {
 	}
 
 
-	public function go() {
+	public function find() {
 
 		$query = $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' '.$this->limit.';';
 		$this->db->prepare($query);
@@ -190,6 +189,20 @@ class QueryBuilder {
 		$this->db->execute();
 
 		return $this->db->fetchAll();
+	}
+
+
+	public function findSingle() {
+
+		$query = $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' LIMIT 0,1;';
+		$this->db->prepare($query);
+		foreach ($this->values_to_bind as $key => $value) {
+			$this->db->bindValue($key + 1, $value);
+		}
+
+		$this->db->execute();
+
+		return $this->db->fetchSingle();
 	}
 
 
@@ -218,6 +231,20 @@ class QueryBuilder {
 
 
 	public function insert($table, array $columns, array $values) {
+	}
+
+
+	public function delete() {
+
+		$query = 'DELETE '.$this->from.' '.$this->join.' '.$this->where.';';
+		$this->db->prepare($query);
+		foreach ($this->values_to_bind as $key => $value) {
+			$this->db->bindValue($key + 1, $value);
+		}
+
+		$this->db->execute();
+
+		return (int)$this->db->rowCount();
 	}
 }
 
