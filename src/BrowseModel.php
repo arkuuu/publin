@@ -44,13 +44,11 @@ class BrowseModel {
 					break;
 
 				case 'author':
-					$model = new AuthorModel($this->old_db);
-					$this->browse_list = $model->fetch();
+					$repo = new AuthorRepository($this->db);
+					$this->browse_list = $repo->select()->order('family', 'ASC')->find();
 					break;
 
 				case 'keyword':
-//					$model = new KeywordModel($this->old_db);
-//					$this->browse_list = $model->fetch();
 					$repo = new KeywordRepository($this->db);
 					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
 					break;

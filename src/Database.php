@@ -321,58 +321,6 @@ class Database extends mysqli {
 	 * @return array
 	 * @throws SQLException
 	 */
-	public function fetchKeywords(array $filter = array()) {
-
-		$select = 'SELECT k.*';
-		$from = 'FROM `list_keywords` k';
-		$join = '';
-		$where = '';
-		$order = 'ORDER BY `name` ASC';
-		$limit = '';
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Creates the LIMIT clause */
-			if (array_key_exists('limit', $filter)) {
-				$limit = 'LIMIT '.$filter['limit'];
-				unset($filter['limit']);
-			}
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the JOIN clause if needed */
-				if (array_key_exists('publication_id', $filter)) {
-					$from = 'FROM `rel_publication_keywords` rk';    // Better SQL performance this way
-					$join .= ' JOIN `list_keywords` k ON (rk.`keyword_id` = k.`id`)';
-					$where .= ' rk.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
-					unset($filter['publication_id']);
-				}
-
-				/* Creates the WHERE clause from the rest of the filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' k.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);    // TODO: Return Author objects instead?
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
 	public function fetchStudyFields(array $filter = array()) {
 
 		$select = 'SELECT s.*';
@@ -448,59 +396,6 @@ class Database extends mysqli {
 
 		/* Combines everything to the complete query */
 		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
-	public function fetchAuthors(array $filter = array()) {
-
-		$select = 'SELECT a.*';
-		$from = 'FROM `list_authors` a';
-		$join = '';
-		$where = '';
-		$order = 'ORDER BY `family` ASC';
-		$limit = '';
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Creates the LIMIT clause */
-			if (array_key_exists('limit', $filter)) {
-				$limit = 'LIMIT '.$filter['limit'];
-				unset($filter['limit']);
-			}
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the JOIN clause if needed */
-				if (array_key_exists('publication_id', $filter)) {
-					$from = 'FROM `rel_publ_to_authors` rb';    // Better SQL performance this way
-					$join .= ' JOIN `list_authors` a ON (rb.`author_id` = a.`id`)';
-					$where .= ' rb.`publication_id` LIKE "'.$filter['publication_id'].'" AND';
-					$order = 'ORDER BY `priority` ASC';
-					unset($filter['publication_id']);
-				}
-
-				/* Creates the WHERE clause from the rest of the filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' a.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
 
 		return $this->getData($query);
 	}

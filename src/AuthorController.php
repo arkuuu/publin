@@ -17,7 +17,7 @@ class AuthorController {
 
 	public function __construct(Database $db, Auth $auth) {
 
-		$this->db = $db;
+		$this->db = new PDODatabase();
 		$this->auth = $auth;
 		$this->model = new AuthorModel($db);
 		$this->errors = array();
@@ -46,14 +46,17 @@ class AuthorController {
 			}
 		}
 
-		$authors = $this->model->fetch(array('id' => $request->get('id')));
-		$publications = $this->model->fetchPublications($request->get('id'));
+		$repo = new AuthorRepository($this->db);
+		$author = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
+
+		$repo = new PublicationRepository($this->db);
+		$publications = $repo->select()->where('author_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
 
 		if ($request->get('m') === 'edit') {
-			$view = new AuthorView($authors[0], $publications, $this->errors, true);
+			$view = new AuthorView($author, $publications, $this->errors, true);
 		}
 		else {
-			$view = new AuthorView($authors[0], $publications, $this->errors);
+			$view = new AuthorView($author, $publications, $this->errors);
 		}
 
 		return $view->display();

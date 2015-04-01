@@ -24,27 +24,6 @@ class AuthorModel {
 	}
 
 
-	/**
-	 * @param array $filter
-	 *
-	 * @return Author[]
-	 */
-	public function fetch(array $filter = array()) {
-
-		$authors = array();
-
-		/* Gets the authors */
-		$data = $this->db->fetchAuthors($filter);
-		$this->num = $this->db->getNumRows();
-
-		foreach ($data as $key => $value) {
-			$authors[] = new Author($value);
-		}
-
-		return $authors;
-	}
-
-
 	public function fetchPublications($author_id) {
 
 		$model = new PublicationModel($this->db);

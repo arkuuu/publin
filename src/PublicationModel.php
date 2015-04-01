@@ -326,9 +326,13 @@ class PublicationModel {
 
 	public function fetchAuthors($publication_id) {
 
-		$model = new AuthorModel($this->old_db);
+		//$model = new AuthorModel($this->old_db);
 
-		return $model->fetch(array('publication_id' => $publication_id));
+		//return $model->fetch(array('publication_id' => $publication_id));
+
+		$repo = new AuthorRepository($this->db);
+
+		return $repo->select()->where('publication_id', '=', $publication_id)->order('priority', 'ASC')->find();
 	}
 
 

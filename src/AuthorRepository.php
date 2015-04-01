@@ -26,6 +26,19 @@ class AuthorRepository extends QueryBuilder {
 	}
 
 
+	public function order($column, $order) {
+
+		if ($column === 'priority') {
+			$table = 'rel_publ_to_authors';
+		}
+		else {
+			$table = 'self';
+		}
+
+		return parent::order($column, $order, $table);
+	}
+
+
 	/**
 	 * @return Author[]
 	 */
