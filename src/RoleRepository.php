@@ -30,15 +30,23 @@ class RoleRepository extends QueryBuilder {
 
 
 	/**
+	 * @param bool $full
+	 *
 	 * @return Role[]
 	 */
-	public function find() {
+	public function find($full = false) {
 
 		$result = parent::find();
 		$roles = array();
 
 		foreach ($result as $row) {
-			$roles[] = new Role($row);
+			$role = new Role($row);
+
+			if ($full === true) {
+				$repo = new PermissionRepository($this->db);
+				$role->setPermissions($repo->select()->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+			}
+			$roles[] = $role;
 		}
 
 		return $roles;
@@ -46,12 +54,20 @@ class RoleRepository extends QueryBuilder {
 
 
 	/**
+	 * @param bool $full
+	 *
 	 * @return Role
 	 */
-	public function findSingle() {
+	public function findSingle($full = false) {
 
 		$result = parent::findSingle();
+		$role = new Role($result);
 
-		return new Role($result);
+		if ($full === true) {
+			$repo = new PermissionRepository($this->db);
+			$role->setPermissions($repo->select()->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+		}
+
+		return $role;
 	}
 }

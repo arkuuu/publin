@@ -2,6 +2,8 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
+
 class User {
 
 
@@ -15,6 +17,9 @@ class User {
 	 * @var Role[]
 	 */
 	private $roles;
+	/**
+	 * @var Permission[]
+	 */
 	private $permissions;
 
 
@@ -67,7 +72,7 @@ class User {
 				$this->roles[] = $role;
 			}
 			else {
-				// TODO: what to do when incorrect object
+				throw new InvalidArgumentException('must be array with Role objects');
 			}
 		}
 	}
@@ -108,15 +113,15 @@ class User {
 	}
 
 
-	public function hasPermission($permission) {
+	public function hasPermission($permission_name) {
 
-		$permission = array('name' => $permission);
-		if (in_array($permission, $this->permissions)) {
-			return true;
+		foreach ($this->permissions as $permission) {
+			if ($permission->getName() === $permission_name) {
+				return true;
+			}
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 

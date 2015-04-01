@@ -250,43 +250,6 @@ class Database extends mysqli {
 
 
 	/**
-	 * @param array $filter
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
-	public function fetchRoles(array $filter = array()) {
-
-		$select = 'SELECT r.`id`, r.`name`';
-		$from = 'FROM `list_roles` r';
-		$join = '';
-		$where = '';
-		$order = 'ORDER BY r.`name` ASC';
-		$limit = '';
-
-		if (!empty($filter)) {
-			$where = 'WHERE';
-
-			if (array_key_exists('user_id', $filter)) {
-				$join .= ' JOIN `rel_user_roles` ru ON (ru.`role_id` = r.`id`)';
-				$where .= ' ru.`user_id` = '.$filter['user_id'].' AND';
-				unset($filter['user_id']);
-			}
-			foreach ($filter as $key => $value) {
-				$where .= ' r.`'.$key.'` LIKE "'.$value.'" AND';
-			}
-			$where = substr($where, 0, -3);
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
-	/**
 	 * @param $query
 	 *
 	 * @return array
@@ -306,42 +269,5 @@ class Database extends mysqli {
 		$result->free();
 
 		return $data;
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
-	public function fetchPermissions(array $filter = array()) {
-
-		$select = 'SELECT p.`id`, p.`name`';
-		$from = 'FROM `list_permissions` p';
-		$join = '';
-		$where = '';
-		$order = 'ORDER BY p.`name` ASC';
-		$limit = '';
-
-		if (!empty($filter)) {
-			$where = 'WHERE';
-
-			if (array_key_exists('role_id', $filter)) {
-				$join .= ' JOIN `rel_roles_permissions` rr ON (rr.`permission_id` = p.`id`)';
-				$where .= ' rr.`role_id` = '.$filter['role_id'].' AND';
-				unset($filter['role_id']);
-			}
-			foreach ($filter as $key => $value) {
-				$where .= ' p.`'.$key.'` LIKE "'.$value.'" AND';
-			}
-			$where = substr($where, 0, -3);
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$join.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
 	}
 }

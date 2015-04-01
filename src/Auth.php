@@ -14,13 +14,15 @@ class Auth {
 	const EDIT_KEYWORD = 'keyword_edit';
 	const MANAGE = 'manage';
 
+	private $old_db;
 	private $db;
 	private $session_expire_time = 1000;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 
 		if (!isset($_SESSION)) {
 			session_start();
@@ -70,14 +72,14 @@ class Auth {
 	 */
 	public function login($username, $password) {
 
-		$username = $this->db->real_escape_string($username);
-		$password = $this->db->real_escape_string($password);
+		$username = $this->old_db->real_escape_string($username);
+		$password = $this->old_db->real_escape_string($password);
 		$password = $this->hashPassword($password);
 
 		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
-		$result = $this->db->getData($query);
+		$result = $this->old_db->getData($query);
 
-		if ($this->db->getNumRows() == 1) {
+		if ($this->old_db->getNumRows() == 1) {
 
 			$user = new User($result[0]);
 			$user->setPermissions($this->getPermissions($user));
@@ -88,8 +90,8 @@ class Auth {
 			$_SESSION['last_activity'] = time();
 
 			$query = 'UPDATE `list_users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';
-			$this->db->changeToWriteUser();
-			$this->db->query($query);
+			$this->old_db->changeToWriteUser();
+			$this->old_db->query($query);
 
 			return true;
 		}
@@ -118,14 +120,8 @@ class Auth {
 	 */
 	public function getPermissions(User $user) {
 
-		$user_id = $this->db->real_escape_string($user->getId());
-
-		$query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r
-		LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
-		LEFT JOIN `rel_user_roles` rur ON (rur.`role_id` = rrp.`role_id`)
-		WHERE rur.`user_id` = '.$user_id.';';
-
-		$permissions = $this->db->getData($query);
+		$repo = new PermissionRepository($this->db);
+		$permissions = $repo->select(true)->where('user_id', '=', $user->getId())->find();
 
 		return $permissions;
 	}
@@ -133,14 +129,14 @@ class Auth {
 
 	public function validateLogin($username, $password) {
 
-		$username = $this->db->real_escape_string($username);
-		$password = $this->db->real_escape_string($password);
+		$username = $this->old_db->real_escape_string($username);
+		$password = $this->old_db->real_escape_string($password);
 		$password = $this->hashPassword($password);
 
 		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
-		$this->db->getData($query);
+		$this->old_db->getData($query);
 
-		if ($this->db->getNumRows() == 1) {
+		if ($this->old_db->getNumRows() == 1) {
 
 			return true;
 		}
@@ -162,17 +158,17 @@ class Auth {
 
 			/* @var $user User */
 			$user = $_SESSION['user'];
-			$permission_name = $this->db->real_escape_string($permission_name);
-			$user_id = $this->db->real_escape_string($user->getId());
+			$permission_name = $this->old_db->real_escape_string($permission_name);
+			$user_id = $this->old_db->real_escape_string($user->getId());
 
 			$query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r
 			LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
 			LEFT JOIN `rel_user_roles` rur ON (rur.`role_id` = rrp.`role_id`)
 			WHERE r.`name` = "'.$permission_name.'" AND rur.`user_id` = '.$user_id.';';
 
-			$this->db->getData($query);
+			$this->old_db->getData($query);
 
-			if ($this->db->getNumRows() == 1) {
+			if ($this->old_db->getNumRows() == 1) {
 				return true;
 			}
 			else {

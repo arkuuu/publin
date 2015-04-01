@@ -46,9 +46,9 @@ class ManageModel {
 
 	public function getRoles() {
 
-		$model = new RoleModel($this->old_db);
+		$repo = new RoleRepository($this->db);
 
-		return $model->fetch(true);
+		return $repo->select()->order('name', 'ASC')->find(true);
 	}
 
 

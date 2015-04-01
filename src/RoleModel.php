@@ -7,19 +7,14 @@ use RuntimeException;
 
 class RoleModel {
 
+	private $old_db;
 	private $db;
-	private $num;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-	}
-
-
-	public function getNum() {
-
-		return $this->num;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -40,7 +35,7 @@ class RoleModel {
 			}
 		}
 
-		return $this->db->insert('list_roles', $data);
+		return $this->old_db->insert('list_roles', $data);
 	}
 
 
@@ -62,14 +57,14 @@ class RoleModel {
 		// TODO: sql commit stuff
 
 		$where = array('id' => $id);
-		$rows = $this->db->deleteData('list_roles', $where);
+		$rows = $this->old_db->deleteData('list_roles', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting role '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting role '.$id.': '.$this->old_db->error);
 		}
 	}
 
@@ -86,10 +81,12 @@ class RoleModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$old_permissions = $this->db->fetchPermissions(array('role_id' => $role_id));
+		$repo = new PermissionRepository($this->db);
+		$old_permissions = $repo->select()->where('role_id', '=', $role_id)->order('name', 'ASC')->find();
+
 		$old = array();
 		foreach ($old_permissions as $old_permission) {
-			$old[] = $old_permission['id'];
+			$old[] = $old_permission->getId();
 		}
 
 		if (empty($permission_ids)) {
@@ -127,7 +124,7 @@ class RoleModel {
 
 		$data = array('role_id' => $role_id, 'permission_id' => $permission_id);
 
-		return $this->db->insertData('rel_roles_permissions', $data);
+		return $this->old_db->insertData('rel_roles_permissions', $data);
 	}
 
 
@@ -145,46 +142,15 @@ class RoleModel {
 		}
 
 		$where = array('role_id' => $role_id, 'permission_id' => $permission_id);
-		$rows = $this->db->deleteData('rel_roles_permissions', $where);
+		$rows = $this->old_db->deleteData('rel_roles_permissions', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while removing permission '.$permission_id.' from role '.$role_id.': '.$this->db->error);
+			throw new RuntimeException('Error while removing permission '.$permission_id.' from role '.$role_id.': '.$this->old_db->error);
 		}
-	}
-
-
-	/**
-	 * @param       $mode
-	 * @param array $filter
-	 *
-	 * @return Role[]
-	 */
-	public function fetch($mode, array $filter = array()) {
-
-		$roles = array();
-
-		$data = $this->db->fetchRoles($filter);
-		$this->num = $this->db->getNumRows();
-
-		foreach ($data as $key => $value) {
-
-			if ($mode) {
-				// TODO: replace with permission model and objects
-				$permissions = $this->db->fetchPermissions(array('role_id' => $value['id']));
-			}
-			else {
-				$permissions = array();
-			}
-			$role = new Role($value);
-			$role->setPermissions($permissions);
-			$roles[] = $role;
-		}
-
-		return $roles;
 	}
 
 

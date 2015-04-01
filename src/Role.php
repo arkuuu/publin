@@ -2,10 +2,15 @@
 
 namespace publin\src;
 
+use InvalidArgumentException;
+
 class Role {
 
 	private $id;
 	private $name;
+	/**
+	 * @var Permission[]
+	 */
 	private $permissions = array();
 
 
@@ -38,7 +43,7 @@ class Role {
 
 
 	/**
-	 * @return array
+	 * @return Permission[]
 	 */
 	public function getPermissions() {
 
@@ -46,16 +51,33 @@ class Role {
 	}
 
 
+	/**
+	 * @param Permission[] $permissions
+	 *
+	 * @return bool
+	 */
 	public function setPermissions(array $permissions) {
 
-		$this->permissions = $permissions;
+		$this->permissions = array();
+
+		foreach ($permissions as $permission) {
+
+			if ($permission instanceof Permission) {
+				$this->permissions[] = $permission;
+			}
+			else {
+				throw new InvalidArgumentException('must be array with Permission objects');
+			}
+		}
+
+		return true;
 	}
 
 
 	public function hasPermission($permission_id) {
 
 		foreach ($this->permissions as $permission) {
-			if ($permission['id'] == $permission_id) {
+			if ($permission->getId() == $permission_id) {
 				return true;
 			}
 		}
