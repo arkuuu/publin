@@ -5,12 +5,14 @@ namespace publin\src;
 
 class ManageModel {
 
+	private $old_db;
 	private $db;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -19,14 +21,14 @@ class ManageModel {
 		// TODO: create and use PermissionModel
 		$query = 'SELECT `id`, `name` FROM list_permissions ORDER BY `name` ASC;';
 
-		return $this->db->getData($query);
+		return $this->old_db->getData($query);
 	}
 
 
 	public function updatePermissions(array $input) {
 
 		$roles = $this->getRoles();
-		$model = new RoleModel($this->db);
+		$model = new RoleModel($this->old_db);
 
 		foreach ($roles as $role) {
 			if (isset($input[$role->getId()])) {
@@ -44,7 +46,7 @@ class ManageModel {
 
 	public function getRoles() {
 
-		$model = new RoleModel($this->db);
+		$model = new RoleModel($this->old_db);
 
 		return $model->fetch(true);
 	}
@@ -52,8 +54,8 @@ class ManageModel {
 
 	public function getUsers() {
 
-		$model = new UserModel($this->db);
+		$repo = new UserRepository($this->db);
 
-		return $model->fetch(true);
+		return $repo->select()->order('name', 'ASC')->find(true);
 	}
 }

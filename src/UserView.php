@@ -39,22 +39,6 @@ class UserView extends View {
 	}
 
 
-	public function showPermissions() {
-
-		$string = '';
-
-		foreach ($this->user->getPermissions() as $permission) {
-			$string .= '<li>'.$this->html($permission->getName()).'</li>';
-		}
-
-		if (empty($string)) {
-			$string = '<li>None</li>';
-		}
-
-		return $string;
-	}
-
-
 	public function showName() {
 
 		return $this->html($this->user->getName());

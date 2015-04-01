@@ -17,7 +17,7 @@ class UserController {
 
 	public function __construct(Database $db, Auth $auth) {
 
-		$this->db = $db;
+		$this->db = new PDODatabase();
 		$this->auth = $auth;
 		$this->user = $this->auth->getCurrentUser();
 		$this->model = new UserModel($db);
@@ -44,7 +44,9 @@ class UserController {
 			}
 		}
 
-		$user = $this->model->fetchById($this->user->getId());
+		$repo = new UserRepository($this->db);
+		$user = $repo->select()->where('id', '=', $this->user->getId())->findSingle(true);
+
 		$view = new UserView($user, $this->errors);
 
 		return $view->display();
