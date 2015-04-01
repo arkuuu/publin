@@ -40,9 +40,10 @@ class ManageView extends View {
 		$string .= '</tr>';
 
 		foreach ($permissions as $permission) {
-			$string .= '<tr><td>'.$this->html($permission['name']).'</td>';
+			/* @var $permission Permission */
+			$string .= '<tr><td>'.$this->html($permission->getName()).'</td>';
 			foreach ($roles as $role) {
-				if ($role->hasPermission($permission['id'])) {
+				if ($role->hasPermission($permission->getId())) {
 					$class = 'green';
 					$checked = 'checked';
 				}
@@ -51,7 +52,7 @@ class ManageView extends View {
 					$checked = '';
 				}
 				$string .= '<td class="'.$class.'">
-	<input type="checkbox" name="permissions['.$this->html($role->getId()).']['.$this->html($permission['id']).']" '.$checked.'>
+	<input type="checkbox" name="permissions['.$this->html($role->getId()).']['.$this->html($permission->getId()).']" '.$checked.'>
 </td>';
 			}
 			$string .= '</tr>';

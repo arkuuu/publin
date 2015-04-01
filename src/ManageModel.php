@@ -18,10 +18,9 @@ class ManageModel {
 
 	public function getPermissions() {
 
-		// TODO: create and use PermissionModel
-		$query = 'SELECT `id`, `name` FROM list_permissions ORDER BY `name` ASC;';
+		$repo = new PermissionRepository($this->db);
 
-		return $this->old_db->getData($query);
+		return $repo->select()->order('name', 'ASC')->find();
 	}
 
 
