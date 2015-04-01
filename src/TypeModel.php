@@ -8,42 +8,11 @@ use RuntimeException;
 class TypeModel {
 
 	private $old_db;
-	private $db;
-	private $num;
 
 
 	public function __construct(Database $db) {
 
 		$this->old_db = $db;
-		$this->db = new PDODatabase();
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return Type[]
-	 */
-	public function fetch(array $filter = array()) {
-
-		$types = array();
-
-		$data = $this->old_db->fetchTypes($filter);
-		$this->num = $this->old_db->getNumRows();
-
-		foreach ($data as $key => $value) {
-			$types[] = new Type($value);
-		}
-
-		return $types;
-	}
-
-
-	public function fetchPublications($type_id) {
-
-		$repo = new PublicationRepository($this->db);
-
-		return $repo->select()->where('type_id', '=', $type_id)->order('date_published', 'DESC')->find();
 	}
 
 

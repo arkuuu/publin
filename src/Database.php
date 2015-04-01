@@ -255,115 +255,6 @@ class Database extends mysqli {
 	 * @return array
 	 * @throws SQLException
 	 */
-	public function fetchTypes(array $filter = array()) {
-
-		$select = 'SELECT t.*';
-		$from = 'FROM `list_types` t';
-		$where = '';
-		$order = 'ORDER BY `name` ASC';
-		$limit = '';
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Creates the LIMIT clause */
-			if (array_key_exists('limit', $filter)) {
-				$limit = 'LIMIT '.$filter['limit'];
-				unset($filter['limit']);
-			}
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the WHERE clause from the rest of the filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' t.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
-	/**
-	 * @param $query
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
-	public function getData($query) {
-
-		/* Sends query to database */
-		$result = $this->query($query);
-		$this->num_rows = $result->num_rows;
-
-		/* Fetches the results */
-		$data = array();
-		while ($entry = $result->fetch_assoc()) {
-			$data[] = $entry;
-		}
-		$result->free();
-
-		return $data;
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
-	public function fetchStudyFields(array $filter = array()) {
-
-		$select = 'SELECT s.*';
-		$from = 'FROM `list_study_fields` s';
-		$where = '';
-		$order = 'ORDER BY `name` ASC';
-		$limit = '';
-
-		/* Checks if any filter is set */
-		if (!empty($filter)) {
-
-			/* Creates the LIMIT clause */
-			if (array_key_exists('limit', $filter)) {
-				$limit = 'LIMIT '.$filter['limit'];
-				unset($filter['limit']);
-			}
-
-			/* Checks if filter is still not empty */
-			if (!empty($filter)) {
-				$where = 'WHERE';
-
-				/* Creates the WHERE clause from the rest of the filter array */
-				foreach ($filter as $key => $value) {
-					$where .= ' s.`'.$key.'` LIKE "'.$value.'" AND';
-				}
-				$where = substr($where, 0, -3);
-			}
-		}
-		unset($filter);
-
-		/* Combines everything to the complete query */
-		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
-
-		return $this->getData($query);
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return array
-	 * @throws SQLException
-	 */
 	public function fetchUsers(array $filter = array()) {
 
 		$select = 'SELECT u.*';
@@ -398,6 +289,29 @@ class Database extends mysqli {
 		$query = $select.' '.$from.' '.$where.' '.$order.' '.$limit.';';
 
 		return $this->getData($query);
+	}
+
+
+	/**
+	 * @param $query
+	 *
+	 * @return array
+	 * @throws SQLException
+	 */
+	public function getData($query) {
+
+		/* Sends query to database */
+		$result = $this->query($query);
+		$this->num_rows = $result->num_rows;
+
+		/* Fetches the results */
+		$data = array();
+		while ($entry = $result->fetch_assoc()) {
+			$data[] = $entry;
+		}
+		$result->free();
+
+		return $data;
 	}
 
 

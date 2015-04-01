@@ -27,6 +27,7 @@ class Controller {
 	public function __construct() {
 
 		mb_internal_encoding('utf8');
+		date_default_timezone_set('Europe/Berlin');
 
 		$this->db = new Database();
 		// TODO: catch exception here
@@ -179,6 +180,21 @@ class Controller {
 	private function study_field(Request $request) {
 
 		$controller = new StudyFieldController($this->db);
+
+		return $controller->run($request);
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws Exception
+	 * @throws NotFoundException
+	 */
+	private function type(Request $request) {
+
+		$controller = new TypeController($this->db);
 
 		return $controller->run($request);
 	}

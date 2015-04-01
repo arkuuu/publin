@@ -62,9 +62,9 @@ class SubmitModel {
 
 	public function createTypes() {
 
-		$model = new TypeModel($this->old_db);
+		$repo = new TypeRepository($this->db);
 
-		return $model->fetch();
+		return $repo->select()->order('name', 'ASC')->find();
 	}
 
 

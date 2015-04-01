@@ -51,7 +51,7 @@ class BrowseModel {
 					break;
 
 				case 'type':
-					if ($id > 0) {
+					/*if ($id > 0) {
 						$this->is_result = true;
 						$repo = new PublicationRepository($this->db);
 						$this->result = $repo->select()->where('type_id', '=', $id)->order('date_published', 'DESC')->find();
@@ -59,7 +59,9 @@ class BrowseModel {
 					else {
 						$model = new TypeModel($this->old_db);
 						$this->browse_list = $model->fetch();
-					}
+					}*/
+					$repo = new TypeRepository($this->db);
+					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
 					break;
 
 				case 'year':

@@ -46,7 +46,7 @@ class BrowseView extends View {
 				'type'        => array(
 					'name'       => 'Types',
 					'url'        => './?p=browse&amp;by=type',
-					'result_url' => './?p=browse&amp;by=type&amp;id='),
+					'result_url' => './?p=type&amp;id='),
 				'year'        => array(
 					'name'       => 'Years',
 					'url'        => './?p=browse&amp;by=year',
