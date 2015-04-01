@@ -53,15 +53,18 @@ class QueryBuilder {
 	}
 
 
-	public function order($column, $order) {
+	public function order($column, $order, $table = 'self') {
 
 		$order = ($order === 'ASC') ? 'ASC' : 'DESC';
+		if ($table !== 'self') {
+			$table = '`'.$table.'`';
+		}
 
 		if (empty($this->order)) {
-			$this->order = 'ORDER BY self.`'.$column.'` '.$order;
+			$this->order = 'ORDER BY '.$table.'.`'.$column.'` '.$order;
 		}
 		else {
-			$this->order .= ', self.`'.$column.'` '.$order;
+			$this->order .= ', '.$table.'.`'.$column.'` '.$order;
 		}
 
 		return $this;
