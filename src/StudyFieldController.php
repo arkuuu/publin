@@ -6,22 +6,23 @@ namespace publin\src;
 class StudyFieldController {
 
 	private $db;
-	private $model;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-		$this->model = new StudyFieldModel($db);
+		$this->db = new PDODatabase();
 	}
 
 
 	public function run(Request $request) {
 
-		$study_fields = $this->model->fetch(array('id' => $request->get('id')));
-		$publications = $this->model->fetchPublications($request->get('id'));
+		$repo = new StudyFieldRepository($this->db);
+		$study_field = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
 
-		$view = new StudyFieldView($study_fields[0], $publications);
+		$repo = new PublicationRepository($this->db);
+		$publications = $repo->select()->where('study_field_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
+
+		$view = new StudyFieldView($study_field, $publications);
 
 		return $view->display();
 	}

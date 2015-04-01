@@ -4,12 +4,14 @@ namespace publin\src;
 
 class SubmitModel {
 
+	private $old_db;
 	private $db;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -60,7 +62,7 @@ class SubmitModel {
 
 	public function createTypes() {
 
-		$model = new TypeModel($this->db);
+		$model = new TypeModel($this->old_db);
 
 		return $model->fetch();
 	}
@@ -68,8 +70,8 @@ class SubmitModel {
 
 	public function createStudyFields() {
 
-		$model = new StudyFieldModel($this->db);
+		$repo = new StudyFieldRepository($this->db);
 
-		return $model->fetch();
+		return $repo->select()->order('name', 'ASC')->find();
 	}
 }

@@ -46,8 +46,8 @@ class BrowseModel {
 					break;
 
 				case 'study_field':
-					$model = new StudyFieldModel($this->old_db);
-					$this->browse_list = $model->fetch();
+					$repo = new StudyFieldRepository($this->db);
+					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
 					break;
 
 				case 'type':

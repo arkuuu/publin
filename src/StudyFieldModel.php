@@ -9,41 +9,11 @@ class StudyFieldModel {
 
 
 	private $old_db;
-	private $db;
 
 
 	public function __construct(Database $db) {
 
 		$this->old_db = $db;
-		$this->db = new PDODatabase();
-	}
-
-
-	/**
-	 * @param array $filter
-	 *
-	 * @return StudyField[]
-	 */
-	public function fetch(array $filter = array()) {
-
-		$study_fields = array();
-
-		$data = $this->old_db->fetchStudyFields($filter);
-		$this->num = $this->old_db->getNumRows();
-
-		foreach ($data as $key => $value) {
-			$study_fields[] = new StudyField($value);
-		}
-
-		return $study_fields;
-	}
-
-
-	public function fetchPublications($study_field_id) {
-
-		$repo = new PublicationRepository($this->db);
-
-		return $repo->select()->where('study_field_id', '=', $study_field_id)->order('date_published', 'DESC')->find();
 	}
 
 
