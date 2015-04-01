@@ -44,11 +44,14 @@ class PublicationRepository extends QueryBuilder {
 		foreach ($result as $row) {
 			$publication = new Publication($row);
 			$repo = new AuthorRepository($this->db);
-			$authors = $repo->select()->where('publication_id', '=', $publication->getId())->go();
-			$publication->setAuthors($authors);
+			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->go());
 
 			if ($full === true) {
-				// TODO;
+				$repo = new KeywordRepository($this->db);
+				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->go());
+
+				$repo = new FileRepository($this->db);
+				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->go());
 			}
 			$publications[] = $publication;
 		}

@@ -41,12 +41,12 @@ class QueryBuilder {
 	public function select($table, array $columns = null) {
 
 		if (!empty($columns)) {
-			$columns = '`'.implode('`, `', $columns).'`';
+			$columns = 'self.`'.implode('`, self.`', $columns).'`';
 		}
 		else {
-			$columns = '*';
+			$columns = 'self.*';
 		}
-		$this->select = 'SELECT self.'.$columns;
+		$this->select = 'SELECT '.$columns;
 		$this->from = 'FROM `'.$table.'` self';
 
 		return $this;
@@ -133,9 +133,18 @@ class QueryBuilder {
 	}
 
 
-	public function whereIn($column, array $values, $aggregateMethod = null, $table = 'self') {
-		// TODO
-	}
+// This does not work with InnoDB and MySQL < 5.6
+//	public function match(array $columns, $value, $boolean_mode = false) {
+//
+//		$columns = 'self.`'.implode('`, self.`', $columns).'`';
+//		$suffix = (empty($this->where)) ? 'WHERE' : ' AND';
+//		$boolean_mode = ($boolean_mode) ? ' IN BOOLEAN MODE' : '';
+//
+//		$this->values_to_bind[] = $value;
+//		$this->where .= $suffix.' MATCH('.$columns.') AGAINST (?'.$boolean_mode.')';
+//
+//		return $this;
+//	}
 
 
 	public function join($foreign_table, $foreign_column, $comparator, $column, $join_type = null) {
