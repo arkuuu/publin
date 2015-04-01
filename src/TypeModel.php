@@ -25,7 +25,7 @@ class TypeModel {
 			}
 		}
 
-		return $this->old_db->insertData('list_types', $data);
+		return $this->old_db->insertData('types', $data);
 	}
 
 
@@ -40,7 +40,7 @@ class TypeModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_types', $where);
+		$rows = $this->old_db->deleteData('types', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {

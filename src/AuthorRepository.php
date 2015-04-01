@@ -8,14 +8,17 @@ class AuthorRepository extends QueryBuilder {
 
 	public function select() {
 
-		return parent::select('list_authors');
+		$this->select = 'SELECT self.*';
+		$this->from = 'FROM `authors` self';
+
+		return $this;
 	}
 
 
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'publication_id') {
-			$table = 'rel_publ_to_authors';
+			$table = 'publications_authors';
 			$this->join($table, 'author_id', '=', 'id');
 		}
 		else {
@@ -29,7 +32,7 @@ class AuthorRepository extends QueryBuilder {
 	public function order($column, $order) {
 
 		if ($column === 'priority') {
-			$table = 'rel_publ_to_authors';
+			$table = 'publications_authors';
 		}
 		else {
 			$table = 'self';

@@ -26,13 +26,13 @@ class AuthorModel {
 			}
 		}
 
-		return $this->old_db->insertData('list_authors', $data);
+		return $this->old_db->insertData('authors', $data);
 	}
 
 
 	public function update($id, array $data) {
 
-		return $this->old_db->updateData('list_authors', array('id' => $id), $data);
+		return $this->old_db->updateData('authors', array('id' => $id), $data);
 	}
 
 
@@ -43,7 +43,7 @@ class AuthorModel {
 		}
 
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_authors', $where);
+		$rows = $this->old_db->deleteData('authors', $where);
 		// TODO try/catch block
 
 		// TODO: how to get rid of these?

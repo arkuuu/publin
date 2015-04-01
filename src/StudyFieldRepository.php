@@ -9,7 +9,7 @@ class StudyFieldRepository extends QueryBuilder {
 	public function select() {
 
 		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `list_study_fields` self';
+		$this->from = 'FROM `study_fields` self';
 
 		return $this;
 	}

@@ -10,7 +10,7 @@ class PermissionRepository extends QueryBuilder {
 
 		$distinct = ($distinct === true) ? ' DISTINCT' : '';
 		$this->select = 'SELECT'.$distinct.' self.*';
-		$this->from = 'FROM `list_permissions` self';
+		$this->from = 'FROM `permissions` self';
 
 		return $this;
 	}
@@ -19,13 +19,13 @@ class PermissionRepository extends QueryBuilder {
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'role_id') {
-			$table = 'rel_roles_permissions';
-			$this->join .= ' LEFT JOIN `rel_roles_permissions` ON (`rel_roles_permissions`.`permission_id` = self.`id`)';
+			$table = 'roles_permissions';
+			$this->join .= ' LEFT JOIN `roles_permissions` ON (`roles_permissions`.`permission_id` = self.`id`)';
 		}
 		else if ($column === 'user_id') {
-			$table = 'rel_user_roles';
-			$this->join .= ' LEFT JOIN `rel_roles_permissions` ON (`rel_roles_permissions`.`permission_id` = self.`id`)';
-			$this->join .= ' LEFT JOIN `rel_user_roles` ON (`rel_user_roles`.`role_id` = `rel_roles_permissions`.`role_id`)';
+			$table = 'users_roles';
+			$this->join .= ' LEFT JOIN `roles_permissions` ON (`roles_permissions`.`permission_id` = self.`id`)';
+			$this->join .= ' LEFT JOIN `users_roles` ON (`users_roles`.`role_id` = `roles_permissions`.`role_id`)';
 		}
 		else {
 			$table = 'self';

@@ -165,7 +165,7 @@ class OAIParser {
 
 	private function getEarliestDatestamp() {
 
-		$query = 'SELECT MIN(`date_added`) FROM `list_publications`;';
+		$query = 'SELECT MIN(`date_added`) FROM `publications`;';
 		$this->db->query($query);
 		$oldest_timestamp = $this->db->fetchColumn();
 

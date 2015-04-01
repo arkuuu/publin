@@ -58,7 +58,7 @@ class PublicationModel {
 			unset($data['study_field']);
 		}
 		/* Stores the publication */
-		$publication_id = $this->old_db->insertData('list_publications', $data);
+		$publication_id = $this->old_db->insertData('publications', $data);
 
 		if (!empty($publication_id)) {
 
@@ -96,7 +96,7 @@ class PublicationModel {
 					  'author_id'      => $author_id,
 					  'priority'       => $priority);
 
-		return $this->old_db->insertData('rel_publ_to_authors', $data);
+		return $this->old_db->insertData('publications_authors', $data);
 	}
 
 
@@ -109,7 +109,7 @@ class PublicationModel {
 		$data = array('publication_id' => $publication_id,
 					  'keyword_id'     => $keyword_id);
 
-		return $this->old_db->insertData('rel_publication_keywords', $data);
+		return $this->old_db->insertData('publications_keywords', $data);
 	}
 
 
@@ -130,7 +130,7 @@ class PublicationModel {
 			unset($data['study_field']);
 		}
 
-		return $this->old_db->updateData('list_publications', array('id' => $id), $data);
+		return $this->old_db->updateData('publications', array('id' => $id), $data);
 	}
 
 
@@ -142,12 +142,12 @@ class PublicationModel {
 		}
 
 		$where = array('publication_id' => $id);
-		$this->old_db->deleteData('rel_publ_to_authors', $where);
-		$this->old_db->deleteData('rel_publication_keywords', $where);
+		$this->old_db->deleteData('publications_authors', $where);
+		$this->old_db->deleteData('publications_keywords', $where);
 
 		// TODO: delete files
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_publications', $where);
+		$rows = $this->old_db->deleteData('publications', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
@@ -168,7 +168,7 @@ class PublicationModel {
 		$where = array('publication_id' => $publication_id,
 					   'author_id'      => $author_id);
 
-		$rows = $this->old_db->deleteData('rel_publ_to_authors', $where);
+		$rows = $this->old_db->deleteData('publications_authors', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
@@ -189,7 +189,7 @@ class PublicationModel {
 		$where = array('publication_id' => $publication_id,
 					   'keyword_id'     => $keyword_id);
 
-		$rows = $this->old_db->deleteData('rel_publication_keywords', $where);
+		$rows = $this->old_db->deleteData('publications_keywords', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {

@@ -9,7 +9,7 @@ class TypeRepository extends QueryBuilder {
 	public function select() {
 
 		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `list_types` self';
+		$this->from = 'FROM `types` self';
 
 		return $this;
 	}

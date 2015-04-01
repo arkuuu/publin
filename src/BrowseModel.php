@@ -88,7 +88,7 @@ class BrowseModel {
 	private function fetchYears() {
 
 		$query = 'SELECT DISTINCT YEAR(`date_published`) AS `year`
-					FROM `list_publications`
+					FROM `publications`
 					ORDER BY `year` DESC';
 
 		$data = $this->old_db->getData($query);

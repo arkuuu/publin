@@ -35,7 +35,7 @@ class RoleModel {
 			}
 		}
 
-		return $this->old_db->insert('list_roles', $data);
+		return $this->old_db->insert('roles', $data);
 	}
 
 
@@ -53,11 +53,11 @@ class RoleModel {
 		}
 
 //		$where = array('role_id' => $id);
-//		$this->db->deleteData('rel_roles_permissions', $where);
+//		$this->db->deleteData('roles_permissions', $where);
 		// TODO: sql commit stuff
 
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_roles', $where);
+		$rows = $this->old_db->deleteData('roles', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
@@ -124,7 +124,7 @@ class RoleModel {
 
 		$data = array('role_id' => $role_id, 'permission_id' => $permission_id);
 
-		return $this->old_db->insertData('rel_roles_permissions', $data);
+		return $this->old_db->insertData('roles_permissions', $data);
 	}
 
 
@@ -142,7 +142,7 @@ class RoleModel {
 		}
 
 		$where = array('role_id' => $role_id, 'permission_id' => $permission_id);
-		$rows = $this->old_db->deleteData('rel_roles_permissions', $where);
+		$rows = $this->old_db->deleteData('roles_permissions', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {

@@ -9,7 +9,7 @@ class RoleRepository extends QueryBuilder {
 	public function select() {
 
 		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `list_roles` self';
+		$this->from = 'FROM `roles` self';
 
 		return $this;
 	}
@@ -18,7 +18,7 @@ class RoleRepository extends QueryBuilder {
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'user_id') {
-			$table = 'rel_user_roles';
+			$table = 'users_roles';
 			$this->join($table, 'role_id', '=', 'id');
 		}
 		else {

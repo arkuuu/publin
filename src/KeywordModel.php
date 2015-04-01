@@ -34,13 +34,13 @@ class KeywordModel {
 			}
 		}
 
-		return $this->old_db->insertData('list_keywords', $data);
+		return $this->old_db->insertData('keywords', $data);
 	}
 
 
 	public function update($id, array $data) {
 
-		return $this->old_db->updateData('list_keywords', array('id' => $id), $data);
+		return $this->old_db->updateData('keywords', array('id' => $id), $data);
 	}
 
 
@@ -52,11 +52,11 @@ class KeywordModel {
 
 		// Deletes the relations from any publication to this keyword
 		$where = array('keyword_id' => $id);
-		$this->old_db->deleteData('rel_publication_keywords', $where);
+		$this->old_db->deleteData('publications_keywords', $where);
 
 		// Deletes the keyword itself
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_keywords', $where);
+		$rows = $this->old_db->deleteData('keywords', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {

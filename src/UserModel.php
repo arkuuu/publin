@@ -33,7 +33,7 @@ class UserModel {
 		}
 		$data['password'] = Auth::hashPassword(Auth::generatePassword());
 
-		return $this->old_db->insert('list_users', $data);
+		return $this->old_db->insert('users', $data);
 	}
 
 
@@ -43,7 +43,7 @@ class UserModel {
 			$data['password'] = Auth::hashPassword($data['password']);
 		}
 
-		return $this->old_db->updateData('list_users', array('id' => $id), $data);
+		return $this->old_db->updateData('users', array('id' => $id), $data);
 	}
 
 
@@ -51,14 +51,14 @@ class UserModel {
 
 		$data = array('user_id' => $user_id, 'role_id' => $role_id);
 
-		return $this->old_db->insertData('rel_user_roles', $data);
+		return $this->old_db->insertData('users_roles', $data);
 	}
 
 
 	public function removeRole($user_id, $role_id) {
 
 		$where = array('user_id' => $user_id, 'role_id' => $role_id);
-		$rows = $this->old_db->deleteData('rel_user_roles', $where);
+		$rows = $this->old_db->deleteData('users_roles', $where);
 
 		// TODO: How to get rid of this and move it to DB?
 		if ($rows == 1) {
@@ -77,10 +77,10 @@ class UserModel {
 		}
 
 		$where = array('user_id' => $id);
-		$this->old_db->deleteData('rel_user_roles', $where);
+		$this->old_db->deleteData('users_roles', $where);
 
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_users', $where);
+		$rows = $this->old_db->deleteData('users', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {

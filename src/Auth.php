@@ -76,7 +76,7 @@ class Auth {
 		$password = $this->old_db->real_escape_string($password);
 		$password = $this->hashPassword($password);
 
-		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
+		$query = 'SELECT `id`, `name` FROM `users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
 		$result = $this->old_db->getData($query);
 
 		if ($this->old_db->getNumRows() == 1) {
@@ -89,7 +89,7 @@ class Auth {
 			$_SESSION['created'] = time(); // TODO: needed?
 			$_SESSION['last_activity'] = time();
 
-			$query = 'UPDATE `list_users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';
+			$query = 'UPDATE `users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';
 			$this->old_db->changeToWriteUser();
 			$this->old_db->query($query);
 
@@ -133,7 +133,7 @@ class Auth {
 		$password = $this->old_db->real_escape_string($password);
 		$password = $this->hashPassword($password);
 
-		$query = 'SELECT `id`, `name` FROM `list_users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
+		$query = 'SELECT `id`, `name` FROM `users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
 		$this->old_db->getData($query);
 
 		if ($this->old_db->getNumRows() == 1) {
@@ -161,9 +161,9 @@ class Auth {
 			$permission_name = $this->old_db->real_escape_string($permission_name);
 			$user_id = $this->old_db->real_escape_string($user->getId());
 
-			$query = 'SELECT DISTINCT(r.`name`) FROM `list_permissions` r
-			LEFT JOIN `rel_roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
-			LEFT JOIN `rel_user_roles` rur ON (rur.`role_id` = rrp.`role_id`)
+			$query = 'SELECT DISTINCT(r.`name`) FROM `permissions` r
+			LEFT JOIN `roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
+			LEFT JOIN `users_roles` rur ON (rur.`role_id` = rrp.`role_id`)
 			WHERE r.`name` = "'.$permission_name.'" AND rur.`user_id` = '.$user_id.';';
 
 			$this->old_db->getData($query);

@@ -9,7 +9,7 @@ class KeywordRepository extends QueryBuilder {
 	public function select() {
 
 		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `list_keywords` self';
+		$this->from = 'FROM `keywords` self';
 
 		return $this;
 	}
@@ -18,7 +18,7 @@ class KeywordRepository extends QueryBuilder {
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'publication_id') {
-			$table = 'rel_publication_keywords';
+			$table = 'publications_keywords';
 			$this->join($table, 'keyword_id', '=', 'id');
 		}
 		else {

@@ -8,11 +8,11 @@ class PublicationRepository extends QueryBuilder {
 
 	public function select() {
 
-		$this->select = 'SELECT `list_types`.`name` AS `type`, `list_study_fields`.`name` AS `study_field`, self.*';
-		$this->from = 'FROM `list_publications` self';
+		$this->select = 'SELECT `types`.`name` AS `type`, `study_fields`.`name` AS `study_field`, self.*';
+		$this->from = 'FROM `publications` self';
 
-		$this->join('list_types', 'id', '=', 'type_id', 'LEFT');
-		$this->join('list_study_fields', 'id', '=', 'study_field_id', 'LEFT');
+		$this->join('types', 'id', '=', 'type_id', 'LEFT');
+		$this->join('study_fields', 'id', '=', 'study_field_id', 'LEFT');
 
 		return $this;
 	}
@@ -21,12 +21,17 @@ class PublicationRepository extends QueryBuilder {
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'author_id') {
-			$table = 'rel_publ_to_authors';
+			$table = 'publications_authors';
 			$this->join($table, 'publication_id', '=', 'id');
 		}
 		else if ($column === 'keyword_id') {
-			$table = 'rel_publication_keywords';
+			$table = 'publications_keywords';
 			$this->join($table, 'publication_id', '=', 'id');
+		}
+		else if ($column === 'keyword_name') {
+			$column = 'name';
+			$table = 'keywords';
+			// TODO
 		}
 		else {
 			$table = 'self';

@@ -9,7 +9,7 @@ class UserRepository extends QueryBuilder {
 	public function select() {
 
 		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `list_users` self';
+		$this->from = 'FROM `users` self';
 
 		return $this;
 	}

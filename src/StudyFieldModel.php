@@ -26,7 +26,7 @@ class StudyFieldModel {
 			}
 		}
 
-		return $this->old_db->insertData('list_study_fields', $data);
+		return $this->old_db->insertData('study_fields', $data);
 	}
 
 
@@ -41,7 +41,7 @@ class StudyFieldModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('list_study_fields', $where);
+		$rows = $this->old_db->deleteData('study_fields', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
