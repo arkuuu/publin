@@ -13,6 +13,7 @@ use publin\oai\exceptions\IdDoesNotExistException;
 use publin\oai\exceptions\NoMetadataFormatsException;
 use publin\oai\exceptions\NoRecordsMatchException;
 use publin\oai\exceptions\NoSetHierarchyException;
+use publin\src\KeywordRepository;
 use publin\src\PDODatabase;
 use publin\src\Publication;
 use publin\src\PublicationRepository;
@@ -24,6 +25,7 @@ class OAIParser {
 	private $use_stylesheet = true;
 	private $db;
 	private $valid_days = 1;
+	private $sets_per_request = 10;
 	private $records_per_request = 5;
 	private $repositoryName = 'publin Uni Luebeck';
 	private $repositoryIdentifier = 'de.localhost';
@@ -221,11 +223,6 @@ class OAIParser {
 
 	public function listSets($resumptionToken = '') {
 
-		$sets = array(
-			array('setSpec' => 'todo',
-				  'setName' => 'name'),
-		); //TODO: replace with database?
-
 		if ($resumptionToken) {
 			$token = $this->fetchResumptionToken($resumptionToken);
 			if (!$token) {
@@ -236,12 +233,13 @@ class OAIParser {
 		}
 		else {
 			$cursor = 0;
-			$completeListSize = count($sets) + 100;
+			$completeListSize = $this->countSets();
 		}
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
 		$listSets = $xml->createElement('ListSets');
+		$sets = $this->fetchSets();
 		foreach ($sets as $data) {
 			$set = $xml->createElement('set');
 			$set->appendChild($xml->createElement('setSpec', $data['setSpec']));
@@ -249,7 +247,7 @@ class OAIParser {
 			$listSets->appendChild($set);
 		}
 
-		$newCursor = $cursor + $this->records_per_request;
+		$newCursor = $cursor + $this->sets_per_request;
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken(null, null, null, null, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
@@ -282,6 +280,29 @@ class OAIParser {
 		else {
 			return false;
 		}
+	}
+
+
+	private function countSets() {
+
+		$repo = new KeywordRepository($this->db);
+
+		return $repo->select()->order('name', 'ASC')->count();
+	}
+
+
+	private function fetchSets($offset = 0) {
+
+		$repo = new KeywordRepository($this->db);
+		$keywords = $repo->select()->order('name', 'ASC')->limit($this->sets_per_request, $offset)->find();
+		$sets = array();
+
+		foreach ($keywords as $keyword) {
+			$sets[] = array('setSpec' => $keyword->getName(),
+							'setName' => $keyword->getName());
+		}
+
+		return $sets;
 	}
 
 
@@ -400,8 +421,11 @@ class OAIParser {
 		$header = $xml->createElement('header');
 		$header->appendChild($xml->createElement('identifier', $publication->getId()));
 		$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
-		$header->appendChild($xml->createElement('setSpec', $publication->getStudyField()));
-		$header->appendChild($xml->createElement('setSpec', $publication->getTypeName()));
+
+		$keywords = $publication->getKeywords();
+		foreach ($keywords as $keyword) {
+			$header->appendChild($xml->createElement('setSpec', $keyword->getName()));
+		}
 
 		return $header;
 	}
@@ -564,9 +588,5 @@ class OAIParser {
 		$error->setAttribute('code', $error_type);
 
 		return $this->createResponse(array(), $error);
-	}
-
-
-	private function createSets() {
 	}
 }
