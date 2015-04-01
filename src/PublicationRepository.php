@@ -49,11 +49,11 @@ class PublicationRepository extends QueryBuilder {
 		foreach ($result as $row) {
 			$publication = new Publication($row);
 			$repo = new AuthorRepository($this->db);
-			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->find());
+			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->order('priority', 'ASC')->find());
 
 			if ($full === true) {
 				$repo = new KeywordRepository($this->db);
-				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->find());
+				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
 
 				$repo = new FileRepository($this->db);
 				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
@@ -76,11 +76,11 @@ class PublicationRepository extends QueryBuilder {
 
 		$publication = new Publication($result);
 		$repo = new AuthorRepository($this->db);
-		$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->find());
+		$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->order('priority', 'ASC')->find());
 
 		if ($full === true) {
 			$repo = new KeywordRepository($this->db);
-			$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->find());
+			$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
 
 			$repo = new FileRepository($this->db);
 			$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());

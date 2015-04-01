@@ -8,27 +8,12 @@ use RuntimeException;
 class AuthorModel {
 
 
-	private $db;
-	private $num;
+	private $old_db;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-	}
-
-
-	public function getNum() {
-
-		return $this->num;
-	}
-
-
-	public function fetchPublications($author_id) {
-
-		$model = new PublicationModel($this->db);
-
-		return $model->findByAuthor($author_id);
+		$this->old_db = $db;
 	}
 
 
@@ -41,13 +26,13 @@ class AuthorModel {
 			}
 		}
 
-		return $this->db->insertData('list_authors', $data);
+		return $this->old_db->insertData('list_authors', $data);
 	}
 
 
 	public function update($id, array $data) {
 
-		return $this->db->updateData('list_authors', array('id' => $id), $data);
+		return $this->old_db->updateData('list_authors', array('id' => $id), $data);
 	}
 
 
@@ -58,7 +43,7 @@ class AuthorModel {
 		}
 
 		$where = array('id' => $id);
-		$rows = $this->db->deleteData('list_authors', $where);
+		$rows = $this->old_db->deleteData('list_authors', $where);
 		// TODO try/catch block
 
 		// TODO: how to get rid of these?
@@ -66,7 +51,7 @@ class AuthorModel {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting author '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting author '.$id.': '.$this->old_db->error);
 		}
 	}
 

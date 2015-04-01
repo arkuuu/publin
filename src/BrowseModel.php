@@ -12,19 +12,12 @@ class BrowseModel {
 	private $result = array();
 	private $browse_type;
 	private $is_result = false;
-	private $num = -9999;
 
 
 	public function __construct(Database $db) {
 
 		$this->old_db = $db;
 		$this->db = new PDODatabase();
-	}
-
-
-	public function getNum() {
-
-		return $this->num;
 	}
 
 
@@ -38,9 +31,8 @@ class BrowseModel {
 
 				case 'recent':
 					$this->is_result = true;
-					$model = new PublicationModel($this->old_db);
-					$this->result = $model->findAll(20);
-					$this->num = $model->getNum();
+					$repo = new PublicationRepository($this->db);
+					$this->result = $repo->select()->order('date_added', 'DESC')->limit(20)->find();
 					break;
 
 				case 'author':
@@ -61,9 +53,8 @@ class BrowseModel {
 				case 'type':
 					if ($id > 0) {
 						$this->is_result = true;
-						$model = new PublicationModel($this->old_db);
-						$this->result = $model->findByType($id);
-						$this->num = $model->getNum();
+						$repo = new PublicationRepository($this->db);
+						$this->result = $repo->select()->where('type_id', '=', $id)->order('date_published', 'DESC')->find();
 					}
 					else {
 						$model = new TypeModel($this->old_db);
@@ -75,10 +66,8 @@ class BrowseModel {
 					if ($id > 0) {
 
 						$this->is_result = true;
-						$model = new PublicationModel($this->old_db);
-						$this->result = $model->findByYear($id);
-						$this->num = $model->getNum();
-
+						$repo = new PublicationRepository($this->db);
+						$this->result = $repo->select()->where('date_published', '=', $id, 'YEAR')->order('date_published', 'DESC')->find();
 					}
 					else {
 						$this->browse_list = $this->fetchYears();
@@ -102,8 +91,6 @@ class BrowseModel {
 
 		$data = $this->old_db->getData($query);
 
-		$this->num = $this->old_db->getNumRows();
-
 		$years = array();
 
 		foreach ($data as $key => $value) {
@@ -111,7 +98,6 @@ class BrowseModel {
 		}
 
 		return $years;
-
 	}
 
 
@@ -160,5 +146,4 @@ class BrowseModel {
 
 		return $this->is_result;
 	}
-
 }

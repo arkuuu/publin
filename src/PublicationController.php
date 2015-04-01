@@ -11,6 +11,7 @@ use UnexpectedValueException;
 
 class PublicationController {
 
+	private $old_db;
 	private $db;
 	private $auth;
 	private $model;
@@ -19,7 +20,8 @@ class PublicationController {
 
 	public function __construct(Database $db, Auth $auth) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 		$this->auth = $auth;
 		$this->model = new PublicationModel($db);
 		$this->errors = array();
@@ -48,17 +50,18 @@ class PublicationController {
 			}
 		}
 
-		$publications = $this->model->findById($request->get('id'));
+		$repo = new PublicationRepository($this->db);
+		$publication = $repo->select()->where('id', '=', $request->get('id'))->findSingle(true);
 
 		if ($request->get('m') === 'file') {
 			$this->download($request);
 		}
 
 		if ($request->get('m') === 'edit') {
-			$view = new PublicationView($publications[0], $this->errors, true);
+			$view = new PublicationView($publication, $this->errors, true);
 		}
 		else {
-			$view = new PublicationView($publications[0], $this->errors);
+			$view = new PublicationView($publication, $this->errors);
 		}
 
 		return $view->display();
@@ -79,7 +82,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$file_model = new FileModel($this->db);
+		$file_model = new FileModel($this->old_db);
 		$file = $file_model->findById($file_id);
 
 		if ($file->isHidden() && !$this->auth->checkPermission(Auth::ACCESS_HIDDEN_FILES)) {
@@ -124,7 +127,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$keyword_model = new KeywordModel($this->db);
+		$keyword_model = new KeywordModel($this->old_db);
 		$validator = $keyword_model->getValidator();
 
 		if ($validator->validate($request->post())) {
@@ -172,7 +175,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$author_model = new AuthorModel($this->db);
+		$author_model = new AuthorModel($this->old_db);
 		$validator = $author_model->getValidator();
 
 		if ($validator->validate($request->post())) {
@@ -261,7 +264,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$file_model = new FileModel($this->db);
+		$file_model = new FileModel($this->old_db);
 		$validator = $file_model->getValidator();
 
 		if ($validator->validate($request->post())) {
@@ -300,7 +303,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$file_model = new FileModel($this->db);
+		$file_model = new FileModel($this->old_db);
 		$file = $file_model->findById($file_id);
 		FileHandler::delete($file->getName());
 

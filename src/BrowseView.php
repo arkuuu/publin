@@ -87,17 +87,6 @@ class BrowseView extends View {
 
 
 	/**
-	 * Shows the number of found entries.
-	 *
-	 * @return    int
-	 */
-	public function showBrowseNum() {
-
-		return $this->model->getNum();
-	}
-
-
-	/**
 	 * Shows the browse list.
 	 *
 	 * @return    string
@@ -126,7 +115,6 @@ class BrowseView extends View {
 					$string .= '<li><a href="'.$this->browse_type['result_url'].$object->getId().'">'.$object->getName().'</a></li>'."\n";
 				}
 			}
-
 		}
 		else {
 			foreach ($this->browse_type_list as $browse_type) {
@@ -168,5 +156,4 @@ class BrowseView extends View {
 
 		return $string;
 	}
-
 }

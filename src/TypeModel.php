@@ -7,19 +7,15 @@ use RuntimeException;
 
 class TypeModel {
 
+	private $old_db;
 	private $db;
 	private $num;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-	}
-
-
-	public function getNum() {
-
-		return $this->num;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -32,8 +28,8 @@ class TypeModel {
 
 		$types = array();
 
-		$data = $this->db->fetchTypes($filter);
-		$this->num = $this->db->getNumRows();
+		$data = $this->old_db->fetchTypes($filter);
+		$this->num = $this->old_db->getNumRows();
 
 		foreach ($data as $key => $value) {
 			$types[] = new Type($value);
@@ -45,9 +41,9 @@ class TypeModel {
 
 	public function fetchPublications($type_id) {
 
-		$model = new PublicationModel($this->db);
+		$repo = new PublicationRepository($this->db);
 
-		return $model->findByType($type_id);
+		return $repo->select()->where('type_id', '=', $type_id)->order('date_published', 'DESC')->find();
 	}
 
 
@@ -60,7 +56,7 @@ class TypeModel {
 			}
 		}
 
-		return $this->db->insertData('list_types', $data);
+		return $this->old_db->insertData('list_types', $data);
 	}
 
 
@@ -75,14 +71,14 @@ class TypeModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 		$where = array('id' => $id);
-		$rows = $this->db->deleteData('list_types', $where);
+		$rows = $this->old_db->deleteData('list_types', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting type '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting type '.$id.': '.$this->old_db->error);
 		}
 	}
 

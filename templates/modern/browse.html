@@ -1,12 +1,12 @@
 
 	<h1><?php echo $this -> showBrowseType() ?></h1>
-	<?php if (!($this -> isBrowseResult())) { ?>					
+	<?php if (!($this -> isBrowseResult())) { ?>
 		<ul>
 			<?php echo $this -> showBrowseList() ?>
 		</ul>
 	<?php } ?>
-	<?php if ($this -> isBrowseResult()) { ?>					
-		<p>Found <?php echo $this -> showBrowseNum() ?> entries: </p>
+	<?php if ($this -> isBrowseResult()) { ?>
+	<p>Found entries: </p>
 		<ul>
 			<?php echo $this -> showBrowseResult() ?>
 		</ul>

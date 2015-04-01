@@ -8,19 +8,14 @@ use RuntimeException;
 class StudyFieldModel {
 
 
+	private $old_db;
 	private $db;
-	private $num;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-	}
-
-
-	public function getNum() {
-
-		return $this->num;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 	}
 
 
@@ -33,8 +28,8 @@ class StudyFieldModel {
 
 		$study_fields = array();
 
-		$data = $this->db->fetchStudyFields($filter);
-		$this->num = $this->db->getNumRows();
+		$data = $this->old_db->fetchStudyFields($filter);
+		$this->num = $this->old_db->getNumRows();
 
 		foreach ($data as $key => $value) {
 			$study_fields[] = new StudyField($value);
@@ -46,9 +41,9 @@ class StudyFieldModel {
 
 	public function fetchPublications($study_field_id) {
 
-		$model = new PublicationModel($this->db);
+		$repo = new PublicationRepository($this->db);
 
-		return $model->findByStudyField($study_field_id);
+		return $repo->select()->where('study_field_id', '=', $study_field_id)->order('date_published', 'DESC')->find();
 	}
 
 
@@ -61,7 +56,7 @@ class StudyFieldModel {
 			}
 		}
 
-		return $this->db->insertData('list_study_fields', $data);
+		return $this->old_db->insertData('list_study_fields', $data);
 	}
 
 
@@ -76,14 +71,14 @@ class StudyFieldModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 		$where = array('id' => $id);
-		$rows = $this->db->deleteData('list_study_fields', $where);
+		$rows = $this->old_db->deleteData('list_study_fields', $where);
 
 		// TODO: how to get rid of these?
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting study field '.$id.': '.$this->db->error);
+			throw new RuntimeException('Error while deleting study field '.$id.': '.$this->old_db->error);
 		}
 	}
 

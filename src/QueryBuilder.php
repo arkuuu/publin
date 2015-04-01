@@ -97,14 +97,17 @@ class QueryBuilder {
 		$this->values_to_bind[] = $value;
 
 		$suffix = (empty($this->where)) ? 'WHERE' : ' AND';
-		if ($function) {
-			$column = $function.'(`'.$column.'`)';
-		}
 		if ($table !== 'self') {
 			$table = '`'.$table.'`';
 		}
+		if ($function) {
+			$column = $function.'('.$table.'.`'.$column.'`)';
+		}
+		else {
+			$column = $table.'.`'.$column.'`';
+		}
 
-		$this->where .= $suffix.' '.$table.'.`'.$column.'` '.$comparator.' ?';
+		$this->where .= $suffix.' '.$column.' '.$comparator.' ?';
 
 		return $this;
 	}
