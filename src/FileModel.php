@@ -4,19 +4,16 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use publin\src\exceptions\NotFoundException;
 use RuntimeException;
 
 class FileModel {
 
-	private $db;
-	private $pdo;
+	private $old_db;
 
 
 	public function __construct(Database $db) {
 
-		$this->db = $db;
-		$this->pdo = new PDODatabase();
+		$this->old_db = $db;
 	}
 
 
@@ -32,7 +29,7 @@ class FileModel {
 					  'restricted' => $file->isRestricted(),
 					  'hidden'     => $file->isHidden());
 
-		return $this->db->insertData('files', $data);
+		return $this->old_db->insertData('files', $data);
 	}
 
 
@@ -42,60 +39,13 @@ class FileModel {
 			throw new InvalidArgumentException('id must be numeric');
 		}
 
-		$rows = $this->db->deleteData('files', array('id' => $id));
+		$rows = $this->old_db->deleteData('files', array('id' => $id));
 		if ($rows == 1) {
 			return true;
 		}
 		else {
-			throw new RuntimeException('Error while deleting file: '.$this->db->error);
+			throw new RuntimeException('Error while deleting file: '.$this->old_db->error);
 		}
-	}
-
-
-	/**
-	 * @param $id
-	 *
-	 * @return File
-	 * @throws NotFoundException
-	 */
-	public function findById($id) {
-
-		$query = 'SELECT *
-					FROM `files`
-					WHERE `id` = :id
-					LIMIT 0,1;';
-
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':id', $id, \PDO::PARAM_INT);
-		$this->pdo->execute();
-		$data = $this->pdo->fetchSingle();
-
-		if ($data === false) {
-			throw new NotFoundException('no file with that id');
-		}
-
-		return new File($data);
-	}
-
-
-	public function findByPublication($publication_id) {
-
-		$query = 'SELECT *
-					FROM `files`
-					WHERE `publication_id` = :publication_id
-					ORDER BY `full_text` DESC, `hidden` ASC, `restricted` ASC;';
-
-		$this->pdo->prepare($query);
-		$this->pdo->bindValue(':publication_id', $publication_id, \PDO::PARAM_INT);
-		$this->pdo->execute();
-		$result = $this->pdo->fetchAll();
-
-		$files = array();
-		foreach ($result as $row) {
-			$files[] = new File($row);
-		}
-
-		return $files;
 	}
 
 

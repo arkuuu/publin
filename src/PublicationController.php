@@ -82,8 +82,8 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$file_model = new FileModel($this->old_db);
-		$file = $file_model->findById($file_id);
+		$repo = new FileRepository($this->db);
+		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
 
 		if ($file->isHidden() && !$this->auth->checkPermission(Auth::ACCESS_HIDDEN_FILES)) {
 			throw new PermissionRequiredException(Auth::ACCESS_HIDDEN_FILES);
@@ -303,9 +303,11 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$file_model = new FileModel($this->old_db);
-		$file = $file_model->findById($file_id);
+		$repo = new FileRepository($this->db);
+		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
 		FileHandler::delete($file->getName());
+
+		$file_model = new FileModel($this->old_db);
 
 		return $file_model->delete($file_id);
 	}
