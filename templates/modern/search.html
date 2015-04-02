@@ -1,8 +1,8 @@
-<h1>Search publin</h1>
+<!--<h1>Search publin</h1>
 <form action="?p=search" method="get">
 	<input type="hidden" name="p" value="search"/>
 	<label for="search_string">Search for</label>
-	<input type="text" id="search_string" name="search_string" placeholder="search string"/>
+	<input type="text" id="search_string" name="search" placeholder="search string"/>
 	<label for="search_type">in</label>
 	<select name="search_type" id="search_type">
 		<option selected>all</option>
@@ -11,26 +11,44 @@
 		<option>keywords</option>
 	</select>
 	<input type="submit" value="Search"/>
+</form><br/>-->
+
+<h1>Search for publication</h1>
+<form action="#" method="get">
+	<input type="hidden" name="p" value="search"/>
+	<input type="hidden" name="type" value="publication"/>
+	<label for="publication_field">Where</label>
+	<select id="publication_field" name="field">
+		<option value="title">Title</option>
+		<option value="author" disabled>Author</option>
+		<option value="year">Year</option>
+		<option value="booktitle">Booktitle/Conference</option>
+		<option value="journal">Journal</option>
+		<option value="publisher">Publisher</option>
+		<option value="abstract">Abstract</option>
+		<option value="" disabled>Keyword</option>
+	</select>
+	<label for="publication_search"> matches</label>
+	<input type="text" id="publication_search" name="search" placeholder="search string"/>
+	<input type="submit" value="Search"/>
 </form><br/>
 
-<!--<h1>Advanced Search</h1>
-<p>Search for publication with the following attributes:</p>
-<ul>
-	<li>
-		<select name="field">
-			<option>Title</option>
-			<option>Author</option>
-			<option>Publication Date</option>
-			<option>Booktitle/Conference</option>
-			<option>Journal</option>
-			<option>Publisher</option>
-			<option>Abstract</option>
-			<option>Keywords</option>
-		</select>
-		<label for="field_string">matches</label>
-		<input type="text" id="field_string" name="field_string" placeholder="search string"/>
-	</li>
-</ul>-->
+<h1>Search for author</h1>
+<form action="#" method="get">
+	<input type="hidden" name="p" value="search"/>
+	<input type="hidden" name="type" value="author"/>
+	<label for="author_field">Where</label>
+	<select id="author_field" name="field">
+		<option value="name" disabled>Name</option>
+		<option value="given" disabled>Given name</option>
+		<option value="family" disabled>Family name</option>
+		<option value="about" disabled>About</option>
+	</select>
+	<label for="author_search"> matches</label>
+	<input type="text" id="author_search" name="search" placeholder="search string"/>
+	<input type="submit" value="Search"/>
+</form><br/>
+
 
 <h1>Results</h1>
-<p>No results found</p>
+<?php echo $this->showResults() ? $this->showResults() : '<p>No results found</p>' ?>
