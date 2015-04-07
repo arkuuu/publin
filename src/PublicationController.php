@@ -175,7 +175,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$author_model = new AuthorModel($this->old_db);
+		$author_model = new AuthorModel($this->db);
 		$validator = $author_model->getValidator();
 
 		if ($validator->validate($request->post())) {

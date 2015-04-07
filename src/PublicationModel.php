@@ -33,7 +33,7 @@ class PublicationModel {
 
 		/* Stores the authors */
 		$author_ids = array();
-		$model = new AuthorModel($this->old_db);
+		$model = new AuthorModel($this->db);
 		foreach ($authors as $author) {
 			$author_ids[] = $model->store($author);
 		}

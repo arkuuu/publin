@@ -3,30 +3,34 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class AuthorModel {
 
 
 	private $old_db;
+	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
+		$this->old_db = new Database();
+		$this->db = $db;
 	}
 
 
 	public function store(Author $author) {
 
-		$data = $author->getData();
-		foreach ($data as $property => $value) {
-			if (empty($value) || is_array($value)) {
-				unset($data[$property]);
-			}
-		}
+		$query = 'INSERT INTO `authors` (`family`, `given`, `website`, `contact`, `about`, `modified`) VALUES (:family, :given, :website, :contact, :about, NOW()) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':family', $author->getLastName());
+		$this->db->bindValue(':given', $author->getFirstName());
+		$this->db->bindValue(':website', $author->getWebsite());
+		$this->db->bindValue(':contact', $author->getContact());
+		$this->db->bindValue(':about', $author->getAbout());
 
-		return $this->old_db->insertData('authors', $data);
+		$this->db->execute();
+
+		return $this->db->lastInsertId();
 	}
 
 
@@ -42,17 +46,12 @@ class AuthorModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 
-		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('authors', $where);
-		// TODO try/catch block
+		$query = 'DELETE FROM `authors` WHERE `id` = :id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':id', (int)$id);
+		$this->db->execute();
 
-		// TODO: how to get rid of these?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error while deleting author '.$id.': '.$this->old_db->error);
-		}
+		return $this->db->rowCount();
 	}
 
 

@@ -15,11 +15,11 @@ class AuthorController {
 	private $errors;
 
 
-	public function __construct(Database $db, Auth $auth) {
+	public function __construct(PDODatabase $db, Auth $auth) {
 
-		$this->db = new PDODatabase();
+		$this->db = $db;
 		$this->auth = $auth;
-		$this->model = new AuthorModel($db);
+		$this->model = new AuthorModel($this->db);
 		$this->errors = array();
 	}
 

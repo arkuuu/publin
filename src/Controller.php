@@ -135,7 +135,7 @@ class Controller {
 	 */
 	private function author(Request $request) {
 
-		$controller = new AuthorController($this->old_db, $this->auth);
+		$controller = new AuthorController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}

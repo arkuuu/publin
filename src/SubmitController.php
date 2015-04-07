@@ -108,7 +108,7 @@ class SubmitController {
 
 		$authors = array();
 		if (!empty($input['authors'])) {
-			$author_model = new AuthorModel($this->old_db);
+			$author_model = new AuthorModel($this->db);
 			$validator = $author_model->getValidator();
 			foreach ($input['authors'] as $input_author) {
 				if ($validator->validate($input_author)) {
