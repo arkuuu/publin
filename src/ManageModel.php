@@ -5,14 +5,12 @@ namespace publin\src;
 
 class ManageModel {
 
-	private $old_db;
 	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 	}
 
 

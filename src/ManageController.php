@@ -41,7 +41,7 @@ class ManageController {
 			}
 		}
 
-		$model = new ManageModel($this->old_db);
+		$model = new ManageModel($this->db);
 		$view = new ManageView($model, $this->errors);
 
 		return $view->display();
@@ -153,7 +153,7 @@ class ManageController {
 			throw new UnexpectedValueException;
 		}
 
-		$model = new ManageModel($this->old_db);
+		$model = new ManageModel($this->db);
 
 		return $model->updatePermissions($permissions);
 	}
