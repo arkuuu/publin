@@ -3,13 +3,14 @@
 namespace publin\src;
 
 use BadMethodCallException;
+use publin\src\exceptions\DBDuplicateEntryException;
+use publin\src\exceptions\DBForeignKeyException;
 use publin\src\exceptions\PermissionRequiredException;
-use publin\src\exceptions\SQLDuplicateEntryException;
-use publin\src\exceptions\SQLForeignKeyException;
 use UnexpectedValueException;
 
 class ManageController {
 
+	private $old_db;
 	private $db;
 	private $auth;
 	private $errors;
@@ -17,7 +18,8 @@ class ManageController {
 
 	public function __construct(Database $db, Auth $auth) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 		$this->auth = $auth;
 		$this->errors = array();
 	}
@@ -39,7 +41,7 @@ class ManageController {
 			}
 		}
 
-		$model = new ManageModel($this->db);
+		$model = new ManageModel($this->old_db);
 		$view = new ManageView($model, $this->errors);
 
 		return $view->display();
@@ -63,7 +65,7 @@ class ManageController {
 		try {
 			return $model->delete($role_id);
 		}
-		catch (SQLForeignKeyException $e) {
+		catch (DBForeignKeyException $e) {
 			$this->errors[] = 'This role is assigned to a user or permission and cannot be deleted.';
 
 			return false;
@@ -83,7 +85,7 @@ class ManageController {
 		if (!$user_id || !$role_id) {
 			throw new UnexpectedValueException;
 		}
-		$model = new UserModel($this->db);
+		$model = new UserModel($this->old_db);
 
 		return $model->removeRole($user_id, $role_id);
 	}
@@ -102,7 +104,7 @@ class ManageController {
 			throw new UnexpectedValueException;
 		}
 
-		$model = new UserModel($this->db);
+		$model = new UserModel($this->old_db);
 
 		return $model->addRole($user_id, $role_id);
 	}
@@ -125,7 +127,7 @@ class ManageController {
 			try {
 				return $role_model->store($role);
 			}
-			catch (SQLDuplicateEntryException $e) {
+			catch (DBDuplicateEntryException $e) {
 				$this->errors[] = 'This role name is already in use, please choose another one';
 
 				return false;
@@ -151,7 +153,7 @@ class ManageController {
 			throw new UnexpectedValueException;
 		}
 
-		$model = new ManageModel($this->db);
+		$model = new ManageModel($this->old_db);
 
 		return $model->updatePermissions($permissions);
 	}
@@ -164,7 +166,7 @@ class ManageController {
 	 */
 	private function registerUser(Request $request) {
 
-		$user_model = new UserModel($this->db);
+		$user_model = new UserModel($this->old_db);
 		$validator = $user_model->getValidator();
 
 		if ($validator->validate($request->post())) {
@@ -175,7 +177,7 @@ class ManageController {
 				// TODO: send email to user email
 				return $user_model->store($user);
 			}
-			catch (SQLDuplicateEntryException $e) {
+			catch (DBDuplicateEntryException $e) {
 				$this->errors[] = 'This username or email is already in use, please choose another one';
 
 				return false;
@@ -201,7 +203,7 @@ class ManageController {
 			throw new UnexpectedValueException;
 		}
 
-		$model = new UserModel($this->db);
+		$model = new UserModel($this->old_db);
 
 		return $model->delete($user_id);
 	}

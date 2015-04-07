@@ -68,7 +68,7 @@ class Auth {
 	 * @param $password
 	 *
 	 * @return bool
-	 * @throws exceptions\SQLException
+	 * @throws exceptions\DBException
 	 */
 	public function login($username, $password) {
 

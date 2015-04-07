@@ -3,37 +3,26 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class RoleModel {
 
-	private $old_db;
 	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 	}
 
 
-	/**
-	 * @param Role $role
-	 *
-	 * @return mixed
-	 * @throws exceptions\SQLException
-	 */
 	public function store(Role $role) {
 
-		$data = $role->getData();
-		foreach ($data as $property => $value) {
-			if (empty($value) || is_array($value)) {
-				unset($data[$property]);
-			}
-		}
+		$query = 'INSERT INTO `roles` (`name`) VALUES (:name);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':name', $role->getName());
+		$this->db->execute();
 
-		return $this->old_db->insert('roles', $data);
+		return $this->db->lastInsertId();
 	}
 
 
@@ -41,29 +30,20 @@ class RoleModel {
 	 * @param $id
 	 *
 	 * @return bool
-	 * @throws exceptions\SQLException
+	 * @throws exceptions\DBException
 	 */
 	public function delete($id) {
 
-		//TODO: this only works when no foreign key constraints fail
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 
-//		$where = array('role_id' => $id);
-//		$this->db->deleteData('roles_permissions', $where);
-		// TODO: sql commit stuff
+		$query = 'DELETE FROM `roles` WHERE `id` = :id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':id', (int)$id);
+		$this->db->execute();
 
-		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('roles', $where);
-
-		// TODO: how to get rid of these?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error while deleting role '.$id.': '.$this->old_db->error);
-		}
+		return $this->db->rowCount();
 	}
 
 
@@ -112,7 +92,7 @@ class RoleModel {
 	 * @param $permission_id
 	 *
 	 * @return mixed
-	 * @throws exceptions\SQLException
+	 * @throws exceptions\DBException
 	 */
 	public function addPermission($role_id, $permission_id) {
 
@@ -120,9 +100,13 @@ class RoleModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$data = array('role_id' => $role_id, 'permission_id' => $permission_id);
+		$query = 'INSERT INTO `roles_permissions` (`role_id`, `permission_id`) VALUES (:role_id, :permission_id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':role_id', $role_id);
+		$this->db->bindValue(':permission_id', $permission_id);
+		$this->db->execute();
 
-		return $this->old_db->insertData('roles_permissions', $data);
+		return $this->db->lastInsertId();
 	}
 
 
@@ -131,7 +115,7 @@ class RoleModel {
 	 * @param $permission_id
 	 *
 	 * @return bool
-	 * @throws exceptions\SQLException
+	 * @throws exceptions\DBException
 	 */
 	public function removePermission($role_id, $permission_id) {
 
@@ -139,16 +123,13 @@ class RoleModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$where = array('role_id' => $role_id, 'permission_id' => $permission_id);
-		$rows = $this->old_db->deleteData('roles_permissions', $where);
+		$query = 'DELETE FROM `roles_permissions` WHERE `role_id` = :role_id AND `permission_id` = :permission_id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':role_id', $role_id);
+		$this->db->bindValue(':permission_id', $permission_id);
+		$this->db->execute();
 
-		// TODO: How to get rid of this and move it to DB?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error while removing permission '.$permission_id.' from role '.$role_id.': '.$this->old_db->error);
-		}
+		return $this->db->rowCount();
 	}
 
 

@@ -4,7 +4,7 @@
 namespace publin\src;
 
 use BadMethodCallException;
-use publin\src\exceptions\SQLDuplicateEntryException;
+use publin\src\exceptions\DBDuplicateEntryException;
 
 class UserController {
 
@@ -106,7 +106,7 @@ class UserController {
 		try {
 			return $this->model->update($this->user->getId(), array('mail' => $mail));
 		}
-		catch (SQLDuplicateEntryException $e) {
+		catch (DBDuplicateEntryException $e) {
 			$this->errors[] = 'This email address is already in use';
 
 			return false;

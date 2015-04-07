@@ -27,7 +27,7 @@ class ManageModel {
 	public function updatePermissions(array $input) {
 
 		$roles = $this->getRoles();
-		$model = new RoleModel($this->old_db);
+		$model = new RoleModel($this->db);
 
 		foreach ($roles as $role) {
 			if (isset($input[$role->getId()])) {

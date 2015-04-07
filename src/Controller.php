@@ -227,7 +227,7 @@ class Controller {
 			$password = Validator::sanitizeText($request->post('password'));
 			if ($this->auth->login($username, $password)) {
 
-				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : '?p=start';
+				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : '';
 				$this->redirect($destination, $request->getUrl());
 			}
 			else {

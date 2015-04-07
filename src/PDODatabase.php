@@ -4,7 +4,10 @@
 namespace publin\src;
 
 use PDO;
+use PDOException;
 use PDOStatement;
+use publin\src\exceptions\DBDuplicateEntryException;
+use publin\src\exceptions\DBForeignKeyException;
 
 class PDODatabase {
 
@@ -106,7 +109,20 @@ class PDODatabase {
 
 	public function execute(array $parameters = null) {
 
-		return $this->stmt->execute($parameters);
+		try {
+			return $this->stmt->execute($parameters);
+		}
+		catch (PDOException $e) {
+			if ($e->errorInfo[1] == '1062') {
+				throw new DBDuplicateEntryException;
+			}
+			else if ($e->errorInfo[1] == '1451') {
+				throw new DBForeignKeyException;
+			}
+			else {
+				throw $e;
+			}
+		}
 	}
 
 

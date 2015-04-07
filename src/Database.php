@@ -5,9 +5,9 @@ namespace publin\src;
 use InvalidArgumentException;
 use mysqli;
 use mysqli_result;
-use publin\src\exceptions\SQLDuplicateEntryException;
-use publin\src\exceptions\SQLException;
-use publin\src\exceptions\SQLForeignKeyException;
+use publin\src\exceptions\DBDuplicateEntryException;
+use publin\src\exceptions\DBException;
+use publin\src\exceptions\DBForeignKeyException;
 
 class Database extends mysqli {
 
@@ -26,7 +26,7 @@ class Database extends mysqli {
 
 
 	/**
-	 * @throws SQLException
+	 * @throws DBException
 	 */
 	public function __construct() {
 
@@ -38,7 +38,7 @@ class Database extends mysqli {
 
 		/* Stops if the connection cannot be established */
 		if ($this->connect_errno) {
-			throw new SQLException($this->connect_error);
+			throw new DBException($this->connect_error);
 		}
 		/* Sets the charset used for transmission */
 		parent::set_charset(self::CHARSET);
@@ -68,7 +68,7 @@ class Database extends mysqli {
 	 * @param array $data
 	 *
 	 * @return mixed
-	 * @throws SQLException
+	 * @throws DBException
 	 */
 	public function insertData($table, array $data) {
 
@@ -112,7 +112,7 @@ class Database extends mysqli {
 			return true;
 		}
 		else {
-			throw new SQLException('could not change user: '.$this->error);
+			throw new DBException('could not change user: '.$this->error);
 		}
 	}
 
@@ -134,13 +134,13 @@ class Database extends mysqli {
 			return $result;
 		}
 		else if (strpos($this->error, 'Duplicate entry') !== false) {
-			throw new SQLDuplicateEntryException($this->error);
+			throw new DBDuplicateEntryException($this->error);
 		}
 		else if (strpos($this->error, 'foreign key constraint fails') !== false) {
-			throw new SQLForeignKeyException($this->error);
+			throw new DBForeignKeyException($this->error);
 		}
 		else {
-			throw new SQLException($this->error);
+			throw new DBException($this->error);
 		}
 	}
 
@@ -182,7 +182,7 @@ class Database extends mysqli {
 	 * @param array $where
 	 *
 	 * @return int
-	 * @throws SQLException
+	 * @throws DBException
 	 */
 	public function deleteData($table, array $where) {
 
@@ -212,7 +212,7 @@ class Database extends mysqli {
 	 * @param array $data
 	 *
 	 * @return int
-	 * @throws SQLException
+	 * @throws DBException
 	 */
 	public function updateData($table, array $where, array $data) {
 
@@ -248,7 +248,7 @@ class Database extends mysqli {
 	 * @param $query
 	 *
 	 * @return array
-	 * @throws SQLException
+	 * @throws DBException
 	 */
 	public function getData($query) {
 

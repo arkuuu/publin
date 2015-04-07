@@ -5,6 +5,6 @@ namespace publin\src\exceptions;
 
 use Exception;
 
-class SQLException extends Exception {
+class DBException extends Exception {
 
 }
