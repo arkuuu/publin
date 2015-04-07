@@ -6,7 +6,6 @@ use Exception;
 
 class BrowseModel {
 
-	private $old_db;
 	private $db;
 	private $browse_list = array();
 	private $result = array();
@@ -14,10 +13,9 @@ class BrowseModel {
 	private $is_result = false;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 	}
 
 
@@ -82,12 +80,11 @@ class BrowseModel {
 					FROM `publications`
 					ORDER BY `year` DESC';
 
-		$data = $this->old_db->getData($query);
+		$this->db->query($query);
 
 		$years = array();
-
-		foreach ($data as $key => $value) {
-			$years[] = $value['year'];
+		while ($year = $this->db->fetchColumn()) {
+			$years[] = $year;
 		}
 
 		return $years;

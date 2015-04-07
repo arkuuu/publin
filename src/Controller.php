@@ -120,7 +120,7 @@ class Controller {
 	 */
 	private function browse(Request $request) {
 
-		$model = new BrowseModel($this->old_db);
+		$model = new BrowseModel($this->db);
 		$model->handle($request->get('by'), $request->get('id'));
 		$view = new BrowseView($model);
 
