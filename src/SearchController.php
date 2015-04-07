@@ -8,7 +8,6 @@ use UnexpectedValueException;
 class SearchController {
 
 	private $db;
-	private $model;
 	private $result;
 	private $errors;
 
@@ -16,7 +15,6 @@ class SearchController {
 	public function __construct(Database $db) {
 
 		$this->db = new PDODatabase();
-		$this->model = new SearchModel($db);
 		$this->result = array();
 		$this->errors = array();
 	}
