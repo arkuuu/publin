@@ -10,7 +10,6 @@ class User {
 	private $id;
 	private $name;
 	private $mail;
-	private $active;
 	private $date_register;
 	private $date_last_login;
 	/**
@@ -147,17 +146,6 @@ class User {
 
 		if ($this->date_last_login) {
 			return date($format, strtotime($this->date_last_login));
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	public function isActive() {
-
-		if ($this->active) {
-			return true;
 		}
 		else {
 			return false;

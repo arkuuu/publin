@@ -95,19 +95,16 @@ class ManageView extends View {
 								<th>Name</th>
 								<th>Email</th>
 								<th>Registration</th>
-								<th>Active</th>
 								<th>Last login</th>
 								<th>Assigned Roles</th>
 								<th>Actions</th>
 							</tr>';
 		/* @var $user User */
 		foreach ($this->model->getUsers() as $user) {
-			$is_active = $user->isActive() ? 'yes' : 'no';
 			$string .= '<tr>
 								<td>'.$this->html($user->getName()).'</td>
 								<td>'.$this->html($user->getMail()).'</td>
 								<td>'.$this->html($user->getDateRegister('Y-m-d')).'</td>
-								<td>'.$this->html($is_active).'</td>
 								<td>'.$this->html($user->getDateLastLogin('Y-m-d')).'</td>
 								<td>';
 			foreach ($user->getRoles() as $role) {
