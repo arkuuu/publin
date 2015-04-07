@@ -5,39 +5,20 @@ namespace publin\src;
 
 class Request {
 
-	private $get;
-	private $post;
-
 
 	public function __construct() {
-
-		if (!empty($_GET)) {
-			$this->get = $_GET;
-		}
-		if (!empty($_POST)) {
-			$this->post = $_POST;
-		}
 	}
 
 
-	public function getUrl() {
+	public static function getUrl() {
 
-		return $this->createUrl($this->get);
+		return self::createUrl($_GET);
 	}
 
 
 	public static function createUrl(array $parameters) {
 
-		$delimiter = '&';
-		$url = '';
-
-		foreach ($parameters as $key => $value) {
-			if (!empty($value)) {
-				$url .= $key.'='.$value.$delimiter;
-			}
-		}
-		$url = substr($url, 0, -strlen($delimiter));
-
+		$url = http_build_query($parameters);
 		if (empty($url)) {
 			return '';
 		}
@@ -52,15 +33,14 @@ class Request {
 	 *
 	 * @return bool|array|string
 	 */
-	public function post($name = '') {
+	public static function post($name = '') {
 
-		if (!empty($name) && isset($this->post[$name])) {
+		if (!empty($name) && isset($_POST[$name])) {
 
-			// TODO: maybe trim?
-			return $this->post[$name];
+			return $_POST[$name];
 		}
-		else if (empty($name) && !empty($this->post)) {
-			return $this->post;
+		else if (empty($name) && !empty($_POST)) {
+			return $_POST;
 		}
 		else {
 			return false;
@@ -73,15 +53,14 @@ class Request {
 	 *
 	 * @return bool|array|string
 	 */
-	public function get($name = '') {
+	public static function get($name = '') {
 
-		if (!empty($name) && !empty($this->get[$name])) {
+		if (!empty($name) && !empty($_GET[$name])) {
 
-			// TODO: maybe trim?
-			return $this->get[$name];
+			return $_GET[$name];
 		}
-		else if (empty($name) && !empty($this->get)) {
-			return $this->get;
+		else if (empty($name) && !empty($_GET)) {
+			return $_GET;
 		}
 		else {
 			return false;
