@@ -34,9 +34,6 @@ class AuthorController {
 	public function run(Request $request) {
 
 		if ($request->post('action')) {
-			if (!$this->auth->checkPermission(Auth::EDIT_AUTHOR)) {
-				throw new PermissionRequiredException(Auth::EDIT_AUTHOR);
-			}
 			$method = $request->post('action');
 			if (method_exists($this, $method)) {
 				$this->$method($request);
@@ -67,8 +64,14 @@ class AuthorController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function delete(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::DELETE_AUTHOR)) {
+			throw new PermissionRequiredException(Auth::DELETE_AUTHOR);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {
@@ -93,8 +96,14 @@ class AuthorController {
 	 * @param Request $request
 	 *
 	 * @return bool|int
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function edit(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_AUTHOR)) {
+			throw new PermissionRequiredException(Auth::EDIT_AUTHOR);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {

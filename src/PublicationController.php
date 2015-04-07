@@ -38,9 +38,6 @@ class PublicationController {
 	public function run(Request $request) {
 
 		if ($request->post('action')) {
-			if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
-				throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
-			}
 			$method = $request->post('action');
 			if (method_exists($this, $method)) {
 				$this->$method($request);
@@ -102,8 +99,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function removeKeyword(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		$keyword_id = Validator::sanitizeNumber($request->post('keyword_id'));
@@ -119,8 +122,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool|mixed
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function addKeyword(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {
@@ -150,8 +159,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function removeAuthor(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		$author_id = Validator::sanitizeNumber($request->post('author_id'));
@@ -167,8 +182,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool|mixed
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function addAuthor(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {
@@ -199,8 +220,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function edit(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		$type = Validator::sanitizeText($request->post('type'));
@@ -228,8 +255,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function delete(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::DELETE_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::DELETE_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {
@@ -254,9 +287,14 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
-	 * @throws FileHandlerException
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function addFile(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		$file_data = isset($_FILES['file']) ? (array)$_FILES['file'] : false;
@@ -295,8 +333,15 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws FileHandlerException
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function removeFile(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
 
 		$file_id = Validator::sanitizeNumber($request->post('file_id'));
 		if (!$file_id) {

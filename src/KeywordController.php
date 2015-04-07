@@ -36,9 +36,6 @@ class KeywordController {
 	public function run(Request $request) {
 
 		if ($request->post('action')) {
-			if (!$this->auth->checkPermission(Auth::EDIT_KEYWORD)) {
-				throw new PermissionRequiredException(Auth::EDIT_KEYWORD);
-			}
 			$method = $request->post('action');
 			if (method_exists($this, $method)) {
 				$this->$method($request);
@@ -69,8 +66,14 @@ class KeywordController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function delete(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::DELETE_KEYWORD)) {
+			throw new PermissionRequiredException(Auth::DELETE_KEYWORD);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {
@@ -95,8 +98,14 @@ class KeywordController {
 	 * @param Request $request
 	 *
 	 * @return bool|int
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
 	 */
 	private function edit(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_KEYWORD)) {
+			throw new PermissionRequiredException(Auth::EDIT_KEYWORD);
+		}
 
 		$id = Validator::sanitizeNumber($request->get('id'));
 		if (!$id) {

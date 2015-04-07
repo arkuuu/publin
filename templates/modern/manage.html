@@ -25,15 +25,13 @@
 	}
 </style>
 <h1>Manage</h1>
-<p>A list of available Roles with their permissions.</p>
 
 <h2>Permissions</h2>
 <?php echo $this -> showPermissions() ?>
 
 <h2>Roles</h2>
-<p>Create a new role</p>
 <form action="#" method="post" accept-charset="utf8">
-	<label for="role_name">Role name:</label>
+	<label for="role_name">Create a new role:</label>
 	<input type="text" name="name" id="role_name">
 	<input type="hidden" name="action" value="addRole">
 	<input type="submit" value="Create Role">
@@ -43,7 +41,8 @@
 
 <h2>Users</h2>
 <?php echo $this -> showUsers() ?>
-<p>Register a new user</p>
+
+<h2>Register new user</h2>
 <div class="form">
 	<form action="#" method="post" accept-charset="utf8">
 		<label for="user_name">Username:</label>
@@ -52,7 +51,7 @@
 		<input type="text" name="mail" id="mail">
 
 		<p>A password will be generated randomly and can be changed by the user later. The user will be notified via
-		   e-mail.</p>
+		   email.</p>
 		<input type="hidden" name="action" value="registerUser">
 		<input type="submit" value="Register User">
 	</form>

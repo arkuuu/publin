@@ -8,10 +8,13 @@ class Auth {
 
 	const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
 	const ACCESS_HIDDEN_FILES = 'access_hidden_files';
-	const EDIT_PUBLICATION = 'publication_edit';
 	const SUBMIT_PUBLICATION = 'publication_submit';
+	const EDIT_PUBLICATION = 'publication_edit';
+	const DELETE_PUBLICATION = 'publication_delete';
 	const EDIT_AUTHOR = 'author_edit';
+	const DELETE_AUTHOR = 'author_delete';
 	const EDIT_KEYWORD = 'keyword_edit';
+	const DELETE_KEYWORD = 'keyword_delete';
 	const MANAGE = 'manage';
 
 	private $old_db;
