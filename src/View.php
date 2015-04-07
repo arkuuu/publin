@@ -249,7 +249,7 @@ class View {
 
 		if (!empty($this->errors)) {
 			$string = '<div class="error">
-	<span class="message">Errors occurred while processing your request!</span>
+	<!--<span class="message">Errors occurred while processing your request!</span>-->
 	<ul>';
 			foreach ($this->errors as $error) {
 				$string .= '<li>'.$this->html($error).'</li>';

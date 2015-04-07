@@ -264,7 +264,7 @@ class Publication {
 
 
 	/**
-	 * @param array $keywords
+	 * @param Keyword[] $keywords
 	 *
 	 * @return bool
 	 */

@@ -228,7 +228,9 @@ class QueryBuilder {
 
 	public function __toString() {
 
-		return $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' '.$this->limit.';';
+		$values = implode(',', $this->values_to_bind);
+
+		return $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' '.$this->limit.'; with values '.$values;
 	}
 
 
