@@ -39,12 +39,19 @@ class Controller {
 	 */
 	public function run(Request $request) {
 
-		/* Resets the inactivity timer */
+		/* Resets the session inactivity timer */
 		$this->auth->checkLoginStatus();
 
-		/* Searches method to run for request */
 		try {
-			$method = $request->get('p');
+			if ($request->get('p')) {
+				$method = $request->get('p');
+			}
+			else {
+				/* Sets default starting page */
+				$method = 'search';
+			}
+
+			/* Searches method to run for request */
 			if (method_exists($this, $method)) {
 				return $this->$method($request);
 			}
@@ -84,12 +91,7 @@ class Controller {
 	 */
 	private function staticPage(Request $request) {
 
-		if ($request->get('p')) {
-			$view = new View($request->get('p'));
-		}
-		else {
-			$view = new View('start');
-		}
+		$view = new View($request->get('p'));
 
 		return $view->display();
 	}
