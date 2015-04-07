@@ -90,6 +90,9 @@ class User {
 	}
 
 
+	/**
+	 * @return Permission[]
+	 */
 	public function getPermissions() {
 
 		return $this->permissions;
@@ -105,9 +108,7 @@ class User {
 				$this->permissions[] = $permission;
 			}
 			else {
-				// TODO: what to do when incorrect object
-				//TODO: only while Permission Object not in use:
-				$this->permissions = $permissions;
+				throw new InvalidArgumentException('must be array with Permission objects');
 			}
 		}
 	}

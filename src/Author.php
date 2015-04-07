@@ -77,7 +77,6 @@ class Author {
 	public function getFirstName($short = false) {
 
 		if ($this->given && $short) {
-			// TODO: check preg_split vs. implode
 			$names = preg_split("/\s+/", $this->given);
 			$string = '';
 			foreach ($names as $name) {

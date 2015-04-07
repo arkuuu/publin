@@ -5,11 +5,6 @@ namespace publin\src;
 use Exception;
 use publin\src\exceptions\NotFoundException;
 
-/**
- * Parent class for all views
- *
- * TODO: comment
- */
 class View {
 
 	/**
@@ -88,7 +83,6 @@ class View {
 			}
 		}
 		else {
-			// TODO: really a normal exception? Not a specialised one?
 			throw new Exception('Could not find master template!');
 		}
 	}
@@ -101,7 +95,7 @@ class View {
 	 */
 	public function showPageTitle() {
 
-		$string = ucfirst($this->content);    // TODO: doesn't work with non UTF chars
+		$string = mb_convert_case($this->content, MB_CASE_TITLE, 'UTF-8');
 		$string = str_replace('_', ' ', $string);
 
 		return $this->html($string);

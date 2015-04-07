@@ -7,11 +7,6 @@ use publin\src\exceptions\LoginRequiredException;
 use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 
-/**
- * Controls everything.
- *
- * TODO: comment
- */
 class Controller {
 
 	const BASE_URL = '/publin/';

@@ -9,11 +9,6 @@ use publin\src\exceptions\SQLDuplicateEntryException;
 use publin\src\exceptions\SQLException;
 use publin\src\exceptions\SQLForeignKeyException;
 
-/**
- * Handles all database communication.
- *
- * TODO: comment
- */
 class Database extends mysqli {
 
 	const HOST = 'localhost';
@@ -55,7 +50,7 @@ class Database extends mysqli {
 	 */
 	public function __destruct() {
 
-		parent::close();    // TODO: really as destructor? Not a real method?
+		parent::close();
 	}
 
 

@@ -2,11 +2,6 @@
 
 namespace publin\src;
 
-/**
- * View for browse page
- *
- * TODO: comment
- */
 class BrowseView extends View {
 
 	/**

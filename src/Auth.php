@@ -86,7 +86,6 @@ class Auth {
 
 			session_regenerate_id(true);
 			$_SESSION['user'] = $user;
-			$_SESSION['created'] = time(); // TODO: needed?
 			$_SESSION['last_activity'] = time();
 
 			$query = 'UPDATE `users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';

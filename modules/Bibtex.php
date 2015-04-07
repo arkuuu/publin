@@ -15,15 +15,6 @@ class Bibtex {
 	 */
 	private $fields;
 	/**
-	 * @var array
-	 */
-	private $author_fields;
-	/**
-	 * @var array
-	 */
-	private $pages_fields;
-
-	/**
 	 * @var string
 	 */
 	private $bibsource;
@@ -135,7 +126,7 @@ class Bibtex {
 		$fields[] = array('month', $publication->getDatePublished('F'));
 		$fields[] = array('year', $publication->getDatePublished('Y'));
 		//$fields[] = array('url', false); // TODO: link to pdf
-		//$fields[] = array('issn', false); // TODO
+		//$fields[] = array('issn', false);
 		$fields[] = array('publisher', $publication->getPublisher());
 		$fields[] = array('institution', $publication->getInstitution());
 		$fields[] = array('school', $publication->getSchool());
@@ -199,86 +190,6 @@ class Bibtex {
 	}
 
 
-
-//	public function exportOld(Publication $publication) {
-//
-//		$input = $publication->getData();
-//
-//		/* Maps your fields to the BibTeX fields. */
-//		foreach ($this->fields as $bibtex_field => $your_field) {
-//			if (isset($input[$your_field])) {
-//				$data[$bibtex_field] = $input[$your_field];
-//			}
-//		}
-//
-//		/* Gets the BibTeX type or returns false if there is no type given */
-//		if (!empty($data['type'])) {
-//			$type = $data['type'];
-//			unset($data['type']);
-//		}
-//		else {
-//			return false;
-//		}
-//
-//		/* Gets the cite key or generates one if there is none given */
-//		if (!empty($data['cite_key'])) {
-//			$cite_key = $data['cite_key'];
-//			unset($data['cite_key']);
-//		}
-//		else {
-//			$cite_key = self::generateCiteKey($data);
-//		}
-//
-//		/* Composes the authors string */
-//		if (isset($data['author']) && is_array($data['author'])) {
-//			$string = '';
-//			$given = $this->author_fields['given'];
-//			$family = $this->author_fields['family'];
-//
-//			foreach ($data['author'] as $author) {
-//				if (!empty($author[$given]) && !empty($author[$family])) {
-//					$string .= $author[$given].' '.$author[$family].' and ';
-//				}
-//			}
-//			$string = substr($string, 0, -5);
-//			$data['author'] = $string;
-//		}
-//
-//		/* Composes the keywords string */
-//		if (isset($data['keywords']) && is_array($data['keywords'])) {
-//			$string = '';
-//			foreach ($data['keywords'] as $keyword) {
-//				$string .= $keyword.', ';
-//			}
-//			$string = substr($string, 0, -2);
-//			$data['keywords'] = $string;
-//		}
-//
-//		/* Composes the pages string */
-//		if (isset($data['pages']) && is_array($data['pages'])) {
-//			$string = '';
-//			$from = $this->pages_fields['from'];
-//			$to = $this->pages_fields['to'];
-//
-//			if (!empty($data['pages'][$from]) && !empty($data['pages'][$to])) {
-//				$string = $data['pages'][$from].'--'.$data['pages'][$to];
-//			}
-//			$data['pages'] = $string;
-//		}
-//
-//		/* Composes the BibTeX entry */
-//		$result = '@'.$type.'{'.$cite_key;
-//		foreach ($data as $key => $value) {
-//			if (!empty($value)) {
-//				$result .= ','."\n\t".$key.' = {'.$value.'}';
-//			}
-//		}
-//		$result .= "\n".'}';
-//
-//		return $result;
-//	}
-
-
 	/**
 	 * @param $input
 	 *
@@ -298,7 +209,6 @@ class Bibtex {
 			$result['type'] = strtolower($typeReg[1]);
 		}
 		else {
-			// TODO: throw exception?
 			return false;
 		}
 		if (!empty($typeReg[3])) {
@@ -352,7 +262,6 @@ class Bibtex {
 			print_r($result['date_published']);
 		}
 
-		//print_r($result);
 		return $result;
 	}
 
@@ -383,8 +292,6 @@ class Bibtex {
 
 
 	/**
-	 * TODO: comment
-	 *
 	 * @param    string $string description
 	 *
 	 * @return    string
@@ -518,7 +425,6 @@ class Bibtex {
 
 		$words = str_word_count($input_month, 1);
 		$input_month = $words[0];
-		print_r($words);
 		$date = strtotime($input_year.' '.$input_month);
 
 		if ($date) {

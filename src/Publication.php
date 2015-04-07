@@ -4,11 +4,6 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-/**
- * Handles publication data.
- *
- * TODO: comment
- */
 class Publication {
 
 	private $id;

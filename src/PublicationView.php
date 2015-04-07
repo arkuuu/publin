@@ -4,11 +4,6 @@ namespace publin\src;
 
 use Exception;
 
-/**
- * View for publication page
- *
- * TODO: comment
- */
 class PublicationView extends View {
 
 	/**

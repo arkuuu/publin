@@ -2,11 +2,6 @@
 
 namespace publin\src;
 
-/**
- * Handles the links to other bibliographic services.
- *
- * TODO: comment
- */
 abstract class BibLink {
 
 	/**
@@ -74,5 +69,4 @@ abstract class BibLink {
 				break;
 		}
 	}
-
 }

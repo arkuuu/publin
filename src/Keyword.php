@@ -2,11 +2,6 @@
 
 namespace publin\src;
 
-/**
- * Handles key term data.
- *
- * TODO: comment
- */
 class Keyword {
 
 	protected $id;

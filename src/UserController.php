@@ -12,6 +12,9 @@ class UserController {
 	private $auth;
 	private $model;
 	private $errors;
+	/**
+	 * @var bool|User
+	 */
 	private $user;
 
 

@@ -2,11 +2,6 @@
 
 namespace publin\src;
 
-/**
- * View for author page
- *
- * TODO: comment
- */
 class AuthorView extends ViewWithPublications {
 
 	/**

@@ -2,11 +2,6 @@
 
 namespace publin\src;
 
-/**
- * Handles type data.
- *
- * TODO: comment
- */
 class Type {
 
 	protected $id;

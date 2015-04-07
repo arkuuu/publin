@@ -26,8 +26,6 @@ class RoleModel {
 	 */
 	public function store(Role $role) {
 
-		// TODO: store permissions too?
-
 		$data = $role->getData();
 		foreach ($data as $property => $value) {
 			if (empty($value) || is_array($value)) {

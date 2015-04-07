@@ -171,7 +171,6 @@ class Validator {
 
 		if (is_string($input)) {
 			$input = trim($input);
-			//$text = stripslashes($text);
 			//$text = strip_tags($text); TODO: check if useful
 
 			return $input;
