@@ -31,7 +31,7 @@ class SearchView extends View {
 					$string .= '<li>'.$this->showCitation($result).'</li>';
 				}
 				else if ($result instanceof Author) {
-					$string .= '<li><a href="'.$this->html($author_url.$result->getId()).'">'.$this->html($result->getName()).'</a></li>';
+					$string .= '<li><a href="'.$this->html($author_url.$result->getId()).'">'.$this->html($result->getLastName().', '.$result->getFirstName()).'</a></li>';
 				}
 			}
 

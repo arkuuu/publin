@@ -27,6 +27,9 @@ class SearchController {
 		if ($request->get('type') === 'publication') {
 			$this->searchPublications($request);
 		}
+		else if ($request->get('type') === 'author') {
+			$this->searchAuthors($request);
+		}
 
 		$view = new SearchView($this->result, $this->errors);
 
@@ -88,14 +91,45 @@ class SearchController {
 	}
 
 
-	public function searchAll(Request $request) {
-
-		return false;
-	}
 
 
 	public function searchAuthors(Request $request) {
 
-		return false;
+		$field = Validator::sanitizeText($request->get('field'));
+		$search = Validator::sanitizeText($request->get('search'));
+		if (!$search) {
+			$this->errors[] = 'Your search input is invalid';
+
+			return false;
+		}
+
+		$search_words = explode(' ', $search);
+
+		$repo = new AuthorRepository($this->db);
+		$repo->select();
+
+		switch (true) {
+			case $field === 'given':
+				foreach ($search_words as $word) {
+					$repo->where('given', 'LIKE', '%'.$word.'%');
+				}
+				break;
+			case $field === 'family':
+				foreach ($search_words as $word) {
+					$repo->where('family', 'LIKE', '%'.$word.'%');
+				}
+				break;
+			case $field === 'about':
+				foreach ($search_words as $word) {
+					$repo->where('about', 'LIKE', '%'.$word.'%');
+				}
+				break;
+			default:
+				throw new UnexpectedValueException;
+		}
+
+		$this->result = $repo->order('family', 'ASC')->find();
+
+		return true;
 	}
 }
