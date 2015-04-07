@@ -51,12 +51,12 @@ class PublicationModel {
 			unset($data['type']);
 		}
 		/* Stores the study field */
-		if (isset($data['study_field'])) {
+		/*if (isset($data['study_field'])) {
 			$model = new StudyFieldModel($this->old_db);
 			$study_field = new StudyField(array('name' => $data['study_field']));
 			$data['study_field_id'] = $model->store($study_field);
 			unset($data['study_field']);
-		}
+		}*/
 		/* Stores the publication */
 		$publication_id = $this->old_db->insertData('publications', $data);
 
@@ -124,7 +124,7 @@ class PublicationModel {
 		}
 		/* Stores the study field */
 		if (isset($data['study_field'])) {
-			$model = new StudyFieldModel($this->old_db);
+			$model = new StudyFieldModel($this->db);
 			$study_field = new StudyField(array('name' => $data['study_field']));
 			$data['study_field_id'] = $model->store($study_field);
 			unset($data['study_field']);
@@ -229,7 +229,7 @@ class PublicationModel {
 		$validator->addRule('doi', 'text', false, 'DOI is invalid'); // TODO: validate DOI
 		$validator->addRule('isbn', 'text', false, 'ISBN invalid'); // TODO: validate ISBN
 
-		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
+		$validator->addRule('study_field_id', 'number', true, 'Field of Study is required but invalid');
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
 

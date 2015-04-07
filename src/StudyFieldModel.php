@@ -3,30 +3,28 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class StudyFieldModel {
 
 
-	private $old_db;
+	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
+		$this->$db = $db;
 	}
 
 
 	public function store(StudyField $study_field) {
 
-		$data = $study_field->getData();
-		foreach ($data as $property => $value) {
-			if (empty($value) || is_array($value)) {
-				unset($data[$property]);
-			}
-		}
+		$query = 'INSERT INTO `study_fields` (`name`, `description`) VALUES (:name, :description);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':name', $study_field->getName());
+		$this->db->bindValue(':description', $study_field->getDescription());
+		$this->db->execute();
 
-		return $this->old_db->insertData('study_fields', $data);
+		return $this->db->lastInsertId();
 	}
 
 
@@ -36,20 +34,16 @@ class StudyFieldModel {
 
 	public function delete($id) {
 
-		//TODO: this only works when no foreign key constraints fail
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
-		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('study_fields', $where);
 
-		// TODO: how to get rid of these?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error while deleting study field '.$id.': '.$this->old_db->error);
-		}
+		$query = 'DELETE FROM `study_fields` WHERE `id` = :id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':id', (int)$id);
+		$this->db->execute();
+
+		return $this->db->rowCount();
 	}
 
 
