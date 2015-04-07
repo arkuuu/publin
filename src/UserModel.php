@@ -3,17 +3,19 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use RuntimeException;
+use PDOException;
 
 class UserModel {
 
 	private $old_db;
+	private $db;
 	private $num;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
+		$this->old_db = new Database();
+		$this->db = $db;
 	}
 
 
@@ -25,20 +27,20 @@ class UserModel {
 
 	public function store(User $user) {
 
-		$data = $user->getData();
-		foreach ($data as $property => $value) {
-			if (empty($value) || is_array($value)) {
-				unset($data[$property]);
-			}
-		}
-		$data['password'] = Auth::hashPassword(Auth::generatePassword());
+		$query = 'INSERT INTO `users` (`name`, `password`, `mail`) VALUES (:name, :password, :mail);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':name', $user->getName());
+		$this->db->bindValue(':password', Auth::hashPassword(Auth::generatePassword()));
+		$this->db->bindValue(':mail', $user->getMail());
+		$this->db->execute();
 
-		return $this->old_db->insert('users', $data);
+		return $this->db->lastInsertId();
 	}
 
 
 	public function update($id, array $data) {
 
+		// TODO: convert to PDO
 		if (isset($data['password'])) {
 			$data['password'] = Auth::hashPassword($data['password']);
 		}
@@ -49,24 +51,33 @@ class UserModel {
 
 	public function addRole($user_id, $role_id) {
 
-		$data = array('user_id' => $user_id, 'role_id' => $role_id);
+		if (!is_numeric($user_id) || !is_numeric($role_id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
 
-		return $this->old_db->insertData('users_roles', $data);
+		$query = 'INSERT INTO `users_roles` (`user_id`, `role_id`) VALUES (:user_id, :role_id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':user_id', (int)$user_id);
+		$this->db->bindValue(':role_id', (int)$role_id);
+		$this->db->execute();
+
+		return $this->db->lastInsertId();
 	}
 
 
 	public function removeRole($user_id, $role_id) {
 
-		$where = array('user_id' => $user_id, 'role_id' => $role_id);
-		$rows = $this->old_db->deleteData('users_roles', $where);
+		if (!is_numeric($user_id) || !is_numeric($role_id)) {
+			throw new InvalidArgumentException('param should be numeric');
+		}
 
-		// TODO: How to get rid of this and move it to DB?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error while removing role '.$role_id.' from user '.$user_id.': '.$this->old_db->error);
-		}
+		$query = 'DELETE FROM `users_roles` WHERE `user_id` = :user_id AND `role_id` = :role_id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':user_id', (int)$user_id);
+		$this->db->bindValue(':role_id', (int)$role_id);
+		$this->db->execute();
+
+		return $this->db->rowCount();
 	}
 
 
@@ -76,18 +87,27 @@ class UserModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 
-		$where = array('user_id' => $id);
-		$this->old_db->deleteData('users_roles', $where);
+		$this->db->beginTransaction();
 
-		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('users', $where);
+		try {
+			$query = 'DELETE FROM `users_roles` WHERE `user_id` = :user_id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':user_id', (int)$id);
+			$this->db->execute();
 
-		// TODO: how to get rid of these?
-		if ($rows == 1) {
-			return true;
+			$query = 'DELETE FROM `users` WHERE `id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
+			$row_count = $this->db->rowCount();
+
+			$this->db->commitTransaction();
+
+			return $row_count;
 		}
-		else {
-			throw new RuntimeException('Error while deleting user '.$id.': '.$this->old_db->error);
+		catch (PDOException $e) {
+			$this->db->cancelTransaction();
+			throw $e;
 		}
 	}
 

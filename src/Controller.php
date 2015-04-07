@@ -11,6 +11,7 @@ class Controller {
 
 	const BASE_URL = '/publin/';
 
+	private $old_db;
 	private $db;
 	private $auth;
 
@@ -24,9 +25,10 @@ class Controller {
 		mb_internal_encoding('utf8');
 		date_default_timezone_set('Europe/Berlin');
 
-		$this->db = new Database();
+		$this->old_db = new Database();
+		$this->db = new PDODatabase();
 		// TODO: catch exception here
-		$this->auth = new Auth($this->db);
+		$this->auth = new Auth($this->old_db);
 	}
 
 
@@ -118,7 +120,7 @@ class Controller {
 	 */
 	private function browse(Request $request) {
 
-		$model = new BrowseModel($this->db);
+		$model = new BrowseModel($this->old_db);
 		$model->handle($request->get('by'), $request->get('id'));
 		$view = new BrowseView($model);
 
@@ -133,7 +135,7 @@ class Controller {
 	 */
 	private function author(Request $request) {
 
-		$controller = new AuthorController($this->db, $this->auth);
+		$controller = new AuthorController($this->old_db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -148,7 +150,7 @@ class Controller {
 	 */
 	private function publication(Request $request) {
 
-		$controller = new PublicationController($this->db, $this->auth);
+		$controller = new PublicationController($this->old_db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -161,7 +163,7 @@ class Controller {
 	 */
 	private function keyword(Request $request) {
 
-		$controller = new KeywordController($this->db, $this->auth);
+		$controller = new KeywordController($this->old_db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -176,7 +178,7 @@ class Controller {
 	 */
 	private function study_field(Request $request) {
 
-		$controller = new StudyFieldController($this->db);
+		$controller = new StudyFieldController($this->old_db);
 
 		return $controller->run($request);
 	}
@@ -191,7 +193,7 @@ class Controller {
 	 */
 	private function type(Request $request) {
 
-		$controller = new TypeController($this->db);
+		$controller = new TypeController($this->old_db);
 
 		return $controller->run($request);
 	}
@@ -205,7 +207,7 @@ class Controller {
 	 */
 	private function submit(Request $request) {
 
-		$controller = new SubmitController($this->db, $this->auth);
+		$controller = new SubmitController($this->old_db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -248,7 +250,7 @@ class Controller {
 	 */
 	private function manage(Request $request) {
 
-		$controller = new ManageController($this->db, $this->auth);
+		$controller = new ManageController($this->old_db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -261,7 +263,7 @@ class Controller {
 	 */
 	private function search(Request $request) {
 
-		$controller = new SearchController($this->db);
+		$controller = new SearchController($this->old_db);
 
 		return $controller->run($request);
 	}

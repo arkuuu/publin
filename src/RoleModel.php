@@ -102,8 +102,8 @@ class RoleModel {
 
 		$query = 'INSERT INTO `roles_permissions` (`role_id`, `permission_id`) VALUES (:role_id, :permission_id);';
 		$this->db->prepare($query);
-		$this->db->bindValue(':role_id', $role_id);
-		$this->db->bindValue(':permission_id', $permission_id);
+		$this->db->bindValue(':role_id', (int)$role_id);
+		$this->db->bindValue(':permission_id', (int)$permission_id);
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
@@ -125,8 +125,8 @@ class RoleModel {
 
 		$query = 'DELETE FROM `roles_permissions` WHERE `role_id` = :role_id AND `permission_id` = :permission_id;';
 		$this->db->prepare($query);
-		$this->db->bindValue(':role_id', $role_id);
-		$this->db->bindValue(':permission_id', $permission_id);
+		$this->db->bindValue(':role_id', (int)$role_id);
+		$this->db->bindValue(':permission_id', (int)$permission_id);
 		$this->db->execute();
 
 		return $this->db->rowCount();

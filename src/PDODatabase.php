@@ -50,7 +50,7 @@ class PDODatabase {
 	}
 
 
-	public function endTransaction() {
+	public function commitTransaction() {
 
 		return $this->pdo->commit();
 	}

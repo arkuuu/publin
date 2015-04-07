@@ -18,12 +18,12 @@ class UserController {
 	private $user;
 
 
-	public function __construct(Database $db, Auth $auth) {
+	public function __construct(PDODatabase $db, Auth $auth) {
 
-		$this->db = new PDODatabase();
+		$this->db = $db;
 		$this->auth = $auth;
 		$this->user = $this->auth->getCurrentUser();
-		$this->model = new UserModel($db);
+		$this->model = new UserModel($this->db);
 		$this->errors = array();
 	}
 

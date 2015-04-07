@@ -85,7 +85,7 @@ class ManageController {
 		if (!$user_id || !$role_id) {
 			throw new UnexpectedValueException;
 		}
-		$model = new UserModel($this->old_db);
+		$model = new UserModel($this->db);
 
 		return $model->removeRole($user_id, $role_id);
 	}
@@ -104,7 +104,7 @@ class ManageController {
 			throw new UnexpectedValueException;
 		}
 
-		$model = new UserModel($this->old_db);
+		$model = new UserModel($this->db);
 
 		return $model->addRole($user_id, $role_id);
 	}
@@ -166,7 +166,7 @@ class ManageController {
 	 */
 	private function registerUser(Request $request) {
 
-		$user_model = new UserModel($this->old_db);
+		$user_model = new UserModel($this->db);
 		$validator = $user_model->getValidator();
 
 		if ($validator->validate($request->post())) {
@@ -203,7 +203,7 @@ class ManageController {
 			throw new UnexpectedValueException;
 		}
 
-		$model = new UserModel($this->old_db);
+		$model = new UserModel($this->db);
 
 		return $model->delete($user_id);
 	}
