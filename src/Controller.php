@@ -163,7 +163,7 @@ class Controller {
 	 */
 	private function keyword(Request $request) {
 
-		$controller = new KeywordController($this->old_db, $this->auth);
+		$controller = new KeywordController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}

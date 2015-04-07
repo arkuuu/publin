@@ -126,7 +126,7 @@ class SubmitController {
 
 		$keywords = array();
 		if (!empty($input['keywords'])) {
-			$keyword_model = new KeywordModel($this->old_db);
+			$keyword_model = new KeywordModel($this->db);
 			$validator = $keyword_model->getValidator();
 			foreach ($input['keywords'] as $input_keyword) {
 				if ($validator->validate(array('name' => $input_keyword))) {

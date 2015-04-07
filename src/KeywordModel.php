@@ -3,7 +3,7 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use RuntimeException;
+use PDOException;
 
 class KeywordModel {
 
@@ -12,10 +12,10 @@ class KeywordModel {
 	private $num;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->old_db = new Database();
+		$this->db = $db;
 	}
 
 
@@ -27,14 +27,12 @@ class KeywordModel {
 
 	public function store(Keyword $keyword) {
 
-		$data = $keyword->getData();
-		foreach ($data as $property => $value) {
-			if (empty($value) || is_array($value)) {
-				unset($data[$property]);
-			}
-		}
+		$query = 'INSERT INTO `keywords` (`name`) VALUES (:name) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':name', $keyword->getName());
+		$this->db->execute();
 
-		return $this->old_db->insertData('keywords', $data);
+		return $this->db->lastInsertId();
 	}
 
 
@@ -50,20 +48,27 @@ class KeywordModel {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 
-		// Deletes the relations from any publication to this keyword
-		$where = array('keyword_id' => $id);
-		$this->old_db->deleteData('publications_keywords', $where);
+		$this->db->beginTransaction();
 
-		// Deletes the keyword itself
-		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('keywords', $where);
+		try {
+			$query = 'DELETE FROM `publications_keywords` WHERE `keyword_id` = :keyword_id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':keyword_id', (int)$id);
+			$this->db->execute();
 
-		// TODO: how to get rid of these?
-		if ($rows == 1) {
-			return true;
+			$query = 'DELETE FROM `keywords` WHERE `id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
+			$row_count = $this->db->rowCount();
+
+			$this->db->commitTransaction();
+
+			return $row_count;
 		}
-		else {
-			throw new RuntimeException('Error while deleting keyword '.$id.': '.$this->old_db->error);
+		catch (PDOException $e) {
+			$this->db->cancelTransaction();
+			throw $e;
 		}
 	}
 

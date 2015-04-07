@@ -127,7 +127,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$keyword_model = new KeywordModel($this->old_db);
+		$keyword_model = new KeywordModel($this->db);
 		$validator = $keyword_model->getValidator();
 
 		if ($validator->validate($request->post())) {

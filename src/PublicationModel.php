@@ -39,7 +39,7 @@ class PublicationModel {
 		}
 		/* Stores the key terms */
 		$keyword_ids = array();
-		$model = new KeywordModel($this->old_db);
+		$model = new KeywordModel($this->db);
 		foreach ($keywords as $keyword) {
 			$keyword_ids[] = $model->store($keyword);
 		}
