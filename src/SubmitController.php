@@ -7,6 +7,7 @@ use publin\src\exceptions\PermissionRequiredException;
 
 class SubmitController {
 
+	private $old_db;
 	private $db;
 	private $auth;
 	private $model;
@@ -15,7 +16,8 @@ class SubmitController {
 
 	public function __construct(Database $db, Auth $auth) {
 
-		$this->db = $db;
+		$this->old_db = $db;
+		$this->db = new PDODatabase();
 		$this->auth = $auth;
 		$this->model = new SubmitModel($this->db);
 		$this->errors = array();
@@ -106,7 +108,7 @@ class SubmitController {
 
 		$authors = array();
 		if (!empty($input['authors'])) {
-			$author_model = new AuthorModel($this->db);
+			$author_model = new AuthorModel($this->old_db);
 			$validator = $author_model->getValidator();
 			foreach ($input['authors'] as $input_author) {
 				if ($validator->validate($input_author)) {
@@ -124,7 +126,7 @@ class SubmitController {
 
 		$keywords = array();
 		if (!empty($input['keywords'])) {
-			$keyword_model = new KeywordModel($this->db);
+			$keyword_model = new KeywordModel($this->old_db);
 			$validator = $keyword_model->getValidator();
 			foreach ($input['keywords'] as $input_keyword) {
 				if ($validator->validate(array('name' => $input_keyword))) {
@@ -137,7 +139,7 @@ class SubmitController {
 			}
 		}
 
-		$publication_model = new PublicationModel($this->db);
+		$publication_model = new PublicationModel($this->old_db);
 		$validator = $publication_model->getValidator($input['type']);
 		if ($validator->validate($input)) {
 			$data = $validator->getSanitizedResult();
