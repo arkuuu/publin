@@ -264,7 +264,7 @@ class PublicationController {
 			throw new UnexpectedValueException;
 		}
 
-		$file_model = new FileModel($this->old_db);
+		$file_model = new FileModel($this->db);
 		$validator = $file_model->getValidator();
 
 		if ($validator->validate($request->post())) {
@@ -307,7 +307,7 @@ class PublicationController {
 		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
 		FileHandler::delete($file->getName());
 
-		$file_model = new FileModel($this->old_db);
+		$file_model = new FileModel($this->db);
 
 		return $file_model->delete($file_id);
 	}

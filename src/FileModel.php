@@ -4,16 +4,15 @@
 namespace publin\src;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class FileModel {
 
-	private $old_db;
+	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
+		$this->db = $db;
 	}
 
 
@@ -22,14 +21,18 @@ class FileModel {
 		if (!is_numeric($publication_id)) {
 			throw new InvalidArgumentException('publication id must be numeric');
 		}
-		$data = array('publication_id' => $publication_id,
-					  'name'           => $file->getName(),
-					  'title'          => $file->getTitle(),
-					  'full_text'      => $file->isFullText(),
-					  'restricted' => $file->isRestricted(),
-					  'hidden'     => $file->isHidden());
 
-		return $this->old_db->insertData('files', $data);
+		$query = 'INSERT INTO `files` (`publication_id`, `name`, `title`, `full_text`, `restricted`, `hidden`) VALUES (:publication_id, :name, :title, :full_text, :restricted, :hidden);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', $publication_id);
+		$this->db->bindValue(':name', $file->getName());
+		$this->db->bindValue(':title', $file->getTitle());
+		$this->db->bindValue(':full_text', $file->isFullText());
+		$this->db->bindValue(':restricted', $file->isRestricted());
+		$this->db->bindValue(':hidden', $file->isHidden());
+		$this->db->execute();
+
+		return $this->db->lastInsertId();
 	}
 
 
@@ -39,13 +42,12 @@ class FileModel {
 			throw new InvalidArgumentException('id must be numeric');
 		}
 
-		$rows = $this->old_db->deleteData('files', array('id' => $id));
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error while deleting file: '.$this->old_db->error);
-		}
+		$query = 'DELETE FROM `files` WHERE `id` = :id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':id', (int)$id);
+		$this->db->execute();
+
+		return $this->db->rowCount();
 	}
 
 
