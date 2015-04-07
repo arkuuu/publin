@@ -9,10 +9,10 @@ class TypeController {
 	private $model;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->db = new PDODatabase();
-		$this->model = new TypeModel($db);
+		$this->db = $db;
+		$this->model = new TypeModel($this->db);
 	}
 
 

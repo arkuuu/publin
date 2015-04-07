@@ -193,7 +193,7 @@ class Controller {
 	 */
 	private function type(Request $request) {
 
-		$controller = new TypeController($this->old_db);
+		$controller = new TypeController($this->db);
 
 		return $controller->run($request);
 	}

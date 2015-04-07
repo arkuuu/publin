@@ -45,9 +45,9 @@ class PublicationModel {
 		}
 		/* Stores the type */
 		if (isset($data['type'])) {
-			$model = new TypeModel($this->old_db);
-			$type = new Type(array('name' => $data['type']));
-			$data['type_id'] = $model->store($type);
+			$repo = new TypeRepository($this->db);
+			$type = $repo->select()->where('name', '=', $data['type'])->findSingle();
+			$data['type_id'] = $type->getId();
 			unset($data['type']);
 		}
 		/* Stores the study field */
@@ -117,7 +117,7 @@ class PublicationModel {
 
 		/* Stores the type */
 		if (isset($data['type'])) {
-			$model = new TypeModel($this->old_db);
+			$model = new TypeModel($this->db);
 			$type = new Type(array('name' => $data['type']));
 			$data['type_id'] = $model->store($type);
 			unset($data['type']);

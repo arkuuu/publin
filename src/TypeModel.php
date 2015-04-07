@@ -2,30 +2,35 @@
 
 namespace publin\src;
 
-use InvalidArgumentException;
-use RuntimeException;
-
 class TypeModel {
 
-	private $old_db;
+	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
+		$this->db = $db;
 	}
 
 
 	public function store(Type $type) {
 
-		$data = $type->getData();
+		/*$data = $type->getData();
 		foreach ($data as $property => $value) {
 			if (empty($value) || is_array($value)) {
 				unset($data[$property]);
 			}
 		}
 
-		return $this->old_db->insertData('types', $data);
+		return $this->old_db->insertData('types', $data);*/
+
+		$query = 'INSERT INTO `types` (`name`, `description`) VALUES (:name, :description);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':name', $type->getName());
+		$this->db->bindValue(':description', $type->getDescription());
+		$this->db->execute();
+
+		return $this->db->lastInsertId();
 	}
 
 
@@ -35,7 +40,7 @@ class TypeModel {
 
 	public function delete($id) {
 
-		//TODO: this only works when no foreign key constraints fail
+		/*//TODO: this only works when no foreign key constraints fail
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
@@ -48,7 +53,13 @@ class TypeModel {
 		}
 		else {
 			throw new RuntimeException('Error while deleting type '.$id.': '.$this->old_db->error);
-		}
+		}*/
+		$query = 'DELETE FROM `types` WHERE `id` = :id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':id', (int)$id);
+		$this->db->execute();
+
+		return $this->db->rowCount();
 	}
 
 
