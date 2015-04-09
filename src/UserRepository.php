@@ -31,6 +31,9 @@ class UserRepository extends QueryBuilder {
 			if ($full === true) {
 				$repo = new RoleRepository($this->db);
 				$user->setRoles($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+
+				$repo = new PermissionRepository($this->db);
+				$user->setPermissions($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 			}
 			$users[] = $user;
 		}
@@ -52,6 +55,9 @@ class UserRepository extends QueryBuilder {
 		if ($full === true) {
 			$repo = new RoleRepository($this->db);
 			$user->setRoles($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+
+			$repo = new PermissionRepository($this->db);
+			$user->setPermissions($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 		}
 
 		return $user;

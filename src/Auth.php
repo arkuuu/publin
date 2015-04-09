@@ -2,7 +2,11 @@
 
 namespace publin\src;
 
+use Exception;
 use publin\src\exceptions\LoginRequiredException;
+
+require_once 'password_compat.php';
+
 
 class Auth {
 
@@ -17,15 +21,16 @@ class Auth {
 	const DELETE_KEYWORD = 'keyword_delete';
 	const MANAGE = 'manage';
 
-	private $old_db;
+	const ALGORITHM = PASSWORD_BCRYPT;
+	const ALGORITHM_COST = 10;
+	const SESSION_EXPIRE_TIME = 1000;
+
 	private $db;
-	private $session_expire_time = 1000;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 
 		if (!isset($_SESSION)) {
 			session_start();
@@ -34,20 +39,138 @@ class Auth {
 
 
 	/**
+	 * @param int $length
+	 *
 	 * @return string
 	 */
-	public static function generatePassword() {
+	public static function generatePassword($length = 10) {
 
 		$chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-		$password_length = 10;
 		$password = '';
 
-		for ($i = 0; $i < $password_length; $i++) {
+		for ($i = 0; $i < $length; $i++) {
 			$n = rand(0, strlen($chars) - 1);
 			$password .= $chars[$n];
 		}
 
 		return $password;
+	}
+
+
+	/**
+	 * @param $username
+	 * @param $password
+	 *
+	 * @return bool
+	 * @throws exceptions\DBException
+	 */
+	public function login($username, $password) {
+
+		if ($this->validateLogin($username, $password) === true) {
+			$repo = new UserRepository($this->db);
+			$user = $repo->select()->where('name', '=', $username)->findSingle(true);
+
+			$this->db->query('UPDATE `users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';');
+
+			session_regenerate_id(true);
+			$_SESSION['user'] = $user;
+			$_SESSION['last_activity'] = time();
+
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function validateLogin($username, $password) {
+
+		$query = 'SELECT `password` FROM `users` WHERE `name` = :name LIMIT 1;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':name', $username);
+		$this->db->execute();
+
+		$hash = $this->db->fetchColumn();
+
+		if (password_verify($password, $hash)) {
+			if (password_needs_rehash($hash, self::ALGORITHM, array('cost' => self::ALGORITHM_COST))) {
+				$this->setPassword($username, $password);
+			}
+
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function setPassword($username, $password) {
+
+		$hash = $this->hashPassword($password);
+
+		$query = 'UPDATE `users` SET `password` = :hash WHERE `name` = :name;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':hash', $hash);
+		$this->db->bindValue(':name', $username);
+
+		return $this->db->execute();
+	}
+
+
+	/**
+	 * @param $password
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public static function hashPassword($password) {
+
+		$hash = password_hash($password, self::ALGORITHM, array('cost' => self::ALGORITHM_COST));
+
+		if ($hash !== false) {
+			return $hash;
+		}
+		else {
+			throw new Exception('Something wrong with hashPassword');
+		}
+	}
+
+
+	/**
+	 * @param      $permission_name
+	 *
+	 * @param null $user_id
+	 *
+	 * @return bool
+	 * @throws LoginRequiredException
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
+	public function checkPermission($permission_name, $user_id = null) {
+
+		if (is_null($user_id)) {
+			$user = $this->getCurrentUser();
+			$user_id = $user->getId();
+		}
+		$query = 'SELECT COUNT(*) FROM `permissions` r
+			LEFT JOIN `roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
+			LEFT JOIN `users_roles` rur ON (rur.`role_id` = rrp.`role_id`)
+			WHERE r.`name` = :permission_name AND rur.`user_id` = :user_id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':permission_name', $permission_name);
+		$this->db->bindValue(':user_id', $user_id);
+		$this->db->execute();
+
+		$count = $this->db->fetchColumn();
+
+		if ($count > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -67,129 +190,12 @@ class Auth {
 
 
 	/**
-	 * @param $username
-	 * @param $password
-	 *
-	 * @return bool
-	 * @throws exceptions\DBException
-	 */
-	public function login($username, $password) {
-
-		$username = $this->old_db->real_escape_string($username);
-		$password = $this->old_db->real_escape_string($password);
-		$password = $this->hashPassword($password);
-
-		$query = 'SELECT `id`, `name` FROM `users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
-		$result = $this->old_db->getData($query);
-
-		if ($this->old_db->getNumRows() == 1) {
-
-			$user = new User($result[0]);
-			$user->setPermissions($this->getPermissions($user));
-
-			session_regenerate_id(true);
-			$_SESSION['user'] = $user;
-			$_SESSION['last_activity'] = time();
-
-			$query = 'UPDATE `users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';';
-			$this->old_db->changeToWriteUser();
-			$this->old_db->query($query);
-
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/**
-	 * @param $password
-	 *
-	 * @return mixed
-	 */
-	public static function hashPassword($password) {
-
-		// TODO: implement
-		return $password;
-	}
-
-
-	/**
-	 * @param User $user
-	 *
-	 * @return array
-	 */
-	public function getPermissions(User $user) {
-
-		$repo = new PermissionRepository($this->db);
-		$permissions = $repo->select(true)->where('user_id', '=', $user->getId())->find();
-
-		return $permissions;
-	}
-
-
-	public function validateLogin($username, $password) {
-
-		$username = $this->old_db->real_escape_string($username);
-		$password = $this->old_db->real_escape_string($password);
-		$password = $this->hashPassword($password);
-
-		$query = 'SELECT `id`, `name` FROM `users` WHERE `name` = "'.$username.'" AND `password` = "'.$password.'";';
-		$this->old_db->getData($query);
-
-		if ($this->old_db->getNumRows() == 1) {
-
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/**
-	 * @param $permission_name
-	 *
-	 * @return bool
-	 * @throws LoginRequiredException
-	 */
-	public function checkPermission($permission_name) {
-
-		if ($this->checkLoginStatus()) {
-
-			/* @var $user User */
-			$user = $_SESSION['user'];
-			$permission_name = $this->old_db->real_escape_string($permission_name);
-			$user_id = $this->old_db->real_escape_string($user->getId());
-
-			$query = 'SELECT DISTINCT(r.`name`) FROM `permissions` r
-			LEFT JOIN `roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
-			LEFT JOIN `users_roles` rur ON (rur.`role_id` = rrp.`role_id`)
-			WHERE r.`name` = "'.$permission_name.'" AND rur.`user_id` = '.$user_id.';';
-
-			$this->old_db->getData($query);
-
-			if ($this->old_db->getNumRows() == 1) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			throw new LoginRequiredException();
-		}
-	}
-
-
-	/**
 	 * @return bool
 	 */
 	public function checkLoginStatus() {
 
 		if (isset($_SESSION['user']) && isset($_SESSION['last_activity'])) {
-			if (time() - $_SESSION['last_activity'] > $this->session_expire_time) {
+			if (time() - $_SESSION['last_activity'] > self::SESSION_EXPIRE_TIME) {
 				$this->logout();
 
 				return false;
@@ -209,7 +215,8 @@ class Auth {
 	/**
 	 *
 	 */
-	public function logout() {
+	public
+	function logout() {
 
 		session_unset();
 		session_destroy();

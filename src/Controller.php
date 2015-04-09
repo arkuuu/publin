@@ -28,7 +28,7 @@ class Controller {
 		$this->old_db = new Database();
 		$this->db = new PDODatabase();
 		// TODO: catch exception here
-		$this->auth = new Auth($this->old_db);
+		$this->auth = new Auth($this->db);
 	}
 
 
