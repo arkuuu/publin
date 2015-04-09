@@ -167,13 +167,14 @@ class Publication {
 	 *
 	 * @return    string
 	 */
-	public function getDateAdded($format) {
+	public function getDateAdded($format = null) {
 
-		if ($this->date_added) {
+		if ($format && $this->date_added) {
 			return date($format, strtotime($this->date_added));
+
 		}
 		else {
-			return false;
+			return $this->date_added;
 		}
 	}
 
@@ -373,13 +374,13 @@ class Publication {
 	 *
 	 * @return    string
 	 */
-	public function getDatePublished($format) {
+	public function getDatePublished($format = null) {
 
-		if ($this->date_published) {
+		if ($format && $this->date_published) {
 			return date($format, strtotime($this->date_published));
 		}
 		else {
-			return false;
+			return $this->date_published;
 		}
 	}
 
