@@ -18,6 +18,9 @@ class StudyFieldController {
 
 		$repo = new StudyFieldRepository($this->db);
 		$study_field = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
+		if (!$study_field) {
+			throw new NotFoundException('study field not found');
+		}
 
 		$repo = new PublicationRepository($this->db);
 		$publications = $repo->select()->where('study_field_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();

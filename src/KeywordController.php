@@ -4,6 +4,7 @@
 namespace publin\src;
 
 use BadMethodCallException;
+use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
@@ -47,6 +48,9 @@ class KeywordController {
 
 		$repo = new KeywordRepository($this->db);
 		$keyword = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
+		if (!$keyword) {
+			throw new NotFoundException('keyword not found');
+		}
 
 		$repo = new PublicationRepository($this->db);
 		$publications = $repo->select()->where('keyword_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();

@@ -6,6 +6,7 @@ namespace publin\src;
 use BadMethodCallException;
 use Exception;
 use publin\src\exceptions\FileHandlerException;
+use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
@@ -47,6 +48,9 @@ class PublicationController {
 
 		$repo = new PublicationRepository($this->db);
 		$publication = $repo->select()->where('id', '=', $request->get('id'))->findSingle(true);
+		if (!$publication) {
+			throw new NotFoundException('publication not found');
+		}
 
 		if ($request->get('m') === 'file') {
 			$this->download($request);
@@ -67,8 +71,9 @@ class PublicationController {
 	 * @param Request $request
 	 *
 	 * @return bool
+	 * @throws FileHandlerException
+	 * @throws NotFoundException
 	 * @throws PermissionRequiredException
-	 * @throws exceptions\FileHandlerException
 	 */
 	public function download(Request $request) {
 
@@ -79,6 +84,9 @@ class PublicationController {
 
 		$repo = new FileRepository($this->db);
 		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
+		if (!$file) {
+			throw new NotFoundException('file not found');
+		}
 
 		if ($file->isHidden() && !$this->auth->checkPermission(Auth::ACCESS_HIDDEN_FILES)) {
 			throw new PermissionRequiredException(Auth::ACCESS_HIDDEN_FILES);

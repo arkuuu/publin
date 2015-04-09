@@ -4,6 +4,7 @@
 namespace publin\src;
 
 use BadMethodCallException;
+use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
@@ -45,6 +46,9 @@ class AuthorController {
 
 		$repo = new AuthorRepository($this->db);
 		$author = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
+		if (!$author) {
+			throw new NotFoundException('author not found');
+		}
 
 		$repo = new PublicationRepository($this->db);
 		$publications = $repo->select()->where('author_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();

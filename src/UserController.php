@@ -5,6 +5,7 @@ namespace publin\src;
 
 use BadMethodCallException;
 use publin\src\exceptions\DBDuplicateEntryException;
+use publin\src\exceptions\NotFoundException;
 
 class UserController {
 
@@ -49,6 +50,9 @@ class UserController {
 
 		$repo = new UserRepository($this->db);
 		$user = $repo->select()->where('id', '=', $this->user->getId())->findSingle(true);
+		if (!$user) {
+			throw new NotFoundException('user not found');
+		}
 
 		$view = new UserView($user, $this->errors);
 
