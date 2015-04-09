@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class AuthorRepository extends QueryBuilder {
+class AuthorRepository extends Repository {
 
 
 	public function select() {
@@ -63,8 +63,11 @@ class AuthorRepository extends QueryBuilder {
 	 */
 	public function findSingle() {
 
-		$result = parent::findSingle();
-
-		return new Author($result);
+		if ($result = parent::findSingle()) {
+			return new Author($result);
+		}
+		else {
+			return false;
+		}
 	}
 }

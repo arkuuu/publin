@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class StudyFieldRepository extends QueryBuilder {
+class StudyFieldRepository extends Repository {
 
 
 	public function select() {
@@ -36,8 +36,11 @@ class StudyFieldRepository extends QueryBuilder {
 	 */
 	public function findSingle() {
 
-		$result = parent::findSingle();
-
-		return new StudyField($result);
+		if ($result = parent::findSingle()) {
+			return new StudyField($result);
+		}
+		else {
+			return false;
+		}
 	}
 }

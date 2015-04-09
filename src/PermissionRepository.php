@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class PermissionRepository extends QueryBuilder {
+class PermissionRepository extends Repository {
 
 
 	public function where($column, $comparator, $value, $function = null) {
@@ -57,8 +57,11 @@ class PermissionRepository extends QueryBuilder {
 	 */
 	public function findSingle() {
 
-		$result = parent::findSingle();
-
-		return new Permission($result);
+		if ($result = parent::findSingle()) {
+			return new Permission($result);
+		}
+		else {
+			return false;
+		}
 	}
 }

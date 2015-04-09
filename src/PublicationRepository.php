@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class PublicationRepository extends QueryBuilder {
+class PublicationRepository extends Repository {
 
 
 	public function select() {
@@ -77,20 +77,23 @@ class PublicationRepository extends QueryBuilder {
 	 */
 	public function findSingle($full = false) {
 
-		$result = parent::findSingle();
+		if ($result = parent::findSingle()) {
+			$publication = new Publication($result);
+			$repo = new AuthorRepository($this->db);
+			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->order('priority', 'ASC')->find());
 
-		$publication = new Publication($result);
-		$repo = new AuthorRepository($this->db);
-		$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->order('priority', 'ASC')->find());
+			if ($full === true) {
+				$repo = new KeywordRepository($this->db);
+				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
 
-		if ($full === true) {
-			$repo = new KeywordRepository($this->db);
-			$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
+				$repo = new FileRepository($this->db);
+				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
+			}
 
-			$repo = new FileRepository($this->db);
-			$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
+			return $publication;
 		}
-
-		return $publication;
+		else {
+			return false;
+		}
 	}
 }

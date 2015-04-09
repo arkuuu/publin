@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class TypeRepository extends QueryBuilder {
+class TypeRepository extends Repository {
 
 
 	public function select() {
@@ -36,8 +36,11 @@ class TypeRepository extends QueryBuilder {
 	 */
 	public function findSingle() {
 
-		$result = parent::findSingle();
-
-		return new Type($result);
+		if ($result = parent::findSingle()) {
+			return new Type($result);
+		}
+		else {
+			return false;
+		}
 	}
 }

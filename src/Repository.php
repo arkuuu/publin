@@ -6,7 +6,7 @@ namespace publin\src;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
-class QueryBuilder {
+class Repository {
 
 	public $select;
 	public $from;

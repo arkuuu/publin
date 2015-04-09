@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class RoleRepository extends QueryBuilder {
+class RoleRepository extends Repository {
 
 
 	public function select() {
@@ -60,14 +60,18 @@ class RoleRepository extends QueryBuilder {
 	 */
 	public function findSingle($full = false) {
 
-		$result = parent::findSingle();
-		$role = new Role($result);
+		if ($result = parent::findSingle()) {
+			$role = new Role($result);
 
-		if ($full === true) {
-			$repo = new PermissionRepository($this->db);
-			$role->setPermissions($repo->select()->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+			if ($full === true) {
+				$repo = new PermissionRepository($this->db);
+				$role->setPermissions($repo->select()->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+			}
+
+			return $role;
 		}
-
-		return $role;
+		else {
+			return false;
+		}
 	}
 }

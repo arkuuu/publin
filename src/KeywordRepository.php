@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class KeywordRepository extends QueryBuilder {
+class KeywordRepository extends Repository {
 
 
 	public function select() {
@@ -50,8 +50,11 @@ class KeywordRepository extends QueryBuilder {
 	 */
 	public function findSingle() {
 
-		$result = parent::findSingle();
-
-		return new Keyword($result);
+		if ($result = parent::findSingle()) {
+			return new Keyword($result);
+		}
+		else {
+			return false;
+		}
 	}
 }
