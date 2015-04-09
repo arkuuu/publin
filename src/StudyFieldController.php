@@ -8,9 +8,9 @@ class StudyFieldController {
 	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->db = new PDODatabase();
+		$this->db = $db;
 	}
 
 

@@ -11,7 +11,6 @@ class Controller {
 
 	const BASE_URL = '/publin/';
 
-	private $old_db;
 	private $db;
 	private $auth;
 
@@ -25,7 +24,6 @@ class Controller {
 		mb_internal_encoding('utf8');
 		date_default_timezone_set('Europe/Berlin');
 
-		$this->old_db = new Database();
 		$this->db = new PDODatabase();
 		// TODO: catch exception here
 		$this->auth = new Auth($this->db);
@@ -178,7 +176,7 @@ class Controller {
 	 */
 	private function study_field(Request $request) {
 
-		$controller = new StudyFieldController($this->old_db);
+		$controller = new StudyFieldController($this->db);
 
 		return $controller->run($request);
 	}
@@ -250,7 +248,7 @@ class Controller {
 	 */
 	private function manage(Request $request) {
 
-		$controller = new ManageController($this->old_db, $this->auth);
+		$controller = new ManageController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -263,7 +261,7 @@ class Controller {
 	 */
 	private function search(Request $request) {
 
-		$controller = new SearchController($this->old_db);
+		$controller = new SearchController($this->db);
 
 		return $controller->run($request);
 	}

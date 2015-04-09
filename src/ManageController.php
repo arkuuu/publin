@@ -10,16 +10,14 @@ use UnexpectedValueException;
 
 class ManageController {
 
-	private $old_db;
 	private $db;
 	private $auth;
 	private $errors;
 
 
-	public function __construct(Database $db, Auth $auth) {
+	public function __construct(PDODatabase $db, Auth $auth) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 		$this->auth = $auth;
 		$this->errors = array();
 	}

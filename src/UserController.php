@@ -23,7 +23,7 @@ class UserController {
 		$this->db = $db;
 		$this->auth = $auth;
 		$this->user = $this->auth->getCurrentUser();
-		$this->model = new UserModel($this->db);
+		$this->model = new UserModel($db);
 		$this->errors = array();
 	}
 

@@ -12,7 +12,7 @@ class TypeController {
 	public function __construct(PDODatabase $db) {
 
 		$this->db = $db;
-		$this->model = new TypeModel($this->db);
+		$this->model = new TypeModel($db);
 	}
 
 
