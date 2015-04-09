@@ -36,6 +36,7 @@ class Publication {
 	private $abstract;
 	private $keywords;
 	private $files;
+	private $full_text_file;
 
 
 	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array()) {
@@ -215,6 +216,15 @@ class Publication {
 
 
 	/**
+	 * @return    File
+	 */
+	public function getFullTextFile() {
+
+		return $this->full_text_file;
+	}
+
+
+	/**
 	 * @return    File[]
 	 */
 	public function getFiles() {
@@ -236,6 +246,9 @@ class Publication {
 		foreach ($files as $file) {
 
 			if ($file instanceof File) {
+				if ($file->isFullText()) {
+					$this->full_text_file = $file;
+				}
 				$this->files[] = $file;
 			}
 			else {

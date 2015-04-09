@@ -17,6 +17,12 @@
 <p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit publication</a></p>
 <?php } ?>
 
+<?php if ($this -> showFullTextFile()) { ?>
+<p>
+	<?php echo $this -> showFullTextFile() ?>
+</p>
+<?php } ?>
+
 <h2>Details</h2>
 <table class="publicationDetails">
 	<?php

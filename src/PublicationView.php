@@ -596,6 +596,20 @@ class PublicationView extends View {
 	}
 
 
+	public function showFullTextFile() {
+
+		$file = $this->publication->getFullTextFile();
+		if ($file) {
+			$url = '?p=publication&id='.$this->publication->getId().'&m=file&file_id=';
+			$restricted = $file->isRestricted() ? ' (restricted)' : '';
+
+			return '<a href="'.$this->html($url.$file->getId()).'" target="_blank">Download full text'.$restricted.'</a>';
+		}
+		else {
+			return false;
+		}
+	}
+
 	public function showEditFiles() {
 
 		$files = $this->publication->getFiles();

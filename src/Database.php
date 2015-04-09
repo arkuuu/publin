@@ -19,11 +19,6 @@ class Database extends mysqli {
 	const DATABASE = 'dev';
 	const CHARSET = 'utf8';
 
-	/**
-	 * @var int
-	 */
-	private $num_rows;
-
 
 	/**
 	 * @throws DBException
@@ -55,50 +50,40 @@ class Database extends mysqli {
 
 
 	/**
-	 * @return mixed
-	 */
-	public function getNumRows() {
-
-		return $this->num_rows;
-	}
-
-
-	/**
 	 * @param       $table
+	 * @param array $where
 	 * @param array $data
 	 *
-	 * @return mixed
+	 * @return int
 	 * @throws DBException
 	 */
-	public function insertData($table, array $data) {
+	public function updateData($table, array $where, array $data) {
 
-		if (empty($data)) {
-			throw new InvalidArgumentException('where must not be empty when inserting');
+		if (empty($where) || empty($data)) {
+			throw new InvalidArgumentException('where and data must not be empty when updating');
 		}
 
 		$this->changeToWriteUser();
 
-		$into = array_keys($data);
-		$values = array_values($data);
-		$query = 'INSERT INTO `'.$table.'`(';
+		$query = 'UPDATE `'.$table.'`';
 
-		foreach ($into as $field) {
-			$query .= '`'.$field.'`, ';
+		$query .= ' SET';
+
+		foreach ($data as $column => $value) {
+			$query .= ' `'.$column.'` = "'.$value.'",';
 		}
-		$query = substr($query, 0, -2);
+		$query = substr($query, 0, -1);
 
-		$query .= ') VALUES (';
+		$query .= ' WHERE';
 
-		foreach ($values as $value) {
-			$query .= '"'.$value.'", ';
+		foreach ($where as $key => $value) {
+			$query .= ' `'.$key.'` = "'.$value.'" AND';
 		}
-		$query = substr($query, 0, -2);
-
-		$query .= ') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
+		$query = substr($query, 0, -3);
 
 		$this->query($query);
 
-		return $this->insert_id;
+		return $this->affected_rows;
 	}
 
 
@@ -142,127 +127,5 @@ class Database extends mysqli {
 		else {
 			throw new DBException($this->error);
 		}
-	}
-
-
-	public function insert($table, array $data) {
-
-		if (empty($data)) {
-			throw new InvalidArgumentException('where must not be empty when inserting');
-		}
-
-		$this->changeToWriteUser();
-
-		$into = array_keys($data);
-		$values = array_values($data);
-		$query = 'INSERT INTO `'.$table.'`(';
-
-		foreach ($into as $field) {
-			$query .= '`'.$field.'`, ';
-		}
-		$query = substr($query, 0, -2);
-
-		$query .= ') VALUES (';
-
-		foreach ($values as $value) {
-			$query .= '"'.$value.'", ';
-		}
-		$query = substr($query, 0, -2);
-
-		$query .= ');';
-
-		$this->query($query);
-
-		return $this->insert_id;
-	}
-
-
-	/**
-	 * @param       $table
-	 * @param array $where
-	 *
-	 * @return int
-	 * @throws DBException
-	 */
-	public function deleteData($table, array $where) {
-
-		if (empty($where)) {
-			throw new InvalidArgumentException('where must not be empty when deleting');
-		}
-
-		$this->changeToWriteUser();
-
-		$query = 'DELETE FROM `'.$table.'`';
-		$query .= ' WHERE';
-
-		foreach ($where as $key => $value) {
-			$query .= ' `'.$key.'` = "'.$value.'" AND';
-		}
-		$query = substr($query, 0, -3);
-
-		$this->query($query);
-
-		return $this->affected_rows;
-	}
-
-
-	/**
-	 * @param       $table
-	 * @param array $where
-	 * @param array $data
-	 *
-	 * @return int
-	 * @throws DBException
-	 */
-	public function updateData($table, array $where, array $data) {
-
-		if (empty($where) || empty($data)) {
-			throw new InvalidArgumentException('where and data must not be empty when updating');
-		}
-
-		$this->changeToWriteUser();
-
-		$query = 'UPDATE `'.$table.'`';
-
-		$query .= ' SET';
-
-		foreach ($data as $column => $value) {
-			$query .= ' `'.$column.'` = "'.$value.'",';
-		}
-		$query = substr($query, 0, -1);
-
-		$query .= ' WHERE';
-
-		foreach ($where as $key => $value) {
-			$query .= ' `'.$key.'` = "'.$value.'" AND';
-		}
-		$query = substr($query, 0, -3);
-
-		$this->query($query);
-
-		return $this->affected_rows;
-	}
-
-
-	/**
-	 * @param $query
-	 *
-	 * @return array
-	 * @throws DBException
-	 */
-	public function getData($query) {
-
-		/* Sends query to database */
-		$result = $this->query($query);
-		$this->num_rows = $result->num_rows;
-
-		/* Fetches the results */
-		$data = array();
-		while ($entry = $result->fetch_assoc()) {
-			$data[] = $entry;
-		}
-		$result->free();
-
-		return $data;
 	}
 }

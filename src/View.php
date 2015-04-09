@@ -230,9 +230,20 @@ class View {
 			}
 		}
 
+		$links = array();
 		/* shows DOI link */
 		if ($publication->getDoi()) {
-			$citation .= '<br/><span class="links"><a href="http://dx.doi.org/'.$publication->getDoi().'" target="_blank">DOI</a></span>';
+			$links[] = '<a href="http://dx.doi.org/'.$this->html($publication->getDoi()).'" target="_blank">DOI</a>';
+		}
+//		/* shows full text link */ TODO only works when files are loaded to the objects every time
+//		if ($publication->getFullTextFile()) {
+//			$url = '?p=publication&id='.$publication->getId().'&m=file&file_id=';
+//			$links[] = '<a href="'.$this->html($url.$publication->getFullTextFile()->getId()).'" target="_blank">Full text</a>';
+//		}
+
+		/* shows links if there are any */
+		if (!empty($links)) {
+			$citation .= '<br/><span class="links">'.implode(' - ', $links).'</span>';
 		}
 
 		return $citation.'</div>';
