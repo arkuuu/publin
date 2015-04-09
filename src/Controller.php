@@ -150,7 +150,7 @@ class Controller {
 	 */
 	private function publication(Request $request) {
 
-		$controller = new PublicationController($this->old_db, $this->auth);
+		$controller = new PublicationController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}
@@ -207,7 +207,7 @@ class Controller {
 	 */
 	private function submit(Request $request) {
 
-		$controller = new SubmitController($this->old_db, $this->auth);
+		$controller = new SubmitController($this->db, $this->auth);
 
 		return $controller->run($request);
 	}

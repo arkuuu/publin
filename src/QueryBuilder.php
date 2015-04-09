@@ -228,18 +228,32 @@ class QueryBuilder {
 
 	public function __toString() {
 
-		$values = implode(',', $this->values_to_bind);
+		$values = implode(', ', $this->values_to_bind);
 
 		return $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' '.$this->limit.'; with values '.$values;
 	}
 
 
-	public function update($table, array $columns, array $values) {
-	}
+	/*	public function update($table, array $columns, array $values) {
+		}*/
 
+	/*	public function insert($table, array $values, $duplicate_key = false) {
 
-	public function insert($table, array $columns, array $values) {
-	}
+			$table = '`'.$table.'`';
+			$columns = array_keys($values);
+			$columns = '`'.implode('`, `', $columns).'`';
+			foreach ($values as $value) {
+				$this->values_to_bind[] = $value;
+			}
+			$values = '?'.str_repeat(',?', count($values)-1);
+			$on_duplicate = ($duplicate_key === true) ? ' '
+
+			$query = 'INSERT INTO '.$table.' ('.$columns.') VALUES ('.$values.');';
+
+			$values = implode(', ', $this->values_to_bind);
+
+			print_r($query.' with '.$values);
+		}*/
 
 
 	public function delete() {

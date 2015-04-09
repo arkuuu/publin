@@ -11,17 +11,15 @@ use UnexpectedValueException;
 
 class PublicationController {
 
-	private $old_db;
 	private $db;
 	private $auth;
 	private $model;
 	private $errors;
 
 
-	public function __construct(Database $db, Auth $auth) {
+	public function __construct(PDODatabase $db, Auth $auth) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 		$this->auth = $auth;
 		$this->model = new PublicationModel($db);
 		$this->errors = array();

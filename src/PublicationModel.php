@@ -4,7 +4,6 @@ namespace publin\src;
 
 use Exception;
 use InvalidArgumentException;
-use RuntimeException;
 
 class PublicationModel {
 
@@ -12,77 +11,66 @@ class PublicationModel {
 	private $db;
 
 
-	public function __construct(Database $db) {
+	public function __construct(PDODatabase $db) {
 
-		$this->old_db = $db;
+		$this->old_db = new Database();
 		$this->db = new PDODatabase();
 	}
 
 
 	public function store(Publication $publication) {
 
-		$data = $publication->getData();
-		foreach ($data as $property => $value) {
-			if (empty($value) || is_array($value)) {
-				unset($data[$property]);
-			}
-		}
-
-		$authors = $publication->getAuthors();
-		$keywords = $publication->getKeywords();
-
-		/* Stores the authors */
-		$author_ids = array();
-		$model = new AuthorModel($this->db);
-		foreach ($authors as $author) {
-			$author_ids[] = $model->store($author);
-		}
-		/* Stores the key terms */
-		$keyword_ids = array();
-		$model = new KeywordModel($this->db);
-		foreach ($keywords as $keyword) {
-			$keyword_ids[] = $model->store($keyword);
-		}
-		/* Stores the type */
-		if (isset($data['type'])) {
-			$repo = new TypeRepository($this->db);
-			$type = $repo->select()->where('name', '=', $data['type'])->findSingle();
-			$data['type_id'] = $type->getId();
-			unset($data['type']);
-		}
-		/* Stores the study field */
-		/*if (isset($data['study_field'])) {
-			$model = new StudyFieldModel($this->old_db);
-			$study_field = new StudyField(array('name' => $data['study_field']));
-			$data['study_field_id'] = $model->store($study_field);
-			unset($data['study_field']);
-		}*/
-		/* Stores the publication */
-		$publication_id = $this->old_db->insertData('publications', $data);
-
-		if (!empty($publication_id)) {
-
-			/* Stores the relation between the publication and its authors */
-			if (!empty($author_ids)) {
-				$priority = 1; // TODO: really start with 1 and go up?
-				foreach ($author_ids as $author_id) {
-					$this->addAuthor($publication_id, $author_id, $priority);
-					$priority++;
-				}
-			}
-			/* Stores the relation between the publication and its key terms */
-			if (!empty($keyword_ids)) {
-				foreach ($keyword_ids as $keyword_id) {
-					$this->addKeyword($publication_id, $keyword_id);
-				}
-			}
-
-			return $publication_id;
+		if ($publication->getTypeId()) {
+			$type_id = $publication->getTypeId();
 		}
 		else {
-			// TODO: streamline this with the other Model classes
-			throw new Exception('Error while inserting publication to DB');
+			$repo = new TypeRepository($this->db);
+			$type = $repo->select()->where('name', '=', $publication->getTypeName())->findSingle();
+			$type_id = $type->getId();
 		}
+
+		if ($publication->getStudyFieldId()) {
+			$study_field_id = $publication->getStudyFieldId();
+		}
+		else {
+			$repo = new StudyFieldRepository($this->db);
+			$type = $repo->select()->where('name', '=', $publication->getStudyField())->findSingle();
+			$study_field_id = $type->getId();
+		}
+
+		$query = 'INSERT INTO
+  `publications` (`type_id`, `study_field_id`, `title`, `date_published`, `booktitle`, `journal`, `volume`, `number`, `pages_from`, `pages_to`, `series`, `edition`, `note`, `location`, `publisher`, `institution`, `school`, `address`, `isbn`, `doi`, `howpublished`, `abstract`, `copyright`)
+VALUES
+  (:type_id, :study_field_id, :title, :date_published, :booktitle, :journal, :volume, :number, :pages_from, :pages_to,
+   :series, :edition, :note, :location, :publisher, :institution, :school, :address, :isbn, :doi, :howpublished,
+   :abstract, :copyright);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':type_id', $type_id);
+		$this->db->bindValue(':study_field_id', $study_field_id);
+		$this->db->bindValue(':title', $publication->getTitle());
+		$this->db->bindValue(':date_published', $publication->getDatePublished());
+		$this->db->bindValue(':booktitle', $publication->getBooktitle());
+		$this->db->bindValue(':journal', $publication->getJournal());
+		$this->db->bindValue(':volume', $publication->getVolume());
+		$this->db->bindValue(':number', $publication->getNumber());
+		$this->db->bindValue(':pages_from', $publication->getFirstPage());
+		$this->db->bindValue(':pages_to', $publication->getLastPage());
+		$this->db->bindValue(':series', $publication->getSeries());
+		$this->db->bindValue(':edition', $publication->getEdition());
+		$this->db->bindValue(':note', $publication->getNote());
+		$this->db->bindValue(':location', $publication->getLocation());
+		$this->db->bindValue(':publisher', $publication->getPublisher());
+		$this->db->bindValue(':institution', $publication->getInstitution());
+		$this->db->bindValue(':school', $publication->getSchool());
+		$this->db->bindValue(':address', $publication->getAddress());
+		$this->db->bindValue(':isbn', $publication->getIsbn());
+		$this->db->bindValue(':doi', $publication->getDoi());
+		$this->db->bindValue(':howpublished', $publication->getHowpublished());
+		$this->db->bindValue(':abstract', $publication->getAbstract());
+		$this->db->bindValue(':copyright', $publication->getCopyright());
+		$this->db->execute();
+
+		return $this->db->lastInsertId();
 	}
 
 
@@ -92,11 +80,13 @@ class PublicationModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$data = array('publication_id' => $publication_id,
-					  'author_id'      => $author_id,
-					  'priority'       => $priority);
+		$query = 'INSERT INTO `publications_authors` (`publication_id`, `author_id`) VALUES (:publication_id, :author_id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', (int)$publication_id);
+		$this->db->bindValue(':author_id', (int)$author_id);
+		$this->db->execute();
 
-		return $this->old_db->insertData('publications_authors', $data);
+		return $this->db->lastInsertId();
 	}
 
 
@@ -106,10 +96,13 @@ class PublicationModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$data = array('publication_id' => $publication_id,
-					  'keyword_id'     => $keyword_id);
+		$query = 'INSERT INTO `publications_keywords` (`publication_id`, `keyword_id`) VALUES (:publication_id, :keyword_id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', (int)$publication_id);
+		$this->db->bindValue(':keyword_id', (int)$keyword_id);
+		$this->db->execute();
 
-		return $this->old_db->insertData('publications_keywords', $data);
+		return $this->db->lastInsertId();
 	}
 
 
@@ -136,25 +129,36 @@ class PublicationModel {
 
 	public function delete($id) {
 
-		//TODO: this only works when no foreign key constraints fail
 		if (!is_numeric($id)) {
 			throw new InvalidArgumentException('param should be numeric');
 		}
 
-		$where = array('publication_id' => $id);
-		$this->old_db->deleteData('publications_authors', $where);
-		$this->old_db->deleteData('publications_keywords', $where);
+		$this->db->beginTransaction();
 
-		// TODO: delete files
-		$where = array('id' => $id);
-		$rows = $this->old_db->deleteData('publications', $where);
+		try {
+			$query = 'DELETE FROM `publications_authors` WHERE `publication_id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
 
-		// TODO: how to get rid of these?
-		if ($rows == 1) {
-			return true;
+			$query = 'DELETE FROM `publications_keywords` WHERE `publication_id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
+
+			$query = 'DELETE FROM `publications` WHERE `id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
+			$row_count = $this->db->rowCount();
+
+			$this->db->commitTransaction();
+
+			return $row_count;
 		}
-		else {
-			throw new RuntimeException('Error while deleting publication '.$id.': '.$this->old_db->error);
+		catch (Exception $e) {
+			$this->db->cancelTransaction();
+			throw $e;
 		}
 	}
 
@@ -165,18 +169,13 @@ class PublicationModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$where = array('publication_id' => $publication_id,
-					   'author_id'      => $author_id);
+		$query = 'DELETE FROM `publications_authors` WHERE `publication_id` = :publication_id AND `author_id` = :author_id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', (int)$publication_id);
+		$this->db->bindValue(':author_id', (int)$author_id);
+		$this->db->execute();
 
-		$rows = $this->old_db->deleteData('publications_authors', $where);
-
-		// TODO: How to get rid of this and move it to DB?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error removing author '.$author_id.' from publication '.$publication_id.': '.$this->old_db->error);
-		}
+		return $this->db->rowCount();
 	}
 
 
@@ -186,18 +185,13 @@ class PublicationModel {
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$where = array('publication_id' => $publication_id,
-					   'keyword_id'     => $keyword_id);
+		$query = 'DELETE FROM `publications_keywords` WHERE `publication_id` = :publication_id AND `keyword_id` = :keyword_id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', (int)$publication_id);
+		$this->db->bindValue(':keyword_id', (int)$keyword_id);
+		$this->db->execute();
 
-		$rows = $this->old_db->deleteData('publications_keywords', $where);
-
-		// TODO: How to get rid of this and move it to DB?
-		if ($rows == 1) {
-			return true;
-		}
-		else {
-			throw new RuntimeException('Error removing keyword '.$keyword_id.' from publication '.$publication_id.': '.$this->old_db->error);
-		}
+		return $this->db->rowCount();
 	}
 
 

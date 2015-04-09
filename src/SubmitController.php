@@ -3,23 +3,22 @@
 namespace publin\src;
 
 use BadMethodCallException;
+use Exception;
 use publin\src\exceptions\PermissionRequiredException;
 
 class SubmitController {
 
-	private $old_db;
 	private $db;
 	private $auth;
 	private $model;
 	private $errors;
 
 
-	public function __construct(Database $db, Auth $auth) {
+	public function __construct(PDODatabase $db, Auth $auth) {
 
-		$this->old_db = $db;
-		$this->db = new PDODatabase();
+		$this->db = $db;
 		$this->auth = $auth;
-		$this->model = new SubmitModel($this->db);
+		$this->model = new SubmitModel($db);
 		$this->errors = array();
 
 		if (!isset($_SESSION)) {
@@ -106,9 +105,20 @@ class SubmitController {
 			return false;
 		}
 
+		$publication_model = new PublicationModel($this->db);
+		$validator = $publication_model->getValidator($input['type']);
+		if ($validator->validate($input)) {
+			$data = $validator->getSanitizedResult();
+			$publication = new Publication($data);
+		}
+		else {
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+		}
+
 		$authors = array();
+		$author_model = new AuthorModel($this->db);
+
 		if (!empty($input['authors'])) {
-			$author_model = new AuthorModel($this->db);
 			$validator = $author_model->getValidator();
 			foreach ($input['authors'] as $input_author) {
 				if ($validator->validate($input_author)) {
@@ -125,8 +135,8 @@ class SubmitController {
 		}
 
 		$keywords = array();
+		$keyword_model = new KeywordModel($this->db);
 		if (!empty($input['keywords'])) {
-			$keyword_model = new KeywordModel($this->db);
 			$validator = $keyword_model->getValidator();
 			foreach ($input['keywords'] as $input_keyword) {
 				if ($validator->validate(array('name' => $input_keyword))) {
@@ -139,21 +149,34 @@ class SubmitController {
 			}
 		}
 
-		$publication_model = new PublicationModel($this->old_db);
-		$validator = $publication_model->getValidator($input['type']);
-		if ($validator->validate($input)) {
-			$data = $validator->getSanitizedResult();
-			$publication = new Publication($data, $authors, $keywords);
-		}
-		else {
-			$this->errors = array_merge($this->errors, $validator->getErrors());
-		}
-
 		if (empty($this->errors) && isset($publication)) {
-			$publication_id = $publication_model->store($publication);
+
+			//$this->db->beginTransaction(); TODO there is a deadlock when enabling transactions
+
+			try {
+				$publication_id = $publication_model->store($publication);
+
+				$priority = 1;
+				foreach ($authors as $author) {
+					$author_id = $author_model->store($author);
+					$publication_model->addAuthor($publication_id, $author_id, $priority);
+					$priority++;
+				}
+
+				foreach ($keywords as $keyword) {
+					$keyword_id = $keyword_model->store($keyword);
+					$publication_model->addKeyword($publication_id, $keyword_id);
+				}
+				//$this->db->commitTransaction();
+			}
+			catch (Exception $e) {
+				//$this->db->cancelTransaction();
+				throw $e;
+			}
+
 			unset($_SESSION['input']);
 
-			Controller::redirect('?publication&id='.$publication_id);
+			Controller::redirect('?p=publication&id='.$publication_id);
 
 			return true;
 		}
