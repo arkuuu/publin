@@ -23,6 +23,7 @@ class TypeController {
 
 		$repo = new PublicationRepository($this->db);
 		$publications = $repo->select()->where('type_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
+
 		$view = new TypeView($type, $publications);
 
 		return $view->display();

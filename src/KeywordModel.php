@@ -9,7 +9,6 @@ class KeywordModel {
 
 	private $old_db;
 	private $db;
-	private $num;
 
 
 	public function __construct(PDODatabase $db) {
@@ -18,11 +17,6 @@ class KeywordModel {
 		$this->db = $db;
 	}
 
-
-	public function getNum() {
-
-		return $this->num;
-	}
 
 
 	public function store(Keyword $keyword) {
