@@ -123,7 +123,7 @@ class UserController {
 
 		$password = Validator::sanitizeText($request->post('password'));
 		if (!$password || !$this->auth->validateLogin($this->user->getName(), $password)) {
-			$this->errors[] = 'Invalid password';
+			$this->errors[] = 'Invalid current password';
 
 			return false;
 		}
@@ -143,6 +143,6 @@ class UserController {
 			return false;
 		}
 
-		return $this->model->update($this->user->getId(), array('password' => $password_new));
+		return $this->auth->setPassword($this->user->getName(), $password_new);
 	}
 }

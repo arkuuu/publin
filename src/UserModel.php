@@ -27,10 +27,9 @@ class UserModel {
 
 	public function store(User $user) {
 
-		$query = 'INSERT INTO `users` (`name`, `password`, `mail`) VALUES (:name, :password, :mail);';
+		$query = 'INSERT INTO `users` (`name`, `mail`) VALUES (:name, :mail);';
 		$this->db->prepare($query);
 		$this->db->bindValue(':name', $user->getName());
-		$this->db->bindValue(':password', Auth::hashPassword(Auth::generatePassword()));
 		$this->db->bindValue(':mail', $user->getMail());
 		$this->db->execute();
 
@@ -40,10 +39,6 @@ class UserModel {
 
 	public function update($id, array $data) {
 
-		// TODO: convert to PDO
-		if (isset($data['password'])) {
-			$data['password'] = Auth::hashPassword($data['password']);
-		}
 
 		return $this->old_db->updateData('users', array('id' => $id), $data);
 	}

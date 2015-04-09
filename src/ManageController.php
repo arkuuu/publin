@@ -174,8 +174,12 @@ class ManageController {
 			$user = new User($data);
 
 			try {
-				// TODO: send email to user email
-				return $user_model->store($user);
+				$user_model->store($user);
+				$password = $this->auth->generatePassword();
+				print_r('new pw is '.$password); // TODO remove this
+				// TODO: send password to user email
+
+				return $this->auth->setPassword($user->getName(), $password);
 			}
 			catch (DBDuplicateEntryException $e) {
 				$this->errors[] = 'This username or email is already in use, please choose another one';
@@ -188,6 +192,27 @@ class ManageController {
 
 			return false;
 		}
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
+	private function sendNewPassword(Request $request) {
+
+		$user_name = Validator::sanitizeText($request->post('user_name'));
+		if (!$user_name) {
+			throw new UnexpectedValueException();
+		}
+
+		$password = $this->auth->generatePassword();
+		print_r('new pw is '.$password); // TODO remove this
+
+		return $this->auth->setPassword($user_name, $password);
+		// TODO: send password to user email
+
 	}
 
 
