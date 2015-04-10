@@ -189,6 +189,8 @@ class ManageController {
 				}
 				else {
 					$this->errors[] = 'The mail to the user could not be sent';
+
+					return false;
 				}
 			}
 			catch (DBDuplicateEntryException $e) {
@@ -235,6 +237,8 @@ class ManageController {
 		}
 		else {
 			$this->errors[] = 'The mail to the user could not be sent';
+
+			return false;
 		}
 
 	}

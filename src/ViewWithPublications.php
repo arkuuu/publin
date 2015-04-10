@@ -38,7 +38,7 @@ class ViewWithPublications extends View {
 			return $string;
 		}
 		else {
-			return '<li>no publications found</li>';
+			return '<li>No publications found</li>';
 		}
 	}
 

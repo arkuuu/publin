@@ -55,7 +55,7 @@ class OAIParser {
 	public function run(Request $request) {
 
 		try {
-			$this->cleanResumptionTokens();
+			$this->clearResumptionTokens();
 
 			$verb = $request->get('verb') ? $request->get('verb') : $request->post('verb');
 			$resumptionToken = $request->get('resumptionToken') ? $request->get('resumptionToken') : $request->post('resumptionToken');
@@ -137,7 +137,7 @@ class OAIParser {
 	}
 
 
-	private function cleanResumptionTokens() {
+	private function clearResumptionTokens() {
 
 		$query = 'DELETE FROM `oai_tokens` WHERE `created` < NOW() - INTERVAL '.$this->token_valid_days.' DAY;';
 
