@@ -62,7 +62,12 @@ class Database extends mysqli {
 		$query .= ' SET';
 
 		foreach ($data as $column => $value) {
-			$query .= ' `'.$column.'` = "'.$value.'",';
+			if (is_null($value)) {
+				$query .= ' `'.$column.'` = NULL,';
+			}
+			else {
+				$query .= ' `'.$column.'` = "'.$value.'",';
+			}
 		}
 		$query = substr($query, 0, -1);
 

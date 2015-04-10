@@ -80,7 +80,7 @@ class Validator {
 							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$result[$field] = '';
+							$result[$field] = null;
 						}
 						break;
 
@@ -92,7 +92,7 @@ class Validator {
 							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$result[$field] = '';
+							$result[$field] = null;
 						}
 						break;
 
@@ -104,7 +104,7 @@ class Validator {
 							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$result[$field] = '';
+							$result[$field] = null;
 						}
 						break;
 
@@ -116,7 +116,7 @@ class Validator {
 							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$result[$field] = '';
+							$result[$field] = null;
 						}
 						break;
 
@@ -128,7 +128,7 @@ class Validator {
 							$this->errors[] = $rule['error_msg'];
 						}
 						else {
-							$result[$field] = '';
+							$result[$field] = null;
 						}
 						break;
 

@@ -98,9 +98,9 @@ class SubmitView extends View {
 	public function listStudyFieldOptions() {
 
 		$study_fields = $this->model->createStudyFields();
-		$selected_id = $this->show('study_field_id');
+		$selected_name = $this->show('study_field_id');
 
-		if ($selected_id) {
+		if ($selected_name) {
 			$string = '<option value disabled>Select...</option>';
 		}
 		else {
@@ -109,14 +109,14 @@ class SubmitView extends View {
 
 		/* @var $study_field StudyField */
 		foreach ($study_fields as $study_field) {
-			if ($study_field->getId() == $selected_id) {
+			if ($study_field->getName() == $selected_name) {
 				$selected = 'selected';
 			}
 			else {
 				$selected = '';
 			}
 
-			$string .= '<option value="'.$this->html($study_field->getId()).'" '.$selected.'>'
+			$string .= '<option value="'.$this->html($study_field->getName()).'" '.$selected.'>'
 				.$this->html($study_field->getName()).'</option>';
 		}
 

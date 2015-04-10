@@ -108,18 +108,18 @@ VALUES
 
 	public function update($id, array $data) {
 
-		/* Stores the type */
+		/* Fetches the type */
 		if (isset($data['type'])) {
-			$model = new TypeModel($this->db);
-			$type = new Type(array('name' => $data['type']));
-			$data['type_id'] = $model->store($type);
+			$repo = new TypeRepository($this->db);
+			$type = $repo->select()->where('name', '=', $data['type'])->findSingle();
+			$data['type_id'] = $type->getId();
 			unset($data['type']);
 		}
-		/* Stores the study field */
+		/* Fetches the study field */
 		if (isset($data['study_field'])) {
-			$model = new StudyFieldModel($this->db);
-			$study_field = new StudyField(array('name' => $data['study_field']));
-			$data['study_field_id'] = $model->store($study_field);
+			$repo = new StudyFieldRepository($this->db);
+			$type = $repo->select()->where('name', '=', $data['study_field'])->findSingle();
+			$data['study_field_id'] = $type->getId();
 			unset($data['study_field']);
 		}
 
@@ -223,7 +223,7 @@ VALUES
 		$validator->addRule('doi', 'text', false, 'DOI is invalid'); // TODO: validate DOI
 		$validator->addRule('isbn', 'text', false, 'ISBN invalid'); // TODO: validate ISBN
 
-		$validator->addRule('study_field_id', 'number', true, 'Field of Study is required but invalid');
+		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
 
