@@ -143,7 +143,7 @@ class ManageView extends View {
 		<input type="submit" value="Delete">
 	</form>
 	<form action="#" method="post" accept-charset="utf-8">
-		<input type="hidden" name="user_name" value="'.$this->html($user->getName()).'">
+		<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'">
 		<input type="hidden" name="action" value="sendNewPassword">
 		<input type="submit" value="Send new password">
 	</form>

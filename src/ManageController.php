@@ -175,9 +175,21 @@ class ManageController {
 				$user_model->store($user);
 				$password = $this->auth->generatePassword();
 				print_r('new pw is '.$password); // TODO remove this
-				// TODO: send password to user email
+				$this->auth->setPassword($user->getName(), $password);
 
-				return $this->auth->setPassword($user->getName(), $password);
+				$subject = 'An account at '.Config::ROOT_URL.' was created for you!';
+				$message = 'Greetings,'."\n\n".$this->auth->getCurrentUser()->getName().' created an account for you at '.Request::createUrl().'.'."\n\n";
+				$message .= 'Username: '.$user->getName()."\n";
+				$message .= 'Mail: '.$user->getMail()."\n";
+				$message .= 'Temporary password: '.$password."\n";
+				$message .= "\n".'Please change your password soon at '.Request::createUrl(array('p' => 'user')).'!';
+
+				if (MailHandler::sendMail($user->getMail(), $subject, $message)) {
+					return true;
+				}
+				else {
+					$this->errors[] = 'The mail to the user could not be sent';
+				}
 			}
 			catch (DBDuplicateEntryException $e) {
 				$this->errors[] = 'This username or email is already in use, please choose another one';
@@ -200,16 +212,30 @@ class ManageController {
 	 */
 	private function sendNewPassword(Request $request) {
 
-		$user_name = Validator::sanitizeText($request->post('user_name'));
-		if (!$user_name) {
+		$user_id = Validator::sanitizeText($request->post('user_id'));
+		if (!$user_id) {
 			throw new UnexpectedValueException();
 		}
+
+		$repo = new UserRepository($this->db);
+		$user = $repo->select()->where('id', '=', $user_id)->findSingle();
 
 		$password = $this->auth->generatePassword();
 		print_r('new pw is '.$password); // TODO remove this
 
-		return $this->auth->setPassword($user_name, $password);
-		// TODO: send password to user email
+		$this->auth->setPassword($user->getName(), $password);
+
+		$subject = 'Your password at '.Request::createUrl().' was reset!';
+		$message = 'Greetings,'."\n\n".$this->auth->getCurrentUser()->getName().' has reset your password for you at '.Request::createUrl().'.'."\n\n";
+		$message .= 'The new temporary password is: '.$password."\n";
+		$message .= "\n".'Please change your password soon at '.Request::createUrl(array('p' => 'user')).'!';
+
+		if (MailHandler::sendMail($user->getMail(), $subject, $message)) {
+			return true;
+		}
+		else {
+			$this->errors[] = 'The mail to the user could not be sent';
+		}
 
 	}
 
