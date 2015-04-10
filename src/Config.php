@@ -6,7 +6,7 @@ namespace publin\src;
 class Config {
 
 	const ROOT_PATH = '/publin/';
-	const ROOT_URL = '/publin/';
+	const ROOT_URL = 'http://localhost:8888/publin/'; // full url! like oai
 	const ADMIN_MAIL = 'test@localhost';
 	const TIMEZONE = 'Europe/Berlin'; // see http://php.net/manual/en/timezones.php
 	//const DEVELOPMENT_MODE = true;
@@ -21,12 +21,12 @@ class Config {
 	const FILE_MAX_SIZE = 200;
 
 	const OAI_REPOSITORY_NAME = 'publin Uni Luebeck';
-	const OAI_REPOSITORY_IDENTIFIER = 'de.localhost';
-	const OAI_BASE_URL = 'http://localhost/publin/oai/';
+	const OAI_REPOSITORY_IDENTIFIER = 'localhost.de';
+	const OAI_BASE_URL = 'http://localhost:8888/publin/oai/';
 	const OAI_ADMIN_EMAIL = 'test@localhost';
 	const OAI_RECORDS_PER_REQUEST = 10;
 	const OAI_SETS_PER_REQUEST = 10;
-	const OAI_RESUMPTION_TOKEN_DAYS_VALID = 2;
+	const OAI_RESUMPTION_TOKEN_DAYS_VALID = 1;
 	const OAI_USE_XSLT = true;
 
 
