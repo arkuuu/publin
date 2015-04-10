@@ -5,6 +5,7 @@ namespace publin\src;
 
 use BadMethodCallException;
 use Exception;
+use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\FileHandlerException;
 use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
@@ -149,9 +150,16 @@ class PublicationController {
 			$data = $validator->getSanitizedResult();
 			$keyword = new Keyword($data);
 			$keyword_id = $keyword_model->store($keyword);
-			$this->model->addKeyword($id, $keyword_id, 0);
+			try {
+				$this->model->addKeyword($id, $keyword_id, 0);
 
-			return true;
+				return true;
+			}
+			catch (DBDuplicateEntryException $e) {
+				$this->errors[] = 'This keyword is already assigned to this publication';
+
+				return false;
+			}
 		}
 		else {
 			$this->errors = array_merge($this->errors, $validator->getErrors());
@@ -210,9 +218,16 @@ class PublicationController {
 			$author = new Author($data);
 			$author_id = $author_model->store($author);
 			// TODO: priority?
-			$this->model->addAuthor($id, $author_id, 0);
+			try {
+				$this->model->addAuthor($id, $author_id, 0);
 
-			return true;
+				return true;
+			}
+			catch (DBDuplicateEntryException $e) {
+				$this->errors[] = 'This author is already assigned to this publication';
+
+				return false;
+			}
 		}
 		else {
 			$this->errors = array_merge($this->errors, $validator->getErrors());
