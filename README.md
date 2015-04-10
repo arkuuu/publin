@@ -4,29 +4,29 @@ Publin allows you to upload and manage scholarly publications and expose them to
 
 About the Project
 ======
-This is a student project by Arne K. for his bachelor thesis at the University of Luebeck.
-View the thesis here: http://www.ifis.uni-luebeck.de/index.php?id=363 
+This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the thesis [here](http://www.ifis.uni-luebeck.de/index.php?id=363)
 
 Planned Features (WIP)
 ======
 * [x] Submit publications, via web form or BibTeX import
 * [x] Edit publication and author metadata
 * [x] Browse and view publications, authors, journals etc
-* [ ] Search function (full text search)
-* [ ] Full text file up- and download
+* [x] Search function
+* [x] Full text file up- and download
 * [x] Export publications to various formats (e.g. BibTeX, RIS, ...)
 * [x] Meta tag support for getting indexed by search engines (e.g. Dublin Core, HighwirePress Tags)
 * [x] Modular system for easy extension of export, import or meta tag formats
 * [ ] CSL style support for viewing and exporting citations
-* [ ] OAI-PMH interface for being able to register as OAI Data Provider
+* [x] OAI-PMH interface for being able to register as OAI Data Provider
 * [x] User authentication and authorization system with assignable roles and permissions
 * [x] Template system for easy customization of the user interface (using HTML&CSS)
-* [ ] ...
 
 Requirements (WIP)
 ======
 A web server with:
 * PHP >= 5.3.14
+  * extension `mbstring`
+  * extension `fileinfo`
 * MySQL >= 5.5.38
 
 Additional Notes
