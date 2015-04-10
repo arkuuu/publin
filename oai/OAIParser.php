@@ -48,6 +48,7 @@ class OAIParser {
 
 		$this->db = new PDODatabase();
 		mb_internal_encoding('utf8');
+		date_default_timezone_set('UTC');
 	}
 
 
