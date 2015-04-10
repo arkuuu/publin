@@ -239,6 +239,7 @@ VALUES
 
 			case 'incollection':
 			case 'inproceedings':
+			case 'inbook':
 				$validator->addRule('booktitle', 'text', true, 'Booktitle is required but invalid');
 				break;
 

@@ -98,6 +98,7 @@ class RIS {
 				return 'CONF';
 				break;
 			case 'incollection':
+			case 'inbook':
 				return 'CHAP';
 				break;
 			case 'book':

@@ -72,6 +72,7 @@ class CSLJson {
 				return 'paper-conference';
 				break;
 			case 'incollection':
+			case 'inbook':
 				return 'chapter';
 				break;
 			case 'book':
