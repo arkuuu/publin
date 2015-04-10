@@ -4,6 +4,7 @@ namespace publin\src;
 
 use BadMethodCallException;
 use Exception;
+use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\PermissionRequiredException;
 
 class SubmitController {
@@ -168,6 +169,13 @@ class SubmitController {
 					$publication_model->addKeyword($publication_id, $keyword_id);
 				}
 				//$this->db->commitTransaction();
+			}
+			catch (DBDuplicateEntryException $e) {
+				//$this->db->cancelTransaction();
+				// TODO make single error messages for each case
+				$this->errors[] = 'A publication with this name already exists or you tried to add the same author or keyword to this publication twice';
+
+				return false;
 			}
 			catch (Exception $e) {
 				//$this->db->cancelTransaction();
