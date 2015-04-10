@@ -176,7 +176,7 @@ class SubmitController {
 
 			unset($_SESSION['input']);
 
-			Controller::redirect('?p=publication&id='.$publication_id);
+			Controller::redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
 
 			return true;
 		}

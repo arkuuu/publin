@@ -57,7 +57,7 @@ class Controller {
 			}
 		}
 		catch (LoginRequiredException $e) {
-			$this->redirect('?p=login', $request->getUrl());
+			$this->redirect($request->createUrl(array('p' => 'login')));
 
 			return 'Redirecting to login page';
 		}
@@ -94,14 +94,14 @@ class Controller {
 	}
 
 
-	public static function redirect($destination, $referrer = '') {
+	public static function redirect($destination) {
 
 		if (!isset($_SESSION)) {
 			session_start();
 		}
-		$_SESSION['referrer'] = $referrer;
+		$_SESSION['referrer'] = Request::getUrl();
 
-		header('Location: '.Config::ROOT_URL.$destination, true);
+		header('Location: '.$destination, true);
 		exit();
 	}
 
@@ -224,8 +224,8 @@ class Controller {
 			$password = Validator::sanitizeText($request->post('password'));
 			if ($this->auth->login($username, $password)) {
 
-				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : '';
-				$this->redirect($destination, $request->getUrl());
+				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : Request::createUrl();
+				$this->redirect($destination);
 			}
 			else {
 				$errors[] = 'Invalid user name or password';

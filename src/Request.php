@@ -16,10 +16,11 @@ class Request {
 	}
 
 
-	public static function createUrl(array $parameters) {
+	public static function createUrl(array $parameters = array()) {
 
 		$url = http_build_query($parameters);
-		if (empty($url)) {
+
+		if (!$url) {
 			return Config::ROOT_URL;
 		}
 		else {
