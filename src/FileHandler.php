@@ -13,29 +13,7 @@ use publin\src\exceptions\FileHandlerException;
  * @package publin\src
  */
 class FileHandler {
-
-	/**
-	 * The location where the uploaded files will be stored.
-	 * Set this to somewhere outside the web-accessible folders of your server.
-	 *
-	 * @var string
-	 */
-	const PATH = '/Applications/MAMP/uploads/';
-
-	/**
-	 * Optional prefix for file names.
-	 *
-	 * @var string
-	 */
-	const PREFIX = 'publin_';
-
-	/**
-	 * Maximum file size. Also check your php.ini for maximum file size.
-	 *
-	 * @var int
-	 */
-	const MAX_SIZE = 200; //TODO: not working!
-
+	
 
 	/**
 	 * @param array $file
@@ -58,7 +36,7 @@ class FileHandler {
 
 			if (self::getFileExtension($file['tmp_name'])) {
 				$file_name = self::generateFileName();
-				$success = move_uploaded_file($file['tmp_name'], self::PATH.$file_name);
+				$success = move_uploaded_file($file['tmp_name'], Config::FILE_PATH.$file_name);
 
 				if (!$success) {
 					throw new FileHandlerException('Error while uploading file to server');
@@ -76,7 +54,7 @@ class FileHandler {
 		}
 		else if ($file['error'] === UPLOAD_ERR_INI_SIZE
 			|| $file['error'] === UPLOAD_ERR_FORM_SIZE
-			|| $file['size'] > self::MAX_SIZE
+			|| $file['size'] > Config::FILE_MAX_SIZE
 		) {
 			throw new FileHandlerException('File is too big');
 		}
@@ -144,9 +122,9 @@ class FileHandler {
 	private static function generateFileName() {
 
 		do {
-			$file_name = uniqid(self::PREFIX, true);
+			$file_name = uniqid(Config::FILE_NAME_PREFIX, true);
 		}
-		while (file_exists(self::PATH.$file_name));
+		while (file_exists(Config::FILE_PATH.$file_name));
 
 		return $file_name;
 	}
@@ -161,7 +139,7 @@ class FileHandler {
 	public static function download($file_name, $download_name = 'file') {
 
 		$file_name = pathinfo($file_name, PATHINFO_BASENAME);
-		$file = self::PATH.$file_name;
+		$file = Config::FILE_PATH.$file_name;
 
 		if (file_exists($file)) {
 
@@ -189,7 +167,7 @@ class FileHandler {
 	public static function delete($file_name) {
 
 		$file_name = pathinfo($file_name, PATHINFO_BASENAME);
-		$file = self::PATH.$file_name;
+		$file = Config::FILE_PATH.$file_name;
 
 		if (file_exists($file)) {
 			if (unlink($file)) {

@@ -13,6 +13,7 @@ use publin\oai\exceptions\IdDoesNotExistException;
 use publin\oai\exceptions\NoMetadataFormatsException;
 use publin\oai\exceptions\NoRecordsMatchException;
 use publin\oai\exceptions\NoSetHierarchyException;
+use publin\src\Config;
 use publin\src\KeywordRepository;
 use publin\src\PDODatabase;
 use publin\src\Publication;
@@ -22,15 +23,15 @@ use UnexpectedValueException;
 
 class OAIParser {
 
-	private $use_stylesheet = true;
+	private $use_stylesheet = Config::OAI_USE_XSLT;
 	private $db;
-	private $valid_days = 1;
-	private $sets_per_request = 10;
-	private $records_per_request = 5;
-	private $repositoryName = 'publin Uni Luebeck';
-	private $repositoryIdentifier = 'de.localhost';
-	private $baseURL = 'http://localhost/publin/oai/';
-	private $adminEmail = array('test@localhost', 'test@web.de');
+	private $valid_days = Config::OAI_RESUMPTION_TOKEN_DAYS_VALID;
+	private $sets_per_request = Config::OAI_SETS_PER_REQUEST;
+	private $records_per_request = Config::OAI_RECORDS_PER_REQUEST;
+	private $repositoryName = Config::OAI_REPOSITORY_NAME;
+	private $repositoryIdentifier = Config::OAI_REPOSITORY_IDENTIFIER;
+	private $baseURL = Config::OAI_BASE_URL;
+	private $adminEmail = array(Config::OAI_ADMIN_EMAIL, 'test@web.de');
 	private $metadataFormats = array(
 		'oai_dc' => array(
 			'metadataPrefix'    => 'oai_dc',

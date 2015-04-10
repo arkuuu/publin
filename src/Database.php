@@ -11,14 +11,6 @@ use publin\src\exceptions\DBForeignKeyException;
 
 class Database extends mysqli {
 
-	const HOST = 'localhost';
-	const READONLY_USER = 'readonly';
-	const READONLY_PASSWORD = 'readonly';
-	const WRITEONLY_USER = 'root';
-	const WRITEONLY_PASSWORD = 'root';
-	const DATABASE = 'dev';
-	const CHARSET = 'utf8';
-
 
 	/**
 	 * @throws DBException
@@ -26,17 +18,17 @@ class Database extends mysqli {
 	public function __construct() {
 
 		/* Calls the constructor of mysqli and creates a connection */
-		parent::__construct(self::HOST,
-							self::READONLY_USER,
-							self::READONLY_PASSWORD,
-							self::DATABASE);
+		parent::__construct(Config::SQL_HOST,
+							Config::SQL_USER,
+							Config::SQL_PASSWORD,
+							Config::SQL_DATABASE);
 
 		/* Stops if the connection cannot be established */
 		if ($this->connect_errno) {
 			throw new DBException($this->connect_error);
 		}
 		/* Sets the charset used for transmission */
-		parent::set_charset(self::CHARSET);
+		parent::set_charset('utf8');
 	}
 
 
@@ -89,9 +81,9 @@ class Database extends mysqli {
 
 	public function changeToWriteUser() {
 
-		$success = parent::change_user(self::WRITEONLY_USER,
-									   self::WRITEONLY_PASSWORD,
-									   self::DATABASE);
+		$success = parent::change_user(Config::SQL_USER,
+									   Config::SQL_PASSWORD,
+									   Config::SQL_DATABASE);
 
 		if ($success && empty($this->error)) {
 			return true;

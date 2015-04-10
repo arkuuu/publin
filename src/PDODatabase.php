@@ -11,11 +11,6 @@ use publin\src\exceptions\DBForeignKeyException;
 
 class PDODatabase {
 
-	const HOST = 'localhost';
-	const USER = 'root';
-	const PASSWORD = 'root';
-	const DATABASE = 'dev';
-	const CHARSET = 'UTF8';
 
 	/**
 	 * @var PDO
@@ -29,17 +24,17 @@ class PDODatabase {
 
 	public function __construct() {
 
-		$dsn = 'mysql:host='.self::HOST.';dbname='.self::DATABASE.';charset='.self::CHARSET;
+		$dsn = 'mysql:host='.Config::SQL_HOST.';dbname='.Config::SQL_DATABASE.';charset=UTF8';
 		$options = array(
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 			//PDO::ATTR_PERSISTENT => false,
 			//PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 		);
 
-		$this->pdo = new PDO($dsn, self::USER, self::PASSWORD, $options);
+		$this->pdo = new PDO($dsn, Config::SQL_USER, Config::SQL_PASSWORD, $options);
 
 		if (version_compare(PHP_VERSION, '5.3.6', '<')) {
-			$this->pdo->exec('SET NAMES '.self::CHARSET);
+			$this->pdo->exec('SET NAMES UTF8');
 		}
 	}
 
@@ -67,7 +62,6 @@ class PDODatabase {
 		$this->stmt = $this->pdo->prepare($query);
 
 		return $this->stmt;
-
 	}
 
 

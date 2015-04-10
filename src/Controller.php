@@ -9,8 +9,6 @@ use publin\src\exceptions\PermissionRequiredException;
 
 class Controller {
 
-	const BASE_URL = '/publin/';
-
 	private $db;
 	private $auth;
 
@@ -21,8 +19,7 @@ class Controller {
 	 */
 	public function __construct() {
 
-		mb_internal_encoding('utf8');
-		date_default_timezone_set('Europe/Berlin');
+		Config::setup();
 
 		$this->db = new PDODatabase();
 		// TODO: catch exception here
@@ -104,7 +101,7 @@ class Controller {
 		}
 		$_SESSION['referrer'] = $referrer;
 
-		header('Location: '.self::BASE_URL.$destination, true);
+		header('Location: '.Config::ROOT_URL.$destination, true);
 		exit();
 	}
 
