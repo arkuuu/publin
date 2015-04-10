@@ -3,6 +3,8 @@
 
 namespace publin\src;
 
+use publin\src\exceptions\NotFoundException;
+
 class StudyFieldController {
 
 	private $db;

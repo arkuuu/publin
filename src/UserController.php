@@ -74,7 +74,9 @@ class UserController {
 			return false;
 		}
 
-		return $this->model->delete($this->user->getId());
+		$this->model->delete($this->user->getId());
+		Controller::redirect(Request::createUrl(array('p' => 'logout')));
+		exit;
 	}
 
 

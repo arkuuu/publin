@@ -276,16 +276,15 @@ class PublicationController {
 		}
 
 		$confirmed = Validator::sanitizeBoolean($request->post('delete'));
-		if ($confirmed) {
-			$this->model->delete($id);
-
-			return true;
-		}
-		else {
+		if (!$confirmed) {
 			$this->errors[] = 'Please confirm the deletion';
 
 			return false;
 		}
+
+		$this->model->delete($id);
+		Controller::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
+		exit;
 	}
 
 
