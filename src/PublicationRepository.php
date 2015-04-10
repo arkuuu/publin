@@ -29,9 +29,10 @@ class PublicationRepository extends Repository {
 			$this->join($table, 'publication_id', '=', 'id');
 		}
 		else if ($column === 'keyword_name') {
-			$column = 'name';
+			$this->join('publications_keywords', 'publication_id', '=', 'id');
+			$this->join .= ' JOIN `keywords` ON (`publications_keywords`.`keyword_id` = `keywords`.`id`)';
 			$table = 'keywords';
-			// TODO
+			$column = 'name';
 		}
 		else {
 			$table = 'self';

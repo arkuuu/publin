@@ -20,10 +20,10 @@ class Request {
 
 		$url = http_build_query($parameters);
 		if (empty($url)) {
-			return '';
+			return Config::ROOT_URL;
 		}
 		else {
-			return '?'.$url;
+			return Config::ROOT_URL.'?'.$url;
 		}
 	}
 

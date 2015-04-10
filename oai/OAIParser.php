@@ -3,6 +3,7 @@
 
 namespace publin\oai;
 
+use DateTime;
 use DOMDocument;
 use DOMElement;
 use publin\oai\exceptions\BadArgumentException;
@@ -25,13 +26,13 @@ class OAIParser {
 
 	private $use_stylesheet = Config::OAI_USE_XSLT;
 	private $db;
-	private $valid_days = Config::OAI_RESUMPTION_TOKEN_DAYS_VALID;
+	private $token_valid_days = Config::OAI_RESUMPTION_TOKEN_DAYS_VALID;
 	private $sets_per_request = Config::OAI_SETS_PER_REQUEST;
 	private $records_per_request = Config::OAI_RECORDS_PER_REQUEST;
 	private $repositoryName = Config::OAI_REPOSITORY_NAME;
 	private $repositoryIdentifier = Config::OAI_REPOSITORY_IDENTIFIER;
 	private $baseURL = Config::OAI_BASE_URL;
-	private $adminEmail = array(Config::OAI_ADMIN_EMAIL, 'test@web.de');
+	private $adminEmail = array(Config::OAI_ADMIN_EMAIL);
 	private $metadataFormats = array(
 		'oai_dc' => array(
 			'metadataPrefix'    => 'oai_dc',
@@ -55,38 +56,47 @@ class OAIParser {
 		try {
 			$this->cleanResumptionTokens();
 
-			switch ($request->get('verb')) {
-				case 'Identify':
+			$verb = $request->get('verb') ? $request->get('verb') : $request->post('verb');
+			$resumptionToken = $request->get('resumptionToken') ? $request->get('resumptionToken') : $request->post('resumptionToken');
+			$metadataPrefix = $request->get('metadataPrefix') ? $request->get('metadataPrefix') : $request->post('metadataPrefix');
+			$from = $request->get('from') ? $request->get('from') : $request->post('from');
+			$until = $request->get('until') ? $request->get('until') : $request->post('until');
+			$set = $request->get('set') ? $request->get('set') : $request->post('set');
+			$identifier = $request->get('identifier') ? $request->get('identifier') : $request->post('identifier');
+
+			switch (true) {
+
+				case $verb === 'Identify':
 					$xml = $this->identify();
 					break;
 
-				case 'ListMetadataFormats':
+				case $verb === 'ListMetadataFormats':
 					$xml = $this->listMetadataFormats();
 					break;
 
-				case 'ListSets':
-					$xml = $this->listSets($request->get('resumptionToken'));
+				case $verb === 'ListSets':
+					$xml = $this->listSets($resumptionToken);
 					break;
 
-				case 'ListIdentifiers':
-					$xml = $this->listIdentifiers($request->get('metadataPrefix'),
-												  $request->get('from'),
-												  $request->get('until'),
-												  $request->get('set'),
-												  $request->get('resumptionToken'));
+				case $verb === 'ListIdentifiers':
+					$xml = $this->listIdentifiers($metadataPrefix,
+												  $from,
+												  $until,
+												  $set,
+												  $resumptionToken);
 					break;
 
-				case 'ListRecords':
-					$xml = $this->listRecords($request->get('metadataPrefix'),
-											  $request->get('from'),
-											  $request->get('until'),
-											  $request->get('set'),
-											  $request->get('resumptionToken'));
+				case $verb === 'ListRecords':
+					$xml = $this->listRecords($metadataPrefix,
+											  $from,
+											  $until,
+											  $set,
+											  $resumptionToken);
 					break;
 
-				case 'GetRecord':
-					$xml = $this->getRecord($request->get('identifier'),
-											$request->get('metadataPrefix'));
+				case $verb === 'GetRecord':
+					$xml = $this->getRecord($identifier,
+											$metadataPrefix);
 					break;
 
 				default:
@@ -119,13 +129,16 @@ class OAIParser {
 			$xml = $this->createErrorResponse('noSetHierarchy');
 		}
 
+		$xml->preserveWhiteSpace = false;
+		$xml->formatOutput = true;
+
 		return $xml->saveXML();
 	}
 
 
 	private function cleanResumptionTokens() {
 
-		$query = 'DELETE FROM `oai_tokens` WHERE `created` < NOW() - INTERVAL '.$this->valid_days.' DAY;';
+		$query = 'DELETE FROM `oai_tokens` WHERE `created` < NOW() - INTERVAL '.$this->token_valid_days.' DAY;';
 
 		return $this->db->executeAndReturnAffectedRows($query);
 	}
@@ -151,6 +164,8 @@ class OAIParser {
 		$identify->appendChild($description);
 
 		$oai_identifier = $xml->createElement('oai-identifier');
+		$oai_identifier->setAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/oai-identifier');
+		$oai_identifier->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 		$oai_identifier->setAttribute('xsi:schemaLocation',
 									  'http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd');
 		$description->appendChild($oai_identifier);
@@ -188,7 +203,7 @@ class OAIParser {
 		$oai->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 		$oai->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
 		$xml->appendChild($oai);
-		$oai->appendChild($xml->createElement('responseDate', date('Y-m-d')));
+		$oai->appendChild($xml->createElement('responseDate', date('Y-m-d\TH:i:s\Z')));
 
 		$request_element = $xml->createElement('request', $this->baseURL);
 		foreach ($request as $name => $value) {
@@ -222,7 +237,7 @@ class OAIParser {
 	}
 
 
-	public function listSets($resumptionToken = '') {
+	public function listSets($resumptionToken = null) {
 
 		if ($resumptionToken) {
 			$token = $this->fetchResumptionToken($resumptionToken);
@@ -240,7 +255,7 @@ class OAIParser {
 		$xml = new DOMDocument('1.0', 'UTF-8');
 
 		$listSets = $xml->createElement('ListSets');
-		$sets = $this->fetchSets();
+		$sets = $this->fetchSets($cursor);
 		foreach ($sets as $data) {
 			$set = $xml->createElement('set');
 			$set->appendChild($xml->createElement('setSpec', $data['setSpec']));
@@ -252,7 +267,8 @@ class OAIParser {
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken(null, null, null, null, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
-			$resumptionToken_element->setAttribute('cursor', $newCursor);
+			$resumptionToken_element->setAttribute('expirationDate', date('Y-m-d\TH:i:s\Z', strtotime('+'.$this->token_valid_days.' days')));
+			$resumptionToken_element->setAttribute('cursor', $cursor);
 			$resumptionToken_element->setAttribute('completeListSize', $completeListSize);
 			$listSets->appendChild($resumptionToken_element);
 		}
@@ -299,7 +315,9 @@ class OAIParser {
 		$sets = array();
 
 		foreach ($keywords as $keyword) {
-			$sets[] = array('setSpec' => $keyword->getName(),
+			$setSpec = str_replace(' ', '_', $keyword->getName());
+			$setSpec = strtolower($setSpec);
+			$sets[] = array('setSpec' => $setSpec,
 							'setName' => $keyword->getName());
 		}
 
@@ -337,15 +355,24 @@ class OAIParser {
 			$completeListSize = $token['completeListSize'];
 		}
 		else {
-			if (!$metadataPrefix) {
-				throw new BadArgumentException;
-			}
-			if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
-				throw new CannotDisseminateFormatException;
-			}
-
 			$cursor = 0;
 			$completeListSize = $this->countRecords($from, $until, $set);
+		}
+
+		if (!$metadataPrefix) {
+			throw new BadArgumentException;
+		}
+		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+			throw new CannotDisseminateFormatException;
+		}
+		if ($from && !$this->validateDate($from)) {
+			throw new BadArgumentException;
+		}
+		if ($until && !$this->validateDate($until)) {
+			throw new BadArgumentException;
+		}
+		if ($completeListSize == 0) {
+			throw new NoRecordsMatchException;
 		}
 
 		$publications = $this->fetchRecords($from, $until, $set, $cursor);
@@ -362,7 +389,8 @@ class OAIParser {
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken($metadataPrefix, $from, $until, $set, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
-			$resumptionToken_element->setAttribute('cursor', $newCursor);
+			$resumptionToken_element->setAttribute('expirationDate', date('Y-m-d\TH:i:s\Z', strtotime('+'.$this->token_valid_days.' days')));
+			$resumptionToken_element->setAttribute('cursor', $cursor);
 			$resumptionToken_element->setAttribute('completeListSize', $completeListSize);
 			$listIdentifiers->appendChild($resumptionToken_element);
 		}
@@ -389,10 +417,19 @@ class OAIParser {
 			$repo->where('date_added', '<=', $until.' 23:59:59');
 		}
 		if ($set) {
-			//$repo->where();
+			$set = str_replace('_', ' ', $set);
+			$repo->where('keyword_name', '=', $set);
 		}
 
 		return $repo->count();
+	}
+
+
+	private function validateDate($date) {
+
+		$d = DateTime::createFromFormat('Y-m-d', $date);
+
+		return $d && $d->format('Y-m-d') == $date;
 	}
 
 
@@ -407,12 +444,13 @@ class OAIParser {
 			$repo->where('date_added', '<=', $until.' 23:59:59');
 		}
 		if ($set) {
-			//$repo->where();
+			$set = str_replace('_', ' ', $set);
+			$repo->where('keyword_name', '=', $set);
 		}
 		$repo->order('date_added', 'DESC');
 		$repo->limit($this->records_per_request, (int)$offset);
 
-		return $repo->find();
+		return $repo->find(true);
 	}
 
 
@@ -420,19 +458,21 @@ class OAIParser {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
 		$header = $xml->createElement('header');
-		$header->appendChild($xml->createElement('identifier', $publication->getId()));
+		$header->appendChild($xml->createElement('identifier', 'oai:'.$this->repositoryIdentifier.':'.$publication->getId()));
 		$header->appendChild($xml->createElement('datestamp', $publication->getDateAdded('Y-m-d')));
 
 		$keywords = $publication->getKeywords();
 		foreach ($keywords as $keyword) {
-			$header->appendChild($xml->createElement('setSpec', $keyword->getName()));
+			$setSpec = str_replace(' ', '_', $keyword->getName());
+			$setSpec = strtolower($setSpec);
+			$header->appendChild($xml->createElement('setSpec', $setSpec));
 		}
 
 		return $header;
 	}
 
 
-	public function listRecords($metadataPrefix, $from, $until, $set, $resumptionToken) {
+	public function listRecords($metadataPrefix, $from = null, $until = null, $set = null, $resumptionToken = null) {
 
 		if ($resumptionToken) {
 			$token = $this->fetchResumptionToken($resumptionToken);
@@ -447,15 +487,24 @@ class OAIParser {
 			$completeListSize = $token['completeListSize'];
 		}
 		else {
-			if (!$metadataPrefix) {
-				throw new BadArgumentException;
-			}
-			if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
-				throw new CannotDisseminateFormatException;
-			}
-
 			$cursor = 0;
 			$completeListSize = $this->countRecords($from, $until, $set);
+		}
+
+		if (!$metadataPrefix) {
+			throw new BadArgumentException;
+		}
+		if (!array_key_exists($metadataPrefix, $this->metadataFormats)) {
+			throw new CannotDisseminateFormatException;
+		}
+		if ($from && !$this->validateDate($from)) {
+			throw new BadArgumentException;
+		}
+		if ($until && !$this->validateDate($until)) {
+			throw new BadArgumentException;
+		}
+		if ($completeListSize == 0) {
+			throw new NoRecordsMatchException;
 		}
 
 		$publications = $this->fetchRecords($from, $until, $set, $cursor);
@@ -472,7 +521,8 @@ class OAIParser {
 		if ($newCursor < $completeListSize) {
 			$newToken = $this->storeResumptionToken($metadataPrefix, $from, $until, $set, $newCursor, $completeListSize);
 			$resumptionToken_element = $xml->createElement('resumptionToken', $newToken);
-			$resumptionToken_element->setAttribute('cursor', $newCursor);
+			$resumptionToken_element->setAttribute('expirationDate', date('Y-m-d\TH:i:s\Z', strtotime('+'.$this->token_valid_days.' days')));
+			$resumptionToken_element->setAttribute('cursor', $cursor);
 			$resumptionToken_element->setAttribute('completeListSize', $completeListSize);
 			$listRecords->appendChild($resumptionToken_element);
 		}
@@ -506,7 +556,7 @@ class OAIParser {
 		$metadata = $xml->createElement('metadata');
 		$oai_dc = $xml->createElement('oai_dc:dc');
 		$oai_dc->setAttribute('xmlns:oai_dc', 'http://www.openarchives.org/OAI/2.0/oai_dc/');
-		$oai_dc->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1');
+		$oai_dc->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1/');
 		$oai_dc->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 		$oai_dc->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
 		$metadata->appendChild($oai_dc);
@@ -528,19 +578,20 @@ class OAIParser {
 
 		if ($metadataPrefix == 'oai_dc') {
 			$fields = array();
-			$fields[] = array('dc:type', 'Text');
+
 			$fields[] = array('dc:title', $publication->getTitle());
 			foreach ($publication->getAuthors() as $author) {
 				if ($author->getLastName() && $author->getFirstName()) {
-					$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName(true));
+					$fields[] = array('dc:creator', $author->getLastName().', '.$author->getFirstName());
 				}
 			}
 			$fields[] = array('dc:description', $publication->getAbstract());
 			$fields[] = array('dc:date', $publication->getDatePublished('Y'));
-			//$fields[] = array('dcterms:bibliographicCitation', false); // TODO
 			$fields[] = array('dc:publisher', $publication->getPublisher());
-			$fields[] = array('dc:identifier', $publication->getDoi());
+			$fields[] = array('dc:type', 'Text');
 			$fields[] = array('dc:rights', $publication->getCopyright());
+			$fields[] = array('dc:identifier', $publication->getDoi());
+			$fields[] = array('dc:identifier', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId())));
 
 			return $fields;
 		}
@@ -561,6 +612,12 @@ class OAIParser {
 		}
 
 		$repo = new PublicationRepository($this->db);
+		$identifier = explode(':', $identifier);
+		if (!isset($identifier[2])) {
+			throw new IdDoesNotExistException;
+		}
+		$identifier = $identifier[2];
+
 		$publications = $repo->select()->where('id', '=', $identifier)->find();
 
 		if (count($publications) == 0) {

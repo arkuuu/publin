@@ -16,10 +16,6 @@ spl_autoload_register(function ($class) {
 	}
 });
 
-if (empty($_GET['verb'])) {
-	$_GET['verb'] = 'Identify';
-}
-
 header('Content-type: text/xml; charset=utf-8');
 $request = new Request();
 $parser = new OAIParser();
