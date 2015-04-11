@@ -619,7 +619,7 @@ class OAIParser {
 		}
 		$identifier = $identifier[2];
 
-		$publications = $repo->select()->where('id', '=', $identifier)->find();
+		$publications = $repo->select()->where('id', '=', $identifier)->find(true);
 
 		if (count($publications) == 0) {
 			throw new IdDoesNotExistException;
