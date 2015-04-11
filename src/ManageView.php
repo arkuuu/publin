@@ -140,12 +140,12 @@ class ManageView extends View {
 	<form action="#" method="post" accept-charset="utf-8">
 		<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'">
 		<input type="hidden" name="action" value="deleteUser">
-		<input type="submit" value="Delete">
+		<input type="submit" value="Delete" onclick="return confirm(\'Do you really want to delete the user '.$this->html($user->getName()).'?\')">
 	</form>
 	<form action="#" method="post" accept-charset="utf-8">
 		<input type="hidden" name="user_id" value="'.$this->html($user->getId()).'">
 		<input type="hidden" name="action" value="sendNewPassword">
-		<input type="submit" value="Send new password">
+		<input type="submit" value="Send new password" onclick="return confirm(\'Do you really want to reset the password of user '.$this->html($user->getName()).'?\\nThe user will receive an email with a new temporary password.\')">
 	</form>
 </td>
 </tr>';

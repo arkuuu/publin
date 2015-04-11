@@ -83,15 +83,17 @@ class SubmitView extends View {
 
 		if (isset($field2)) {
 			if (isset($field3)) {
-				return isset($_SESSION['input'][$field][$field2][$field3]) ? $_SESSION['input'][$field][$field2][$field3] : false;
+				$string = isset($_SESSION['input'][$field][$field2][$field3]) ? $_SESSION['input'][$field][$field2][$field3] : false;
 			}
 			else {
-				return isset($_SESSION['input'][$field][$field2]) ? $_SESSION['input'][$field][$field2] : false;
+				$string = isset($_SESSION['input'][$field][$field2]) ? $_SESSION['input'][$field][$field2] : false;
 			}
 		}
 		else {
-			return isset($_SESSION['input'][$field]) ? $_SESSION['input'][$field] : false;
+			$string = isset($_SESSION['input'][$field]) ? $_SESSION['input'][$field] : false;
 		}
+
+		return $this->html(stripslashes($string));
 	}
 
 

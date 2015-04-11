@@ -63,48 +63,39 @@ class AuthorView extends ViewWithPublications {
 	}
 
 
-	public function showGivenName() {
-
-		return $this->html($this->author->getFirstName());
-	}
-
-
-	public function showFamilyName() {
-
-		return $this->html($this->author->getLastName());
-	}
-
-
-	/**
-	 * Shows the author's website.
-	 *
-	 * @return    string
-	 */
-	public function showWebsite() {
-
-		return $this->html($this->author->getWebsite());
-	}
-
-
 	/**
 	 * Shows the author's contact info.
 	 *
-	 * @return    string
+	 * @param bool $nl2br
+	 *
+	 * @return string
 	 */
-	public function showContact() {
+	public function showContact($nl2br = true) {
 
-		return nl2br($this->html($this->author->getContact()));
+		if ($nl2br) {
+			return nl2br($this->html($this->author->getContact()));
+		}
+		else {
+			return $this->html($this->author->getContact());
+		}
 	}
 
 
 	/**
 	 * Shows the author's text.
 	 *
-	 * @return    string
+	 * @param bool $nl2br
+	 *
+	 * @return string
 	 */
-	public function showAbout() {
+	public function showAbout($nl2br = true) {
 
-		return nl2br($this->html($this->author->getAbout()));
+		if ($nl2br) {
+			return nl2br($this->html($this->author->getAbout()));
+		}
+		else {
+			return $this->html($this->author->getAbout());
+		}
 	}
 
 
@@ -126,27 +117,25 @@ class AuthorView extends ViewWithPublications {
 	}
 
 
-	public function showEditForm() {
+	public function showGivenName() {
 
-		return '<form action="#" method="post" accept-charset="utf-8">
-	<label for="given">Given Name:</label>
-	<input type="text" name="given" id="given" value="'.$this->author->getFirstName().'"/>
-	<br/>
-	<label for="family">Family Name:</label>
-	<input type="text" name="family" id="family" value="'.$this->author->getLastName().'"/>
-	<br/>
-	<label for="website">Website:</label>
-	<input type="text" name="website" id="website" value="'.$this->author->getWebsite().'"/>
-	<br/>
-	<label for="contact">Contact:</label>
-	<textarea name="contact" id="contact" rows="5" cols="50">'.$this->author->getContact().'</textarea>
-	<br/>
-	<label for="about">About:</label>
-	<textarea name="about" id="about" rows="5" cols="50">'.$this->author->getAbout().'</textarea>
-	<br/>
-	<input type="hidden" name="action" value="edit"/>
-	<input type="submit" value="Update"/>
-	<input type="reset" value="Reset changes"/>
-</form>';
+		return $this->html($this->author->getFirstName());
+	}
+
+
+	public function showFamilyName() {
+
+		return $this->html($this->author->getLastName());
+	}
+
+
+	/**
+	 * Shows the author's website.
+	 *
+	 * @return    string
+	 */
+	public function showWebsite() {
+
+		return $this->html($this->author->getWebsite());
 	}
 }

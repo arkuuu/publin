@@ -47,6 +47,7 @@
 	<form action="#" method="post" accept-charset="utf-8">
 
 		<h2>Details</h2>
+
 		<p>More Information to come here.</p>
 
 		<label for="type">Type:</label>
@@ -59,6 +60,10 @@
 		</select><br/>
 		<label for="title">Title:</label>
 		<input type="text" name="title" id="title" maxlength="200" value="<?php echo $this->show('title') ?>"/>
+		<br/>
+		<label for="date_published">Date:</label>
+		<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
+			   value="<?php echo $this->show('date_published') ?>"/>
 		<br/>
 		<label for="journal">Journal:</label>
 		<input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this->show('journal') ?>"/>
@@ -80,9 +85,9 @@
 		<input type="text" name="edition" id="edition" value="<?php echo $this->show('edition') ?>"/>
 		<br/>
 		<label for="pages_from">Pages:</label>
-		<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12"
+		<input type="number" name="pages_from" id="pages_from" min="0"
 			   value="<?php echo $this->show('pages_from') ?>"/>
-		<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23"
+		<input type="number" name="pages_to" id="pages_to" min="0"
 			   value="<?php echo $this->show('pages_to') ?>"/>
 		<br/>
 		<label for="note">Note:</label>
@@ -90,10 +95,6 @@
 		<br/>
 		<label for="location">Location:</label>
 		<input type="text" name="location" id="location" maxlength="200" value="<?php echo $this->show('location') ?>"/>
-		<br/>
-		<label for="date_published">Date:</label>
-		<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
-			   value="<?php echo $this->show('date_published') ?>"/>
 		<br/>
 		<label for="publisher">Publisher:</label>
 		<input type="text" name="publisher" id="publisher" maxlength="200"
@@ -128,7 +129,9 @@
 		<br/>
 
 		<h2>Authors</h2>
+
 		<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
+
 		<div class="multi-field-wrapper">
 			<ul class="multi-fields">
 				<?php echo $this -> listAuthors() ?>
@@ -137,8 +140,10 @@
 		</div>
 
 		<h2>Keywords</h2>
+
 		<p>More information to come here. <a href="?p=browse&amp;by=keyword" target="_blank">Show list of keywords</a>
 		</p>
+
 		<div class="multi-field-wrapper">
 			<ul class="multi-fields">
 				<?php echo $this -> listKeywords() ?>
@@ -147,6 +152,7 @@
 		</div>
 
 		<h2>Submit</h2>
+
 		<p>More information will follow.</p>
 		<input type="hidden" name="action" value="submit"/>
 		<input type="submit" value="Submit"/>

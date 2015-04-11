@@ -37,19 +37,13 @@ class PublicationView extends View {
 	}
 
 
-	public function showLinkToSelf($mode = '') {
+	public function showLinkToSelf($mode = null) {
 
-		$url = '?p=publication&id=';
-		$mode_url = '&m='.$mode;
-		//$url = Request::createUrl(array('p' => 'publication', 'm' => $mode, 'id' => $this->publication->getId()));
-		//return $url;
-
-		if (empty($mode)) {
-			return $this->html($url.$this->publication->getId());
-		}
-		else {
-			return $this->html($url.$this->publication->getId().$mode_url);
-		}
+		return $this->html(Request::createUrl(array(
+												  'p'  => 'publication',
+												  'm'  => $mode,
+												  'id' => $this->publication->getId()
+											  )));
 	}
 
 
@@ -157,22 +151,19 @@ class PublicationView extends View {
 	/**
 	 * Shows the publication's type.
 	 *
-	 * @return    string
+	 * @param bool $link
+	 *
+	 * @return string
 	 */
-	public function showType() {
+	public function showType($link = true) {
 
-		$url = '?p=browse&by=type&id=';
-		$id = $this->publication->getTypeId();
-		$name = $this->publication->getTypeName();
+		if ($link) {
+			$url = Request::createUrl(array('p' => 'type', 'id' => $this->publication->getTypeId()));
 
-		if ($id && $name) {
-			return '<a href="'.$this->html($url.$id).'">'.$this->html($name).'</a>';
-		}
-		else if ($name) {
-			return $this->html($name);
+			return '<a href="'.$this->html($url).'">'.$this->html($this->publication->getTypeName()).'</a>';
 		}
 		else {
-			return false;
+			return $this->html($this->publication->getTypeName());
 		}
 	}
 
@@ -250,11 +241,18 @@ class PublicationView extends View {
 	/**
 	 * Shows the publication's abstract.
 	 *
-	 * @return    string
+	 * @param bool $nl2br
+	 *
+	 * @return string
 	 */
-	public function showAbstract() {
+	public function showAbstract($nl2br = true) {
 
-		return nl2br($this->html($this->publication->getAbstract()));
+		if ($nl2br) {
+			return nl2br($this->html($this->publication->getAbstract()));
+		}
+		else {
+			return $this->html($this->publication->getAbstract());
+		}
 	}
 
 
@@ -379,82 +377,6 @@ class PublicationView extends View {
 	}
 
 
-	public function showEditForm() {
-
-		$string = '<form action="#" method="post" accept-charset="utf-8">
-	<label for="title">Title:</label>
-	<input type="text" name="title" id="title" maxlength="200" value="'.$this->publication->getTitle().'"/>
-	<br/>
-	<label for="journal">Journal:</label>
-	<input type="text" name="journal" id="journal" maxlength="200" value="'.$this->publication->getJournal().'"/>
-	<br/>
-	<label for="volume">Volume:</label>
-	<input type="number" name="volume" id="volume" min="0" value="'.$this->publication->getVolume().'"/>
-	<br/>
-	<label for="number">Number:</label>
-	<input type="number" name="number" id="number" min="0" value="'.$this->publication->getNumber().'"/>
-	<br/>
-	<label for="booktitle">Book Title:</label>
-	<input type="text" name="booktitle" id="booktitle" maxlength="200" value="'.$this->publication->getBooktitle().'"/>
-	<br/>
-	<label for="series">Series:</label>
-	<input type="text" name="series" id="series" min="0" value="'.$this->publication->getSeries().'"/>
-	<br/>
-	<label for="edition">Edition:</label>
-	<input type="text" name="edition" id="edition" value="'.$this->publication->getEdition().'"/>
-	<br/>
-	<label for="pages_from">Pages:</label>
-	<input type="number" name="pages_from" id="pages_from" min="0" placeholder="12" value="'.$this->publication->getFirstPage().'"/>
-	<input type="number" name="pages_to" id="pages_to" min="0" placeholder="23" value="'.$this->publication->getLastPage().'"/>
-	<br/>
-	<label for="note">Note:</label>
-	<input type="text" name="note" id="note" maxlength="200" value="'.$this->publication->getNote().'"/>
-	<br/>
-	<label for="location">Location:</label>
-	<input type="text" name="location" id="location" maxlength="200" value="'.$this->publication->getLocation().'"/>
-	<br/>
-	<label for="date_published">Date:</label>
-	<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
-		   value="'.$this->publication->getDatePublished('Y-m-d').'"/>
-	<br/>
-	<label for="publisher">Publisher:</label>
-	<input type="text" name="publisher" id="publisher" maxlength="200" value="'.$this->publication->getPublisher().'"/>
-	<br/>
-	<label for="institution">Institution:</label>
-	<input type="text" name="institution" id="institution" maxlength="200" value="'.$this->publication->getInstitution().'"/>
-	<br/>
-	<label for="school">School:</label>
-	<input type="text" name="school" id="school" maxlength="200" value="'.$this->publication->getSchool().'"/>
-	<br/>
-	<label for="address">Address:</label>
-	<input type="text" name="address" id="address" maxlength="200" value="'.$this->publication->getAddress().'"/>
-	<br/>
-	<label for="howpublished">How published:</label>
-	<input type="text" name="howpublished" id="howpublished" maxlength="200" value="'.$this->publication->getHowpublished().'"/>
-	<br/>
-	<label for="copyright">Copyright:</label>
-	<input type="text" name="copyright" id="copyright" maxlength="200" value="'.$this->publication->getCopyright().'"/>
-	<br/>
-	<label for="doi">DOI:</label>
-	<input type="text" name="doi" id="doi" maxlength="200" value="'.$this->publication->getDoi().'"/>
-	<br/>
-	<label for="isbn">ISBN:</label>
-	<input type="text" name="isbn" id="isbn" maxlength="200" value="'.$this->publication->getIsbn().'"/>
-	<br/>
-	<label for="abstract">Abstract:</label>
-	<textarea name="abstract" id="abstract" rows="5" cols="50">'.$this->publication->getAbstract().'</textarea>
-	<br/>
-	<input type="hidden" name="action" value="edit"/>
-	<input type="hidden" name="type" value="'.$this->publication->getTypeName().'"/>
-	<input type="hidden" name="study_field" value="'.$this->publication->getStudyField().'"/>
-	<input type="submit" value="Update"/>
-	<input type="reset" value="Reset changes"/>
-</form>';
-
-		return $string;
-	}
-
-
 	/**
 	 * Shows the publication's journal name.
 	 *
@@ -525,20 +447,15 @@ class PublicationView extends View {
 	}
 
 
-	public function showStudyField() {
+	public function showStudyField($link = true) {
 
-		$url = '?p=study_field&id=';
-		$id = $this->publication->getStudyFieldId();
-		$name = $this->publication->getStudyField();
+		if ($link) {
+			$url = Request::createUrl(array('p' => 'study_field', 'id' => $this->publication->getStudyFieldId()));
 
-		if ($id && $name) {
-			return '<a href="'.$this->html($url.$id).'">'.$this->html($name).'</a>';
-		}
-		else if ($name) {
-			return $this->html($name);
+			return '<a href="'.$this->html($url).'">'.$this->html($this->publication->getStudyField()).'</a>';
 		}
 		else {
-			return false;
+			return $this->html($this->publication->getStudyField());
 		}
 	}
 
@@ -610,6 +527,7 @@ class PublicationView extends View {
 		}
 	}
 
+
 	public function showEditFiles() {
 
 		$files = $this->publication->getFiles();
@@ -627,7 +545,7 @@ class PublicationView extends View {
 						<a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'
 						<input type="hidden" name="file_id" value="'.$this->html($file->getId()).'"/>
 						<input type="hidden" name="action" value="removeFile"/>
-						<input type="submit" value="x"/>
+						<input type="submit" value="x" onclick="return confirm(\'Do you really want to delete the file '.$this->html($file->getTitle()).'?\')"/>
 						</form>
 						</li>';
 		}
