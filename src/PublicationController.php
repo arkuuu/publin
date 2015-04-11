@@ -6,7 +6,9 @@ namespace publin\src;
 use BadMethodCallException;
 use Exception;
 use publin\src\exceptions\DBDuplicateEntryException;
+use publin\src\exceptions\DBForeignKeyException;
 use publin\src\exceptions\FileHandlerException;
+use publin\src\exceptions\FileNotFoundException;
 use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
@@ -96,7 +98,12 @@ class PublicationController {
 			throw new PermissionRequiredException(Auth::ACCESS_RESTRICTED_FILES);
 		}
 
-		FileHandler::download($file->getName(), $file->getTitle());
+		try {
+			FileHandler::download($file->getName(), $file->getTitle());
+		}
+		catch (FileNotFoundException $e) {
+			throw new NotFoundException('file not found');
+		}
 
 		return true;
 	}
@@ -297,9 +304,18 @@ class PublicationController {
 			return false;
 		}
 
-		$this->model->delete($id);
-		Controller::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
-		exit;
+		try {
+			$this->model->delete($id);
+			Controller::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
+			exit;
+		}
+		catch (DBForeignKeyException $e) {
+			// TODO: remove this once files are deleted automatically
+			$this->errors[] = 'Please remove the files before deleting';
+
+			return false;
+		}
+
 	}
 
 
@@ -370,7 +386,12 @@ class PublicationController {
 
 		$repo = new FileRepository($this->db);
 		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
-		FileHandler::delete($file->getName());
+		try {
+			FileHandler::delete($file->getName());
+		}
+		catch (FileNotFoundException $e) {
+			// do nothing
+		}
 
 		$file_model = new FileModel($this->db);
 

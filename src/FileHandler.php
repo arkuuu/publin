@@ -6,6 +6,10 @@ namespace publin\src;
 use finfo;
 use InvalidArgumentException;
 use publin\src\exceptions\FileHandlerException;
+use publin\src\exceptions\FileInvalidTypeException;
+use publin\src\exceptions\FileNotFoundException;
+use publin\src\exceptions\FileNotMovableException;
+use publin\src\exceptions\FileTooBigException;
 
 /**
  * Class FileHandler
@@ -13,13 +17,16 @@ use publin\src\exceptions\FileHandlerException;
  * @package publin\src
  */
 class FileHandler {
-	
+
 
 	/**
 	 * @param array $file
 	 *
 	 * @return string
 	 * @throws FileHandlerException
+	 * @throws FileInvalidTypeException
+	 * @throws FileNotMovableException
+	 * @throws FileTooBigException
 	 */
 	public static function upload(array $file) {
 
@@ -39,14 +46,14 @@ class FileHandler {
 				$success = move_uploaded_file($file['tmp_name'], Config::FILE_PATH.$file_name);
 
 				if (!$success) {
-					throw new FileHandlerException('Error while uploading file to server');
+					throw new FileNotMovableException('Error while uploading file to server');
 				}
 
 				// TODO: chmod -x
 				return $file_name;
 			}
 			else {
-				throw new FileHandlerException('Disallowed file type');
+				throw new FileInvalidTypeException('Disallowed file type');
 			}
 		}
 		else if ($file['error'] === UPLOAD_ERR_NO_FILE) {
@@ -56,7 +63,7 @@ class FileHandler {
 			|| $file['error'] === UPLOAD_ERR_FORM_SIZE
 			|| $file['size'] > Config::FILE_MAX_SIZE
 		) {
-			throw new FileHandlerException('File is too big');
+			throw new FileTooBigException('File is too big');
 		}
 		else {
 			// TODO: change this error message
@@ -131,10 +138,10 @@ class FileHandler {
 
 
 	/**
-	 * @param string $file_name
+	 * @param        $file_name
 	 * @param string $download_name
 	 *
-	 * @throws FileHandlerException
+	 * @throws FileNotFoundException
 	 */
 	public static function download($file_name, $download_name = 'file') {
 
@@ -153,7 +160,7 @@ class FileHandler {
 			exit;
 		}
 		else {
-			throw new FileHandlerException('file does not exist');
+			throw new FileNotFoundException($file);
 		}
 	}
 
@@ -163,6 +170,7 @@ class FileHandler {
 	 *
 	 * @return bool
 	 * @throws FileHandlerException
+	 * @throws FileNotFoundException
 	 */
 	public static function delete($file_name) {
 
@@ -178,7 +186,7 @@ class FileHandler {
 			}
 		}
 		else {
-			throw new FileHandlerException('file does not exist');
+			throw new FileNotFoundException($file);
 		}
 	}
 }
