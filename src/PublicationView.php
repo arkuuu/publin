@@ -649,4 +649,10 @@ class PublicationView extends View {
 
 		return $string;
 	}
+
+
+	public function showPublinUrl() {
+
+		return $this->html($this->publication->getPublinUrl());
+	}
 }

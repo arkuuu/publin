@@ -461,4 +461,10 @@ class Publication {
 
 		return $this->location;
 	}
+
+
+	public function getPublinUrl() {
+
+		return Request::createUrl(array('p' => 'publication', 'id' => $this->id));
+	}
 }

@@ -176,33 +176,46 @@
 <?php } ?>
 
 <h2>Cite this publication</h2>
-<div class="export">
-	<ul>
-		<li>
+<ul>
+	<li>
+		<div class="export">
 			<a href="#" class="bibtex">BibTeX</a><br/>
 			<textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this->showExport('Bibtex') ?></textarea>
-		</li>
-		<li>
+		</div>
+	</li>
+	<li>
+		<div class="export">
 			<a href="#" class="ris">RIS</a><br/>
 			<textarea class="ris" rows="10" cols="80" readonly><?php echo $this->showExport('RIS') ?></textarea>
-		</li>
-		<li>
+		</div>
+	</li>
+	<li>
+		<div class="export">
 			<a href="#" class="dblp-xml">DBLP XML</a><br/>
 			<textarea class="dblp-xml" rows="10" cols="80" readonly><?php echo $this->
 				showExport('DBLPXML') ?></textarea>
-		</li>
-		<li>
+		</div>
+	</li>
+	<li>
+		<div class="export">
 			<a href="#" class="dc-xml">DublinCore XML</a><br/>
 			<textarea class="dc-xml" rows="10" cols="80" readonly><?php echo $this->
 				showExport('DublinCoreXML') ?></textarea>
-		</li>
-		<li>
+		</div>
+	</li>
+	<li>
+		<div class="export">
 			<a href="#" class="csl-json">CSL Json</a><br/>
 			<textarea class="csl-json" rows="10" cols="80" readonly><?php echo $this->
 				showExport('CSLJson') ?></textarea>
-		</li>
-	</ul>
-</div>
+		</div>
+	</li>
+	<li>
+		<a href="http://www.mendeley.com/import/?url=<?php echo $this->showPublinUrl()?>" target="_blank">Add to your
+																										  Mendeley
+																										  library</a>
+	</li>
+</ul>
 
 <h2>Search this publication in</h2>
 <ul><?php echo $this -> showBibLinks() ?></ul>
