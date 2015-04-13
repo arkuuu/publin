@@ -49,14 +49,15 @@ class PublicationController {
 			}
 		}
 
+		if ($request->get('file_id')) {
+			$this->download($request);
+			exit;
+		}
+
 		$repo = new PublicationRepository($this->db);
 		$publication = $repo->select()->where('id', '=', $request->get('id'))->findSingle(true);
 		if (!$publication) {
 			throw new NotFoundException('publication not found');
-		}
-
-		if ($request->get('m') === 'file') {
-			$this->download($request);
 		}
 
 		if ($request->get('m') === 'edit') {

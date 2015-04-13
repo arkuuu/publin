@@ -488,16 +488,17 @@ class PublicationView extends View {
 	public function showFiles() {
 
 		$files = $this->publication->getFiles();
-		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file_id=';
 		$string = '';
 
 		foreach ($files as $file) {
 			if (!$file->isHidden() || $this->hasPermission(Auth::ACCESS_HIDDEN_FILES)) {
+
+				$url = Request::createUrl(array('p' => 'publication', 'id' => $this->publication->getId(), 'file_id' => $file->getId()));
 				$full_text = $file->isFullText() ? ' (full text)' : '';
 				$hidden = $file->isHidden() ? ' (hidden)' : '';
 				$restricted = $file->isRestricted() ? ' (restricted)' : '';
 
-				$string .= '<li><a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'</li>';
+				$string .= '<li><a href="'.$this->html($url).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'</li>';
 			}
 		}
 
@@ -509,10 +510,10 @@ class PublicationView extends View {
 
 		$file = $this->publication->getFullTextFile();
 		if ($file) {
-			$url = '?p=publication&id='.$this->publication->getId().'&m=file&file_id=';
+			$url = Request::createUrl(array('p' => 'publication', 'id' => $this->publication->getId(), 'file_id' => $file->getId()));
 			$restricted = $file->isRestricted() ? ' (restricted)' : '';
 
-			return '<a href="'.$this->html($url.$file->getId()).'" target="_blank">Download full text'.$restricted.'</a>';
+			return '<a href="'.$this->html($url).'" target="_blank">Download full text'.$restricted.'</a>';
 		}
 		else {
 			return false;
@@ -523,18 +524,18 @@ class PublicationView extends View {
 	public function showEditFiles() {
 
 		$files = $this->publication->getFiles();
-		$url = '?p=publication&id='.$this->publication->getId().'&m=file&file_id=';
 		$string = '';
 
 		foreach ($files as $file) {
 
+			$url = Request::createUrl(array('p' => 'publication', 'id' => $this->publication->getId(), 'file_id' => $file->getId()));
 			$full_text = $file->isFullText() ? ' (full text)' : '';
 			$hidden = $file->isHidden() ? ' (hidden)' : '';
 			$restricted = $file->isRestricted() ? ' (restricted)' : '';
 
 			$string .= '<li>
 						<form action="#" method="post" accept-charset="utf-8">
-						<a href="'.$this->html($url.$file->getId()).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'
+						<a href="'.$this->html($url).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'
 						<input type="hidden" name="file_id" value="'.$this->html($file->getId()).'"/>
 						<input type="hidden" name="action" value="removeFile"/>
 						<input type="submit" value="x" onclick="return confirm(\'Do you really want to delete the file '.$this->html($file->getTitle()).'?\')"/>
