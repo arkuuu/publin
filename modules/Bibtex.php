@@ -4,6 +4,7 @@ namespace publin\modules;
 
 use Exception;
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class Bibtex
@@ -18,10 +19,7 @@ class Bibtex {
 	 * @var string
 	 */
 	private $bibsource;
-	/**
-	 * @var string
-	 */
-	private $url;
+
 
 
 	/**
@@ -29,8 +27,7 @@ class Bibtex {
 	 */
 	public function __construct() {
 
-		$this->bibsource = 'publin';
-		$this->url = 'http://localhost:8888/publin/?p=publication&amp;id=';
+		//$this->bibsource = 'publin';
 
 		/* Map your fields here. You can change the order or leave out fields. */
 		$this->fields = array(
@@ -57,7 +54,9 @@ class Bibtex {
 			'copyright'    => 'copyright',
 			'url'          => 'url',
 			'doi'          => 'doi',
+			'isbn'     => 'isbn',
 			'address'      => 'address',
+			'location' => 'location',
 			'note'         => 'note',
 			'keywords'     => 'keywords',
 		);
@@ -136,8 +135,11 @@ class Bibtex {
 		$fields[] = array('doi', $publication->getDoi());
 		$fields[] = array('isbn', $publication->getIsbn());
 		$fields[] = array('abstract', $publication->getAbstract());
-		$fields[] = array('bibsource', $this->bibsource);
-		$fields[] = array('biburl', $this->url.$publication->getId());
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId())));
+		}
+		//$fields[] = array('bibsource', $this->bibsource);
+		$fields[] = array('biburl', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId())));
 		$fields[] = array('keywords', $keywords);
 
 		$result = '@'.$publication->getTypeName().'{'.$this->generateCiteKey($publication);
@@ -423,9 +425,16 @@ class Bibtex {
 
 	private function extractDate($input_year, $input_month) {
 
-		$words = str_word_count($input_month, 1);
-		$input_month = $words[0];
-		$date = strtotime($input_year.' '.$input_month);
+		$words = explode(' ', $input_month);
+		print_r($words);
+		$month = $words[0];
+		if (isset($words[1])) {
+			$day = $words[1];
+		}
+		else {
+			$day = '01';
+		}
+		$date = strtotime($day.' '.$month.' '.$input_year);
 
 		if ($date) {
 			return date('Y-m-d', $date);
