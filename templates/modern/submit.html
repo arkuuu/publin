@@ -45,7 +45,15 @@
 
 <?php if ($this->showImportInput()) { ?>
 <label for="input">Your input was:</label><br/>
-<textarea id="input" rows="10" cols="80" readonly><?php echo $this->showImportInput() ?></textarea>
+<form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
+	<textarea id="input" name="input" rows="10" cols="80"><?php echo $this->showImportInput() ?></textarea><br/>
+	<label for="format2">Format:</label>
+	<select id="format2" name="format">
+		<option value="Bibtex">BibTeX</option>
+	</select>
+	<input type="hidden" name="action" value="import"/>
+	<input type="submit" value="Try import again"/>
+</form>
 <?php } ?>
 
 <div class="form">
