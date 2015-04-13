@@ -47,7 +47,7 @@ class SubmitView extends View {
 	public function showImportInput() {
 
 		if (isset($_SESSION['input_raw'])) {
-			return $this->html(stripslashes($_SESSION['input_raw']));
+			return $this->html($_SESSION['input_raw']);
 		}
 		else {
 			return false;
@@ -105,7 +105,7 @@ class SubmitView extends View {
 		}
 
 		if (is_string($value)) {
-			$value = $this->html(stripslashes($value));
+			$value = $this->html($value);
 		}
 
 		return $value;

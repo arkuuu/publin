@@ -66,7 +66,7 @@ class Database extends mysqli {
 				$query .= ' `'.$column.'` = NULL,';
 			}
 			else {
-				$query .= ' `'.$column.'` = "'.$value.'",';
+				$query .= ' `'.$column.'` = "'.self::real_escape_string($value).'",';
 			}
 		}
 		$query = substr($query, 0, -1);

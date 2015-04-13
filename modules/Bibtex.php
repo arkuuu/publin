@@ -201,7 +201,6 @@ class Bibtex {
 
 		$result = array();
 
-		$input = stripslashes($input);
 		$input = $this->decodeSpecialChars($input);
 
 		/* Gets the entry type and the cite key */
@@ -425,11 +424,10 @@ class Bibtex {
 
 	private function extractDate($input_year, $input_month) {
 
-		$words = explode(' ', $input_month);
-		print_r($words);
-		$month = $words[0];
-		if (isset($words[1])) {
-			$day = $words[1];
+		$input_month = explode(' ', $input_month);
+		$month = $input_month[0];
+		if (isset($input_month[1])) {
+			$day = $input_month[1];
 		}
 		else {
 			$day = '01';
