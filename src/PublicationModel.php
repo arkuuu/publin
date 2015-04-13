@@ -212,7 +212,7 @@ VALUES
 		$validator->addRule('note', 'text', false, 'Note is invalid');
 		$validator->addRule('location', 'text', false, 'Location is invalid');
 
-		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid');
+		$validator->addRule('date_published', 'date', true, 'Publication date is required but invalid. It must in the format YYYY-MM-DD');
 
 		$validator->addRule('publisher', 'text', false, 'Publisher is invalid');
 		$validator->addRule('institution', 'text', false, 'Institution is invalid');

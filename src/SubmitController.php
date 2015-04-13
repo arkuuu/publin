@@ -78,6 +78,7 @@ class SubmitController {
 
 		if ($input && $format) {
 			$_SESSION['input'] = FormatHandler::import($input, $format);
+			$_SESSION['input_raw'] = $input;
 
 			return true;
 		}
@@ -182,7 +183,7 @@ class SubmitController {
 				throw $e;
 			}
 
-			unset($_SESSION['input']);
+			$this->clearForm();
 
 			Controller::redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
 
@@ -192,5 +193,16 @@ class SubmitController {
 
 			return false;
 		}
+	}
+
+
+	public function clearForm() {
+
+		unset($_SESSION['input']);
+		if (isset($_SESSION['input_raw'])) {
+			unset($_SESSION['input_raw']);
+		}
+
+		return true;
 	}
 }

@@ -208,15 +208,7 @@ class PublicationView extends View {
 	 */
 	public function showDoi() {
 
-		$url = 'http://dx.doi.org/';
-		$doi = $this->publication->getDoi();
-
-		if ($doi) {
-			return '<a href="'.$this->html($url.$doi).'" target="_blank">'.$this->html($doi).'</a>';
-		}
-		else {
-			return false;
-		}
+		return $this->html($this->publication->getDoi());
 	}
 
 

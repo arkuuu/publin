@@ -1,5 +1,5 @@
 <?php if ($this -> isForm()) { ?>
-<script type="text/javascript" src="./templates/default/jquery.js"></script>
+<!--<script type="text/javascript" src="./templates/default/jquery.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
 
@@ -39,17 +39,20 @@
 
 
 	});
-</script>
+</script>-->
 
 <h1>Submit publication</h1>
-<p>Here comes the great form.</p>
+
+<?php if ($this->showImportInput()) { ?>
+<label for="input">Your input was:</label><br/>
+<textarea id="input" rows="10" cols="80" readonly><?php echo $this->showImportInput() ?></textarea>
+<?php } ?>
+
 <div class="form">
+
 	<form action="#" method="post" accept-charset="utf-8">
 
 		<h2>Details</h2>
-
-		<p>More Information to come here.</p>
-
 		<label for="type">Type:</label>
 		<select class="type-selector" name="type" id="type" size="1">
 			<?php echo $this -> listTypeOptions() ?>
@@ -87,13 +90,14 @@
 		<label for="pages_from">Pages:</label>
 		<input type="number" name="pages_from" id="pages_from" min="0"
 			   value="<?php echo $this->show('pages_from') ?>"/>
+		<span style="float: left">to&nbsp;</span>
 		<input type="number" name="pages_to" id="pages_to" min="0"
 			   value="<?php echo $this->show('pages_to') ?>"/>
 		<br/>
 		<label for="note">Note:</label>
 		<input type="text" name="note" id="note" maxlength="200" value="<?php echo $this->show('note') ?>"/>
 		<br/>
-		<label for="location">Location:</label>
+		<label for="location">Conference location:</label>
 		<input type="text" name="location" id="location" maxlength="200" value="<?php echo $this->show('location') ?>"/>
 		<br/>
 		<label for="publisher">Publisher:</label>
@@ -107,7 +111,7 @@
 		<label for="school">School:</label>
 		<input type="text" name="school" id="school" maxlength="200" value="<?php echo $this->show('school') ?>"/>
 		<br/>
-		<label for="address">Address:</label>
+		<label for="address">Publisher address:</label>
 		<input type="text" name="address" id="address" maxlength="200" value="<?php echo $this->show('address') ?>"/>
 		<br/>
 		<label for="howpublished">How published:</label>
@@ -119,7 +123,9 @@
 			   value="<?php echo $this->show('copyright') ?>"/>
 		<br/>
 		<label for="doi">DOI:</label>
-		<input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->show('doi') ?>"/>
+		<span style="float: left">http://dx.doi.org/&nbsp;</span>
+		<input type="text" name="doi" id="doi" maxlength="200" style="width: 288px"
+			   value="<?php echo $this->show('doi') ?>"/>
 		<br/>
 		<label for="isbn">ISBN:</label>
 		<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->show('isbn') ?>"/>
@@ -151,9 +157,11 @@
 			<button type="button" class="add-field">Add field</button>
 		</div>
 
-		<h2>Submit</h2>
+		<h2>Files</h2>
 
-		<p>More information will follow.</p>
+		<p>You can upload files through the publication's edit page after it has been submitted.</p>
+
+		<h2>Submit</h2>
 		<input type="hidden" name="action" value="submit"/>
 		<input type="submit" value="Submit"/>
 	</form>

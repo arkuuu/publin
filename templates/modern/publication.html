@@ -133,7 +133,7 @@
 				  echo $this -> showDoi() ? '
 	<tr>
 		<th>DOI</th>
-		<td>'.$this -> showDoi().'</td>
+		<td><a href="http://dx.doi.org/'.$this -> showDoi().'" target="_blank">'.$this -> showDoi().'</a></td>
 	</tr>
 				  ' : '';
 				  echo $this -> showIsbn() ? '
@@ -254,12 +254,13 @@
 		<br/>
 		<label for="pages_from">Pages:</label>
 		<input type="number" name="pages_from" id="pages_from" min="0" value="<?php echo $this->showFirstPage() ?>"/>
+		<span style="float: left">to&nbsp;</span>
 		<input type="number" name="pages_to" id="pages_to" min="0" value="<?php echo $this->showLastPage() ?>"/>
 		<br/>
 		<label for="note">Note:</label>
 		<input type="text" name="note" id="note" maxlength="200" value="<?php echo $this->showNote() ?>"/>
 		<br/>
-		<label for="location">Location:</label>
+		<label for="location">Conference location:</label>
 		<input type="text" name="location" id="location" maxlength="200" value="<?php echo $this->showLocation() ?>"/>
 		<br/>
 		<label for="publisher">Publisher:</label>
@@ -273,7 +274,7 @@
 		<label for="school">School:</label>
 		<input type="text" name="school" id="school" maxlength="200" value="<?php echo $this->showSchool() ?>"/>
 		<br/>
-		<label for="address">Address:</label>
+		<label for="address">Publisher address:</label>
 		<input type="text" name="address" id="address" maxlength="200" value="<?php echo $this->showAddress() ?>"/>
 		<br/>
 		<label for="howpublished">How published:</label>
@@ -285,7 +286,9 @@
 			   value="<?php echo $this->showCopyright() ?>"/>
 		<br/>
 		<label for="doi">DOI:</label>
-		<input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->showDoi() ?>"/>
+		<span style="float: left">http://dx.doi.org/&nbsp;</span>
+		<input type="text" name="doi" id="doi" maxlength="200" style="width: 288px"
+			   value="<?php echo $this->showDoi() ?>"/>
 		<br/>
 		<label for="isbn">ISBN:</label>
 		<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->showIsbn() ?>"/>

@@ -44,6 +44,17 @@ class SubmitView extends View {
 	}
 
 
+	public function showImportInput() {
+
+		if (isset($_SESSION['input_raw'])) {
+			return $this->html(stripslashes($_SESSION['input_raw']));
+		}
+		else {
+			return false;
+		}
+	}
+
+
 	public function showPageTitle() {
 
 		return 'Submit publication';
@@ -56,10 +67,10 @@ class SubmitView extends View {
 		$selected_name = $this->show('type');
 
 		if ($selected_name) {
-			$string = '<option value disabled>Select...</option>';
+			$string = '<option value disabled></option>';
 		}
 		else {
-			$string = '<option value selected disabled>Select...</option>';
+			$string = '<option value selected disabled></option>';
 		}
 
 		/* @var $type Type */
@@ -83,17 +94,21 @@ class SubmitView extends View {
 
 		if (isset($field2)) {
 			if (isset($field3)) {
-				$string = isset($_SESSION['input'][$field][$field2][$field3]) ? $_SESSION['input'][$field][$field2][$field3] : false;
+				$value = isset($_SESSION['input'][$field][$field2][$field3]) ? $_SESSION['input'][$field][$field2][$field3] : false;
 			}
 			else {
-				$string = isset($_SESSION['input'][$field][$field2]) ? $_SESSION['input'][$field][$field2] : false;
+				$value = isset($_SESSION['input'][$field][$field2]) ? $_SESSION['input'][$field][$field2] : false;
 			}
 		}
 		else {
-			$string = isset($_SESSION['input'][$field]) ? $_SESSION['input'][$field] : false;
+			$value = isset($_SESSION['input'][$field]) ? $_SESSION['input'][$field] : false;
 		}
 
-		return $this->html(stripslashes($string));
+		if (is_string($value)) {
+			$value = $this->html(stripslashes($value));
+		}
+
+		return $value;
 	}
 
 
@@ -103,10 +118,10 @@ class SubmitView extends View {
 		$selected_name = $this->show('study_field_id');
 
 		if ($selected_name) {
-			$string = '<option value disabled>Select...</option>';
+			$string = '<option value disabled></option>';
 		}
 		else {
-			$string = '<option value selected disabled>Select...</option>';
+			$string = '<option value selected disabled></option>';
 		}
 
 		/* @var $study_field StudyField */
