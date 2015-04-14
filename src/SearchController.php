@@ -5,7 +5,7 @@ namespace publin\src;
 
 use UnexpectedValueException;
 
-class SearchController {
+class SearchController extends Controller {
 
 	private $db;
 	private $result;

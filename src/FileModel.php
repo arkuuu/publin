@@ -5,7 +5,7 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-class FileModel {
+class FileModel extends Model {
 
 	private $db;
 

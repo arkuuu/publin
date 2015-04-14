@@ -2,7 +2,7 @@
 
 namespace publin\src;
 
-class Type {
+class Type extends Entity {
 
 	protected $id;
 	protected $name;

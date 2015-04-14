@@ -3,7 +3,6 @@
 
 namespace publin\src;
 
-
-class Controller {
+class Model {
 
 }

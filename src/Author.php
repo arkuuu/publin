@@ -7,7 +7,7 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Author {
+class Author extends Entity {
 
 	protected $id;
 	protected $academic_title;

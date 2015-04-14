@@ -5,7 +5,7 @@ namespace publin\src;
 use InvalidArgumentException;
 use PDOException;
 
-class KeywordModel {
+class KeywordModel extends Model {
 
 	private $old_db;
 	private $db;

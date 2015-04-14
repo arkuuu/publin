@@ -6,7 +6,7 @@ namespace publin\modules;
 use DOMDocument;
 use publin\src\Publication;
 
-class DublinCoreXML {
+class DublinCoreXML extends Module {
 
 	public function export(Publication $publication) {
 

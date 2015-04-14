@@ -5,7 +5,7 @@ namespace publin\modules;
 
 use publin\src\Publication;
 
-class DublinCoreTags {
+class DublinCoreTags extends Module {
 
 	public function export(Publication $publication) {
 

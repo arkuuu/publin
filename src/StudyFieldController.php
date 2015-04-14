@@ -5,7 +5,7 @@ namespace publin\src;
 
 use publin\src\exceptions\NotFoundException;
 
-class StudyFieldController {
+class StudyFieldController extends Controller {
 
 	private $db;
 

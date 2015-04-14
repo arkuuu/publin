@@ -13,7 +13,7 @@ use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
-class PublicationController {
+class PublicationController extends Controller {
 
 	private $db;
 	private $auth;
@@ -307,7 +307,7 @@ class PublicationController {
 
 		try {
 			$this->model->delete($id);
-			Controller::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
+			MainController::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
 			exit;
 		}
 		catch (DBForeignKeyException $e) {

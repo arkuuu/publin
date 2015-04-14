@@ -2,7 +2,7 @@
 
 namespace publin\src;
 
-class Keyword {
+class Keyword extends Entity {
 
 	protected $id;
 	protected $name;

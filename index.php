@@ -2,7 +2,7 @@
 
 namespace publin;
 
-use publin\src\Controller;
+use publin\src\MainController;
 use publin\src\Request;
 
 spl_autoload_register(function ($class) {
@@ -43,6 +43,6 @@ if (get_magic_quotes_gpc()) {
 }
 
 $request = new Request();
-$controller = new Controller();
+$controller = new MainController();
 echo $controller->run($request);
 

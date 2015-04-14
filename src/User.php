@@ -4,7 +4,7 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-class User {
+class User extends Entity {
 
 
 	private $id;

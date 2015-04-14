@@ -8,7 +8,7 @@ use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
-class AuthorController {
+class AuthorController extends Controller {
 
 	private $db;
 	private $auth;
@@ -90,7 +90,7 @@ class AuthorController {
 		}
 
 		$this->model->delete($id);
-		Controller::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'author')));
+		MainController::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'author')));
 		exit;
 	}
 

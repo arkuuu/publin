@@ -5,7 +5,7 @@ namespace publin\src;
 
 use publin\src\exceptions\NotFoundException;
 
-class TypeController {
+class TypeController extends Controller {
 
 	private $db;
 	private $model;

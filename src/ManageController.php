@@ -8,7 +8,7 @@ use publin\src\exceptions\DBForeignKeyException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
-class ManageController {
+class ManageController extends Controller {
 
 	private $db;
 	private $auth;

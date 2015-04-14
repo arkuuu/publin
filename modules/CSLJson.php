@@ -6,7 +6,7 @@ namespace publin\modules;
 use Exception;
 use publin\src\Publication;
 
-class CSLJson {
+class CSLJson extends Module {
 
 	public function export(Publication $publication) {
 

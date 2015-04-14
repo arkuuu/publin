@@ -2,7 +2,7 @@
 
 namespace publin\src;
 
-class StudyField {
+class StudyField extends Entity {
 
 	protected $id;
 	protected $name;

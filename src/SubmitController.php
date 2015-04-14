@@ -7,7 +7,7 @@ use Exception;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\PermissionRequiredException;
 
-class SubmitController {
+class SubmitController extends Controller {
 
 	private $db;
 	private $auth;
@@ -185,7 +185,7 @@ class SubmitController {
 
 			$this->clearForm();
 
-			Controller::redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
+			MainController::redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
 
 			return true;
 		}

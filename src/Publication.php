@@ -4,7 +4,7 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-class Publication {
+class Publication extends Entity {
 
 	private $id;
 	private $date_added;

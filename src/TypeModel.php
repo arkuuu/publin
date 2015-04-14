@@ -2,7 +2,7 @@
 
 namespace publin\src;
 
-class TypeModel {
+class TypeModel extends Model {
 
 	private $db;
 

@@ -8,7 +8,7 @@ use Exception;
 use InvalidArgumentException;
 use publin\src\Publication;
 
-class DBLPXML {
+class DBLPXML extends Module {
 
 	/**
 	 * @param Publication[] $publications

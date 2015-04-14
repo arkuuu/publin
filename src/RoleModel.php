@@ -4,7 +4,7 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-class RoleModel {
+class RoleModel extends Model {
 
 	private $db;
 

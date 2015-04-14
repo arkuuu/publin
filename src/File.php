@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class File {
+class File extends Entity {
 
 	private $id;
 	private $name;

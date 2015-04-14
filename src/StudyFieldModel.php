@@ -4,7 +4,7 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
-class StudyFieldModel {
+class StudyFieldModel extends Model {
 
 
 	private $db;

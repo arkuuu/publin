@@ -5,7 +5,7 @@ namespace publin\src;
 use InvalidArgumentException;
 use PDOException;
 
-class UserModel {
+class UserModel extends Model {
 
 	private $old_db;
 	private $db;

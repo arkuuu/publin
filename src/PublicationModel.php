@@ -5,7 +5,7 @@ namespace publin\src;
 use Exception;
 use InvalidArgumentException;
 
-class PublicationModel {
+class PublicationModel extends Model {
 
 	private $old_db;
 	private $db;

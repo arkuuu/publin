@@ -9,7 +9,7 @@ use publin\src\Request;
 /**
  * Class Bibtex
  */
-class Bibtex {
+class Bibtex extends Module {
 
 	/**
 	 * @var array

@@ -6,7 +6,7 @@ namespace publin\modules;
 use Exception;
 use publin\src\Publication;
 
-class RIS {
+class RIS extends Module {
 
 	/**
 	 * @param Publication[] $publications

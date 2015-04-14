@@ -8,7 +8,7 @@ use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
-class KeywordController {
+class KeywordController extends Controller {
 
 	private $db;
 	private $auth;
@@ -92,7 +92,7 @@ class KeywordController {
 		}
 
 		$this->model->delete($id);
-		Controller::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'keyword')));
+		MainController::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'keyword')));
 		exit;
 	}
 

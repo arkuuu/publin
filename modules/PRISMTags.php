@@ -5,7 +5,7 @@ namespace publin\modules;
 
 use publin\src\Publication;
 
-class PRISMTags {
+class PRISMTags extends Module {
 
 	public function export(Publication $publication) {
 

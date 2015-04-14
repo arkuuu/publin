@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-class Permission {
+class Permission extends Entity {
 
 	private $id;
 	private $name;
