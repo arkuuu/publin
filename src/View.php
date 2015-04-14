@@ -236,9 +236,9 @@ class View {
 			$links[] = '<a href="http://dx.doi.org/'.$this->html($publication->getDoi()).'" target="_blank">DOI</a>';
 		}
 //		/* shows full text link */ TODO only works when files are loaded to the objects every time
-//		if ($publication->getFullTextFile()) {
-//			$url = '?p=publication&id='.$publication->getId().'&m=file&file_id=';
-//			$links[] = '<a href="'.$this->html($url.$publication->getFullTextFile()->getId()).'" target="_blank">Full text</a>';
+//		if ($file = publication->getFullTextFile()) {
+//			$url = 'Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()));
+//			$links[] = '<a href="'.$this->html($url).'" target="_blank">FULL TEXT</a>';
 //		}
 
 		/* shows links if there are any */
