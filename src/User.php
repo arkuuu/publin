@@ -7,37 +7,26 @@ use InvalidArgumentException;
 class User extends Entity {
 
 
-	private $id;
-	private $name;
-	private $mail;
-	private $date_register;
-	private $date_last_login;
+	protected $id;
+	protected $name;
+	protected $mail;
+	protected $date_register;
+	protected $date_last_login;
 	/**
 	 * @var Role[]
 	 */
-	private $roles;
+	protected $roles;
 	/**
 	 * @var Permission[]
 	 */
-	private $permissions;
+	protected $permissions;
 
 
 	public function __construct(array $data, array $roles = array(), array $permissions = array()) {
 
-		foreach ($data as $property => $value) {
-			if (property_exists($this, $property)) {
-				$this->$property = $value;
-			}
-		}
-
+		parent::__construct($data);
 		$this->setPermissions($permissions);
 		$this->setRoles($roles);
-	}
-
-
-	public function getData() {
-
-		return get_object_vars($this);
 	}
 
 

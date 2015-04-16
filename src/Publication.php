@@ -6,47 +6,42 @@ use InvalidArgumentException;
 
 class Publication extends Entity {
 
-	private $id;
-	private $date_added;
-	private $type_id;
-	private $type;
-	private $study_field;
-	private $study_field_id;
-	private $title;
-	private $authors;
-	private $journal;
-	private $volume;
-	private $number;
-	private $booktitle;
-	private $series;
-	private $edition;
-	private $pages_from;
-	private $pages_to;
-	private $note;
-	private $location;
-	private $date_published;
-	private $publisher;
-	private $institution;
-	private $school;
-	private $address;
-	private $howpublished;
-	private $copyright;
-	private $doi;
-	private $isbn;
-	private $abstract;
-	private $keywords;
-	private $files;
-	private $full_text_file;
+	protected $id;
+	protected $date_added;
+	protected $type_id;
+	protected $type;
+	protected $study_field;
+	protected $study_field_id;
+	protected $title;
+	protected $authors;
+	protected $journal;
+	protected $volume;
+	protected $number;
+	protected $booktitle;
+	protected $series;
+	protected $edition;
+	protected $pages_from;
+	protected $pages_to;
+	protected $note;
+	protected $location;
+	protected $date_published;
+	protected $publisher;
+	protected $institution;
+	protected $school;
+	protected $address;
+	protected $howpublished;
+	protected $copyright;
+	protected $doi;
+	protected $isbn;
+	protected $abstract;
+	protected $keywords;
+	protected $files;
+	protected $full_text_file;
 
 
 	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array()) {
 
-		foreach ($data as $property => $value) {
-			if (property_exists($this, $property)) {
-				$this->$property = $value;
-			}
-		}
-
+		parent::__construct($data);
 		$this->setAuthors($authors);
 		$this->setKeywords($keywords);
 		$this->setFiles($files);
@@ -59,15 +54,6 @@ class Publication extends Entity {
 	public function getId() {
 
 		return $this->id;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getData() {
-
-		return get_object_vars($this);
 	}
 
 
@@ -172,7 +158,6 @@ class Publication extends Entity {
 
 		if ($format && $this->date_added) {
 			return date($format, strtotime($this->date_added));
-
 		}
 		else {
 			return $this->date_added;

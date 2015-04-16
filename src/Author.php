@@ -10,7 +10,6 @@ namespace publin\src;
 class Author extends Entity {
 
 	protected $id;
-	protected $academic_title;
 	protected $family;
 	protected $given;
 	protected $website;
@@ -18,25 +17,9 @@ class Author extends Entity {
 	protected $about;
 
 
-	public function __construct(array $data) {
-
-		foreach ($data as $property => $value) {
-			if (property_exists($this, $property)) {
-				$this->$property = $value;
-			}
-		}
-	}
-
-
 	public function getId() {
 
 		return $this->id;
-	}
-
-
-	public function getData() {
-
-		return get_object_vars($this);
 	}
 
 
