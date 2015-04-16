@@ -260,7 +260,6 @@ class Bibtex extends Module {
 		}
 		if (!empty($result[$this->fields['year']]) && !empty($result[$this->fields['month']])) {
 			$result['date_published'] = self::extractDate($result[$this->fields['year']], $result[$this->fields['month']]);
-			print_r($result['date_published']);
 		}
 
 		return $result;
