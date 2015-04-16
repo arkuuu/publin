@@ -115,7 +115,7 @@ class SubmitView extends View {
 	public function listStudyFieldOptions() {
 
 		$study_fields = $this->model->createStudyFields();
-		$selected_name = $this->show('study_field_id');
+		$selected_name = $this->show('study_field');
 
 		if ($selected_name) {
 			$string = '<option value disabled></option>';
