@@ -1,27 +1,32 @@
 Publin - Publication Index System
 ======
-Publin allows you to upload and manage scholarly publications and expose them to the web. It is designed to be used by individual authors, groups or institutions. More information will follow.
+Publin allows you to upload and manage scholarly publications and expose them to the web. It is designed to be used by individual authors, groups or institutions. It aims at maximizing and speeding up the inclusion in major bibliographic databases in the area of computer sciences.
+
+Live Demo
+======
+A live demo of the latest version is available at [arkuuu.de/publin](http://www.arkuuu.de/publin/).
+
+A live demo of the OAI-PMH interface is available at [arkuuu.de/publin/oai](http://www.arkuuu.de/publin/oai/?verb=Identify).
 
 About the Project
 ======
-This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the thesis [here](http://www.ifis.uni-luebeck.de/index.php?id=363)
+This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the thesis at [ifis.uni-luebeck.de](http://www.ifis.uni-luebeck.de/index.php?id=363)
 
-Planned Features (WIP)
+Features
 ======
-* [x] Submit publications, via web form or BibTeX import
-* [x] Edit publication and author metadata
-* [x] Browse and view publications, authors, journals etc
-* [x] Search function
-* [x] Full text file up- and download
-* [x] Export publications to various formats (e.g. BibTeX, RIS, ...)
-* [x] Meta tag support for getting indexed by search engines (e.g. Dublin Core, HighwirePress Tags)
-* [x] Modular system for easy extension of export, import or meta tag formats
-* [ ] CSL style support for viewing and exporting citations
-* [x] OAI-PMH interface for being able to register as OAI Data Provider
-* [x] User authentication and authorization system with assignable roles and permissions
-* [x] Template system for easy customization of the user interface (using HTML&CSS)
+* Submit publications, via web form or BibTeX import
+* Edit publication and author metadata
+* Browse and view publications, authors, journals etc
+* Basic search function
+* Full text file up- and download
+* Export publications to various formats (e.g. BibTeX, RIS, ...)
+* Meta tag support for getting indexed by search engines (e.g. Dublin Core, HighwirePress Tags)
+* Modular system for easy extension of export, import or meta tag formats
+* OAI-PMH interface for being able to register as OAI Data Provider
+* User authentication and authorization system with assignable roles and permissions
+* Template system for easy customization of the user interface (using HTML&CSS)
 
-Requirements (WIP)
+Requirements
 ======
 A web server with:
 * PHP >= 5.3.14
@@ -29,6 +34,11 @@ A web server with:
   * extension `fileinfo`
 * MySQL >= 5.5.38
 
-Additional Notes
+
+Documentation and Install
 =====
-This is work in progress and everything is subject to changes. The project will be released as open source.
+This is currently in development.
+
+License
+=====
+This is currently in development.
