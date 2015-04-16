@@ -4,6 +4,11 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
+/**
+ * Class User
+ *
+ * @package publin\src
+ */
 class User extends Entity {
 
 
@@ -22,6 +27,11 @@ class User extends Entity {
 	protected $permissions;
 
 
+	/**
+	 * @param array $data
+	 * @param array $roles
+	 * @param array $permissions
+	 */
 	public function __construct(array $data, array $roles = array(), array $permissions = array()) {
 
 		parent::__construct($data);
@@ -30,12 +40,18 @@ class User extends Entity {
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getId() {
 
 		return $this->id;
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getName() {
 
 		return $this->name;
@@ -51,6 +67,11 @@ class User extends Entity {
 	}
 
 
+	/**
+	 * @param Role[] $roles
+	 *
+	 * @return bool
+	 */
 	public function setRoles(array $roles) {
 
 		$this->roles = array();
@@ -63,9 +84,16 @@ class User extends Entity {
 				throw new InvalidArgumentException('must be array with Role objects');
 			}
 		}
+
+		return true;
 	}
 
 
+	/**
+	 * @param $role_id
+	 *
+	 * @return bool
+	 */
 	public function hasRole($role_id) {
 
 		foreach ($this->roles as $role) {
@@ -87,6 +115,11 @@ class User extends Entity {
 	}
 
 
+	/**
+	 * @param Permission[] $permissions
+	 *
+	 * @return bool
+	 */
 	public function setPermissions(array $permissions) {
 
 		$this->permissions = array();
@@ -99,9 +132,16 @@ class User extends Entity {
 				throw new InvalidArgumentException('must be array with Permission objects');
 			}
 		}
+
+		return true;
 	}
 
 
+	/**
+	 * @param $permission_name
+	 *
+	 * @return bool
+	 */
 	public function hasPermission($permission_name) {
 
 		foreach ($this->permissions as $permission) {
@@ -114,30 +154,43 @@ class User extends Entity {
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getMail() {
 
 		return $this->mail;
 	}
 
 
+	/**
+	 * @param $format
+	 *
+	 * @return string|null
+	 */
 	public function getDateRegister($format) {
 
 		if ($this->date_register) {
 			return date($format, strtotime($this->date_register));
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 
 
+	/**
+	 * @param $format
+	 *
+	 * @return string|null
+	 */
 	public function getDateLastLogin($format) {
 
 		if ($this->date_last_login) {
 			return date($format, strtotime($this->date_last_login));
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 }

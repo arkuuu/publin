@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class AuthorRepository
+ *
+ * @package publin\src
+ */
 class AuthorRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -15,6 +23,14 @@ class AuthorRepository extends Repository {
 	}
 
 
+	/**
+	 * @param      $column
+	 * @param      $comparator
+	 * @param      $value
+	 * @param null $function
+	 *
+	 * @return $this
+	 */
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'publication_id') {
@@ -29,6 +45,12 @@ class AuthorRepository extends Repository {
 	}
 
 
+	/**
+	 * @param $column
+	 * @param $order
+	 *
+	 * @return $this
+	 */
 	public function order($column, $order) {
 
 		if ($column === 'priority') {
@@ -59,7 +81,7 @@ class AuthorRepository extends Repository {
 
 
 	/**
-	 * @return Author
+	 * @return Author|false
 	 */
 	public function findSingle() {
 

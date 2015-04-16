@@ -8,6 +8,11 @@ use publin\src\exceptions\LoginRequiredException;
 require_once 'password_compat.php';
 
 
+/**
+ * Class Auth
+ *
+ * @package publin\src
+ */
 class Auth {
 
 	const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
@@ -28,6 +33,9 @@ class Auth {
 	private $db;
 
 
+	/**
+	 * @param Database $db
+	 */
 	public function __construct(Database $db) {
 
 		$this->db = $db;
@@ -84,6 +92,14 @@ class Auth {
 	}
 
 
+	/**
+	 * @param $username
+	 * @param $password
+	 *
+	 * @return bool
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function validateLogin($username, $password) {
 
 		$query = 'SELECT `password` FROM `users` WHERE `name` = :name LIMIT 1;';
@@ -106,6 +122,15 @@ class Auth {
 	}
 
 
+	/**
+	 * @param $username
+	 * @param $password
+	 *
+	 * @return bool
+	 * @throws Exception
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function setPassword($username, $password) {
 
 		$hash = $this->hashPassword($password);
@@ -215,8 +240,7 @@ class Auth {
 	/**
 	 *
 	 */
-	public
-	function logout() {
+	public function logout() {
 
 		session_unset();
 		session_destroy();

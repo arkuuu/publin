@@ -5,19 +5,35 @@ namespace publin\src;
 
 use publin\Config;
 
+/**
+ * Class Request
+ *
+ * @package publin\src
+ */
 class Request {
 
 
+	/**
+	 *
+	 */
 	public function __construct() {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public static function getUrl() {
 
 		return self::createUrl($_GET);
 	}
 
 
+	/**
+	 * @param array $parameters
+	 *
+	 * @return string
+	 */
 	public static function createUrl(array $parameters = array()) {
 
 		$url = http_build_query($parameters);
@@ -34,7 +50,7 @@ class Request {
 	/**
 	 * @param string $name
 	 *
-	 * @return bool|array|string
+	 * @return bool
 	 */
 	public static function post($name = '') {
 
@@ -54,7 +70,7 @@ class Request {
 	/**
 	 * @param string $name
 	 *
-	 * @return bool|array|string
+	 * @return bool
 	 */
 	public static function get($name = '') {
 

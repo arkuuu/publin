@@ -5,9 +5,22 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
+/**
+ * Class FileModel
+ *
+ * @package publin\src
+ */
 class FileModel extends Model {
 
 
+	/**
+	 * @param File $file
+	 * @param      $publication_id
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(File $file, $publication_id) {
 
 		if (!is_numeric($publication_id)) {
@@ -28,6 +41,13 @@ class FileModel extends Model {
 	}
 
 
+	/**
+	 * @param $id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function delete($id) {
 
 		if (!is_numeric($id)) {
@@ -43,6 +63,9 @@ class FileModel extends Model {
 	}
 
 
+	/**
+	 * @return Validator
+	 */
 	public function getValidator() {
 
 		$validator = new Validator();

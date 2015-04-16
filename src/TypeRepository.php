@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class TypeRepository
+ *
+ * @package publin\src
+ */
 class TypeRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -32,7 +40,7 @@ class TypeRepository extends Repository {
 
 
 	/**
-	 * @return Type
+	 * @return Type|false
 	 */
 	public function findSingle() {
 

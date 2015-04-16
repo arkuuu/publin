@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class UserRepository
+ *
+ * @package publin\src
+ */
 class UserRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -45,7 +53,7 @@ class UserRepository extends Repository {
 	/**
 	 * @param bool $full
 	 *
-	 * @return User
+	 * @return User|false
 	 */
 	public function findSingle($full = false) {
 

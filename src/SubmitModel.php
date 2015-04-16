@@ -2,9 +2,19 @@
 
 namespace publin\src;
 
+/**
+ * Class SubmitModel
+ *
+ * @package publin\src
+ */
 class SubmitModel extends Model {
 
 
+	/**
+	 * @param array $post
+	 *
+	 * @return array
+	 */
 	public function formatPost(array $post) {
 
 		$result = array();
@@ -33,6 +43,11 @@ class SubmitModel extends Model {
 	}
 
 
+	/**
+	 * @param array $input
+	 *
+	 * @return array
+	 */
 	private function rewriteArray(array $input) {
 
 		$result = array();
@@ -50,6 +65,9 @@ class SubmitModel extends Model {
 	}
 
 
+	/**
+	 * @return Type[]
+	 */
 	public function createTypes() {
 
 		$repo = new TypeRepository($this->db);
@@ -58,6 +76,9 @@ class SubmitModel extends Model {
 	}
 
 
+	/**
+	 * @return StudyField[]
+	 */
 	public function createStudyFields() {
 
 		$repo = new StudyFieldRepository($this->db);

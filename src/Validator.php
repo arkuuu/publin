@@ -5,6 +5,11 @@ namespace publin\src;
 
 use UnexpectedValueException;
 
+/**
+ * Class Validator
+ *
+ * @package publin\src
+ */
 class Validator {
 
 	private $errors;
@@ -12,12 +17,18 @@ class Validator {
 	private $result;
 
 
+	/**
+	 *
+	 */
 	public function __construct() {
 
 		$this->reset();
 	}
 
 
+	/**
+	 *
+	 */
 	public function reset() {
 
 		$this->rules = array();
@@ -26,18 +37,30 @@ class Validator {
 	}
 
 
+	/**
+	 * @return mixed
+	 */
 	public function getErrors() {
 
 		return $this->errors;
 	}
 
 
+	/**
+	 * @return mixed
+	 */
 	public function getSanitizedResult() {
 
 		return $this->result;
 	}
 
 
+	/**
+	 * @param $field
+	 * @param $type
+	 * @param $required
+	 * @param $error_msg
+	 */
 	public function addRule($field, $type, $required, $error_msg) {
 
 		$this->rules[$field] = array('type'      => $type,
@@ -46,6 +69,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param array $input
+	 *
+	 * @return bool
+	 */
 	public function validate(array $input) {
 
 		$this->result = array();
@@ -153,6 +181,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return bool|string
+	 */
 	public static function sanitizeNumber($input) {
 
 		if (is_string($input)) {
@@ -167,6 +200,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return bool|string
+	 */
 	public static function sanitizeText($input) {
 
 		if (is_string($input)) {
@@ -181,6 +219,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return bool|string
+	 */
 	public static function sanitizeDate($input) {
 
 		if (is_string($input)) {
@@ -195,6 +238,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return bool|string
+	 */
 	public static function sanitizeUrl($input) {
 
 		if (is_string($input)) {
@@ -209,6 +257,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return bool|string
+	 */
 	public static function sanitizeEmail($input) {
 
 		if (is_string($input)) {
@@ -223,6 +276,11 @@ class Validator {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return bool
+	 */
 	public static function sanitizeBoolean($input) {
 
 		if (is_string($input)) {

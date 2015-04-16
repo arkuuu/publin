@@ -5,8 +5,18 @@ namespace publin\modules;
 
 use publin\src\Publication;
 
+/**
+ * Class HighwirePressTags
+ *
+ * @package publin\modules
+ */
 class HighwirePressTags extends Module {
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 */
 	public function export(Publication $publication) {
 
 		// http://www.mendeley.com/import/information-for-publishers/
@@ -24,6 +34,11 @@ class HighwirePressTags extends Module {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return array
+	 */
 	private function createFields(Publication $publication) {
 
 		$fields = array();

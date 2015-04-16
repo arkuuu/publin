@@ -4,6 +4,11 @@ namespace publin\src;
 
 use Exception;
 
+/**
+ * Class PublicationView
+ *
+ * @package publin\src
+ */
 class PublicationView extends View {
 
 	/**
@@ -31,12 +36,20 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isEditMode() {
 
 		return $this->edit_mode;
 	}
 
 
+	/**
+	 * @param null $mode
+	 *
+	 * @return string
+	 */
 	public function showLinkToSelf($mode = null) {
 
 		return $this->html(Request::createUrl(array(
@@ -197,6 +210,9 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showLocation() {
 
 		return $this->html($this->publication->getLocation());
@@ -283,6 +299,9 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showEditKeywords() {
 
 		$keywords = $this->publication->getKeywords();
@@ -309,6 +328,9 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showEditAuthors() {
 
 		$authors = $this->publication->getAuthors();
@@ -427,18 +449,29 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showFirstPage() {
 
 		return $this->html($this->publication->getFirstPage());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showLastPage() {
 
 		return $this->html($this->publication->getLastPage());
 	}
 
 
+	/**
+	 * @param bool $link
+	 *
+	 * @return string
+	 */
 	public function showStudyField($link = true) {
 
 		if ($link) {
@@ -479,12 +512,18 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showCopyright() {
 
 		return $this->html($this->publication->getCopyright());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showFiles() {
 
 		$files = $this->publication->getFiles();
@@ -506,6 +545,9 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return bool|string
+	 */
 	public function showFullTextFile() {
 
 		$file = $this->publication->getFullTextFile();
@@ -521,6 +563,9 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showEditFiles() {
 
 		$files = $this->publication->getFiles();
@@ -562,6 +607,9 @@ class PublicationView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showPublinUrl() {
 
 		return $this->html($this->publication->getPublinUrl());

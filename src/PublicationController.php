@@ -13,6 +13,11 @@ use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
+/**
+ * Class PublicationController
+ *
+ * @package publin\src
+ */
 class PublicationController extends Controller {
 
 	private $db;
@@ -21,6 +26,10 @@ class PublicationController extends Controller {
 	private $errors;
 
 
+	/**
+	 * @param Database $db
+	 * @param Auth     $auth
+	 */
 	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
@@ -316,7 +325,6 @@ class PublicationController extends Controller {
 
 			return false;
 		}
-
 	}
 
 

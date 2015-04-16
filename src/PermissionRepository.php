@@ -3,9 +3,22 @@
 
 namespace publin\src;
 
+/**
+ * Class PermissionRepository
+ *
+ * @package publin\src
+ */
 class PermissionRepository extends Repository {
 
 
+	/**
+	 * @param      $column
+	 * @param      $comparator
+	 * @param      $value
+	 * @param null $function
+	 *
+	 * @return $this
+	 */
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'role_id') {
@@ -26,6 +39,11 @@ class PermissionRepository extends Repository {
 	}
 
 
+	/**
+	 * @param bool $distinct
+	 *
+	 * @return $this
+	 */
 	public function select($distinct = false) {
 
 		$distinct = ($distinct === true) ? ' DISTINCT' : '';
@@ -53,7 +71,7 @@ class PermissionRepository extends Repository {
 
 
 	/**
-	 * @return Permission
+	 * @return Permission|false
 	 */
 	public function findSingle() {
 

@@ -17,6 +17,9 @@ class Author extends Entity {
 	protected $about;
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getId() {
 
 		return $this->id;
@@ -26,7 +29,7 @@ class Author extends Entity {
 	/**
 	 * Returns the full name, consisting of academic title, first name and last name.
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getName() {
 
@@ -34,7 +37,7 @@ class Author extends Entity {
 			return $this->given.' '.$this->family;
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 
@@ -42,7 +45,7 @@ class Author extends Entity {
 	/**
 	 * Returns the last name.
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getLastName() {
 
@@ -55,7 +58,7 @@ class Author extends Entity {
 	 *
 	 * @param    $short        boolean        Set true for first letters only (optional)
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getFirstName($short = false) {
 
@@ -72,7 +75,7 @@ class Author extends Entity {
 			return $this->given;
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 
@@ -80,7 +83,7 @@ class Author extends Entity {
 	/**
 	 * Returns the website.
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getWebsite() {
 
@@ -91,7 +94,7 @@ class Author extends Entity {
 	/**
 	 * Returns the contact info.
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getContact() {
 
@@ -102,7 +105,7 @@ class Author extends Entity {
 	/**
 	 * Returns the author's text.
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getAbout() {
 

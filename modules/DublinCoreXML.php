@@ -6,8 +6,18 @@ namespace publin\modules;
 use DOMDocument;
 use publin\src\Publication;
 
+/**
+ * Class DublinCoreXML
+ *
+ * @package publin\modules
+ */
 class DublinCoreXML extends Module {
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 */
 	public function export(Publication $publication) {
 
 		$xml = new DOMDocument('1.0', 'utf-8');
@@ -29,6 +39,11 @@ class DublinCoreXML extends Module {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return array
+	 */
 	private function createFields(Publication $publication) {
 
 		$fields = array();

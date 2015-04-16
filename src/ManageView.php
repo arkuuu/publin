@@ -3,11 +3,20 @@
 
 namespace publin\src;
 
+/**
+ * Class ManageView
+ *
+ * @package publin\src
+ */
 class ManageView extends View {
 
 	private $model;
 
 
+	/**
+	 * @param ManageModel $model
+	 * @param array       $errors
+	 */
 	public function __construct(ManageModel $model, array $errors) {
 
 		parent::__construct('manage', $errors);
@@ -26,6 +35,9 @@ class ManageView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showPermissions() {
 
 		$roles = $this->model->getRoles();
@@ -67,6 +79,9 @@ class ManageView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showRoles() {
 
 		$roles = $this->model->getRoles();
@@ -88,6 +103,9 @@ class ManageView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showUsers() {
 
 		$string = '<table>

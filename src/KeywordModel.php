@@ -5,9 +5,21 @@ namespace publin\src;
 use InvalidArgumentException;
 use PDOException;
 
+/**
+ * Class KeywordModel
+ *
+ * @package publin\src
+ */
 class KeywordModel extends Model {
 
 
+	/**
+	 * @param Keyword $keyword
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(Keyword $keyword) {
 
 		$query = 'INSERT INTO `keywords` (`name`) VALUES (:name) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
@@ -19,6 +31,12 @@ class KeywordModel extends Model {
 	}
 
 
+	/**
+	 * @param       $id
+	 * @param array $data
+	 *
+	 * @return int
+	 */
 	public function update($id, array $data) {
 
 		$old_db = new OldDatabase();
@@ -27,6 +45,13 @@ class KeywordModel extends Model {
 	}
 
 
+	/**
+	 * @param $id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function delete($id) {
 
 		if (!is_numeric($id)) {
@@ -58,6 +83,9 @@ class KeywordModel extends Model {
 	}
 
 
+	/**
+	 * @return Validator
+	 */
 	public function getValidator() {
 
 		$validator = new Validator();

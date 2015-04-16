@@ -6,6 +6,11 @@ namespace publin\src;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
+/**
+ * Class Repository
+ *
+ * @package publin\src
+ */
 class Repository {
 
 	public $select;
@@ -19,6 +24,9 @@ class Repository {
 	protected $db;
 
 
+	/**
+	 * @param Database $db
+	 */
 	public function __construct(Database $db) {
 
 		$this->db = $db;
@@ -26,6 +34,9 @@ class Repository {
 	}
 
 
+	/**
+	 *
+	 */
 	public function reset() {
 
 		$this->select = '';
@@ -38,6 +49,12 @@ class Repository {
 	}
 
 
+	/**
+	 * @param       $table
+	 * @param array $columns
+	 *
+	 * @return $this
+	 */
 	public function select($table, array $columns = null) {
 
 		if (!empty($columns)) {
@@ -53,6 +70,13 @@ class Repository {
 	}
 
 
+	/**
+	 * @param        $column
+	 * @param        $order
+	 * @param string $table
+	 *
+	 * @return $this
+	 */
 	public function order($column, $order, $table = 'self') {
 
 		$order = ($order === 'ASC') ? 'ASC' : 'DESC';
@@ -71,6 +95,12 @@ class Repository {
 	}
 
 
+	/**
+	 * @param     $limit
+	 * @param int $offset
+	 *
+	 * @return $this
+	 */
 	public function limit($limit, $offset = 0) {
 
 		if (!is_numeric($limit) || !is_numeric($offset)) {
@@ -85,6 +115,15 @@ class Repository {
 	}
 
 
+	/**
+	 * @param        $column
+	 * @param        $comparator
+	 * @param        $value
+	 * @param null   $function
+	 * @param string $table
+	 *
+	 * @return $this
+	 */
 	public function where($column, $comparator, $value, $function = null, $table = 'self') {
 
 		if (!$comparator = $this->isAllowedComparator($comparator)) {
@@ -113,6 +152,11 @@ class Repository {
 	}
 
 
+	/**
+	 * @param $comparator
+	 *
+	 * @return bool
+	 */
 	private function isAllowedComparator($comparator) {
 
 		$allowed = array('=', '<', '>', '<=', '>=', 'LIKE');
@@ -126,6 +170,11 @@ class Repository {
 	}
 
 
+	/**
+	 * @param $function
+	 *
+	 * @return bool
+	 */
 	private function isAllowedFunction($function) {
 
 		$allowed = array('MONTH', 'YEAR', 'DISTINCT', 'COUNT');
@@ -152,6 +201,15 @@ class Repository {
 //		return $this;
 //	}
 
+	/**
+	 * @param      $foreign_table
+	 * @param      $foreign_column
+	 * @param      $comparator
+	 * @param      $column
+	 * @param null $join_type
+	 *
+	 * @return $this
+	 */
 	public function join($foreign_table, $foreign_column, $comparator, $column, $join_type = null) {
 
 		if (!$comparator = $this->isAllowedComparator($comparator)) {
@@ -171,6 +229,11 @@ class Repository {
 	}
 
 
+	/**
+	 * @param $join_type
+	 *
+	 * @return bool
+	 */
 	private function isAllowedJoinType($join_type) {
 
 		$allowed = array('LEFT', 'RIGHT', 'INNER', 'OUTER');
@@ -184,6 +247,11 @@ class Repository {
 	}
 
 
+	/**
+	 * @return array
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function find() {
 
 		$query = $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' '.$this->limit.';';
@@ -198,6 +266,11 @@ class Repository {
 	}
 
 
+	/**
+	 * @return array|false
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function findSingle() {
 
 		$query = $this->select.' '.$this->from.' '.$this->join.' '.$this->where.' '.$this->order.' LIMIT 0,1;';
@@ -212,6 +285,11 @@ class Repository {
 	}
 
 
+	/**
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function count() {
 
 		$query = 'SELECT COUNT(*) '.$this->from.' '.$this->join.' '.$this->where.';';
@@ -226,6 +304,9 @@ class Repository {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function __toString() {
 
 		$values = implode(', ', $this->values_to_bind);
@@ -255,7 +336,11 @@ class Repository {
 			print_r($query.' with '.$values);
 		}*/
 
-
+	/**
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function delete() {
 
 		$query = 'DELETE '.$this->from.' '.$this->join.' '.$this->where.';';

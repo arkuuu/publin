@@ -7,6 +7,11 @@ use BadMethodCallException;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\NotFoundException;
 
+/**
+ * Class UserController
+ *
+ * @package publin\src
+ */
 class UserController extends Controller {
 
 	private $db;
@@ -19,6 +24,12 @@ class UserController extends Controller {
 	private $user;
 
 
+	/**
+	 * @param Database $db
+	 * @param Auth     $auth
+	 *
+	 * @throws exceptions\LoginRequiredException
+	 */
 	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;

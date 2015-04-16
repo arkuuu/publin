@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class RoleRepository
+ *
+ * @package publin\src
+ */
 class RoleRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -15,6 +23,14 @@ class RoleRepository extends Repository {
 	}
 
 
+	/**
+	 * @param      $column
+	 * @param      $comparator
+	 * @param      $value
+	 * @param null $function
+	 *
+	 * @return $this
+	 */
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'user_id') {
@@ -56,7 +72,7 @@ class RoleRepository extends Repository {
 	/**
 	 * @param bool $full
 	 *
-	 * @return Role
+	 * @return Role|false
 	 */
 	public function findSingle($full = false) {
 

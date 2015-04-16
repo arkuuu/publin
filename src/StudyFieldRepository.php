@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class StudyFieldRepository
+ *
+ * @package publin\src
+ */
 class StudyFieldRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -32,7 +40,7 @@ class StudyFieldRepository extends Repository {
 
 
 	/**
-	 * @return StudyField
+	 * @return StudyField|false
 	 */
 	public function findSingle() {
 

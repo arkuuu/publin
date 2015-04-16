@@ -5,8 +5,20 @@ namespace publin\src;
 
 use publin\Config;
 
+/**
+ * Class MailHandler
+ *
+ * @package publin\src
+ */
 class MailHandler {
 
+	/**
+	 * @param $to
+	 * @param $subject
+	 * @param $message
+	 *
+	 * @return bool
+	 */
 	public static function sendMail($to, $subject, $message) {
 
 		// TODO headers

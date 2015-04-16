@@ -3,6 +3,11 @@
 
 namespace publin\src;
 
+/**
+ * Class KeywordView
+ *
+ * @package publin\src
+ */
 class KeywordView extends ViewWithPublications {
 
 	/**
@@ -15,6 +20,12 @@ class KeywordView extends ViewWithPublications {
 	private $edit_mode;
 
 
+	/**
+	 * @param Keyword $keyword
+	 * @param array   $publications
+	 * @param array   $errors
+	 * @param bool    $edit_mode
+	 */
 	public function __construct(Keyword $keyword, array $publications, array $errors, $edit_mode = false) {
 
 		parent::__construct($publications, 'keyword', $errors);
@@ -23,24 +34,38 @@ class KeywordView extends ViewWithPublications {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showPageTitle() {
 
 		return $this->html($this->showName());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showName() {
 
 		return $this->html($this->keyword->getName());
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isEditMode() {
 
 		return $this->edit_mode;
 	}
 
 
+	/**
+	 * @param string $mode
+	 *
+	 * @return string
+	 */
 	public function showLinkToSelf($mode = '') {
 
 		$url = '?p=keyword&id=';

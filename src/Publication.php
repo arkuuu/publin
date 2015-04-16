@@ -4,6 +4,11 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
+/**
+ * Class Publication
+ *
+ * @package publin\src
+ */
 class Publication extends Entity {
 
 	protected $id;
@@ -39,6 +44,12 @@ class Publication extends Entity {
 	protected $full_text_file;
 
 
+	/**
+	 * @param array     $data
+	 * @param Author[]  $authors
+	 * @param Keyword[] $keywords
+	 * @param File[]    $files
+	 */
 	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array()) {
 
 		parent::__construct($data);
@@ -49,7 +60,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return mixed
+	 * @return string|null
 	 */
 	public function getId() {
 
@@ -58,7 +69,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return array|bool
+	 * @return string|null
 	 */
 	public function getTypeId() {
 
@@ -67,9 +78,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * Returns the field of study.
-	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getStudyField() {
 
@@ -78,7 +87,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return mixed
+	 * @return string|null
 	 */
 	public function getStudyFieldId() {
 
@@ -87,7 +96,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getIsbn() {
 
@@ -96,7 +105,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getDoi() {
 
@@ -105,7 +114,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return array|bool
+	 * @return string|null
 	 */
 	public function getCopyright() {
 
@@ -116,7 +125,7 @@ class Publication extends Entity {
 	/**
 	 * @param $divider
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getPages($divider) {
 
@@ -124,13 +133,13 @@ class Publication extends Entity {
 			return $this->pages_from.$divider.$this->pages_to;
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 
 
 	/**
-	 * @return mixed
+	 * @return string|null
 	 */
 	public function getFirstPage() {
 
@@ -139,7 +148,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return mixed
+	 * @return string|null
 	 */
 	public function getLastPage() {
 
@@ -152,7 +161,7 @@ class Publication extends Entity {
 	 *
 	 * @param    string $format date format (optional)
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getDateAdded($format = null) {
 
@@ -201,7 +210,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return    File
+	 * @return    File|null
 	 */
 	public function getFullTextFile() {
 
@@ -283,7 +292,7 @@ class Publication extends Entity {
 	/**
 	 * Returns the type.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getTypeName() {
 
@@ -294,7 +303,7 @@ class Publication extends Entity {
 	/**
 	 * Returns the title of the publication.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getTitle() {
 
@@ -303,7 +312,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getJournal() {
 
@@ -312,7 +321,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getBooktitle() {
 
@@ -321,7 +330,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getPublisher() {
 
@@ -330,7 +339,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getEdition() {
 
@@ -339,7 +348,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getInstitution() {
 
@@ -348,7 +357,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getSchool() {
 
@@ -357,7 +366,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getHowpublished() {
 
@@ -370,7 +379,7 @@ class Publication extends Entity {
 	 *
 	 * @param    string $format date format (optional)
 	 *
-	 * @return    string
+	 * @return    string|null
 	 */
 	public function getDatePublished($format = null) {
 
@@ -384,7 +393,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getVolume() {
 
@@ -393,7 +402,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getNumber() {
 
@@ -402,7 +411,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getSeries() {
 
@@ -413,7 +422,7 @@ class Publication extends Entity {
 	/**
 	 * Returns the abstract.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getAbstract() {
 
@@ -422,7 +431,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getNote() {
 
@@ -431,7 +440,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getAddress() {
 
@@ -440,7 +449,7 @@ class Publication extends Entity {
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getLocation() {
 
@@ -448,6 +457,9 @@ class Publication extends Entity {
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getPublinUrl() {
 
 		return Request::createUrl(array('p' => 'publication', 'id' => $this->id));

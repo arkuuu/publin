@@ -5,9 +5,21 @@ namespace publin\src;
 use Exception;
 use InvalidArgumentException;
 
+/**
+ * Class PublicationModel
+ *
+ * @package publin\src
+ */
 class PublicationModel extends Model {
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(Publication $publication) {
 
 		if ($publication->getTypeId()) {
@@ -64,6 +76,15 @@ VALUES
 	}
 
 
+	/**
+	 * @param $publication_id
+	 * @param $author_id
+	 * @param $priority
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function addAuthor($publication_id, $author_id, $priority) {
 
 		if (!is_numeric($publication_id) || !is_numeric($author_id) || !is_numeric($priority)) {
@@ -80,6 +101,14 @@ VALUES
 	}
 
 
+	/**
+	 * @param $publication_id
+	 * @param $keyword_id
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function addKeyword($publication_id, $keyword_id) {
 
 		if (!is_numeric($publication_id) || !is_numeric($keyword_id)) {
@@ -96,6 +125,12 @@ VALUES
 	}
 
 
+	/**
+	 * @param       $id
+	 * @param array $data
+	 *
+	 * @return int
+	 */
 	public function update($id, array $data) {
 
 		/* Fetches the type */
@@ -119,6 +154,12 @@ VALUES
 	}
 
 
+	/**
+	 * @param $id
+	 *
+	 * @return int
+	 * @throws Exception
+	 */
 	public function delete($id) {
 
 		if (!is_numeric($id)) {
@@ -155,6 +196,14 @@ VALUES
 	}
 
 
+	/**
+	 * @param $publication_id
+	 * @param $author_id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function removeAuthor($publication_id, $author_id) {
 
 		if (!is_numeric($publication_id) || !is_numeric($author_id)) {
@@ -171,6 +220,14 @@ VALUES
 	}
 
 
+	/**
+	 * @param $publication_id
+	 * @param $keyword_id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function removeKeyword($publication_id, $keyword_id) {
 
 		if (!is_numeric($publication_id) || !is_numeric($keyword_id)) {
@@ -187,6 +244,11 @@ VALUES
 	}
 
 
+	/**
+	 * @param $type
+	 *
+	 * @return Validator
+	 */
 	public function getValidator($type) {
 
 		$validator = new Validator();

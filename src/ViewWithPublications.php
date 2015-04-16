@@ -3,6 +3,11 @@
 
 namespace publin\src;
 
+/**
+ * Class ViewWithPublications
+ *
+ * @package publin\src
+ */
 class ViewWithPublications extends View {
 
 	/**

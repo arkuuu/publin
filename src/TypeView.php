@@ -3,11 +3,20 @@
 
 namespace publin\src;
 
+/**
+ * Class TypeView
+ *
+ * @package publin\src
+ */
 class TypeView extends ViewWithPublications {
 
 	private $type;
 
 
+	/**
+	 * @param Type  $type
+	 * @param array $publications
+	 */
 	public function __construct(Type $type, array $publications) {
 
 		parent::__construct($publications, 'type');
@@ -15,12 +24,18 @@ class TypeView extends ViewWithPublications {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showPageTitle() {
 
 		return $this->html($this->showName());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showName() {
 
 		return $this->html($this->type->getName());

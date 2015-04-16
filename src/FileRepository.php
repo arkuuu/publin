@@ -3,8 +3,16 @@
 
 namespace publin\src;
 
+/**
+ * Class FileRepository
+ *
+ * @package publin\src
+ */
 class FileRepository extends Repository {
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -31,7 +39,7 @@ class FileRepository extends Repository {
 
 
 	/**
-	 * @return File
+	 * @return File|false
 	 */
 	public function findSingle() {
 

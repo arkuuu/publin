@@ -7,6 +7,11 @@ use publin\src\exceptions\LoginRequiredException;
 use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 
+/**
+ * Class MainController
+ *
+ * @package publin\src
+ */
 class MainController extends Controller {
 
 	private $db;
@@ -92,6 +97,9 @@ class MainController extends Controller {
 	}
 
 
+	/**
+	 * @param $destination
+	 */
 	public static function redirect($destination) {
 
 		if (!isset($_SESSION)) {

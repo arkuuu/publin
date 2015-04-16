@@ -2,9 +2,21 @@
 
 namespace publin\src;
 
+/**
+ * Class TypeModel
+ *
+ * @package publin\src
+ */
 class TypeModel extends Model {
 
 
+	/**
+	 * @param Type $type
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(Type $type) {
 
 		$query = 'INSERT INTO `types` (`name`, `description`) VALUES (:name, :description);';
@@ -17,6 +29,13 @@ class TypeModel extends Model {
 	}
 
 
+	/**
+	 * @param $id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function delete($id) {
 
 		$query = 'DELETE FROM `types` WHERE `id` = :id;';
@@ -28,6 +47,9 @@ class TypeModel extends Model {
 	}
 
 
+	/**
+	 * @return Validator
+	 */
 	public function getValidator() {
 
 		$validator = new Validator();

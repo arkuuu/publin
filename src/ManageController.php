@@ -9,6 +9,11 @@ use publin\src\exceptions\DBForeignKeyException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
+/**
+ * Class ManageController
+ *
+ * @package publin\src
+ */
 class ManageController extends Controller {
 
 	private $db;
@@ -16,6 +21,10 @@ class ManageController extends Controller {
 	private $errors;
 
 
+	/**
+	 * @param Database $db
+	 * @param Auth     $auth
+	 */
 	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
@@ -24,6 +33,14 @@ class ManageController extends Controller {
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws PermissionRequiredException
+	 * @throws \Exception
+	 * @throws exceptions\NotFoundException
+	 */
 	public function run(Request $request) {
 
 		if (!$this->auth->checkPermission(Auth::MANAGE)) {
@@ -241,7 +258,6 @@ class ManageController extends Controller {
 
 			return false;
 		}
-
 	}
 
 

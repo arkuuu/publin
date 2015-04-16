@@ -5,6 +5,11 @@ namespace publin\src;
 use Exception;
 use publin\src\exceptions\NotFoundException;
 
+/**
+ * Class View
+ *
+ * @package publin\src
+ */
 class View {
 
 	/**
@@ -19,6 +24,10 @@ class View {
 	protected $errors;
 
 
+	/**
+	 * @param       $content
+	 * @param array $errors
+	 */
 	public function __construct($content, $errors = array()) {
 
 		$this->content = $content;
@@ -26,6 +35,10 @@ class View {
 	}
 
 
+	/**
+	 * @return string
+	 * @throws NotFoundException
+	 */
 	public function displayContentOnly() {
 
 		$content = './templates/'.$this->template.'/'.$this->content.'.html';
@@ -102,6 +115,11 @@ class View {
 	}
 
 
+	/**
+	 * @param $input
+	 *
+	 * @return string
+	 */
 	public function html($input) {
 
 		return htmlspecialchars($input);
@@ -119,6 +137,9 @@ class View {
 	}
 
 
+	/**
+	 * @return bool|string
+	 */
 	public function showUserName() {
 
 		if (isset($_SESSION['user'])) {
@@ -133,6 +154,11 @@ class View {
 	}
 
 
+	/**
+	 * @param $permission_name
+	 *
+	 * @return bool
+	 */
 	public function hasPermission($permission_name) {
 
 		if (isset($_SESSION['user'])) {
@@ -151,6 +177,12 @@ class View {
 	}
 
 
+	/**
+	 * @param $page
+	 * @param $title
+	 *
+	 * @return string
+	 */
 	public function showLink($page, $title) {
 
 		if ($this->content == $page) {
@@ -162,6 +194,12 @@ class View {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 * @param int         $max_authors
+	 *
+	 * @return string
+	 */
 	public function showCitation(Publication $publication, $max_authors = 6) {
 
 		$url = './?p=publication&id='.$publication->getId();
@@ -250,6 +288,9 @@ class View {
 	}
 
 
+	/**
+	 * @return bool|string
+	 */
 	public function showErrors() {
 
 		if (!empty($this->errors)) {

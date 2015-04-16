@@ -7,6 +7,11 @@ use Exception;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\PermissionRequiredException;
 
+/**
+ * Class SubmitController
+ *
+ * @package publin\src
+ */
 class SubmitController extends Controller {
 
 	private $db;
@@ -15,6 +20,10 @@ class SubmitController extends Controller {
 	private $errors;
 
 
+	/**
+	 * @param Database $db
+	 * @param Auth     $auth
+	 */
 	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
@@ -196,6 +205,9 @@ class SubmitController extends Controller {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function clearForm() {
 
 		unset($_SESSION['input']);

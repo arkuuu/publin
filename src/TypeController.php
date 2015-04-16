@@ -5,12 +5,20 @@ namespace publin\src;
 
 use publin\src\exceptions\NotFoundException;
 
+/**
+ * Class TypeController
+ *
+ * @package publin\src
+ */
 class TypeController extends Controller {
 
 	private $db;
 	private $model;
 
 
+	/**
+	 * @param Database $db
+	 */
 	public function __construct(Database $db) {
 
 		$this->db = $db;
@@ -18,6 +26,13 @@ class TypeController extends Controller {
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws NotFoundException
+	 * @throws \Exception
+	 */
 	public function run(Request $request) {
 
 		$repo = new TypeRepository($this->db);

@@ -8,6 +8,11 @@ use publin\src\exceptions\NotFoundException;
 use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
+/**
+ * Class KeywordController
+ *
+ * @package publin\src
+ */
 class KeywordController extends Controller {
 
 	private $db;
@@ -16,6 +21,10 @@ class KeywordController extends Controller {
 	private $errors;
 
 
+	/**
+	 * @param Database $db
+	 * @param Auth     $auth
+	 */
 	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;

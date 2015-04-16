@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class KeywordRepository
+ *
+ * @package publin\src
+ */
 class KeywordRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT self.*';
@@ -15,6 +23,14 @@ class KeywordRepository extends Repository {
 	}
 
 
+	/**
+	 * @param      $column
+	 * @param      $comparator
+	 * @param      $value
+	 * @param null $function
+	 *
+	 * @return $this
+	 */
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'publication_id') {
@@ -46,7 +62,7 @@ class KeywordRepository extends Repository {
 
 
 	/**
-	 * @return Keyword
+	 * @return Keyword|false
 	 */
 	public function findSingle() {
 

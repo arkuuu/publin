@@ -3,11 +3,20 @@
 
 namespace publin\src;
 
+/**
+ * Class SearchView
+ *
+ * @package publin\src
+ */
 class SearchView extends View {
 
 	private $results;
 
 
+	/**
+	 * @param array $results
+	 * @param array $errors
+	 */
 	public function __construct(array $results, array $errors = array()) {
 
 		parent::__construct('search', $errors);
@@ -15,12 +24,18 @@ class SearchView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showTitle() {
 
 		return 'Search';
 	}
 
 
+	/**
+	 * @return bool|string
+	 */
 	public function showResults() {
 
 		$string = '';

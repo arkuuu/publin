@@ -2,6 +2,11 @@
 
 namespace publin\src;
 
+/**
+ * Class UserView
+ *
+ * @package publin\src
+ */
 class UserView extends View {
 
 	/**
@@ -23,6 +28,9 @@ class UserView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showRoles() {
 
 		$string = '';
@@ -39,12 +47,18 @@ class UserView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showName() {
 
 		return $this->html($this->user->getName());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showMail() {
 
 		return $this->html($this->user->getMail());

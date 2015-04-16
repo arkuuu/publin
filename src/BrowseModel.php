@@ -4,6 +4,11 @@ namespace publin\src;
 
 use Exception;
 
+/**
+ * Class BrowseModel
+ *
+ * @package publin\src
+ */
 class BrowseModel {
 
 	private $db;
@@ -13,12 +18,21 @@ class BrowseModel {
 	private $is_result = false;
 
 
+	/**
+	 * @param Database $db
+	 */
 	public function __construct(Database $db) {
 
 		$this->db = $db;
 	}
 
 
+	/**
+	 * @param $type
+	 * @param $id
+	 *
+	 * @throws Exception
+	 */
 	public function handle($type, $id) {
 
 		if (!empty($type)) {
@@ -74,6 +88,9 @@ class BrowseModel {
 	}
 
 
+	/**
+	 * @return array
+	 */
 	private function fetchYears() {
 
 		$query = 'SELECT DISTINCT YEAR(`date_published`) AS `year`

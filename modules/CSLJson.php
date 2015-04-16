@@ -6,8 +6,18 @@ namespace publin\modules;
 use Exception;
 use publin\src\Publication;
 
+/**
+ * Class CSLJson
+ *
+ * @package publin\modules
+ */
 class CSLJson extends Module {
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 */
 	public function export(Publication $publication) {
 
 		$fields = $this->createFields($publication);
@@ -22,6 +32,12 @@ class CSLJson extends Module {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	private function createFields(Publication $publication) {
 
 		$fields = array();
@@ -62,6 +78,12 @@ class CSLJson extends Module {
 	}
 
 
+	/**
+	 * @param $type
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
 	private function encodeTypes($type) {
 
 		switch ($type) {

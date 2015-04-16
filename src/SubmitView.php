@@ -2,12 +2,22 @@
 
 namespace publin\src;
 
+/**
+ * Class SubmitView
+ *
+ * @package publin\src
+ */
 class SubmitView extends View {
 
 	private $model;
 	private $submit_mode;
 
 
+	/**
+	 * @param SubmitModel $model
+	 * @param array       $submit_mode
+	 * @param array       $errors
+	 */
 	public function __construct(SubmitModel $model, $submit_mode, array $errors) {
 
 		if (in_array($submit_mode, array('start', 'import', 'form'))) {
@@ -22,6 +32,9 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isForm() {
 
 		if ($this->submit_mode == 'form') {
@@ -33,6 +46,9 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isImport() {
 
 		if ($this->submit_mode == 'import') {
@@ -44,6 +60,9 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return bool|string
+	 */
 	public function showImportInput() {
 
 		if (isset($_SESSION['input_raw'])) {
@@ -55,12 +74,18 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showPageTitle() {
 
 		return 'Submit publication';
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function listTypeOptions() {
 
 		$types = $this->model->createTypes();
@@ -90,6 +115,13 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @param      $field
+	 * @param null $field2
+	 * @param null $field3
+	 *
+	 * @return bool|string
+	 */
 	public function show($field, $field2 = null, $field3 = null) {
 
 		if (isset($field2)) {
@@ -112,6 +144,9 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function listStudyFieldOptions() {
 
 		$study_fields = $this->model->createStudyFields();
@@ -141,6 +176,9 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function listKeywords() {
 
 		$string = '';
@@ -165,6 +203,9 @@ class SubmitView extends View {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function listAuthors() {
 
 		$string = '';

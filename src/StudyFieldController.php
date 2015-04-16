@@ -5,17 +5,32 @@ namespace publin\src;
 
 use publin\src\exceptions\NotFoundException;
 
+/**
+ * Class StudyFieldController
+ *
+ * @package publin\src
+ */
 class StudyFieldController extends Controller {
 
 	private $db;
 
 
+	/**
+	 * @param Database $db
+	 */
 	public function __construct(Database $db) {
 
 		$this->db = $db;
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws NotFoundException
+	 * @throws \Exception
+	 */
 	public function run(Request $request) {
 
 		$repo = new StudyFieldRepository($this->db);

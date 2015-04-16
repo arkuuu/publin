@@ -2,6 +2,11 @@
 
 namespace publin\src;
 
+/**
+ * Class AuthorView
+ *
+ * @package publin\src
+ */
 class AuthorView extends ViewWithPublications {
 
 	/**
@@ -31,24 +36,38 @@ class AuthorView extends ViewWithPublications {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showPageTitle() {
 
 		return $this->html($this->showName());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showName() {
 
 		return $this->html($this->author->getName());
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isEditMode() {
 
 		return $this->edit_mode;
 	}
 
 
+	/**
+	 * @param string $mode
+	 *
+	 * @return string
+	 */
 	public function showLinkToSelf($mode = '') {
 
 		$url = '?p=author&id=';
@@ -117,12 +136,18 @@ class AuthorView extends ViewWithPublications {
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showGivenName() {
 
 		return $this->html($this->author->getFirstName());
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function showFamilyName() {
 
 		return $this->html($this->author->getLastName());

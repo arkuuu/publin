@@ -4,9 +4,21 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
+/**
+ * Class StudyFieldModel
+ *
+ * @package publin\src
+ */
 class StudyFieldModel extends Model {
 
 
+	/**
+	 * @param StudyField $study_field
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(StudyField $study_field) {
 
 		$query = 'INSERT INTO `study_fields` (`name`, `description`) VALUES (:name, :description);';
@@ -19,6 +31,13 @@ class StudyFieldModel extends Model {
 	}
 
 
+	/**
+	 * @param $id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function delete($id) {
 
 		if (!is_numeric($id)) {
@@ -34,6 +53,9 @@ class StudyFieldModel extends Model {
 	}
 
 
+	/**
+	 * @return Validator
+	 */
 	public function getValidator() {
 
 		$validator = new Validator();

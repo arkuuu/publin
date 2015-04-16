@@ -2,6 +2,11 @@
 
 namespace publin\src;
 
+/**
+ * Class BrowseView
+ *
+ * @package publin\src
+ */
 class BrowseView extends View {
 
 	/**

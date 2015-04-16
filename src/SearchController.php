@@ -5,6 +5,11 @@ namespace publin\src;
 
 use UnexpectedValueException;
 
+/**
+ * Class SearchController
+ *
+ * @package publin\src
+ */
 class SearchController extends Controller {
 
 	private $db;
@@ -12,6 +17,9 @@ class SearchController extends Controller {
 	private $errors;
 
 
+	/**
+	 * @param Database $db
+	 */
 	public function __construct(Database $db) {
 
 		$this->db = $db;
@@ -20,6 +28,13 @@ class SearchController extends Controller {
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 * @throws \Exception
+	 * @throws exceptions\NotFoundException
+	 */
 	public function run(Request $request) {
 
 		if ($request->get('type') === 'publication') {
@@ -35,6 +50,11 @@ class SearchController extends Controller {
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
 	public function searchPublications(Request $request) {
 
 		$field = Validator::sanitizeText($request->get('field'));
@@ -89,8 +109,11 @@ class SearchController extends Controller {
 	}
 
 
-
-
+	/**
+	 * @param Request $request
+	 *
+	 * @return bool
+	 */
 	public function searchAuthors(Request $request) {
 
 		$field = Validator::sanitizeText($request->get('field'));

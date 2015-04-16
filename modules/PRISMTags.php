@@ -5,8 +5,18 @@ namespace publin\modules;
 
 use publin\src\Publication;
 
+/**
+ * Class PRISMTags
+ *
+ * @package publin\modules
+ */
 class PRISMTags extends Module {
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 */
 	public function export(Publication $publication) {
 
 		// http://www.prismstandard.org/specifications/3.0/PRISM_Basic_Metadata_3.0.pdf
@@ -27,6 +37,11 @@ class PRISMTags extends Module {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return array
+	 */
 	private function createFields(Publication $publication) {
 
 		$fields = array();

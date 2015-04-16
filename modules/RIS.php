@@ -6,6 +6,11 @@ namespace publin\modules;
 use Exception;
 use publin\src\Publication;
 
+/**
+ * Class RIS
+ *
+ * @package publin\modules
+ */
 class RIS extends Module {
 
 	/**
@@ -51,6 +56,12 @@ class RIS extends Module {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	private function createFields(Publication $publication) {
 
 		$fields = array();

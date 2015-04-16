@@ -4,9 +4,21 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
+/**
+ * Class RoleModel
+ *
+ * @package publin\src
+ */
 class RoleModel extends Model {
 
 
+	/**
+	 * @param Role $role
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(Role $role) {
 
 		$query = 'INSERT INTO `roles` (`name`) VALUES (:name);';
@@ -21,8 +33,9 @@ class RoleModel extends Model {
 	/**
 	 * @param $id
 	 *
-	 * @return bool
-	 * @throws exceptions\DBException
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
 	 */
 	public function delete($id) {
 
@@ -83,8 +96,9 @@ class RoleModel extends Model {
 	 * @param $role_id
 	 * @param $permission_id
 	 *
-	 * @return mixed
-	 * @throws exceptions\DBException
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
 	 */
 	public function addPermission($role_id, $permission_id) {
 
@@ -106,8 +120,9 @@ class RoleModel extends Model {
 	 * @param $role_id
 	 * @param $permission_id
 	 *
-	 * @return bool
-	 * @throws exceptions\DBException
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
 	 */
 	public function removePermission($role_id, $permission_id) {
 
@@ -125,6 +140,9 @@ class RoleModel extends Model {
 	}
 
 
+	/**
+	 * @return Validator
+	 */
 	public function getValidator() {
 
 		$validator = new Validator();

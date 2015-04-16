@@ -10,6 +10,11 @@ use publin\Config;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\DBForeignKeyException;
 
+/**
+ * Class Database
+ *
+ * @package publin\src
+ */
 class Database {
 
 
@@ -23,6 +28,9 @@ class Database {
 	private $stmt;
 
 
+	/**
+	 *
+	 */
 	public function __construct() {
 
 		$dsn = 'mysql:host='.Config::SQL_HOST.';dbname='.Config::SQL_DATABASE.';charset=UTF8';
@@ -40,24 +48,38 @@ class Database {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function beginTransaction() {
 
 		return $this->pdo->beginTransaction();
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function commitTransaction() {
 
 		return $this->pdo->commit();
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function cancelTransaction() {
 
 		return $this->pdo->rollBack();
 	}
 
 
+	/**
+	 * @param $query
+	 *
+	 * @return PDOStatement
+	 */
 	public function prepare($query) {
 
 		$this->stmt = $this->pdo->prepare($query);
@@ -66,6 +88,13 @@ class Database {
 	}
 
 
+	/**
+	 * @param      $parameter
+	 * @param      $value
+	 * @param null $type
+	 *
+	 * @return bool
+	 */
 	public function bindValue($parameter, $value, $type = null) {
 
 		if (empty($type)) {
@@ -90,18 +119,36 @@ class Database {
 	}
 
 
+	/**
+	 * @param $parameter
+	 * @param $column
+	 *
+	 * @return bool
+	 */
 	public function bindColumn($parameter, $column) {
 
 		return $this->stmt->bindColumn($parameter, $column, PDO::PARAM_STR);
 	}
 
 
+	/**
+	 * @param int $fetch_style
+	 *
+	 * @return array
+	 */
 	public function fetchAll($fetch_style = PDO::FETCH_ASSOC) {
 
 		return $this->stmt->fetchAll($fetch_style);
 	}
 
 
+	/**
+	 * @param array $parameters
+	 *
+	 * @return bool
+	 * @throws DBDuplicateEntryException
+	 * @throws DBForeignKeyException
+	 */
 	public function execute(array $parameters = null) {
 
 		try {
@@ -121,42 +168,71 @@ class Database {
 	}
 
 
+	/**
+	 * @param int $fetch_style
+	 *
+	 * @return array|false
+	 */
 	public function fetchSingle($fetch_style = PDO::FETCH_ASSOC) {
 
 		return $this->stmt->fetch($fetch_style);
 	}
 
 
-	public function fetchColumn() {
+	/**
+	 * @param int $column_number
+	 *
+	 * @return string
+	 */
+	public function fetchColumn($column_number = 0) {
 
-		return $this->stmt->fetchColumn();
+		return $this->stmt->fetchColumn($column_number);
 	}
 
 
+	/**
+	 * @return int
+	 */
 	public function rowCount() {
 
 		return $this->stmt->rowCount(); // TODO it's told to not work every time when SELECT
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function lastInsertId() {
 
 		return $this->pdo->lastInsertId();
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function debugDumpParams() {
 
 		return $this->stmt->debugDumpParams();
 	}
 
 
+	/**
+	 * @param $query
+	 *
+	 * @return int
+	 */
 	public function executeAndReturnAffectedRows($query) {
 
 		return $this->pdo->exec($query);
 	}
 
 
+	/**
+	 * @param $query
+	 *
+	 * @return PDOStatement
+	 */
 	public function query($query) {
 
 		$this->stmt = $this->pdo->query($query);

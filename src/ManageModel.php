@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class ManageModel
+ *
+ * @package publin\src
+ */
 class ManageModel extends Model {
 
 
+	/**
+	 * @return Permission[]
+	 */
 	public function getPermissions() {
 
 		$repo = new PermissionRepository($this->db);
@@ -14,6 +22,11 @@ class ManageModel extends Model {
 	}
 
 
+	/**
+	 * @param array $input
+	 *
+	 * @return bool
+	 */
 	public function updatePermissions(array $input) {
 
 		$roles = $this->getRoles();
@@ -33,6 +46,9 @@ class ManageModel extends Model {
 	}
 
 
+	/**
+	 * @return Role[]
+	 */
 	public function getRoles() {
 
 		$repo = new RoleRepository($this->db);
@@ -41,6 +57,9 @@ class ManageModel extends Model {
 	}
 
 
+	/**
+	 * @return User[]
+	 */
 	public function getUsers() {
 
 		$repo = new UserRepository($this->db);

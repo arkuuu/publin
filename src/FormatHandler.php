@@ -5,8 +5,19 @@ namespace publin\src;
 use BadMethodCallException;
 use DomainException;
 
+/**
+ * Class FormatHandler
+ *
+ * @package publin\src
+ */
 class FormatHandler {
 
+	/**
+	 * @param Publication $publication
+	 * @param             $format
+	 *
+	 * @return string
+	 */
 	public static function export(Publication $publication, $format) {
 
 		$class = '\\publin\\modules\\'.$format;
@@ -28,6 +39,12 @@ class FormatHandler {
 	}
 
 
+	/**
+	 * @param array $publications
+	 * @param       $format
+	 *
+	 * @return string
+	 */
 	public static function exportMultiple(array $publications, $format) {
 
 		$class = '\\publin\\modules\\'.$format;
@@ -49,6 +66,12 @@ class FormatHandler {
 	}
 
 
+	/**
+	 * @param $data
+	 * @param $format
+	 *
+	 * @return mixed
+	 */
 	public static function import($data, $format) {
 
 		$class = '\\publin\\modules\\'.$format;

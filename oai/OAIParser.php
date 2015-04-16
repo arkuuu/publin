@@ -22,6 +22,11 @@ use publin\src\PublicationRepository;
 use publin\src\Request;
 use UnexpectedValueException;
 
+/**
+ * Class OAIParser
+ *
+ * @package publin\oai
+ */
 class OAIParser {
 
 	private $use_stylesheet = Config::OAI_USE_XSLT;
@@ -44,6 +49,9 @@ class OAIParser {
 	);
 
 
+	/**
+	 *
+	 */
 	public function __construct() {
 
 		$this->db = new Database();
@@ -52,6 +60,11 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return string
+	 */
 	public function run(Request $request) {
 
 		try {
@@ -137,6 +150,9 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @return int
+	 */
 	private function clearResumptionTokens() {
 
 		$query = 'DELETE FROM `oai_tokens` WHERE `created` < NOW() - INTERVAL '.$this->token_valid_days.' DAY;';
@@ -145,6 +161,9 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @return DOMDocument
+	 */
 	public function identify() {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
@@ -180,6 +199,9 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @return bool|string
+	 */
 	private function getEarliestDatestamp() {
 
 		$query = 'SELECT MIN(`date_added`) FROM `publications`;';
@@ -190,6 +212,12 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param array      $request
+	 * @param DOMElement $content
+	 *
+	 * @return DOMDocument
+	 */
 	private function createResponse(array $request, DOMElement $content) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
@@ -220,6 +248,9 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @return DOMDocument
+	 */
 	public function listMetadataFormats() {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
@@ -238,6 +269,12 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param null $resumptionToken
+	 *
+	 * @return DOMDocument
+	 * @throws BadResumptionTokenException
+	 */
 	public function listSets($resumptionToken = null) {
 
 		if ($resumptionToken) {
@@ -278,6 +315,13 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param $token
+	 *
+	 * @return array|bool
+	 * @throws \publin\src\exceptions\DBDuplicateEntryException
+	 * @throws \publin\src\exceptions\DBForeignKeyException
+	 */
 	private function fetchResumptionToken($token) {
 
 		$this->db->prepare('SELECT `metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size` FROM `oai_tokens` WHERE `id`=:token LIMIT 0,1;');
@@ -301,6 +345,9 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @return int
+	 */
 	private function countSets() {
 
 		$repo = new KeywordRepository($this->db);
@@ -309,6 +356,11 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param int $offset
+	 *
+	 * @return array
+	 */
 	private function fetchSets($offset = 0) {
 
 		$repo = new KeywordRepository($this->db);
@@ -326,6 +378,18 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param $metadataPrefix
+	 * @param $from
+	 * @param $until
+	 * @param $set
+	 * @param $cursor
+	 * @param $completeListSize
+	 *
+	 * @return string
+	 * @throws \publin\src\exceptions\DBDuplicateEntryException
+	 * @throws \publin\src\exceptions\DBForeignKeyException
+	 */
 	private function storeResumptionToken($metadataPrefix, $from, $until, $set, $cursor, $completeListSize) {
 
 		$this->db->prepare('INSERT INTO `oai_tokens` (`metadata_prefix`, `from`, `until`, `set`, `cursor`, `list_size`) VALUES (:metadata, :from, :until, :set, :cursor, :size)');
@@ -341,6 +405,19 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param      $metadataPrefix
+	 * @param null $from
+	 * @param null $until
+	 * @param null $set
+	 * @param null $resumptionToken
+	 *
+	 * @return DOMDocument
+	 * @throws BadArgumentException
+	 * @throws BadResumptionTokenException
+	 * @throws CannotDisseminateFormatException
+	 * @throws NoRecordsMatchException
+	 */
 	public function listIdentifiers($metadataPrefix, $from = null, $until = null, $set = null, $resumptionToken = null) {
 
 		if ($resumptionToken) {
@@ -407,6 +484,13 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param null $from
+	 * @param null $until
+	 * @param null $set
+	 *
+	 * @return int
+	 */
 	private function countRecords($from = null, $until = null, $set = null) {
 
 		$repo = new PublicationRepository($this->db);
@@ -426,6 +510,11 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param $date
+	 *
+	 * @return bool
+	 */
 	private function validateDate($date) {
 
 		$d = DateTime::createFromFormat('Y-m-d', $date);
@@ -434,6 +523,14 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param null $from
+	 * @param null $until
+	 * @param null $set
+	 * @param int  $offset
+	 *
+	 * @return \publin\src\Publication[]
+	 */
 	private function fetchRecords($from = null, $until = null, $set = null, $offset = 0) {
 
 		$repo = new PublicationRepository($this->db);
@@ -455,6 +552,11 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return DOMElement
+	 */
 	private function createRecordHeader(Publication $publication) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
@@ -473,6 +575,19 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param      $metadataPrefix
+	 * @param null $from
+	 * @param null $until
+	 * @param null $set
+	 * @param null $resumptionToken
+	 *
+	 * @return DOMDocument
+	 * @throws BadArgumentException
+	 * @throws BadResumptionTokenException
+	 * @throws CannotDisseminateFormatException
+	 * @throws NoRecordsMatchException
+	 */
 	public function listRecords($metadataPrefix, $from = null, $until = null, $set = null, $resumptionToken = null) {
 
 		if ($resumptionToken) {
@@ -539,6 +654,12 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 * @param             $metadataPrefix
+	 *
+	 * @return DOMElement
+	 */
 	private function createRecord(Publication $publication, $metadataPrefix) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
@@ -551,6 +672,12 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 * @param             $metadataPrefix
+	 *
+	 * @return DOMElement
+	 */
 	private function createRecordMetadata(Publication $publication, $metadataPrefix) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');
@@ -575,6 +702,12 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 * @param             $metadataPrefix
+	 *
+	 * @return array
+	 */
 	private function createRecordMetadataFields(Publication $publication, $metadataPrefix) {
 
 		if ($metadataPrefix == 'oai_dc') {
@@ -602,6 +735,15 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param $identifier
+	 * @param $metadataPrefix
+	 *
+	 * @return DOMDocument
+	 * @throws BadArgumentException
+	 * @throws CannotDisseminateFormatException
+	 * @throws IdDoesNotExistException
+	 */
 	public function getRecord($identifier, $metadataPrefix) {
 
 		if (!$identifier || !$metadataPrefix) {
@@ -639,6 +781,11 @@ class OAIParser {
 	}
 
 
+	/**
+	 * @param $error_type
+	 *
+	 * @return DOMDocument
+	 */
 	private function createErrorResponse($error_type) {
 
 		$xml = new DOMDocument('1.0', 'UTF-8');

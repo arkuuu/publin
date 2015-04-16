@@ -8,6 +8,11 @@ use Exception;
 use InvalidArgumentException;
 use publin\src\Publication;
 
+/**
+ * Class DBLPXML
+ *
+ * @package publin\modules
+ */
 class DBLPXML extends Module {
 
 	/**

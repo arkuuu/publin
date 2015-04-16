@@ -5,8 +5,18 @@ namespace publin\modules;
 
 use publin\src\Publication;
 
+/**
+ * Class DublinCoreTags
+ *
+ * @package publin\modules
+ */
 class DublinCoreTags extends Module {
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return string
+	 */
 	public function export(Publication $publication) {
 
 		// http://www.mendeley.com/import/information-for-publishers/
@@ -26,6 +36,11 @@ class DublinCoreTags extends Module {
 	}
 
 
+	/**
+	 * @param Publication $publication
+	 *
+	 * @return array
+	 */
 	private function createFields(Publication $publication) {
 
 		// NOTE: dc.citation.* are non standard tags recommended by Google Scholar

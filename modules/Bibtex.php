@@ -421,6 +421,12 @@ class Bibtex extends Module {
 	}
 
 
+	/**
+	 * @param $input_year
+	 * @param $input_month
+	 *
+	 * @return bool|string
+	 */
 	private function extractDate($input_year, $input_month) {
 
 		$input_month = explode(' ', $input_month);

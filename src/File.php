@@ -3,6 +3,11 @@
 
 namespace publin\src;
 
+/**
+ * Class File
+ *
+ * @package publin\src
+ */
 class File extends Entity {
 
 	protected $id;
@@ -13,24 +18,36 @@ class File extends Entity {
 	protected $hidden;
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getId() {
 
 		return $this->id;
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getName() {
 
 		return $this->name;
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getTitle() {
 
 		return $this->title;
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isFullText() {
 
 		if ($this->full_text) {
@@ -42,6 +59,9 @@ class File extends Entity {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isRestricted() {
 
 		if ($this->restricted) {
@@ -53,6 +73,9 @@ class File extends Entity {
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function isHidden() {
 
 		if ($this->hidden) {

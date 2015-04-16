@@ -5,9 +5,21 @@ namespace publin\src;
 use InvalidArgumentException;
 use PDOException;
 
+/**
+ * Class UserModel
+ *
+ * @package publin\src
+ */
 class UserModel extends Model {
 
 
+	/**
+	 * @param User $user
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function store(User $user) {
 
 		$query = 'INSERT INTO `users` (`name`, `mail`) VALUES (:name, :mail);';
@@ -20,6 +32,12 @@ class UserModel extends Model {
 	}
 
 
+	/**
+	 * @param       $id
+	 * @param array $data
+	 *
+	 * @return int
+	 */
 	public function update($id, array $data) {
 
 		$old_db = new OldDatabase();
@@ -28,6 +46,14 @@ class UserModel extends Model {
 	}
 
 
+	/**
+	 * @param $user_id
+	 * @param $role_id
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function addRole($user_id, $role_id) {
 
 		if (!is_numeric($user_id) || !is_numeric($role_id)) {
@@ -44,6 +70,14 @@ class UserModel extends Model {
 	}
 
 
+	/**
+	 * @param $user_id
+	 * @param $role_id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function removeRole($user_id, $role_id) {
 
 		if (!is_numeric($user_id) || !is_numeric($role_id)) {
@@ -60,6 +94,13 @@ class UserModel extends Model {
 	}
 
 
+	/**
+	 * @param $id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
 	public function delete($id) {
 
 		if (!is_numeric($id)) {
@@ -91,6 +132,9 @@ class UserModel extends Model {
 	}
 
 
+	/**
+	 * @return Validator
+	 */
 	public function getValidator() {
 
 		$validator = new Validator();

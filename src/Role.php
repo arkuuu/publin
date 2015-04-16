@@ -4,6 +4,11 @@ namespace publin\src;
 
 use InvalidArgumentException;
 
+/**
+ * Class Role
+ *
+ * @package publin\src
+ */
 class Role extends Entity {
 
 	protected $id;
@@ -14,12 +19,18 @@ class Role extends Entity {
 	protected $permissions = array();
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getId() {
 
 		return $this->id;
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	public function getName() {
 
 		return $this->name;
@@ -58,6 +69,11 @@ class Role extends Entity {
 	}
 
 
+	/**
+	 * @param $permission_id
+	 *
+	 * @return bool
+	 */
 	public function hasPermission($permission_id) {
 
 		foreach ($this->permissions as $permission) {

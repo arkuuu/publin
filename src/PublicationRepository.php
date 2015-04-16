@@ -3,9 +3,17 @@
 
 namespace publin\src;
 
+/**
+ * Class PublicationRepository
+ *
+ * @package publin\src
+ */
 class PublicationRepository extends Repository {
 
 
+	/**
+	 * @return $this
+	 */
 	public function select() {
 
 		$this->select = 'SELECT `types`.`name` AS `type`, `study_fields`.`name` AS `study_field`, self.*';
@@ -18,6 +26,14 @@ class PublicationRepository extends Repository {
 	}
 
 
+	/**
+	 * @param      $column
+	 * @param      $comparator
+	 * @param      $value
+	 * @param null $function
+	 *
+	 * @return $this
+	 */
 	public function where($column, $comparator, $value, $function = null) {
 
 		if ($column === 'author_id') {
