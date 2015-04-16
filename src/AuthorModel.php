@@ -7,17 +7,6 @@ use InvalidArgumentException;
 class AuthorModel extends Model {
 
 
-	private $old_db;
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->old_db = new OldDatabase();
-		$this->db = $db;
-	}
-
-
 	public function store(Author $author) {
 
 		$query = 'INSERT INTO `authors` (`family`, `given`, `website`, `contact`, `about`, `modified`) VALUES (:family, :given, :website, :contact, :about, NOW()) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);';
@@ -36,7 +25,9 @@ class AuthorModel extends Model {
 
 	public function update($id, array $data) {
 
-		return $this->old_db->updateData('authors', array('id' => $id), $data);
+		$old_db = new OldDatabase();
+
+		return $old_db->updateData('authors', array('id' => $id), $data);
 	}
 
 

@@ -6,14 +6,6 @@ use InvalidArgumentException;
 
 class RoleModel extends Model {
 
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
-
 
 	public function store(Role $role) {
 

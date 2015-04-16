@@ -2,15 +2,7 @@
 
 namespace publin\src;
 
-class SubmitModel {
-
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
+class SubmitModel extends Model {
 
 
 	public function formatPost(array $post) {

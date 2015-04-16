@@ -4,14 +4,6 @@ namespace publin\src;
 
 class TypeModel extends Model {
 
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
-
 
 	public function store(Type $type) {
 
@@ -22,10 +14,6 @@ class TypeModel extends Model {
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
-	}
-
-
-	public function update($id, array $data) {
 	}
 
 

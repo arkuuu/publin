@@ -3,15 +3,7 @@
 
 namespace publin\src;
 
-class ManageModel {
-
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
+class ManageModel extends Model {
 
 
 	public function getPermissions() {

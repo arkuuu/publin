@@ -7,15 +7,6 @@ use InvalidArgumentException;
 class StudyFieldModel extends Model {
 
 
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->$db = $db;
-	}
-
-
 	public function store(StudyField $study_field) {
 
 		$query = 'INSERT INTO `study_fields` (`name`, `description`) VALUES (:name, :description);';
@@ -25,10 +16,6 @@ class StudyFieldModel extends Model {
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
-	}
-
-
-	public function update($id, array $data) {
 	}
 
 

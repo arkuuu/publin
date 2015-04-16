@@ -7,14 +7,6 @@ use InvalidArgumentException;
 
 class FileModel extends Model {
 
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
-
 
 	public function store(File $file, $publication_id) {
 

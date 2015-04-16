@@ -7,17 +7,6 @@ use PDOException;
 
 class KeywordModel extends Model {
 
-	private $old_db;
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->old_db = new OldDatabase();
-		$this->db = $db;
-	}
-
-
 
 	public function store(Keyword $keyword) {
 
@@ -32,7 +21,9 @@ class KeywordModel extends Model {
 
 	public function update($id, array $data) {
 
-		return $this->old_db->updateData('keywords', array('id' => $id), $data);
+		$old_db = new OldDatabase();
+
+		return $old_db->updateData('keywords', array('id' => $id), $data);
 	}
 
 

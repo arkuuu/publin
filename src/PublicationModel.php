@@ -7,16 +7,6 @@ use InvalidArgumentException;
 
 class PublicationModel extends Model {
 
-	private $old_db;
-	private $db;
-
-
-	public function __construct(Database $db) {
-
-		$this->old_db = new OldDatabase();
-		$this->db = new Database();
-	}
-
 
 	public function store(Publication $publication) {
 
@@ -123,7 +113,9 @@ VALUES
 			unset($data['study_field']);
 		}
 
-		return $this->old_db->updateData('publications', array('id' => $id), $data);
+		$old_db = new OldDatabase();
+
+		return $old_db->updateData('publications', array('id' => $id), $data);
 	}
 
 

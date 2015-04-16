@@ -7,23 +7,6 @@ use PDOException;
 
 class UserModel extends Model {
 
-	private $old_db;
-	private $db;
-	private $num;
-
-
-	public function __construct(Database $db) {
-
-		$this->old_db = new OldDatabase();
-		$this->db = $db;
-	}
-
-
-	public function getNum() {
-
-		return $this->num;
-	}
-
 
 	public function store(User $user) {
 
@@ -39,8 +22,9 @@ class UserModel extends Model {
 
 	public function update($id, array $data) {
 
+		$old_db = new OldDatabase();
 
-		return $this->old_db->updateData('users', array('id' => $id), $data);
+		return $old_db->updateData('users', array('id' => $id), $data);
 	}
 
 
