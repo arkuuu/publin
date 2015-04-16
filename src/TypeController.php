@@ -11,7 +11,7 @@ class TypeController extends Controller {
 	private $model;
 
 
-	public function __construct(PDODatabase $db) {
+	public function __construct(Database $db) {
 
 		$this->db = $db;
 		$this->model = new TypeModel($db);

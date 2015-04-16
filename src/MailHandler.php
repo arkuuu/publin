@@ -3,6 +3,8 @@
 
 namespace publin\src;
 
+use publin\Config;
+
 class MailHandler {
 
 	public static function sendMail($to, $subject, $message) {

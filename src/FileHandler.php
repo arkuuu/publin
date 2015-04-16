@@ -5,6 +5,7 @@ namespace publin\src;
 
 use finfo;
 use InvalidArgumentException;
+use publin\Config;
 use publin\src\exceptions\FileHandlerException;
 use publin\src\exceptions\FileInvalidTypeException;
 use publin\src\exceptions\FileNotFoundException;

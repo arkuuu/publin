@@ -3,6 +3,7 @@
 namespace publin\src;
 
 use BadMethodCallException;
+use publin\Config;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\DBForeignKeyException;
 use publin\src\exceptions\PermissionRequiredException;
@@ -15,7 +16,7 @@ class ManageController extends Controller {
 	private $errors;
 
 
-	public function __construct(PDODatabase $db, Auth $auth) {
+	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
 		$this->auth = $auth;

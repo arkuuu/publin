@@ -19,9 +19,7 @@ class MainController extends Controller {
 	 */
 	public function __construct() {
 
-		Config::setup();
-
-		$this->db = new PDODatabase();
+		$this->db = new Database();
 		// TODO: catch exception here
 		$this->auth = new Auth($this->db);
 	}

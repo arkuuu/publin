@@ -1,128 +1,166 @@
 <?php
 
+
 namespace publin\src;
 
-use InvalidArgumentException;
-use mysqli;
-use mysqli_result;
+use PDO;
+use PDOException;
+use PDOStatement;
+use publin\Config;
 use publin\src\exceptions\DBDuplicateEntryException;
-use publin\src\exceptions\DBException;
 use publin\src\exceptions\DBForeignKeyException;
 
-class Database extends mysqli {
+class Database {
 
 
 	/**
-	 * @throws DBException
+	 * @var PDO
 	 */
+	public $pdo;
+	/**
+	 * @var PDOStatement
+	 */
+	private $stmt;
+
+
 	public function __construct() {
 
-		/* Calls the constructor of mysqli and creates a connection */
-		parent::__construct(Config::SQL_HOST,
-							Config::SQL_USER,
-							Config::SQL_PASSWORD,
-							Config::SQL_DATABASE);
+		$dsn = 'mysql:host='.Config::SQL_HOST.';dbname='.Config::SQL_DATABASE.';charset=UTF8';
+		$options = array(
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+			//PDO::ATTR_PERSISTENT => false,
+			//PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+		);
 
-		/* Stops if the connection cannot be established */
-		if ($this->connect_errno) {
-			throw new DBException($this->connect_error);
+		$this->pdo = new PDO($dsn, Config::SQL_USER, Config::SQL_PASSWORD, $options);
+
+		if (version_compare(PHP_VERSION, '5.3.6', '<')) {
+			$this->pdo->exec('SET NAMES UTF8');
 		}
-		/* Sets the charset used for transmission */
-		parent::set_charset('utf8');
 	}
 
 
-	/**
-	 *
-	 */
-	public function __destruct() {
+	public function beginTransaction() {
 
-		parent::close();
+		return $this->pdo->beginTransaction();
 	}
 
 
-	/**
-	 * @param       $table
-	 * @param array $where
-	 * @param array $data
-	 *
-	 * @return int
-	 * @throws DBException
-	 */
-	public function updateData($table, array $where, array $data) {
+	public function commitTransaction() {
 
-		if (empty($where) || empty($data)) {
-			throw new InvalidArgumentException('where and data must not be empty when updating');
+		return $this->pdo->commit();
+	}
+
+
+	public function cancelTransaction() {
+
+		return $this->pdo->rollBack();
+	}
+
+
+	public function prepare($query) {
+
+		$this->stmt = $this->pdo->prepare($query);
+
+		return $this->stmt;
+	}
+
+
+	public function bindValue($parameter, $value, $type = null) {
+
+		if (empty($type)) {
+			switch (true) {
+				case is_null($value):
+					$type = PDO::PARAM_NULL;
+					break;
+				case is_int($value):
+					$type = PDO::PARAM_INT;
+					break;
+				case is_bool($value):
+					$type = PDO::PARAM_BOOL;
+					break;
+				default:
+					$type = PDO::PARAM_STR;
+					break;
+			}
 		}
 
-		$this->changeToWriteUser();
+		// TODO what if stmt is not set? Exception?
+		return $this->stmt->bindValue($parameter, $value, $type);
+	}
 
-		$query = 'UPDATE `'.$table.'`';
 
-		$query .= ' SET';
+	public function bindColumn($parameter, $column) {
 
-		foreach ($data as $column => $value) {
-			if (is_null($value)) {
-				$query .= ' `'.$column.'` = NULL,';
+		return $this->stmt->bindColumn($parameter, $column, PDO::PARAM_STR);
+	}
+
+
+	public function fetchAll($fetch_style = PDO::FETCH_ASSOC) {
+
+		return $this->stmt->fetchAll($fetch_style);
+	}
+
+
+	public function execute(array $parameters = null) {
+
+		try {
+			return $this->stmt->execute($parameters);
+		}
+		catch (PDOException $e) {
+			if ($e->errorInfo[1] == '1062') {
+				throw new DBDuplicateEntryException;
+			}
+			else if ($e->errorInfo[1] == '1451') {
+				throw new DBForeignKeyException;
 			}
 			else {
-				$query .= ' `'.$column.'` = "'.self::real_escape_string($value).'",';
+				throw $e;
 			}
 		}
-		$query = substr($query, 0, -1);
-
-		$query .= ' WHERE';
-
-		foreach ($where as $key => $value) {
-			$query .= ' `'.$key.'` = "'.$value.'" AND';
-		}
-		$query = substr($query, 0, -3);
-
-		$this->query($query);
-
-		return $this->affected_rows;
 	}
 
 
-	public function changeToWriteUser() {
+	public function fetchSingle($fetch_style = PDO::FETCH_ASSOC) {
 
-		$success = parent::change_user(Config::SQL_USER,
-									   Config::SQL_PASSWORD,
-									   Config::SQL_DATABASE);
+		return $this->stmt->fetch($fetch_style);
+	}
 
-		if ($success && empty($this->error)) {
-			return true;
-		}
-		else {
-			throw new DBException('could not change user: '.$this->error);
-		}
+
+	public function fetchColumn() {
+
+		return $this->stmt->fetchColumn();
+	}
+
+
+	public function rowCount() {
+
+		return $this->stmt->rowCount(); // TODO it's told to not work every time when SELECT
+	}
+
+
+	public function lastInsertId() {
+
+		return $this->pdo->lastInsertId();
+	}
+
+
+	public function debugDumpParams() {
+
+		return $this->stmt->debugDumpParams();
+	}
+
+
+	public function executeAndReturnAffectedRows($query) {
+
+		return $this->pdo->exec($query);
 	}
 
 
 	public function query($query) {
 
-		if (false) {
-			$msg = str_replace(array("\r\n", "\r", "\n"), ' ', $query);
-			$msg = str_replace("\t", '', $msg);
-			$file = fopen('./logs/sql.log', 'a');
-			fwrite($file, '['.date('d.m.Y H:i:s').'] '
-						.$msg."\n");
-			fclose($file);
-		}
+		$this->stmt = $this->pdo->query($query);
 
-		$result = parent::query($query);
-
-		if (($result === true || $result instanceof mysqli_result) && empty($this->error)) {
-			return $result;
-		}
-		else if (strpos($this->error, 'Duplicate entry') !== false) {
-			throw new DBDuplicateEntryException($this->error);
-		}
-		else if (strpos($this->error, 'foreign key constraint fails') !== false) {
-			throw new DBForeignKeyException($this->error);
-		}
-		else {
-			throw new DBException($this->error);
-		}
+		return $this->stmt;
 	}
 }

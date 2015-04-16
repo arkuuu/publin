@@ -8,7 +8,7 @@ class ManageModel {
 	private $db;
 
 
-	public function __construct(PDODatabase $db) {
+	public function __construct(Database $db) {
 
 		$this->db = $db;
 	}

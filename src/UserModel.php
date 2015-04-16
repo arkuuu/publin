@@ -12,9 +12,9 @@ class UserModel extends Model {
 	private $num;
 
 
-	public function __construct(PDODatabase $db) {
+	public function __construct(Database $db) {
 
-		$this->old_db = new Database();
+		$this->old_db = new OldDatabase();
 		$this->db = $db;
 	}
 

@@ -6,6 +6,7 @@ namespace publin\oai;
 use DateTime;
 use DOMDocument;
 use DOMElement;
+use publin\Config;
 use publin\oai\exceptions\BadArgumentException;
 use publin\oai\exceptions\BadResumptionTokenException;
 use publin\oai\exceptions\BadVerbException;
@@ -14,9 +15,8 @@ use publin\oai\exceptions\IdDoesNotExistException;
 use publin\oai\exceptions\NoMetadataFormatsException;
 use publin\oai\exceptions\NoRecordsMatchException;
 use publin\oai\exceptions\NoSetHierarchyException;
-use publin\src\Config;
+use publin\src\Database;
 use publin\src\KeywordRepository;
-use publin\src\PDODatabase;
 use publin\src\Publication;
 use publin\src\PublicationRepository;
 use publin\src\Request;
@@ -46,7 +46,7 @@ class OAIParser {
 
 	public function __construct() {
 
-		$this->db = new PDODatabase();
+		$this->db = new Database();
 		mb_internal_encoding('utf8');
 		date_default_timezone_set('UTC');
 	}

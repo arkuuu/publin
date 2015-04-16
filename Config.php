@@ -1,7 +1,7 @@
 <?php
 
 
-namespace publin\src;
+namespace publin;
 
 class Config {
 
@@ -30,13 +30,38 @@ class Config {
 	const OAI_RESUMPTION_TOKEN_DAYS_VALID = 1;
 	const OAI_USE_XSLT = true;
 
-
-	//const DOI_URL = 'http://dx.doi.org/';
-
 	public static function setup() {
 
 		date_default_timezone_set(self::TIMEZONE);
+
+		/* needed for utf8-safe string operations */
 		mb_internal_encoding('utf8');
+
+		/* treats slashes depending on magic_quotes_gpc, recommended setting is off */
+		if (get_magic_quotes_gpc()) {
+			function stripslashes_array(array &$array) {
+
+				foreach ($array as $key => $value) {
+					$new_key = stripslashes($key);
+					if ($new_key != $key) {
+						$array[$new_key] = &$value;
+						unset($array[$key]);
+					}
+					if (is_array($value)) {
+						stripslashes_array($value);
+					}
+					else {
+						$array[$new_key] = stripslashes($value);
+					}
+				}
+			}
+
+			;
+			stripslashes_array($_POST);
+			stripslashes_array($_GET);
+			stripslashes_array($_REQUEST);
+			stripslashes_array($_COOKIE);
+		}
 
 		return true;
 	}

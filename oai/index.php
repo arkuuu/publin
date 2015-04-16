@@ -2,6 +2,7 @@
 
 namespace publin\oai;
 
+use publin\Config;
 use publin\src\Request;
 
 spl_autoload_register(function ($class) {
@@ -15,6 +16,8 @@ spl_autoload_register(function ($class) {
 		require $file;
 	}
 });
+
+Config::setup();
 
 header('Content-type: text/xml; charset=utf-8');
 $request = new Request();

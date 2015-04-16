@@ -19,7 +19,7 @@ class Repository {
 	protected $db;
 
 
-	public function __construct(PDODatabase $db) {
+	public function __construct(Database $db) {
 
 		$this->db = $db;
 		$this->reset();

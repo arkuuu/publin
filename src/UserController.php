@@ -19,7 +19,7 @@ class UserController extends Controller {
 	private $user;
 
 
-	public function __construct(PDODatabase $db, Auth $auth) {
+	public function __construct(Database $db, Auth $auth) {
 
 		$this->db = $db;
 		$this->auth = $auth;

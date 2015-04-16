@@ -12,7 +12,7 @@ class SearchController extends Controller {
 	private $errors;
 
 
-	public function __construct(PDODatabase $db) {
+	public function __construct(Database $db) {
 
 		$this->db = $db;
 		$this->result = array();

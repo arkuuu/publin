@@ -3,6 +3,8 @@
 
 namespace publin\src;
 
+use publin\Config;
+
 class Request {
 
 
