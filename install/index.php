@@ -59,7 +59,7 @@ function db_import($sql_dump_file) {
 			$pdo->beginTransaction();
 			$pdo->exec($sql);
 			$pdo->exec("INSERT INTO `study_fields` VALUES (1,'Computer Science',NULL);");
-			$pdo->exec("INSERT INTO `types` VALUES (1,'article',NULL),(2,'book',NULL),(3,'inproceedings',NULL),(4,'incollection',NULL),(5,'techreport',NULL),(6,'masterthesis',NULL),(7,'phdthesis',NULL),(8,'unpublished',NULL),(9,'misc',NULL);");
+			$pdo->exec("INSERT INTO `types` VALUES (1,'article',NULL),(2,'book',NULL),(3,'inproceedings',NULL),(4,'incollection',NULL),(5,'inbook',NULL),(6,'techreport',NULL),(7,'masterthesis',NULL),(8,'phdthesis',NULL),(9,'unpublished',NULL),(10,'misc',NULL);");
 			$pdo->exec("INSERT INTO `permissions` VALUES (1,'access_hidden_files'),(2,'access_restricted_files'),(3,'author_delete'),(4,'author_edit'),(5,'keyword_delete'),(6,'keyword_edit'),(7,'manage'),(8,'publication_delete'),(9,'publication_edit'),(10,'publication_submit');");
 			$pdo->exec("INSERT INTO `roles` VALUES (1,'Admin'),(2,'Editor'),(3,'Member'),(4,'Guest');");
 
