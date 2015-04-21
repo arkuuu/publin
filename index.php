@@ -2,6 +2,7 @@
 
 namespace publin;
 
+use publin\config\Config;
 use publin\src\MainController;
 use publin\src\Request;
 

@@ -4,7 +4,7 @@ namespace publin\install;
 
 use PDO;
 use PDOException;
-use publin\Config;
+use publin\config\Config;
 use publin\src\Auth;
 use publin\src\MailHandler;
 

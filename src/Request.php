@@ -3,7 +3,7 @@
 
 namespace publin\src;
 
-use publin\Config;
+use publin\config\Config;
 
 /**
  * Class Request

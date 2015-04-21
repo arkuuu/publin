@@ -5,7 +5,7 @@ namespace publin\src;
 use InvalidArgumentException;
 use mysqli;
 use mysqli_result;
-use publin\Config;
+use publin\config\Config;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\DBException;
 use publin\src\exceptions\DBForeignKeyException;

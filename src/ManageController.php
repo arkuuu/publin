@@ -3,7 +3,7 @@
 namespace publin\src;
 
 use BadMethodCallException;
-use publin\Config;
+use publin\config\Config;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\DBForeignKeyException;
 use publin\src\exceptions\PermissionRequiredException;
@@ -192,7 +192,7 @@ class ManageController extends Controller {
 			try {
 				$user_model->store($user);
 				$password = $this->auth->generatePassword();
-				print_r('new pw is '.$password); // TODO remove this
+				//print_r('new pw is '.$password); // TODO remove this
 				$this->auth->setPassword($user->getName(), $password);
 
 				$subject = 'An account at '.Config::ROOT_URL.' was created for you!';
@@ -241,7 +241,7 @@ class ManageController extends Controller {
 		$user = $repo->select()->where('id', '=', $user_id)->findSingle();
 
 		$password = $this->auth->generatePassword();
-		print_r('new pw is '.$password); // TODO remove this
+		//print_r('new pw is '.$password); // TODO remove this
 
 		$this->auth->setPassword($user->getName(), $password);
 

@@ -6,7 +6,7 @@ namespace publin\oai;
 use DateTime;
 use DOMDocument;
 use DOMElement;
-use publin\Config;
+use publin\config\Config;
 use publin\oai\exceptions\BadArgumentException;
 use publin\oai\exceptions\BadResumptionTokenException;
 use publin\oai\exceptions\BadVerbException;

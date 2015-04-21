@@ -2,7 +2,7 @@
 
 namespace publin\oai;
 
-use publin\Config;
+use publin\config\Config;
 use publin\src\Request;
 
 spl_autoload_register(function ($class) {

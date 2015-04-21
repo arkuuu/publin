@@ -1,7 +1,7 @@
 <?php
 
 
-namespace publin;
+namespace publin\config;
 
 class Config {
 

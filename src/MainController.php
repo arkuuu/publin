@@ -70,15 +70,15 @@ class MainController extends Controller {
 		catch (NotFoundException $e) {
 			return '404 - Sorry, something missing here: '.htmlspecialchars($e->getMessage());
 		}
-//		catch (Exception $e) {
-//
-//			/* Deactivates output buffering if active */
-//			if (ob_get_contents()) {
-//				ob_end_clean();
-//			}
-//
-//			return 'Sorry, there is an uncaught Exception: '.htmlspecialchars($e->getMessage());
-//		}
+		catch (Exception $e) {
+
+			/* Deactivates output buffering if active */
+			if (ob_get_contents()) {
+				ob_end_clean();
+			}
+
+			return 'Sorry, there is an uncaught Exception: '.htmlspecialchars($e->getMessage());
+		}
 	}
 
 

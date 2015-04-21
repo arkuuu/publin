@@ -6,7 +6,7 @@ namespace publin\src;
 use PDO;
 use PDOException;
 use PDOStatement;
-use publin\Config;
+use publin\config\Config;
 use publin\src\exceptions\DBDuplicateEntryException;
 use publin\src\exceptions\DBForeignKeyException;
 
