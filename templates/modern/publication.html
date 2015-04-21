@@ -294,7 +294,7 @@
 		<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->showIsbn() ?>"/>
 		<br/>
 		<label for="abstract">Abstract:</label>
-		<textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->showAbstract() ?></textarea>
+		<textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->showAbstract(false) ?></textarea>
 		<br/>
 		<input type="hidden" name="action" value="edit"/>
 		<input type="hidden" name="type" value="<?php echo $this->showType(false) ?>"/>
