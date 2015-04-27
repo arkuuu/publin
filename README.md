@@ -38,6 +38,7 @@ A web server with:
 
 Install
 =====
+* Change the `config/Config.php` file according to your needs
 * Create a new folder called `publin` on your web server
 * Copy all files into this folder
 * Open the `install/` directory in your web browser and follow the instructions.
@@ -49,10 +50,6 @@ Documentation
 This is currently in development.
 
 
-
-License
-=====
-This is currently in development.
 
 About the Project
 ======
