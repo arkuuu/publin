@@ -42,16 +42,20 @@ class FileHandler {
 
 		if ($file['error'] === UPLOAD_ERR_OK) {
 
-			if (self::getFileExtension($file['tmp_name'])) {
-				$file_name = self::generateFileName();
-				$success = move_uploaded_file($file['tmp_name'], Config::FILE_PATH.$file_name);
+			$extension = self::getFileExtensionIfAllowed($file['tmp_name']);
+			if ($extension) {
+				$name = self::generateFileName();
+				$size = $file['size'];
+				$success = move_uploaded_file($file['tmp_name'], Config::FILE_PATH.$name);
 
 				if (!$success) {
 					throw new FileNotMovableException('Error while uploading file to server');
 				}
 
 				// TODO: chmod -x
-				return $file_name;
+				return array('name'      => $name,
+							 'extension' => $extension,
+							 'size'      => $size);
 			}
 			else {
 				throw new FileInvalidTypeException('Disallowed file type');
@@ -78,7 +82,7 @@ class FileHandler {
 	 *
 	 * @return bool
 	 */
-	private static function getFileExtension($file) {
+	private static function getFileExtensionIfAllowed($file) {
 
 		$mime_type = self::getMimeType($file);
 		$extension = self::getAllowedTypes();
@@ -110,16 +114,18 @@ class FileHandler {
 	 */
 	public static function getAllowedTypes() {
 
-		return array('application/pdf'          => '.pdf',
-					 'application/zip'          => '.zip',
-					 'application/gzip'         => '.gz',
-					 'application/x-tar'        => '.tar',
-					 'application/x-gtar'       => '.gtar',
-					 'application/msword'       => '.doc',
-					 'application/mspowerpoint' => '.ppt',
-					 'text/plain'               => '.txt',
-					 'image/png'                => '.png',
-					 'image/jpeg'               => '.jpg',
+		return array('application/pdf'                                                           => '.pdf',
+					 'application/zip'                                                           => '.zip',
+					 'application/gzip'                                                          => '.gz',
+					 'application/x-tar'                                                         => '.tar',
+					 'application/x-gtar'                                                        => '.gtar',
+					 'application/msword'                                                        => '.doc',
+					 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'   => '.docx',
+					 'application/mspowerpoint'                                                  => '.ppt',
+					 'application/vnd.openxmlformats-officedocument.presentationml.presentation' => '.pptx',
+					 'text/plain'                                                                => '.txt',
+					 'image/png'                                                                 => '.png',
+					 'image/jpeg'                                                                => '.jpg',
 		);
 	}
 
@@ -152,7 +158,7 @@ class FileHandler {
 		if (file_exists($file)) {
 
 			header('Content-Type: '.self::getMimeType($file));
-			header('Content-Disposition: inline; filename="'.$download_name.self::getFileExtension($file).'"');
+			header('Content-Disposition: inline; filename="'.$download_name.'"');
 			header('Expires: 0'); // TODO: check all this
 			header('Cache-Control: must-revalidate');
 			header('Pragma: public');

@@ -109,7 +109,7 @@ class PublicationController extends Controller {
 		}
 
 		try {
-			FileHandler::download($file->getName(), $file->getTitle());
+			FileHandler::download($file->getName(), $file->getTitle().$file->getExtension());
 		}
 		catch (FileNotFoundException $e) {
 			throw new NotFoundException('file not found');
@@ -352,9 +352,9 @@ class PublicationController extends Controller {
 
 		if ($validator->validate($request->post())) {
 			try {
-				$file_name = FileHandler::upload($file_data);
+				$file = FileHandler::upload($file_data);
 				$data = $validator->getSanitizedResult();
-				$data['name'] = $file_name;
+				$data = array_merge($data, $file);
 				$file = new File($data);
 				$file_model->store($file, $id);
 

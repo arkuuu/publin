@@ -12,6 +12,8 @@ class File extends Entity {
 
 	protected $id;
 	protected $name;
+	protected $extension;
+	protected $size;
 	protected $title;
 	protected $full_text;
 	protected $restricted;
@@ -33,6 +35,24 @@ class File extends Entity {
 	public function getName() {
 
 		return $this->name;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getExtension() {
+
+		return $this->extension;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getSize() {
+
+		return $this->size;
 	}
 
 

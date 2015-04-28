@@ -537,7 +537,7 @@ class PublicationView extends View {
 				$hidden = $file->isHidden() ? ' (hidden)' : '';
 				$restricted = $file->isRestricted() ? ' (restricted)' : '';
 
-				$string .= '<li><a href="'.$this->html($url).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'</li>';
+				$string .= '<li><a href="'.$this->html($url).'" target="_blank">'.$this->html($file->getTitle().$file->getExtension()).'</a>'.$this->html($full_text.$hidden.$restricted).'</li>';
 			}
 		}
 
@@ -580,10 +580,10 @@ class PublicationView extends View {
 
 			$string .= '<li>
 						<form action="#" method="post" accept-charset="utf-8">
-						<a href="'.$this->html($url).'" target="_blank">'.$this->html($file->getTitle()).'</a>'.$this->html($full_text.$hidden.$restricted).'
+						<a href="'.$this->html($url).'" target="_blank">'.$this->html($file->getTitle().$file->getExtension()).'</a>'.$this->html($full_text.$hidden.$restricted).'
 						<input type="hidden" name="file_id" value="'.$this->html($file->getId()).'"/>
 						<input type="hidden" name="action" value="removeFile"/>
-						<input type="submit" value="x" onclick="return confirm(\'Do you really want to delete the file '.$this->html($file->getTitle()).'?\')"/>
+						<input type="submit" value="x" onclick="return confirm(\'Do you really want to delete the file '.$this->html($file->getTitle().$file->getExtension()).'?\')"/>
 						</form>
 						</li>';
 		}

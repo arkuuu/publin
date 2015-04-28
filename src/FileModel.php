@@ -27,10 +27,12 @@ class FileModel extends Model {
 			throw new InvalidArgumentException('publication id must be numeric');
 		}
 
-		$query = 'INSERT INTO `files` (`publication_id`, `name`, `title`, `full_text`, `restricted`, `hidden`) VALUES (:publication_id, :name, :title, :full_text, :restricted, :hidden);';
+		$query = 'INSERT INTO `files` (`publication_id`, `name`, `extension`, `size`, `title`, `full_text`, `restricted`, `hidden`) VALUES (:publication_id, :name, :extension, :size, :title, :full_text, :restricted, :hidden);';
 		$this->db->prepare($query);
 		$this->db->bindValue(':publication_id', $publication_id);
 		$this->db->bindValue(':name', $file->getName());
+		$this->db->bindValue(':extension', $file->getExtension());
+		$this->db->bindValue(':size', $file->getSize());
 		$this->db->bindValue(':title', $file->getTitle());
 		$this->db->bindValue(':full_text', $file->isFullText());
 		$this->db->bindValue(':restricted', $file->isRestricted());

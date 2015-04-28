@@ -48,9 +48,11 @@ DROP TABLE IF EXISTS `files`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files` (
   `id`             INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `publication_id` INT(11) UNSIGNED          DEFAULT NULL,
-  `name`           VARCHAR(100)              DEFAULT NULL,
-  `title`          VARCHAR(100)              DEFAULT NULL,
+  `publication_id` INT(11) UNSIGNED NOT NULL,
+  `name`           VARCHAR(100)     NOT NULL,
+  `extension`      VARCHAR(10)      NOT NULL,
+  `size`           INT(11)          NOT NULL,
+  `title`          VARCHAR(100)     NOT NULL,
   `full_text`      TINYINT(1)                DEFAULT '0',
   `restricted`     TINYINT(1)                DEFAULT '0',
   `hidden`         TINYINT(1)                DEFAULT '0',
