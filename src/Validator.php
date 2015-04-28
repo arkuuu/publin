@@ -3,6 +3,7 @@
 
 namespace publin\src;
 
+use DateTime;
 use UnexpectedValueException;
 
 /**
@@ -160,6 +161,18 @@ class Validator {
 						}
 						break;
 
+					case 'doi':
+						if ($this->sanitizeDOI($value)) {
+							$result[$field] = $this->sanitizeDOI($value);
+						}
+						else if ($rule['required'] == true) {
+							$this->errors[] = $rule['error_msg'];
+						}
+						else {
+							$result[$field] = null;
+						}
+						break;
+
 					default:
 						throw new UnexpectedValueException('unknown validation rule '.$rule['type']);
 						break;
@@ -209,7 +222,7 @@ class Validator {
 
 		if (is_string($input)) {
 			$input = trim($input);
-			//$text = strip_tags($text); TODO: check if useful
+			$input = strip_tags($input);
 
 			return $input;
 		}
@@ -220,17 +233,23 @@ class Validator {
 
 
 	/**
-	 * @param $input
+	 * @param        $input
+	 * @param string $format
 	 *
 	 * @return bool|string
 	 */
-	public static function sanitizeDate($input) {
+	public static function sanitizeDate($input, $format = 'Y-m-d') {
 
 		if (is_string($input)) {
 			$input = trim($input);
+			$date = DateTime::createFromFormat($format, $input);
 
-			// TODO
-			return $input;
+			if ($date && $date->format($format) == $input) {
+				return $input;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -248,8 +267,12 @@ class Validator {
 		if (is_string($input)) {
 			$input = trim($input);
 
-			// TODO
-			return $input;
+			$scheme = parse_url($input, PHP_URL_SCHEME);
+			if ($scheme !== false && !($scheme == 'http' || $scheme == 'https')) {
+				$input = 'http://'.$input;
+			}
+
+			return filter_var($input, FILTER_VALIDATE_URL);
 		}
 		else {
 			return false;
@@ -267,8 +290,8 @@ class Validator {
 		if (is_string($input)) {
 			$input = trim($input);
 
-			// TODO
-			return $input;
+			// TODO maybe also use http://php.net/manual/en/function.checkdnsrr.php
+			return filter_var($input, FILTER_VALIDATE_EMAIL);
 		}
 		else {
 			return false;
@@ -300,6 +323,26 @@ class Validator {
 		}
 		else {
 			return (bool)$input;
+		}
+	}
+
+
+	public static function sanitizeDOI($input) {
+
+		if (is_string($input)) {
+			$input = trim($input);
+
+			$regex = '#\b(10[.][0-9]{3,}(?:[.][0-9]+)*/(?:(?!["&\'])\S)+)\b#';
+
+			if (preg_match($regex, $input, $doi) == true && !empty($doi[0])) {
+				return $doi[0];
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
 		}
 	}
 }
