@@ -3,6 +3,8 @@
 namespace publin\modules;
 
 use Exception;
+use publin\modules\bibtex\ArrayBuilder;
+use publin\modules\bibtex\StateBasedBibtexParser;
 use publin\src\Publication;
 use publin\src\Request;
 
@@ -15,11 +17,8 @@ class Bibtex extends Module {
 	 * @var array
 	 */
 	private $fields;
-	/**
-	 * @var string
-	 */
-	private $bibsource;
 
+	private $supported_types = array('article', 'book', 'incollection', 'inproceedings', 'inbook', 'masterthesis', 'phdthesis', 'misc', 'techreport', 'unpublished');
 
 
 	/**
@@ -27,7 +26,6 @@ class Bibtex extends Module {
 	 */
 	public function __construct() {
 
-		//$this->bibsource = 'publin';
 
 		/* Map your fields here. You can change the order or leave out fields. */
 		$this->fields = array(
@@ -124,7 +122,15 @@ class Bibtex extends Module {
 		$fields[] = array('location', $publication->getLocation());
 		$fields[] = array('month', $publication->getDatePublished('F'));
 		$fields[] = array('year', $publication->getDatePublished('Y'));
-		//$fields[] = array('url', false); // TODO: link to pdf
+		$urls = $publication->getUrls();
+
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
+		}
+
+		else if ($urls = $publication->getUrls() && isset($urls[0])) {
+			$fields[] = array('url', $urls[0]);
+		}
 		//$fields[] = array('issn', false);
 		$fields[] = array('publisher', $publication->getPublisher());
 		$fields[] = array('institution', $publication->getInstitution());
@@ -135,11 +141,7 @@ class Bibtex extends Module {
 		$fields[] = array('doi', $publication->getDoi());
 		$fields[] = array('isbn', $publication->getIsbn());
 		$fields[] = array('abstract', $publication->getAbstract());
-		if ($file = $publication->getFullTextFile()) {
-			$fields[] = array('url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId())));
-		}
-		//$fields[] = array('bibsource', $this->bibsource);
-		$fields[] = array('biburl', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId())));
+		$fields[] = array('biburl', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId()), true));
 		$fields[] = array('keywords', $keywords);
 
 		$result = '@'.$publication->getTypeName().'{'.$this->generateCiteKey($publication);
@@ -199,70 +201,81 @@ class Bibtex extends Module {
 	 */
 	public function import($input) {
 
+		// parse the bibtex input with a generic bibtex parser
+		$delegate = new ArrayBuilder();
+		$parser = new StateBasedBibtexParser($delegate);
+		$parser->parse($input);
+		$entries = $delegate->getAllEntries();
+		// postprocess the parsed bibtex entries and bring it to a form publin needs...
 		$result = array();
 
-		$input = $this->decodeSpecialChars($input);
+		foreach ($entries as $entry) {
+			// filter out all unsupported types of bibtex entries
+			$type = strtolower($entry['type']);
+			if (in_array($type, $this->supported_types)) {
+				$result_entry = array();
+				$result_entry['type'] = $type;
+				$result_entry['cite_key'] = $entry['cite_key'];
+				foreach ($this->fields as $bibtex_field => $your_field) {
+					if (isset($entry[$bibtex_field])) {
+						$value = $entry[$bibtex_field];
+						if ($value) {
+							$value = self::trimFieldValue($value);
+							if ($bibtex_field == 'author') {
+								$author = self::extractAuthors($value);
 
-		/* Gets the entry type and the cite key */
-		preg_match('/\@(article|book|incollection|inproceedings|masterthesis|misc|phdthesis|techreport|unpublished|inbook)\s?(\"|\{)([^\"\},]*),/i', $input, $typeReg);
+								if ($author) {
+									$result_entry[$your_field] = $author;
+								}
+							}
+							/* Extracts the single keywords */
+							else if ($bibtex_field == 'keywords') {
+								$keywords = self::extractKeywords($value);
 
-		if (!empty($typeReg[1])) {
-			$result['type'] = strtolower($typeReg[1]);
-		}
-		else {
-			return false;
-		}
-		if (!empty($typeReg[3])) {
-			$result['cite_key'] = $typeReg[3];
-		}
+								if ($keywords) {
+									$result_entry[$your_field] = $keywords;
+								}
+							}
+							/* Extracts the pages into from and to */
+							else if ($bibtex_field == 'pages') {
+								$pages = self::extractPages($value);
 
-		/* Gets all other fields */
-		foreach ($this->fields as $bibtex_field => $your_field) {
-			$regex = '/\b'.$bibtex_field.'\b\s*=\s*(.*)/i';
-			preg_match($regex, $input, $reg_result);
-
-			if (!empty($reg_result[1])) {
-				$value = self::stripField($reg_result[1]);
-
-				if ($value) {
-
-					/* Extracts the authors with their given and family names */
-					if ($bibtex_field == 'author') {
-						$author = self::extractAuthors($value);
-
-						if ($author) {
-							$result[$your_field] = $author;
+								if ($pages) {
+									$result_entry['pages_from'] = $pages[0];
+									$result_entry['pages_to'] = $pages[1];
+								}
+							}
+							/* The rest */
+							else {
+								$result_entry[$your_field] = $value;
+							}
 						}
-					}
-					/* Extracts the single keywords */
-					else if ($bibtex_field == 'keywords') {
-						$keywords = self::extractKeywords($value);
-
-						if ($keywords) {
-							$result[$your_field] = $keywords;
-						}
-					}
-					/* Extracts the pages into from and to */
-					else if ($bibtex_field == 'pages') {
-						$pages = self::extractPages($value);
-
-						if ($pages) {
-							$result['pages_from'] = $pages[0];
-							$result['pages_to'] = $pages[1];
-						}
-					}
-					/* The rest */
-					else {
-						$result[$your_field] = $value;
 					}
 				}
+				if (!empty($result_entry[$this->fields['year']]) && !empty($result_entry[$this->fields['month']])) {
+					$result_entry['date_published'] = self::extractDate($result_entry[$this->fields['year']], $result_entry[$this->fields['month']]);
+				}
+				$result[] = $result_entry;
 			}
 		}
-		if (!empty($result[$this->fields['year']]) && !empty($result[$this->fields['month']])) {
-			$result['date_published'] = self::extractDate($result[$this->fields['year']], $result[$this->fields['month']]);
+		if (count($result) == 0) {
+			return false;
 		}
 
 		return $result;
+	}
+
+
+	private function trimFieldValue($value) {
+
+		$value = self::decodeSpecialChars($value);
+		/* Gets rid of {} and spaces in and around the content */
+		$value = str_replace(array('{', '}'), '', $value);
+		$value = trim($value);
+		// remove line breaks, tabs and multiple spaces
+		$value = preg_replace('/\s+/', ' ', $value);
+
+		return $value;
 	}
 
 
@@ -286,53 +299,6 @@ class Bibtex extends Module {
 		$string = str_replace(array('\~{n}', '{\~ n}', '{\~u}'), 'ñ', $string);
 
 		// TODO continue
-
-		return $string;
-	}
-
-
-	/**
-	 * @param    string $string description
-	 *
-	 * @return    string
-	 */
-	private function stripField($string) {
-
-		/* Determines the position of {} and "" which are used as delimiter */
-		$first_brace_pos = stripos($string, '{');
-		$first_other_pos = stripos($string, '"');
-		$last_brace_pos = strrpos($string, '}');
-		$last_other_pos = strrpos($string, '"');
-
-		/* Determines which delimiter is used */
-		if ($first_brace_pos !== false && $first_other_pos !== false) {
-			if ($first_brace_pos < $first_other_pos + 1) {
-				$first_pos = $first_brace_pos;
-				$last_pos = $last_brace_pos;
-			}
-			else {
-				$first_pos = $first_other_pos;
-				$last_pos = $last_other_pos;
-			}
-		}
-		else if ($first_brace_pos !== false) {
-			$first_pos = $first_brace_pos;
-			$last_pos = $last_brace_pos;
-		}
-		else if ($first_other_pos !== false) {
-			$first_pos = $first_other_pos;
-			$last_pos = $last_other_pos;
-		}
-		else {
-			return false;
-		}
-
-		/* Cuts out the content between the delimiters */
-		$string = substr($string, $first_pos + 1, ($last_pos - $first_pos - 1));
-
-		/* Gets rid of {} and spaces in and around the content */
-		$string = str_replace(array('{', '}'), '', $string);
-		$string = trim($string);
 
 		return $string;
 	}
@@ -415,6 +381,11 @@ class Bibtex extends Module {
 		if (count($strings) == 2) {
 			$pages[0] = trim($strings[0]);
 			$pages[1] = trim($strings[1]);
+		}
+		else if (count($strings) == 1) {
+			$page = trim($strings[0]);
+			$pages[0] = $page;
+			$pages[1] = $page;
 		}
 
 		return $pages;

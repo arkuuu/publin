@@ -145,6 +145,20 @@ class SubmitView extends View {
 
 
 	/**
+	 * @return int
+	 */
+	public function numberOfRemainingImports() {
+
+		if (isset($_SESSION['input_rest'])) {
+			return count($_SESSION['input_rest']);
+		}
+		else {
+			return 0;
+		}
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function listStudyFieldOptions() {
@@ -152,7 +166,7 @@ class SubmitView extends View {
 		$study_fields = $this->model->createStudyFields();
 		$selected_name = $this->show('study_field');
 
-		if ($selected_name) {
+		if ($selected_name || count($study_fields) == 1) {
 			$string = '<option value disabled></option>';
 		}
 		else {
@@ -161,7 +175,7 @@ class SubmitView extends View {
 
 		/* @var $study_field StudyField */
 		foreach ($study_fields as $study_field) {
-			if ($study_field->getName() == $selected_name) {
+			if ($study_field->getName() == $selected_name || count($study_fields) == 1) {
 				$selected = 'selected';
 			}
 			else {

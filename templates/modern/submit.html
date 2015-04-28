@@ -17,24 +17,24 @@
 		});
 
 		/*var showFormFields = function (show_time) {
-			var type = $('.type-selector').find(':selected').val();
+		 var type = $('.type-selector').find(':selected').val();
 
-			if (type) {
-				$('.' + type).show(show_time);
-			}
-		};
+		 if (type) {
+		 $('.' + type).show(show_time);
+		 }
+		 };
 
-		var hideFormFields = function (hide_time) {
-			$('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(hide_time);
-		};
+		 var hideFormFields = function (hide_time) {
+		 $('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(hide_time);
+		 };
 
 
-		hideFormFields(0);
-		showFormFields(0);
+		 hideFormFields(0);
+		 showFormFields(0);
 
-		$('.type-selector').change(function () {
-			hideFormFields(200);
-			showFormFields(400);
+		 $('.type-selector').change(function () {
+		 hideFormFields(200);
+		 showFormFields(400);
 		 });*/
 
 
@@ -130,10 +130,15 @@
 		<input type="text" name="copyright" id="copyright" maxlength="200"
 			   value="<?php echo $this->show('copyright') ?>"/>
 		<br/>
+		<label for="url">External URL:</label>
+		<input type="text" name="url" id="url" maxlength="200"
+			   value="<?php	echo $this->show('url'); ?>"/>
+		<br/>
+		<span>More urls can be added on the publication's edit page after it has been submitted.</span>
+		<br/>
+		<br/>
 		<label for="doi">DOI:</label>
-		<span style="float: left">http://dx.doi.org/&nbsp;</span>
-		<input type="text" name="doi" id="doi" maxlength="200" style="width: 288px"
-			   value="<?php echo $this->show('doi') ?>"/>
+		<input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->show('doi') ?>"/>
 		<br/>
 		<label for="isbn">ISBN:</label>
 		<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->show('isbn') ?>"/>
@@ -169,16 +174,33 @@
 
 		<p>You can upload files through the publication's edit page after it has been submitted.</p>
 
-		<h2>Submit</h2>
+		<h2>Submit
+			<?php
+			$count = $this -> numberOfRemainingImports();
+			if($count>0){
+			echo ' and import next of the '.$count.' remaining publications';
+			}
+			?>
+		</h2>
 		<input type="hidden" name="action" value="submit"/>
 		<input type="submit" value="Submit"/>
 	</form>
+	<?php if($count>0){ ?>
+	<p>
+
+	<form action="#" method="post">
+		<h2 style="color:red">Do not Submit</h2>
+		<input type="hidden" name="action" value="next"/>
+		<input type="submit" value="Import next Publication" style="color:red"/>
+	</form>
+	</p>
+	<?php } ?>
 </div>
 
 
 <?php } else if ($this -> isImport()) { ?>
 <h1>Submit publication</h1>
-<p>Here you can input a single entry. Data will be imported and can be checked and modified later.</p>
+<p>You can input multiple entries here. They will be imported and can be checked and modified one by one later.</p>
 <form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
 	<textarea name="input" rows="10" cols="80"></textarea><br/>
 	<label for="format">Format:</label>

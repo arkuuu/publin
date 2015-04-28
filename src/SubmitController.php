@@ -68,6 +68,8 @@ class SubmitController extends Controller {
 		}
 		else {
 			unset($_SESSION['input']);
+			unset($_SESSION['input_rest']);
+			unset($_SESSION['input_raw']);
 			$view = new SubmitView($this->model, 'start', $this->errors);
 		}
 
@@ -86,8 +88,10 @@ class SubmitController extends Controller {
 		$format = Validator::sanitizeText($request->post('format'));
 
 		if ($input && $format) {
-			$_SESSION['input'] = FormatHandler::import($input, $format);
+			$entries = FormatHandler::import($input, $format);
 			$_SESSION['input_raw'] = $input;
+
+			$this->setInputAndRestInSession($entries);
 
 			return true;
 		}
@@ -96,6 +100,20 @@ class SubmitController extends Controller {
 
 			return false;
 		}
+	}
+
+
+	private function setInputAndRestInSession(array $entries) {
+
+		// unfold the first element of the array as the one which will be dealt with first...
+		$first_entry = array();
+		foreach ($entries[0] as $key => $value) {
+			$first_entry[$key] = $value;
+		}
+		unset($entries[0]);
+		$_SESSION['input_rest'] = array_values($entries);
+
+		$_SESSION['input'] = $first_entry;
 	}
 
 
@@ -160,6 +178,19 @@ class SubmitController extends Controller {
 			}
 		}
 
+		$url_model = new UrlModel($this->db);
+		if (!empty($input['url'])) {
+			$validator = $url_model->getValidator();
+			$url_array = array('name' => 'External', 'url' => $input['url']);
+			if ($validator->validate($url_array)) {
+				$url_data = $validator->getSanitizedResult();
+				$url = new Url($url_data);
+			}
+			else {
+				$this->errors = array_merge($this->errors, $validator->getErrors());
+			}
+		}
+
 		if (empty($this->errors) && isset($publication)) {
 
 			//$this->db->beginTransaction(); TODO there is a deadlock when enabling transactions
@@ -178,6 +209,10 @@ class SubmitController extends Controller {
 					$keyword_id = $keyword_model->store($keyword);
 					$publication_model->addKeyword($publication_id, $keyword_id);
 				}
+
+				if (!empty($url)) {
+					$url_model->store($url, $publication_id);
+				}
 				//$this->db->commitTransaction();
 			}
 			catch (DBDuplicateEntryException $e) {
@@ -192,9 +227,13 @@ class SubmitController extends Controller {
 				throw $e;
 			}
 
+			if ($this->next()) {
+				return true;
+			}
+
 			$this->clearForm();
 
-			$this->redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
+			$this->redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
 
 			return true;
 		}
@@ -202,6 +241,20 @@ class SubmitController extends Controller {
 
 			return false;
 		}
+	}
+
+
+	private function next() {
+
+		if (isset($_SESSION['input_rest'])) {
+			if (count($_SESSION['input_rest']) > 0) {
+				$this->setInputAndRestInSession($_SESSION['input_rest']);
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
