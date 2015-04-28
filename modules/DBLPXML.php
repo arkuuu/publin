@@ -7,6 +7,7 @@ use DOMDocument;
 use Exception;
 use InvalidArgumentException;
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class DBLPXML
@@ -79,7 +80,9 @@ class DBLPXML extends Module {
 		$fields[] = array('pages', $publication->getPages('--'));
 		$fields[] = array('month', $publication->getDatePublished('F'));
 		$fields[] = array('year', $publication->getDatePublished('Y'));
-		//$fields[] = array('url', false); // TODO: link to pdf
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
+		}
 		//$fields[] = array('issn', false); // TODO
 		$fields[] = array('isbn', $publication->getIsbn());
 		$fields[] = array('institution', $publication->getInstitution());
@@ -90,8 +93,7 @@ class DBLPXML extends Module {
 		$fields[] = array('howpublished', $publication->getHowpublished());
 		$fields[] = array('note', $publication->getNote());
 		$fields[] = array('abstract', $publication->getAbstract());
-		//$fields[] = array('bibsource', $this->bibsource); // TODO
-		//$fields[] = array('biburl', $this->url.$publication->getId()); // TODO
+		$fields[] = array('biburl', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId()), true));
 
 		return $fields;
 	}

@@ -5,6 +5,7 @@ namespace publin\modules;
 
 use Exception;
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class RIS
@@ -81,8 +82,10 @@ class RIS extends Module {
 		$fields[] = array('PY', $publication->getDatePublished('Y/m/d'));
 		$fields[] = array('PB', $publication->getPublisher());
 		$fields[] = array('N1', $publication->getNote());
-		//$fields[] = array('L1', false); // TODO: link to pdf
-		$fields[] = array('UR', $publication->getDoi()); // TODO: link to doi or link to publin page
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('L1', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
+		}
+		$fields[] = array('UR', $publication->getDoi());
 		$fields[] = array('SN', $publication->getIsbn());
 		$fields[] = array('AB', $publication->getAbstract());
 		foreach ($publication->getKeywords() as $keyword) {

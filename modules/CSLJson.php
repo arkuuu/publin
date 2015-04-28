@@ -5,6 +5,7 @@ namespace publin\modules;
 
 use Exception;
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class CSLJson
@@ -70,7 +71,9 @@ class CSLJson extends Module {
 		$fields['DOI'] = $publication->getDoi();
 		$fields['ISBN'] = $publication->getIsbn();
 		$fields['ISSN'] = ''; // TODO
-		$fields['URL'] = '';
+		if ($file = $publication->getFullTextFile()) {
+			$fields['URL'] = Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true);
+		}
 		$fields['note'] = $publication->getNote();
 		$fields['publisher'] = $publication->getPublisher();
 

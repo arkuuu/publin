@@ -4,6 +4,7 @@
 namespace publin\modules;
 
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class HighwirePressTags
@@ -60,7 +61,9 @@ class HighwirePressTags extends Module {
 		}
 		$fields[] = array('citation_firstpage', $publication->getFirstPage());
 		$fields[] = array('citation_lastpage', $publication->getLastPage());
-		//$fields[] = array('citation_pdf_url', false); // TODO: link to pdf
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('citation_pdf_url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
+		}
 		//$fields[] = array('citation_issn', false); // TODO
 		$fields[] = array('citation_isbn', $publication->getIsbn());
 		$fields[] = array('citation_publisher', $publication->getPublisher());

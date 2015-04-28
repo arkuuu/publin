@@ -4,6 +4,7 @@
 namespace publin\modules;
 
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class DublinCoreTags
@@ -59,7 +60,9 @@ class DublinCoreTags extends Module {
 		$fields[] = array('dc.citation.issue', $publication->getNumber());
 		$fields[] = array('dc.citation.spage', $publication->getFirstPage());
 		$fields[] = array('dc.citation.epage', $publication->getLastPage());
-		//$fields[] = array('dc.identifier', 'todo'); // TODO: link to pdf
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('dc.identifier', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
+		}
 		$fields[] = array('dc.publisher', $publication->getInstitution()); // used for institution, too
 		$fields[] = array('dc.publisher', $publication->getPublisher());
 		$fields[] = array('dc.identifier', $publication->getDoi());

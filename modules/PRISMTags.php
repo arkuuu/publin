@@ -4,6 +4,7 @@
 namespace publin\modules;
 
 use publin\src\Publication;
+use publin\src\Request;
 
 /**
  * Class PRISMTags
@@ -45,7 +46,7 @@ class PRISMTags extends Module {
 	private function createFields(Publication $publication) {
 
 		$fields = array();
-		//$fields[] = array('prism.title', $publication->getTitle()); // TODO: valid? Isn't it part of the dc subset of prism?
+		$fields[] = array('prism.title', $publication->getTitle()); // TODO: valid? Isn't it part of the dc subset of prism?
 		$fields[] = array('prism.publicationDate', $publication->getDatePublished('Y-m-d'));
 		$fields[] = array('prism.publicationYear', $publication->getDatePublished('Y'));
 		$fields[] = array('prism.publicationName', $publication->getJournal());
@@ -55,10 +56,12 @@ class PRISMTags extends Module {
 		$fields[] = array('prism.edition', $publication->getEdition());
 		$fields[] = array('prism.startingPage', $publication->getFirstPage());
 		$fields[] = array('prism.endingPage', $publication->getLastPage());
-		//$fields[] = array('prism.url', false); // TODO: link to pdf
+		if ($file = $publication->getFullTextFile()) {
+			$fields[] = array('prism.url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
+		}
 		//$fields[] = array('prism.issn', false); // TODO
 		$fields[] = array('prism.isbn', $publication->getIsbn());
-		//$fields[] = array('prism.copyright', false); // TODO
+		$fields[] = array('prism.copyright', $publication->getCopyright());
 		$fields[] = array('prism.organization', $publication->getInstitution()); // TODO: check if valid usage
 		$fields[] = array('prism.doi', $publication->getDoi());
 
