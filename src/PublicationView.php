@@ -608,6 +608,56 @@ class PublicationView extends View {
 
 
 	/**
+	 * @return bool|string
+	 */
+	public function showUrls() {
+
+		$result = false;
+		$urls = $this->publication->getUrls();
+
+		if (count($urls) > 0) {
+			foreach ($urls as $url) {
+				$result .= '<li><a href="'.$this->html($url->getUrl()).'" target="_blank">'.$this->html($url->getName()).'</a></li>';
+			}
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function showEditUrls() {
+
+		$urls = $this->publication->getUrls();
+		$string = '';
+
+		foreach ($urls as $url) {
+			$string .= '<li>
+						<form action="#" method="post" accept-charset="utf-8">
+						'.$this->html($url->getName()).': <a href="'.$this->html($url->getUrl()).'" target="_blank">'.$this->html($url->getUrl()).'</a>
+						<input type="hidden" name="url_id" value="'.$this->html($url->getId()).'"/>
+						<input type="hidden" name="action" value="removeUrl"/>
+						<input type="submit" value="x"/>
+						</form>
+						</li>';
+		}
+
+		$string .= '<li>
+					<form action="#" method="post" accept-charset="utf-8">
+					<input type="text" name="name" placeholder="Name" />
+					<input type="text" name="url" placeholder="Url" />
+					<input type="hidden" name="action" value="addUrl"/>
+					<input type="submit" value="Add"/>
+					</form>
+					</li>';
+
+		return $string;
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function showPublinUrl() {

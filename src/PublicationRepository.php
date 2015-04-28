@@ -10,7 +10,6 @@ namespace publin\src;
  */
 class PublicationRepository extends Repository {
 
-
 	/**
 	 * @return $this
 	 */
@@ -70,15 +69,19 @@ class PublicationRepository extends Repository {
 
 		foreach ($result as $row) {
 			$publication = new Publication($row);
+
 			$repo = new AuthorRepository($this->db);
 			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->order('priority', 'ASC')->find());
+
+			$repo = new FileRepository($this->db);
+			$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
+
+			$repo = new UrlRepository($this->db);
+			$publication->setUrls($repo->select()->where('publication_id', '=', $publication->getId())->find());
 
 			if ($full === true) {
 				$repo = new KeywordRepository($this->db);
 				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
-
-				$repo = new FileRepository($this->db);
-				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
 			}
 			$publications[] = $publication;
 		}
@@ -96,15 +99,19 @@ class PublicationRepository extends Repository {
 
 		if ($result = parent::findSingle()) {
 			$publication = new Publication($result);
+
 			$repo = new AuthorRepository($this->db);
 			$publication->setAuthors($repo->select()->where('publication_id', '=', $publication->getId())->order('priority', 'ASC')->find());
+
+			$repo = new FileRepository($this->db);
+			$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
+
+			$repo = new UrlRepository($this->db);
+			$publication->setUrls($repo->select()->where('publication_id', '=', $publication->getId())->find());
 
 			if ($full === true) {
 				$repo = new KeywordRepository($this->db);
 				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
-
-				$repo = new FileRepository($this->db);
-				$publication->setFiles($repo->select()->where('publication_id', '=', $publication->getId())->find());
 			}
 
 			return $publication;

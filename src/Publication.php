@@ -42,6 +42,7 @@ class Publication extends Entity {
 	protected $keywords;
 	protected $files;
 	protected $full_text_file;
+	protected $urls;
 
 
 	/**
@@ -50,12 +51,13 @@ class Publication extends Entity {
 	 * @param Keyword[] $keywords
 	 * @param File[]    $files
 	 */
-	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array()) {
+	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array(), array $urls = array()) {
 
 		parent::__construct($data);
 		$this->setAuthors($authors);
 		$this->setKeywords($keywords);
 		$this->setFiles($files);
+		$this->setUrls($urls);
 	}
 
 
@@ -247,6 +249,36 @@ class Publication extends Entity {
 			}
 			else {
 				throw new InvalidArgumentException('must be array with File objects');
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @return Url[]
+	 */
+	public function getUrls() {
+
+		return $this->urls;
+	}
+
+
+	/**
+	 * @param Url[] $urls
+	 *
+	 * @return bool
+	 */
+	public function setUrls(array $urls) {
+
+		$this->urls = array();
+		foreach ($urls as $url) {
+			if ($url instanceof Url) {
+				$this->urls[] = $url;
+			}
+			else {
+				throw new InvalidArgumentException('must be an array of Url objects');
 			}
 		}
 

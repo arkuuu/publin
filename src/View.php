@@ -204,10 +204,10 @@ class View {
 	 */
 	public function showCitation(Publication $publication, $max_authors = 6) {
 
-		$url = './?p=publication&id='.$publication->getId();
 		$citation = '<div class="citation">';
 
 		/* shows the title and links to the publication page */
+		$url = Request::createUrl(array('p' => 'publication', 'id' => $publication->getId()));
 		$citation .= '<a href="'.$this->html($url).'" class="title">'.$this->html($publication->getTitle()).'</a><br/>';
 
 		/* creates list of authors */
@@ -271,15 +271,22 @@ class View {
 		}
 
 		$links = array();
+		/* shows full text link */
+		if ($file = $publication->getFullTextFile()) {
+			$title = $file->getExtension() == '.pdf' ? 'PDF' : 'FULLTEXT';
+			$url = Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()));
+			$links[] = '<a href="'.$this->html($url).'" target="_blank">'.$this->html($title).'</a>';
+		}
 		/* shows DOI link */
 		if ($publication->getDoi()) {
 			$links[] = '<a href="http://dx.doi.org/'.$this->html($publication->getDoi()).'" target="_blank">DOI</a>';
 		}
-//		/* shows full text link */ TODO only works when files are loaded to the objects every time
-//		if ($file = publication->getFullTextFile()) {
-//			$url = 'Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()));
-//			$links[] = '<a href="'.$this->html($url).'" target="_blank">FULL TEXT</a>';
-//		}
+		/* shows URLs */
+		if ($publication->getUrls()) {
+			foreach ($publication->getUrls() as $url) {
+				$links[] = '<a href="'.$this->html($url->getUrl()).'" target="_blank">'.$this->html($url->getName()).'</a>';
+			}
+		}
 
 		/* shows links if there are any */
 		if (!empty($links)) {

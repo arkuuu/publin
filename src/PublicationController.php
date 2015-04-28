@@ -399,11 +399,76 @@ class PublicationController extends Controller {
 			FileHandler::delete($file->getName());
 		}
 		catch (FileNotFoundException $e) {
-			// do nothing
+			// do nothing, as file must be already deleted
 		}
 
 		$file_model = new FileModel($this->db);
 
 		return $file_model->delete($file_id);
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
+	 */
+	private function removeUrl(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
+
+		$url_id = Validator::sanitizeNumber($request->post('url_id'));
+		if (!$url_id) {
+			throw new UnexpectedValueException;
+		}
+
+		$url_model = new UrlModel($this->db);
+
+		return $url_model->delete($url_id);
+	}
+
+
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool|mixed
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
+	 */
+	private function addUrl(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
+
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
+
+		$url_model = new UrlModel($this->db);
+		$validator = $url_model->getValidator();
+
+		if ($validator->validate($request->post())) {
+			$data = $validator->getSanitizedResult();
+			$url = new Url($data);
+			try {
+				return $url_model->store($url, $id);
+			}
+			catch (DBDuplicateEntryException $e) {
+				$this->errors[] = 'This url is already assigned to this publication';
+
+				return false;
+			}
+		}
+		else {
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
+		}
 	}
 }

@@ -163,6 +163,11 @@
 <p><?php echo $this -> showAbstract() ?></p>
 <?php } ?>
 
+<?php if ($this -> showKeywords()) { ?>
+<h2>Keywords</h2>
+<p><?php echo $this -> showKeywords() ?></p>
+<?php } ?>
+
 <?php if ($this -> showFiles()) { ?>
 <h2>Downloads</h2>
 <ul>
@@ -170,10 +175,13 @@
 </ul>
 <?php } ?>
 
-<?php if ($this -> showKeywords()) { ?>
-<h2>Keywords</h2>
-<p><?php echo $this -> showKeywords() ?></p>
+<?php if ($this -> showUrls()) { ?>
+<h2>Links</h2>
+<ul>
+	<?php echo $this -> showUrls() ?>
+</ul>
 <?php } ?>
+
 
 <h2>Cite this publication</h2>
 <ul>
@@ -286,9 +294,7 @@
 			   value="<?php echo $this->showCopyright() ?>"/>
 		<br/>
 		<label for="doi">DOI:</label>
-		<span style="float: left">http://dx.doi.org/&nbsp;</span>
-		<input type="text" name="doi" id="doi" maxlength="200" style="width: 288px"
-			   value="<?php echo $this->showDoi() ?>"/>
+		<input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->showDoi() ?>"/>
 		<br/>
 		<label for="isbn">ISBN:</label>
 		<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->showIsbn() ?>"/>
@@ -310,14 +316,19 @@
 	<?php echo $this->showEditAuthors(); ?>
 </ul>
 
+<h2>Add or remove keywords</h2>
+<ul>
+	<?php echo $this->showEditKeywords(); ?>
+</ul>
+
 <h2>Add or remove files</h2>
 <ul>
 	<?php echo $this->showEditFiles(); ?>
 </ul>
 
-<h2>Add or remove keywords</h2>
+<h2>Add or remove links</h2>
 <ul>
-	<?php echo $this->showEditKeywords(); ?>
+	<?php echo $this->showEditUrls(); ?>
 </ul>
 
 

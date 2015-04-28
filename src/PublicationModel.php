@@ -91,10 +91,11 @@ VALUES
 			throw new InvalidArgumentException('params should be numeric');
 		}
 
-		$query = 'INSERT INTO `publications_authors` (`publication_id`, `author_id`) VALUES (:publication_id, :author_id);';
+		$query = 'INSERT INTO `publications_authors` (`publication_id`, `author_id`, `priority`) VALUES (:publication_id, :author_id, :priority);';
 		$this->db->prepare($query);
 		$this->db->bindValue(':publication_id', (int)$publication_id);
 		$this->db->bindValue(':author_id', (int)$author_id);
+		$this->db->bindValue(':priority', (int)$priority);
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
@@ -170,6 +171,11 @@ VALUES
 
 		try {
 			$query = 'DELETE FROM `publications_authors` WHERE `publication_id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
+
+			$query = 'DELETE FROM `urls` WHERE `publication_id` = :id;';
 			$this->db->prepare($query);
 			$this->db->bindValue(':id', (int)$id);
 			$this->db->execute();
@@ -274,7 +280,7 @@ VALUES
 		$validator->addRule('address', 'text', false, 'Address is invalid');
 		$validator->addRule('howpublished', 'text', false, 'Howpublished is invalid');
 		$validator->addRule('copyright', 'text', false, 'Copyright is invalid');
-		$validator->addRule('doi', 'text', false, 'DOI is invalid'); // TODO: validate DOI
+		$validator->addRule('doi', 'doi', false, 'DOI is invalid');
 		$validator->addRule('isbn', 'text', false, 'ISBN invalid'); // TODO: validate ISBN
 
 		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
