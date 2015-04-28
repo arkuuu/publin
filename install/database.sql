@@ -68,6 +68,27 @@ CREATE TABLE `files` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `urls`
+--
+
+DROP TABLE IF EXISTS `urls`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `urls` (
+  `id`             INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `publication_id` INT(11) UNSIGNED          DEFAULT NULL,
+  `name`           VARCHAR(100)              DEFAULT NULL,
+  `url`            VARCHAR(100)              DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url_pid_name` (`publication_id`, `name`),
+  KEY `publication_id` (`publication_id`),
+  CONSTRAINT `urls_ibfk_1` FOREIGN KEY (`publication_id`) REFERENCES `publications` (`id`)
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8
+  COMMENT = 'Stores urls of publications.';
+--
 -- Table structure for table `keywords`
 --
 
