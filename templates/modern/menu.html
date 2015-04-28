@@ -1,34 +1,34 @@
-	<div id="top">
-		<div class="contentWrapper">
-			<div id="logo"></div>
-			<div id="nav">
-				<ul>
-					<li><?php echo $this->showLink('search', 'Search') ?></li>
-					<li><?php echo $this->showLink('browse', 'Browse') ?></li>
-					<li><?php echo $this->showLink('about', 'About') ?></li>
-				</ul>
-			</div>
-			<div id="login">
-				<ul>
-					<?php if ($this->showUserName()) {echo '
-					<li>'.$this->showLink('user', $this->showUserName()).'</li>
-									 ';}?>
-					<?php if ($this->hasPermission('publication_submit')) {echo '
-					<li>'.$this->showLink('submit', 'Submit').'</li>
-									 ';}?>
-					<?php if ($this->hasPermission('manage')) {echo '
-					<li>'.$this->showLink('manage', 'Manage').'</li>
-									 ';}?>
-					<?php if ($this->showUserName()) {echo '
-					<li>'.$this->showLink('logout', 'Logout').'</li>
-									 ';} else {echo '
-					<li>'.$this->showLink('login', 'Login').'</li>
-									 ';}?>
-				</ul>
-			</div>
-			<div class="clearBoth"></div>
-		</div>
-	</div>
+<div id="top">
 	<div class="contentWrapper">
-		<div id="pageContent">
-			<?php echo $this->showErrors() ?>
+		<div id="logo"></div>
+		<div id="nav">
+			<ul>
+				<li><?php echo $this->showLink('search', 'Search') ?></li>
+				<li><?php echo $this->showLink('browse', 'Browse') ?></li>
+				<li><?php echo $this->showLink('about', 'About') ?></li>
+			</ul>
+		</div>
+		<div id="login">
+			<ul>
+				<?php if ($this->showUserName()) {echo '
+				<li>'.$this->showLink('user', $this->showUserName()).'</li>
+								 ';}?>
+				<?php if ($this->hasPermission('publication_submit')) {echo '
+				<li>'.$this->showLink('submit', 'Submit').'</li>
+								 ';}?>
+				<?php if ($this->hasPermission('manage')) {echo '
+				<li>'.$this->showLink('manage', 'Manage').'</li>
+								 ';}?>
+				<?php if ($this->showUserName()) {echo '
+				<li>'.$this->showLink('logout', 'Logout').'</li>
+								 ';} else {echo '
+				<li>'.$this->showLink('login', 'Login').'</li>
+								 ';}?>
+			</ul>
+		</div>
+		<div class="clearBoth"></div>
+	</div>
+</div>
+<div class="contentWrapper">
+	<div id="pageContent">
+		<?php echo $this->showErrors() ?>

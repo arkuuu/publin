@@ -30,6 +30,7 @@ class Config {
 	const OAI_RESUMPTION_TOKEN_DAYS_VALID = 1;
 	const OAI_USE_XSLT = true;
 
+
 	public static function setup() {
 
 		date_default_timezone_set(self::TIMEZONE);
