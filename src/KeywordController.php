@@ -101,7 +101,7 @@ class KeywordController extends Controller {
 		}
 
 		$this->model->delete($id);
-		MainController::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'keyword')));
+		$this->redirect(Request::createUrl(array('p' => 'browse', 'by' => 'keyword')));
 		exit;
 	}
 

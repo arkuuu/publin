@@ -31,18 +31,22 @@ class Request {
 
 	/**
 	 * @param array $parameters
+	 * @param bool  $absolute
 	 *
 	 * @return string
 	 */
-	public static function createUrl(array $parameters = array()) {
+	public static function createUrl(array $parameters = array(), $absolute = false) {
 
 		$url = http_build_query($parameters);
+		$url = $url ? '?'.$url : '';
 
-		if (!$url) {
-			return Config::ROOT_URL;
+		if ($absolute) {
+			$root = Config::USE_SSL ? Config::ROOT_URL_SSL : Config::ROOT_URL;
+
+			return $root.$url;
 		}
 		else {
-			return Config::ROOT_URL.'?'.$url;
+			return $url;
 		}
 	}
 
@@ -50,7 +54,7 @@ class Request {
 	/**
 	 * @param string $name
 	 *
-	 * @return bool
+	 * @return bool|array
 	 */
 	public static function post($name = '') {
 

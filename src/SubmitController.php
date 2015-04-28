@@ -194,7 +194,7 @@ class SubmitController extends Controller {
 
 			$this->clearForm();
 
-			MainController::redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
+			$this->redirect(Request::createUrl(array('p' => 'publication', 'id' => $publication_id)));
 
 			return true;
 		}

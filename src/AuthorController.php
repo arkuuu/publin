@@ -99,7 +99,7 @@ class AuthorController extends Controller {
 		}
 
 		$this->model->delete($id);
-		MainController::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'author')));
+		$this->redirect(Request::createUrl(array('p' => 'browse', 'by' => 'author')));
 		exit;
 	}
 

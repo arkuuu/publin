@@ -97,21 +97,6 @@ class MainController extends Controller {
 	}
 
 
-	/**
-	 * @param $destination
-	 */
-	public static function redirect($destination) {
-
-		if (!isset($_SESSION)) {
-			session_start();
-		}
-		$_SESSION['referrer'] = Request::getUrl();
-
-		header('Location: '.$destination, true);
-		exit();
-	}
-
-
 	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
 	 *
@@ -230,7 +215,7 @@ class MainController extends Controller {
 			$password = Validator::sanitizeText($request->post('password'));
 			if ($this->auth->login($username, $password)) {
 
-				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : Request::createUrl();
+				$destination = !empty($_SESSION['referrer']) ? $_SESSION['referrer'] : Request::createUrl(array(), true);
 				$this->redirect($destination);
 			}
 			else {

@@ -86,7 +86,7 @@ class UserController extends Controller {
 		}
 
 		$this->model->delete($this->user->getId());
-		MainController::redirect(Request::createUrl(array('p' => 'logout')));
+		$this->redirect(Request::createUrl(array('p' => 'logout')));
 		exit;
 	}
 

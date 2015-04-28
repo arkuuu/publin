@@ -185,11 +185,13 @@ class View {
 	 */
 	public function showLink($page, $title) {
 
+		$url = Request::createUrl(array('p' => $page));
+
 		if ($this->content == $page) {
-			return '<a href="./?p='.$this->html($page).'" class="active">'.$this->html($title).'</a>';
+			return '<a href="'.$this->html($url).'" class="active">'.$this->html($title).'</a>';
 		}
 		else {
-			return '<a href="./?p='.$this->html($page).'">'.$this->html($title).'</a>';
+			return '<a href="'.$this->html($url).'">'.$this->html($title).'</a>';
 		}
 	}
 

@@ -7,6 +7,8 @@ class Config {
 
 	const ROOT_PATH = '/publin/';
 	const ROOT_URL = 'http://localhost:8888/publin/'; // full url! like oai
+	const ROOT_URL_SSL = 'https://localhost:8888/publin/';
+	const USE_SSL = false;
 	const ADMIN_MAIL = 'admin@localhost.de';
 	const PHP_MAIL = 'noreply@localhost.de';
 	const TIMEZONE = 'Europe/Berlin'; // see http://php.net/manual/en/timezones.php

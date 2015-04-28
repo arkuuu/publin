@@ -316,7 +316,7 @@ class PublicationController extends Controller {
 
 		try {
 			$this->model->delete($id);
-			MainController::redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
+			$this->redirect(Request::createUrl(array('p' => 'browse', 'by' => 'recent')));
 			exit;
 		}
 		catch (DBForeignKeyException $e) {
