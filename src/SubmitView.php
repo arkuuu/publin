@@ -89,7 +89,7 @@ class SubmitView extends View {
 	public function listTypeOptions() {
 
 		$types = $this->model->createTypes();
-		$selected_name = $this->show('type');
+		$selected_name = strtolower($this->show('type'));
 
 		if ($selected_name) {
 			$string = '<option value disabled></option>';
