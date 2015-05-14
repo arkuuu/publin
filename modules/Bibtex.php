@@ -26,7 +26,6 @@ class Bibtex extends Module {
 	 */
 	public function __construct() {
 
-
 		/* Map your fields here. You can change the order or leave out fields. */
 		$this->fields = array(
 			/* bibtex field => your field */
