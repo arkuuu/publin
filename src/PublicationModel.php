@@ -303,7 +303,7 @@ VALUES
 				$validator->addRule('booktitle', 'text', true, 'Booktitle is required but invalid');
 				break;
 
-			case 'masterthesis':
+			case 'mastersthesis':
 			case 'phdthesis':
 				$validator->addRule('institution', 'text', true, 'Institution is required but invalid');
 				break;

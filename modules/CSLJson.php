@@ -103,7 +103,7 @@ class CSLJson extends Module {
 			case 'book':
 				return 'book';
 				break;
-			case 'masterthesis':
+			case 'mastersthesis':
 			case 'phdthesis':
 				return 'thesis';
 				break;

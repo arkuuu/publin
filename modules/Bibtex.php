@@ -18,7 +18,7 @@ class Bibtex extends Module {
 	 */
 	private $fields;
 
-	private $supported_types = array('article', 'book', 'incollection', 'inproceedings', 'inbook', 'masterthesis', 'phdthesis', 'misc', 'techreport', 'unpublished');
+	private $supported_types = array('article', 'book', 'incollection', 'inproceedings', 'inbook', 'mastersthesis', 'phdthesis', 'misc', 'techreport', 'unpublished');
 
 
 	/**

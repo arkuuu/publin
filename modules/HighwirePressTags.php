@@ -70,7 +70,7 @@ class HighwirePressTags extends Module {
 		if ($publication->getTypeName() == 'techreport') {
 			$fields[] = array('citation_technical_report_institution', $publication->getInstitution());
 		}
-		else if (in_array($publication->getTypeName(), array('phdthesis', 'masterthesis'))) {
+		else if (in_array($publication->getTypeName(), array('phdthesis', 'mastersthesis'))) {
 			$fields[] = array('citation_dissertation_institution', $publication->getInstitution());
 		}
 		$fields[] = array('citation_doi', $publication->getDoi());

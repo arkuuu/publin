@@ -118,7 +118,7 @@ class RIS extends Module {
 			case 'book':
 				return 'BOOK';
 				break;
-			case 'masterthesis':
+			case 'mastersthesis':
 			case 'phdthesis':
 				return 'THES';
 				break;
