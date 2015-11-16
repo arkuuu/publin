@@ -22,9 +22,9 @@ Features
 
 Live Demo
 ======
-A live demo of the latest version is available at [arkuuu.de/publin](http://www.arkuuu.de/publin/).
+A live demo of the latest version is available at [arkuuu.de/publin](http://arkuuu.de/publin/).
 
-A live demo of the OAI-PMH interface is available at [arkuuu.de/publin/oai](http://www.arkuuu.de/publin/oai/?verb=Identify).
+A live demo of the OAI-PMH interface is available at [arkuuu.de/publin/oai](http://arkuuu.de/publin/oai/?verb=Identify).
 
 
 Requirements
@@ -53,4 +53,4 @@ This is currently in development.
 
 About the Project
 ======
-This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the task at [ifis.uni-luebeck.de](http://www.ifis.uni-luebeck.de/index.php?id=363) and the full thesis at [arkuuu.de/publin/?p=publication&id=67](http://www.arkuuu.de/publin/?p=publication&id=67)
+This is a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the task at [ifis.uni-luebeck.de](http://www.ifis.uni-luebeck.de/index.php?id=363) and the full thesis at [arkuuu.de/publin/?p=publication&id=67](http://arkuuu.de/publin/?p=publication&id=67)
