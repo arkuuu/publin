@@ -82,7 +82,7 @@ div#login a.active {
 div#logo {
 	height: 80px;
 	width: 209px;
-	background: url(logo.svg) no-repeat left;
+	background: url(../images/logo.svg) no-repeat left;
 	background-size: contain;
 	/*background-color: red;*/
 }
