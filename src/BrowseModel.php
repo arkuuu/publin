@@ -44,7 +44,7 @@ class BrowseModel {
 				case 'recent':
 					$this->is_result = true;
 					$repo = new PublicationRepository($this->db);
-					$this->result = $repo->select()->order('date_added', 'DESC')->limit(20)->find();
+					$this->result = $repo->select()->where('foreign', '=', 0)->order('date_added', 'DESC')->limit(20)->find();
 					break;
 
 				case 'author':
@@ -95,6 +95,7 @@ class BrowseModel {
 
 		$query = 'SELECT DISTINCT YEAR(`date_published`) AS `year`
 					FROM `publications`
+					WHERE `foreign` = 0
 					ORDER BY `year` DESC';
 
 		$this->db->query($query);

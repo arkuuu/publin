@@ -43,6 +43,7 @@ class Publication extends Entity {
 	protected $files;
 	protected $full_text_file;
 	protected $urls;
+	protected $foreign;
 
 
 	/**
@@ -495,5 +496,19 @@ class Publication extends Entity {
 	public function getPublinUrl() {
 
 		return Request::createUrl(array('p' => 'publication', 'id' => $this->id));
+	}
+	
+	
+	/**
+	 * @return int 0 or 1
+	 */
+	public function getForeign() {
+		// For the foreign attribute a checkbox is used. If the checkbox is not
+		// set, we do not get a value. Hence set it to the dafault value.
+		if (isset($this->foreign)) {
+			return $this->foreign;
+		} else {
+			return 0;
+		}
 	}
 }

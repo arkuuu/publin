@@ -664,4 +664,17 @@ class PublicationView extends View {
 
 		return $this->html($this->publication->getPublinUrl());
 	}
+
+	/**
+	 * @return string
+	 */
+	public function showForeign() {
+		
+		if ($this->publication->getForeign()) {
+			return 'checked';
+		}
+		else {
+			return '';
+		}
+	}
 }

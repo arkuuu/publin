@@ -41,11 +41,11 @@ class PublicationModel extends Model {
 		}
 
 		$query = 'INSERT INTO
-  `publications` (`type_id`, `study_field_id`, `title`, `date_published`, `booktitle`, `journal`, `volume`, `number`, `pages_from`, `pages_to`, `series`, `edition`, `note`, `location`, `publisher`, `institution`, `school`, `address`, `isbn`, `doi`, `howpublished`, `abstract`, `copyright`)
+  `publications` (`type_id`, `study_field_id`, `title`, `date_published`, `booktitle`, `journal`, `volume`, `number`, `pages_from`, `pages_to`, `series`, `edition`, `note`, `location`, `publisher`, `institution`, `school`, `address`, `isbn`, `doi`, `howpublished`, `abstract`, `copyright`, `foreign`)
 VALUES
   (:type_id, :study_field_id, :title, :date_published, :booktitle, :journal, :volume, :number, :pages_from, :pages_to,
    :series, :edition, :note, :location, :publisher, :institution, :school, :address, :isbn, :doi, :howpublished,
-   :abstract, :copyright);';
+   :abstract, :copyright, :foreign);';
 		$this->db->prepare($query);
 		$this->db->bindValue(':type_id', $type_id);
 		$this->db->bindValue(':study_field_id', $study_field_id);
@@ -70,6 +70,7 @@ VALUES
 		$this->db->bindValue(':howpublished', $publication->getHowpublished());
 		$this->db->bindValue(':abstract', $publication->getAbstract());
 		$this->db->bindValue(':copyright', $publication->getCopyright());
+		$this->db->bindValue(':foreign', $publication->getForeign());		
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
@@ -147,6 +148,10 @@ VALUES
 			$type = $repo->select()->where('name', '=', $data['study_field'])->findSingle();
 			$data['study_field_id'] = $type->getId();
 			unset($data['study_field']);
+		}
+		/* If checkbox is unchecked, we do not get a value */
+		if (!isset($data['foreign']) ) {
+			$data['foreign'] = 0;
 		}
 
 		$old_db = new OldDatabase();
@@ -286,6 +291,8 @@ VALUES
 		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
+		
+		$validator->addRule('foreign', 'number', false, 'Foreign is valid');
 
 		/* Overwrite rules with required rules depending on type */
 		switch ($type) {
