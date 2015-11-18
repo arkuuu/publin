@@ -175,6 +175,11 @@
 </ul>
 <?php } ?>
 
+<?php if ($this -> showCitations()) { ?>
+<h2>Citations</h2>
+<?php echo $this -> showCitations() ?>
+<?php } ?>
+
 <?php if ($this -> showUrls()) { ?>
 <h2>Links</h2>
 <ul>

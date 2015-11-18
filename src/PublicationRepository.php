@@ -78,7 +78,7 @@ class PublicationRepository extends Repository {
 
 			$repo = new UrlRepository($this->db);
 			$publication->setUrls($repo->select()->where('publication_id', '=', $publication->getId())->find());
-
+			
 			if ($full === true) {
 				$repo = new KeywordRepository($this->db);
 				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
@@ -112,6 +112,9 @@ class PublicationRepository extends Repository {
 			if ($full === true) {
 				$repo = new KeywordRepository($this->db);
 				$publication->setKeywords($repo->select()->where('publication_id', '=', $publication->getId())->order('name', 'ASC')->find());
+
+				$repo = new CitationRepository($this->db);
+				$publication->setCitations($repo->select()->where('publication_id', '=', $publication->getId())->find());							
 			}
 
 			return $publication;

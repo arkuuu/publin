@@ -146,7 +146,26 @@ class PublicationView extends View {
 
 		return $result;
 	}
-
+	
+	/**
+	 * Shows the publication's citations.
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	public function showCitations() {
+		$result = false;
+		$citations = $this->publication->getCitations();
+		$num = count($citations);
+		if ($num > 0) {
+			$result .= '<ul>';
+			foreach ($citations as $citation) {
+				$result .= '<li>'.$this->showCitation($citation->getCitationPublication()).'</li>'."\n";	
+			}
+			$result .= '</ul>';
+		}
+		return $result;
+	}
 
 	/**
 	 * Shows the publication's publish date.
