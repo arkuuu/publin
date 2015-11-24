@@ -19,6 +19,10 @@ class PublicationView extends View {
 	 * @var bool
 	 */
 	private $edit_mode;
+	/**
+	 * @var array
+	 */
+	private $all_plublications;
 
 
 	/**
@@ -27,12 +31,16 @@ class PublicationView extends View {
 	 * @param Publication $publication
 	 * @param array       $errors
 	 * @param bool        $edit_mode
+	 * @param array|null  $all_plublications
 	 */
-	public function __construct(Publication $publication, array $errors, $edit_mode = false) {
+	public function __construct(Publication $publication, array $errors, $edit_mode = false, $all_plublications = null) {
 
 		parent::__construct('publication', $errors);
 		$this->publication = $publication;
 		$this->edit_mode = $edit_mode;
+		if ($edit_mode) {
+			$this->all_plublications = $all_plublications;
+		}
 	}
 
 
@@ -165,6 +173,42 @@ class PublicationView extends View {
 			$result .= '</ul>';
 		}
 		return $result;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function showEditCitations() {
+
+		$citations = $this->publication->getCitations();
+		$string = '';
+
+		foreach ($citations as $citation) {
+			$citationPublication = $citation->getCitationPublication();
+			$string .= '<li>
+						<form action="#" method="post" accept-charset="utf-8">
+						<a href="?p=publication&m=edit&id='.$this->html($citation->getCitationId()).'">'.$this->html($citationPublication->getTitle()).'</a>
+						<input type="hidden" name="citation_id" value="'.$this->html($citation->getId()).'"/>
+						<input type="hidden" name="action" value="removeCitation"/>
+						<input type="submit" value="x"/>
+						</form>
+						</li>';
+		}
+		
+		$string .= '<li>
+					<form action="#" method="post" accept-charset="utf-8">
+					<select name="citation_id">
+					    <option></option>';
+		foreach ($this->all_plublications as $publication) {
+			$string .= '<option value='.$publication->getId().'>'.$publication->getTitle().'</option>';
+		}
+		$string .= '			</select>
+					<input type="hidden" name="action" value="addCitation"/>
+					<input type="submit" value="Add"/>
+					</form>
+					</li>';
+		
+		return $string;
 	}
 
 	/**

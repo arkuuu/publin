@@ -70,7 +70,11 @@ class PublicationController extends Controller {
 		}
 
 		if ($request->get('m') === 'edit') {
-			$view = new PublicationView($publication, $this->errors, true);
+			// To add a citation all publication names are required
+			$repo = new PublicationRepository($this->db);
+			$all_publications = $repo->select()->order('title', 'ASC')->find();
+			
+			$view = new PublicationView($publication, $this->errors, true, $all_publications);
 		}
 		else {
 			$view = new PublicationView($publication, $this->errors);
@@ -207,6 +211,28 @@ class PublicationController extends Controller {
 
 		return $this->model->removeAuthor($id, $author_id);
 	}
+	
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
+	 */
+	private function removeCitation(Request $request) {
+
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
+
+		$id = Validator::sanitizeNumber($request->get('id'));
+		$citation_id = Validator::sanitizeNumber($request->post('citation_id'));
+		if (!$id || !$citation_id) {
+			throw new UnexpectedValueException;
+		}
+
+		return $this->model->removeCitation($id, $citation_id);
+	}
 
 
 	/** @noinspection PhpUnusedPrivateMethodInspection
@@ -252,7 +278,50 @@ class PublicationController extends Controller {
 			return false;
 		}
 	}
+	
+	/** @noinspection PhpUnusedPrivateMethodInspection
+	 * @param Request $request
+	 *
+	 * @return bool|mixed
+	 * @throws PermissionRequiredException
+	 * @throws exceptions\LoginRequiredException
+	 */
+	private function addCitation(Request $request) {
 
+		if (!$this->auth->checkPermission(Auth::EDIT_PUBLICATION)) {
+			throw new PermissionRequiredException(Auth::EDIT_PUBLICATION);
+		}
+
+		// Here I did not used a CitationModel validator, since this would
+		// require publication_id to be present
+		$id = Validator::sanitizeNumber($request->get('id'));
+		if (!$id) {
+			throw new UnexpectedValueException;
+		}
+
+		$validator = new Validator($this->db);
+		$validator->addRule('citation_id', 'number', true, 'Citation is required but invalid');
+
+		if ($validator->validate($request->post())) {
+			$data = $validator->getSanitizedResult();
+			try {
+				$this->model->addCitation($id, $data['citation_id']);
+
+				return true;
+			}
+			catch (DBDuplicateEntryException $e) {
+				$this->errors[] = 'This citation is already assigned to this publication';
+
+				return false;
+			}
+		}
+		else {
+			$this->errors = array_merge($this->errors, $validator->getErrors());
+
+			return false;
+		}
+	}
+	
 
 	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
