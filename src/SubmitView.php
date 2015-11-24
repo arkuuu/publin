@@ -72,6 +72,25 @@ class SubmitView extends View {
 			return false;
 		}
 	}
+	
+
+	/**
+	 * 
+	 * @param string $format
+	 * @param string $name
+	 * @return string
+	 */
+	public function showImportFormat($format, $name) {
+		$string = '<option value="'.$format.'"';
+		if (isset($_SESSION['input_format'])) {
+			if ($format == $_SESSION['input_format']) {
+				$string .= ' selected';
+			}
+		}
+		$string .= '>'.$name.'</option>';
+		
+		return $string;
+	}
 
 
 	/**
@@ -240,6 +259,28 @@ class SubmitView extends View {
 				<input type="text" name="authors[family][]" placeholder="Family Name" />
 				<button type="button" class="remove-field">x</button>
 				</li>';
+		}
+
+		return $string;
+	}
+	
+
+	/**
+	 * @return string
+	 */
+	public function listCitations() {
+
+		$string = '';
+		$citations = $this->show('citations');
+		if ($citations) {
+			foreach ($citations as $key => $value) {
+				// TODO: insert ID for the value
+				$string .= '<li class="multi-field">
+				<input type="hidden" name="citations[]" value="'.$this->show('citations', $key).'" />
+				<em>'.$this->show('citations', $key).'</em>
+				<button type="button" class="remove-field">x</button>
+				</li>';
+			}
 		}
 
 		return $string;
