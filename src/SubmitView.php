@@ -20,7 +20,7 @@ class SubmitView extends View {
 	 */
 	public function __construct(SubmitModel $model, $submit_mode, array $errors) {
 
-		if (in_array($submit_mode, array('start', 'import', 'bulkimport', 'form'))) {
+		if (in_array($submit_mode, array('start', 'import', 'bulkimport', 'bulkimportapi', 'form'))) {
 			$this->submit_mode = $submit_mode;
 		}
 		else {

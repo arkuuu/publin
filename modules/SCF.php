@@ -139,7 +139,7 @@ class SCF extends Module {
 		}
 		$entries = json_decode($input, $assoc = TRUE);
 		if (!$entries) {
-			throw new ScfInvalidFormatException('Input is no valid JSON. JSON error code: '.json_last_error());
+			throw new ScfInvalidFormatException('Input is no valid JSON. JSON error: '.json_last_error_msg());
 		}			
 		
 		$result = array();

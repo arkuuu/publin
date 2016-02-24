@@ -232,7 +232,7 @@
 <h1>Bulk import publication</h1>
 <p>You can automatically import multiple entries.</p>
 <form action="?p=submit&amp;m=bulkimport" method="post" accept-charset="utf-8">
-	<textarea name="input" rows="10" cols="80"></textarea><br/>
+	<textarea name="input" rows="10" cols="80" placeholder="Enter SCF data directly or URL with SCF data"></textarea><br/>
 	<label for="format">Format:</label>
 	<select id="format" name="format">
 		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>	

@@ -49,7 +49,7 @@ class SubmitController extends Controller {
 		if (!$this->auth->checkPermission(Auth::SUBMIT_PUBLICATION)) {
 			throw new PermissionRequiredException(Auth::SUBMIT_PUBLICATION);
 		}
-
+	
 		if ($request->post('action')) {
 			$method = $request->post('action');
 			if (method_exists($this, $method)) {
@@ -66,9 +66,12 @@ class SubmitController extends Controller {
 		else if ($request->get('m') === 'import') {
 			$view = new SubmitView($this->model, 'import', $this->errors);
 		}
+		else if ($request->get('m') === 'bulkimportapi') {
+			$this->bulkimportApi($request->post('input'));
+		}
 		else if ($request->get('m') === 'bulkimport') {
 			$view = new SubmitView($this->model, 'bulkimport', $this->errors);
-		}		
+		}
 		else {
 			unset($_SESSION['input']);
 			unset($_SESSION['input_rest']);
@@ -87,16 +90,23 @@ class SubmitController extends Controller {
 	 * @return bool
 	 */
 	private function import(Request $request) {
-
+		
 		$format = Validator::sanitizeText($request->post('format'));
 		$bulkimport = Validator::sanitizeBoolean($request->post('bulkimport'));
 		$input = $request->post('input');
 
 		if ($input && $format) {
 			try {
+				if ($bulkimport && filter_var($input, FILTER_VALIDATE_URL)) {
+					$input = $this->getInputFromUrl($input);
+					if ($input == false) {
+						$this->errors[] = 'Could not get content from URL.';
+						return false;
+					}
+				}
 				$entries = FormatHandler::import($input, $format);
 				if ($bulkimport) {
-					$this->bulkimport($entries);
+					$_SESSION['bulkimport_msg'] = $this->bulkimport($entries);
 					return true;
 				}
 				$_SESSION['input_raw'] = $input;
@@ -133,12 +143,53 @@ class SubmitController extends Controller {
 
 	/**
 	 * 
+	 * @param string $url
+	 * @return boolean
+	 */
+	private function getInputFromUrl($url) {
+		if (ini_get('allow_url_fopen')) {
+			$sccOpts= array(
+				'http'=>array(
+					'timeout' => 200
+				)
+			);
+			$input = @file_get_contents($url, false, stream_context_create($sccOpts));
+			if ($input) {
+				return Validator::sanitizeText($input);
+			}
+		} else {
+			$this->errors[] = 'Can not get content from URL. file_get_contents is disabled by server configuration allow_url_fopen=0';
+		}
+		return false;
+	}
+	
+
+	/**
+	 * 
+	 * @param string $input
+	 */
+	private function bulkimportApi($input) {
+		try {
+			$entries = FormatHandler::import($input, 'SCF');
+			header('Content-Type: application/json');
+			http_response_code(202);
+			echo json_encode($this->bulkimport($entries));
+		} catch (Exception $e) {
+			http_response_code(400);
+			echo $e->getMessage();
+		}
+		exit();
+	}
+	
+	/**
+	 * 
 	 * @param array $entries
 	 */
 	private function bulkimport(array $entries) {
-		$messages = [];
-	
-		foreach ($entries as $key => $entry) {
+
+		$messages = array();
+
+		foreach ($entries as $entry) {
 
 			// Skip entry, if it has no title
 			if (empty($entry['title'])) {
@@ -147,7 +198,7 @@ class SubmitController extends Controller {
 			}
 			// String for output
 			$title = substr($entry['title'], 0, 40);
-			
+
 			// Check publication already exists
 			$query = 'SELECT id FROM `publications` WHERE `title` LIKE :title;';
 			$this->db->prepare($query);
@@ -156,26 +207,59 @@ class SubmitController extends Controller {
 			$id = $this->db->fetchColumn();			
 			
 			if ($id) {
-				// TODO: Store citations (!)
-				$messages[] = '[skipped] "'.$title.'" (already exists)';
+				$storeCitations = false;
+
+				// Publication already exists, but the entry has citions. Hence
+				// store the citations only.
+				if (array_key_exists('citations', $entry) && !empty($entry['citations'])) {
+					$publicationModel = new PublicationModel($this->db);
+					foreach ($this->getPublicationIdsFromTitle($entry['citations']) as $citation_id) {
+						try {
+							if ($publicationModel->addCitation($id, $citation_id)) {
+								$storeCitations = true;
+							}
+						} catch (DBDuplicateEntryException $e) {
+							continue;
+						}
+					}
+				}
+				
+				// Output
+				if ($storeCitations) {
+					$messages[] = '[stored/skipped] "'.$title.'" (already exists, but store citations)';					
+				}
+				else {
+					$messages[] = '[skipped] "'.$title.'" (already exists)';					
+				}
+				// Since the publication already exsits, skip the storage
 				continue;
 			}
 
 			try {
+				// TODO: improve it
+				if (!array_key_exists('journal', $entry) || empty($entry['journal'])) {
+					$entry['journal'] = 'Unkown';
+				}
+				if (!array_key_exists('date', $entry) || empty($entry['date'])) {
+					$entry['date'] = '1970-01-01';
+				}
 				$entry['study_field'] = 'Computer Science';
+
 				if ($this->store_publication($entry)) {
 					$messages[] = '[stored] "'.$title.'"';					
 				} else {
-					$messages[] = '[failed] "'.$title.'" ('.implode(" ",$this->errors).')';
-					$this->errors = [];
+					$messages[] = '[failed] "'.$title.'" ('.implode("; ",$this->errors).')';
+					$this->errors = array();
 				}
+			} catch (DBDuplicateEntryException $e) {
+				$messages[] = '[skipped] "'.$title.'" (DBDuplicateEntryException)';
 			} catch (Exception $e) {
 				// TODO, later $e->getMessage()
 				$messages[] = '[error] "'.$title.'" ('.$e.')';
 			}
 		}
 
-		$_SESSION['bulkimport_msg'] = $messages;
+		return $messages;
 	}
 
 	/**
@@ -220,20 +304,10 @@ class SubmitController extends Controller {
 		if (empty($authors)) {
 			$this->errors[] = 'At least one author is required';
 		}
-
+		
 		$citations = array();
 		if (!empty($input['citations'])) {
-			// Get the IDs of the publications by using their titles
-			foreach ($input['citations'] as $input_citation_title) {
-				$query = 'SELECT `id` FROM `publications` WHERE `title` LIKE :title;';
-				$this->db->prepare($query);
-				$this->db->bindValue(':title', $input_citation_title);
-				$this->db->execute();
-				$input_citation = $this->db->fetchColumn();
-				if ($input_citation) {
-					$citations[] = $input_citation;
-				}
-			}
+			$citations = $this->getPublicationIdsFromTitle($input['citations']);			
 		}
 
 		$keywords = array();
@@ -302,6 +376,29 @@ class SubmitController extends Controller {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Gets an array with the title of publications and returns an array
+	 * with the IDs of these publications.
+	 * 
+	 * @param null|array $publicationTitles Array with the publicaion titles
+	 * @return array Array with IDs of the publications
+	 */
+	private function getPublicationIdsFromTitle(array $publicationTitles) {
+		$publicationIds = array();
+		// Get the IDs of the publications by using their titles
+		foreach ($publicationTitles as $publicationTitle) {
+			$query = 'SELECT `id` FROM `publications` WHERE `title` LIKE :title;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':title', $publicationTitle);
+			$this->db->execute();
+			$id = $this->db->fetchColumn();
+			if ($id) {
+				$publicationIds[] = $id;
+			}
+		}
+		return $publicationIds;
 	}
 	
 	/** @noinspection PhpUnusedPrivateMethodInspection
