@@ -50,7 +50,7 @@
 	<label for="format2">Format:</label>
 	<select id="format2" name="format">
 		<?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
-		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>		
+		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
 	</select>
 	<input type="hidden" name="action" value="import"/>
 	<input type="submit" value="Try import again"/>
@@ -221,11 +221,27 @@
 	<label for="format">Format:</label>
 	<select id="format" name="format">
 		<?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
-		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>	
+		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
 	</select>
 	<input type="hidden" name="action" value="import"/>
 	<input type="submit" value="Import"/>
 </form>
+
+
+<?php } else if ($this->isBulkImport()) { ?>
+<h1>Bulk import publication</h1>
+<p>You can automatically import multiple entries.</p>
+<form action="?p=submit&amp;m=bulkimport" method="post" accept-charset="utf-8">
+	<textarea name="input" rows="10" cols="80"></textarea><br/>
+	<label for="format">Format:</label>
+	<select id="format" name="format">
+		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>	
+	</select>	
+	<input type="hidden" name="action" value="import"/>
+	<input type="hidden" name="bulkimport" value="true"/>
+	<input type="submit" value="Import"/>
+</form>
+<?php echo $this->showBulkimportMessages() ?>
 
 
 <?php } else { ?>
@@ -233,4 +249,5 @@
 <p>Here you can submit a publication.</p>
 <p><a href="?p=submit&amp;m=form">Submit via form</a></p>
 <p><a href="?p=submit&amp;m=import">Submit via import</a></p>
+<p><a href="?p=submit&amp;m=bulkimport">Bulk import</a></p>
 <?php } ?>

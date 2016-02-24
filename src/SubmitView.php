@@ -20,7 +20,7 @@ class SubmitView extends View {
 	 */
 	public function __construct(SubmitModel $model, $submit_mode, array $errors) {
 
-		if (in_array($submit_mode, array('start', 'import', 'form'))) {
+		if (in_array($submit_mode, array('start', 'import', 'bulkimport', 'form'))) {
 			$this->submit_mode = $submit_mode;
 		}
 		else {
@@ -57,6 +57,14 @@ class SubmitView extends View {
 		else {
 			return false;
 		}
+	}
+	
+	
+	/**
+	 * @return bool
+	 */
+	public function isBulkImport() {
+		return ($this->submit_mode === 'bulkimport');
 	}
 
 
@@ -283,6 +291,24 @@ class SubmitView extends View {
 			}
 		}
 
+		return $string;
+	}
+	
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function showBulkimportMessages() {
+		$string = '';
+		if (isset($_SESSION['bulkimport_msg'])) {
+			$string .= '<h3>Result</h3>';
+			$string .= '<ul>';
+			foreach ($_SESSION['bulkimport_msg'] as $msg) {
+				$string .= '<li>'.$msg.'</li>';
+			}
+			$string .= '</ul>';
+		}
 		return $string;
 	}
 }
