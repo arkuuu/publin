@@ -58,7 +58,30 @@ function db_import($sql_dump_file) {
 		try {
 			$pdo->beginTransaction();
 			$pdo->exec($sql);
-			$pdo->exec("INSERT INTO `study_fields` VALUES (1,'Computer Science',NULL);");
+			// ISI study fields
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Not Categorized');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Agricultural Sciences');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Biology & Biochemistry');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Chemistry');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Clinical Medicine');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Computer Science');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Economics & Business');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Engineering');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Environment/Ecology');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Geosciences');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Immunology');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Materials Science');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Mathematics');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Microbiology');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Molecular Biology & Genetics');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Neuroscience & Behavior');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Pharmacology & Toxicology');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Physics');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Plant & Animal Science');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Psychiatry/Psychology');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Social Sciences, general');");
+			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Space Science');");
+			// Other
 			$pdo->exec("INSERT INTO `types` VALUES (1,'article',NULL),(2,'book',NULL),(3,'inproceedings',NULL),(4,'incollection',NULL),(5,'inbook',NULL),(6,'techreport',NULL),(7,'mastersthesis',NULL),(8,'phdthesis',NULL),(9,'unpublished',NULL),(10,'misc',NULL);");
 			$pdo->exec("INSERT INTO `permissions` VALUES (1,'access_hidden_files'),(2,'access_restricted_files'),(3,'author_delete'),(4,'author_edit'),(5,'keyword_delete'),(6,'keyword_edit'),(7,'manage'),(8,'publication_delete'),(9,'publication_edit'),(10,'publication_submit');");
 			$pdo->exec("INSERT INTO `roles` VALUES (1,'Admin'),(2,'Editor'),(3,'Member'),(4,'Guest');");

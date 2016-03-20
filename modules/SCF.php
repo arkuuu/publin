@@ -23,26 +23,27 @@ class SCF extends Module {
 		
 		/* Map your fields here. You can change the order or leave out fields. */
 		$this->fields = array(
-			/* scf field => your field */
-			'type'			=> 'type',
-			'authors'		=> 'authors',
-			'title'			=> 'title',
-			'journal_name'	=> 'journal',
-			'booktitle'		=> 'booktitle',
-			'publisher'     => 'publisher',
-			'year'			=> 'date_published',
-			'volume'		=> 'volume',
-			'pages_from'	=> 'pages_from',
-			'pages_to'		=> 'pages_to',			
-			'number'		=> 'number',
-			'series'		=> 'series',
-			'abstract'		=> 'abstract',
-			'copyright'		=> 'copyright',
-			'url'			=> 'url',
-			'doi'			=> 'doi',
-			'isbn'			=> 'isbn',
-			'keywords'		=> 'keywords',
-			'citations'		=> 'citations'
+			/* scf field		=> your field */
+			'type'				=> 'type',
+			'authors'			=> 'authors',
+			'title'				=> 'title',
+			'journal_name'		=> 'journal',
+			'booktitle'			=> 'booktitle',
+			'publisher'			=> 'publisher',
+			'year'				=> 'date_published',
+			'volume'			=> 'volume',
+			'pages_from'		=> 'pages_from',
+			'pages_to'			=> 'pages_to',			
+			'number'			=> 'number',
+			'series'			=> 'series',
+			'abstract'			=> 'abstract',
+			'copyright'			=> 'copyright',
+			'url'				=> 'url',
+			'doi'				=> 'doi',
+			'isbn'				=> 'isbn',
+			'keywords'			=> 'keywords',
+			'citations'			=> 'citations',
+			'isi_fieldofstudy'	=> 'study_field'
 		);
 	}
 	

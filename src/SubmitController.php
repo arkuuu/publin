@@ -243,7 +243,9 @@ class SubmitController extends Controller {
 				if (!array_key_exists('date', $entry) || empty($entry['date'])) {
 					$entry['date'] = '1970-01-01';
 				}
-				$entry['study_field'] = 'Computer Science';
+				if (!array_key_exists('study_field', $entry)) {
+					$entry['study_field'] = 'Not Categorized';
+				}
 
 				if ($this->store_publication($entry)) {
 					$messages[] = '[stored] "'.$title.'"';					
