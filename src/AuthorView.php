@@ -19,20 +19,30 @@ class AuthorView extends ViewWithPublications {
 	 */
 	private $edit_mode;
 
+	/**
+	 * The array contains instances of all indices
+	 * which should be displayed on the author page.
+	 *
+	 * @var array
+	 */
+	private $indices;
 
 	/**
 	 * Constructs the author view.
 	 *
 	 * @param Author $author
 	 * @param array  $publications
+	 * @param array  $indices
 	 * @param array  $errors
 	 * @param bool   $edit_mode
 	 */
-	public function __construct(Author $author, array $publications, array $errors, $edit_mode = false) {
+	public function __construct(Author $author, array $publications, array $indices,
+	    array $errors, $edit_mode = false) {
 
 		parent::__construct($publications, 'author', $errors);
 		$this->author = $author;
 		$this->edit_mode = $edit_mode;
+		$this->indices = $indices;
 	}
 
 
@@ -162,5 +172,28 @@ class AuthorView extends ViewWithPublications {
 	public function showWebsite() {
 
 		return $this->html($this->author->getWebsite());
+	}
+
+	/**
+	 * Shows a list with all indices.
+	 *
+	 * Each entry of the list contains the name of the index
+	 * and the calculated value.
+	 *
+	 * @return string
+	 */
+	public function showIndices() {
+	    $string = '';
+
+        foreach ($this->indices as $index) {
+            $string .= '<li>'.$index->getName().': '.$index->getValue().'</li>'."\n";
+        }
+
+        if (!empty($string)) {
+            return $string;
+        }
+        else {
+            return '<li>No indices found</li>';
+        }
 	}
 }
