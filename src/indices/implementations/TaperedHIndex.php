@@ -27,15 +27,16 @@ class TaperedHIndex extends HIndex {
      */
     protected function calculateValue() {
         $value = 0;
+
         $j = 1;
         foreach ($this->data['publications'] as $publication) {
             $citationCount = $publication['citationCount'];
             if ($citationCount <= $j) {
-                $value += $citationCount/(2*$j-1);
+                $value += $citationCount / (2 * $j - 1);
             } else {
-                $value += $j/(2*$j-1);
+                $value += $j / (2 * $j - 1);
                 for ($i = $j+1; $i <= $citationCount; $i++) {
-                    $value += 1/(2*$i-1);
+                    $value += 1 / (2 * $i - 1);
                 }
             }
 

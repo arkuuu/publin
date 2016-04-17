@@ -5,7 +5,7 @@ namespace publin\src\indices;
 use publin\src\Database;
 use publin\src\indices\exceptions\IndexException;
 use publin\config\Config;
-use \SplFileInfo;
+use SplFileInfo;
 
 /**
  * This factory facilitates the usage of indices. It provides
@@ -17,16 +17,6 @@ use \SplFileInfo;
 class IndexFactory {
 
     /**
-     * This variable contains the instances of all indices.
-     *
-     * The keys of the array represent the names of the
-     * indices as returned by the getName() method of an index.
-     *
-     * @var array
-     */
-    private $indices = array();
-
-    /**
      * This is an instance of the Publin database class.
      *
      * The database should be provided when constructing
@@ -35,6 +25,16 @@ class IndexFactory {
      * @var Database
      */
     private $db;
+
+    /**
+     * This variable contains the instances of all indices.
+     *
+     * The keys of the array represent the names of the
+     * indices as returned by the getName() method of an index.
+     *
+     * @var array
+     */
+    private $indices = array();
 
     /**
      * Maps data types with duplicate names to the name

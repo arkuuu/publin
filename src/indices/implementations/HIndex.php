@@ -5,6 +5,8 @@ namespace publin\src\indices\implementations;
 use publin\src\indices\AbstractIndex;
 use publin\src\Database;
 use PDO;
+use publin\src\indices\exceptions\IndexDataException;
+use publin\src\indices\other\IndexHelper;
 
 /**
  * This class implements the well-known h-index as defined
@@ -37,9 +39,24 @@ class HIndex extends AbstractIndex {
      * {@inheritDoc}
      */
     public function setData(array $data) {
-        $this->checkArrayKeysExist(array_keys($this->dataFormat), $data, 0, 0);
-        $this->checkDataTypesAreCorrect($this->dataFormat, $data, 3, 0, 0);
-        $this->checkDataTypesAreCorrect(
+        $this->checkPublicationsData($data);
+
+        $this->data = $data;
+    }
+
+    /**
+     * Checks if the provided publications data is correct.
+     *
+     * @param array $data Contains the data of all publications.
+     *
+     * @throws IndexDataException If $data doesn't contain valid
+     * publications with the required attributes 'publicationId'
+     * and 'citationCount'.
+     */
+    private function checkPublicationsData(array $data) {
+        IndexHelper::checkArrayKeysExist(array_keys($this->dataFormat), $data, 0, 0);
+        IndexHelper::checkDataTypesAreCorrect($this->dataFormat, $data, 3, 0, 0);
+        IndexHelper::checkDataTypesAreCorrect(
             array('int'),
             $data,
             1,
@@ -47,7 +64,7 @@ class HIndex extends AbstractIndex {
             0,
             array(0 => array('publications'))
         );
-        $this->checkDataTypesAreCorrect(
+        IndexHelper::checkDataTypesAreCorrect(
             array('array'),
             $data,
             2,
@@ -55,14 +72,14 @@ class HIndex extends AbstractIndex {
             0,
             array(0 => array('publications'))
         );
-        $this->checkArrayKeysExist(
+        IndexHelper::checkArrayKeysExist(
             array_keys($this->dataFormat['publications']['int']),
             $data,
             2,
             0,
             array(0 => array('publications'))
         );
-        $this->checkDataTypesAreCorrect(
+        IndexHelper::checkDataTypesAreCorrect(
             $this->dataFormat['publications']['int'],
             $data,
             3,
@@ -70,8 +87,6 @@ class HIndex extends AbstractIndex {
             0,
             array(0 => array('publications'))
         );
-
-        $this->data = $data;
     }
 
     /**
@@ -100,7 +115,7 @@ class HIndex extends AbstractIndex {
 
         $data = array();
         $data['publications'] = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $data = $this->convertWrongDataTypes(
+        $data = IndexHelper::convertWrongDataTypes(
             $this->dataFormat['publications']['int'],
             $data,
             2,
@@ -115,6 +130,7 @@ class HIndex extends AbstractIndex {
      */
     protected function calculateValue() {
         $value = 0;
+
         $publicationNumber = 1;
         foreach ($this->data['publications'] as $publication) {
             if ($publication['citationCount'] >= $publicationNumber) {

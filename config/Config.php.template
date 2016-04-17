@@ -32,6 +32,33 @@ class Config {
 	const OAI_RESUMPTION_TOKEN_DAYS_VALID = 1;
 	const OAI_USE_XSLT = true;
 
+	/*
+	 * This constant allows to show only a subset of the available indices
+	 * on the author page by providing the case-sensitive names of the
+	 * requested indices as shown in the example below. If all available
+	 * indices should be displayed, the constant should be null.
+	 *
+	 * Example:
+	 * const INDICES_SELECTION = '
+	 *     "h-index",
+	 *     "mf-index"
+	 * ';
+	 */
+	const INDICES_SELECTION = null;
+
+	/*
+	 * This constant can be used to configure the parameters of all
+	 * indices. To configure a specific parameter, specify the parameter
+	 * name and the value as shown in the example below. If no parameters
+	 * should be configured, the constant should be null.
+	 *
+	 * Example:
+	 * const INDICES_PARAMETERS = '
+	 *     "colleagueCitationWeighting" => "0.75",
+	 *     "selfCitationWeighting" => "0.3"
+	 * ';
+	 */
+	const INDICES_PARAMETERS = null;
 
 	public static function setup() {
 

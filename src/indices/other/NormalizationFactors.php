@@ -17,7 +17,14 @@ use publin\src\indices\exceptions\IndexException;
  */
 class NormalizationFactors {
 
-    private $normalizationFactors = array(
+    /**
+     * The variable contains an array with the names of the
+     * fields of study as keys and the normalization factors
+     * as values.
+     *
+     * @var array
+     */
+    private static $normalizationFactors = array(
         'Agricultural Sciences' => 1.27,
         'Biology & Biochemistry' => 0.60,
         'Chemistry' => 0.92,
@@ -45,20 +52,20 @@ class NormalizationFactors {
      * Returns the normalization factor for a specific
      * field of study.
      *
-     * @param string $fieldOfStudyName The case-sensitive name of
+     * @param string $fieldOfStudy The case-sensitive name of
      * the field of study.
      *
      * @return float The normalization factor for the field of study.
      *
      * @throws IndexException If no field of study exists under the
-     * name $fieldOfStudyName.
+     * name $fieldOfStudy.
      */
-    public function getFactor($fieldOfStudyName) {
-        if (array_key_exists($fieldOfStudyName, $this->normalizationFactors)) {
-            return $this->normalizationFactors[$fieldOfStudyName];
+    public static function getFactorFor($fieldOfStudy) {
+        if (array_key_exists($fieldOfStudy, self::$normalizationFactors)) {
+            return self::$normalizationFactors[$fieldOfStudy];
         } else {
             throw new IndexException('The field of study with the name
-                '.$fieldOfStudyName.' doesn\'t exist.');
+                '.$fieldOfStudy.' doesn\'t exist.');
         }
     }
 }
