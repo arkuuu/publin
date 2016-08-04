@@ -1,4 +1,4 @@
-<script type="text/javascript" src="./templates/modern/jquery.js"></script>
+<script type="text/javascript" src="./templates/modern/script/jquery.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('.export textarea').hide();
@@ -175,6 +175,11 @@
 </ul>
 <?php } ?>
 
+<?php if ($this -> showCitations()) { ?>
+<h2>Citations</h2>
+<?php echo $this -> showCitations() ?>
+<?php } ?>
+
 <?php if ($this -> showUrls()) { ?>
 <h2>Links</h2>
 <ul>
@@ -302,6 +307,9 @@
 		<label for="abstract">Abstract:</label>
 		<textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->showAbstract(false) ?></textarea>
 		<br/>
+		<label for="foreign">Foreign publication:</label>
+		<input type="checkbox" name="foreign" id="foreign" value="1" <?php echo $this->showForeign(false) ?>/>
+		<br />
 		<input type="hidden" name="action" value="edit"/>
 		<input type="hidden" name="type" value="<?php echo $this->showType(false) ?>"/>
 		<input type="hidden" name="study_field" value="<?php echo $this->showStudyField(false) ?>"/>
@@ -325,6 +333,12 @@
 <ul>
 	<?php echo $this->showEditFiles(); ?>
 </ul>
+
+<h2>Add or remove citations</h2>
+<ul>
+	<?php echo $this->showEditCitations(); ?>
+</ul>
+
 
 <h2>Add or remove links</h2>
 <ul>

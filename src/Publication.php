@@ -43,21 +43,25 @@ class Publication extends Entity {
 	protected $files;
 	protected $full_text_file;
 	protected $urls;
+	protected $citations;
+	protected $foreign;
 
 
 	/**
-	 * @param array     $data
-	 * @param Author[]  $authors
-	 * @param Keyword[] $keywords
-	 * @param File[]    $files
+	 * @param array      $data
+	 * @param Author[]   $authors
+	 * @param Keyword[]  $keywords
+	 * @param File[]     $files
+	 * @param Citation[] $citations
 	 */
-	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array(), array $urls = array()) {
+	public function __construct(array $data, array $authors = array(), array $keywords = array(), array $files = array(), array $urls = array(), array $citations = array()) {
 
 		parent::__construct($data);
 		$this->setAuthors($authors);
 		$this->setKeywords($keywords);
 		$this->setFiles($files);
 		$this->setUrls($urls);
+		$this->setCitations($citations);
 	}
 
 
@@ -204,6 +208,39 @@ class Publication extends Entity {
 			}
 			else {
 				throw new InvalidArgumentException('must be array with Author objects');
+			}
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Returns an array with the citations of this publication.
+	 * The array consists of Citation objects.
+	 *
+	 * @return    Citation[]
+	 */
+	public function getCitations() {
+	
+		return $this->citations;
+	}
+	
+	/**
+	 * @param Citation[] $citations
+	 *
+	 * @return bool
+	 */
+	public function setCitations(array $citations) {
+	
+		$this->citations = array();
+
+		foreach ($citations as $citation) {
+
+			if ($citation instanceof Citation) {
+				$this->citations[] = $citation;
+			}
+			else {
+				throw new InvalidArgumentException('must be array with Citation objects');
 			}
 		}
 
@@ -495,5 +532,19 @@ class Publication extends Entity {
 	public function getPublinUrl() {
 
 		return Request::createUrl(array('p' => 'publication', 'id' => $this->id));
+	}
+	
+	
+	/**
+	 * @return int 0 or 1
+	 */
+	public function getForeign() {
+		// For the foreign attribute a checkbox is used. If the checkbox is not
+		// set, we do not get a value. Hence set it to the dafault value.
+		if (isset($this->foreign)) {
+			return $this->foreign;
+		} else {
+			return 0;
+		}
 	}
 }

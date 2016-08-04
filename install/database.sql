@@ -40,6 +40,25 @@ CREATE TABLE `authors` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `citations`
+--
+
+DROP TABLE IF EXISTS `citations`;
+CREATE TABLE `citations` (
+  `id`             int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `publication_id` int(11) unsigned NOT NULL,
+  `citation_id`    int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_entries` (`publication_id`,`citation_id`),
+  CONSTRAINT `citations_publication` FOREIGN KEY (`publication_id`) REFERENCES `publications` (`id`),
+  CONSTRAINT `citations_citation` FOREIGN KEY (`citation_id`) REFERENCES `publications` (`id`)
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8
+  COMMENT = 'Stores all citations.';
+
+--
 -- Table structure for table `files`
 --
 
@@ -163,16 +182,16 @@ CREATE TABLE `publications` (
   COMMENT 'Links to the type name.',
   `study_field_id` INT(11) UNSIGNED          DEFAULT NULL
   COMMENT 'Links to the study field name.',
-  `title`          VARCHAR(200)     NOT NULL DEFAULT '',
+  `title`          VARCHAR(250)     NOT NULL DEFAULT '',
   `date_added`     TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_published` DATE                      DEFAULT NULL,
-  `booktitle`      VARCHAR(200)              DEFAULT NULL,
-  `journal`        VARCHAR(200)              DEFAULT NULL,
+  `booktitle`      VARCHAR(250)              DEFAULT NULL,
+  `journal`        VARCHAR(250)              DEFAULT NULL,
   `volume`         INT(5) UNSIGNED           DEFAULT NULL,
   `number`         INT(5) UNSIGNED           DEFAULT NULL,
   `pages_from`     INT(5) UNSIGNED           DEFAULT NULL,
   `pages_to`       INT(5) UNSIGNED           DEFAULT NULL,
-  `series`         VARCHAR(50)               DEFAULT NULL,
+  `series`         VARCHAR(200)              DEFAULT NULL,
   `edition`        VARCHAR(50)               DEFAULT NULL,
   `note`           VARCHAR(200)              DEFAULT NULL,
   `location`       VARCHAR(50)               DEFAULT NULL,
@@ -185,6 +204,7 @@ CREATE TABLE `publications` (
   `howpublished`   VARCHAR(200)              DEFAULT NULL,
   `abstract`       TEXT,
   `copyright`      VARCHAR(200)              DEFAULT NULL,
+  `foreign`        tinyint(1)       NOT NULL DEFAULT '0'  COMMENT 'True for foreign publications',
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`),
   KEY `publication_to_type_idx` (`type_id`),

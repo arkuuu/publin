@@ -41,11 +41,11 @@ class PublicationModel extends Model {
 		}
 
 		$query = 'INSERT INTO
-  `publications` (`type_id`, `study_field_id`, `title`, `date_published`, `booktitle`, `journal`, `volume`, `number`, `pages_from`, `pages_to`, `series`, `edition`, `note`, `location`, `publisher`, `institution`, `school`, `address`, `isbn`, `doi`, `howpublished`, `abstract`, `copyright`)
+  `publications` (`type_id`, `study_field_id`, `title`, `date_published`, `booktitle`, `journal`, `volume`, `number`, `pages_from`, `pages_to`, `series`, `edition`, `note`, `location`, `publisher`, `institution`, `school`, `address`, `isbn`, `doi`, `howpublished`, `abstract`, `copyright`, `foreign`)
 VALUES
   (:type_id, :study_field_id, :title, :date_published, :booktitle, :journal, :volume, :number, :pages_from, :pages_to,
    :series, :edition, :note, :location, :publisher, :institution, :school, :address, :isbn, :doi, :howpublished,
-   :abstract, :copyright);';
+   :abstract, :copyright, :foreign);';
 		$this->db->prepare($query);
 		$this->db->bindValue(':type_id', $type_id);
 		$this->db->bindValue(':study_field_id', $study_field_id);
@@ -70,6 +70,7 @@ VALUES
 		$this->db->bindValue(':howpublished', $publication->getHowpublished());
 		$this->db->bindValue(':abstract', $publication->getAbstract());
 		$this->db->bindValue(':copyright', $publication->getCopyright());
+		$this->db->bindValue(':foreign', $publication->getForeign());		
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
@@ -100,7 +101,30 @@ VALUES
 
 		return $this->db->lastInsertId();
 	}
+	
+	/**
+	 * @param $publication_id
+	 * @param $citation_id
+	 *
+	 * @return string
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
+	public function addCitation($publication_id, $citation_id) {
 
+		if (!is_numeric($publication_id) || !is_numeric($citation_id)) {
+			throw new InvalidArgumentException('params should be numeric');
+		}
+
+		$query = 'INSERT INTO `citations` (`publication_id`, `citation_id`) VALUES (:publication_id, :citation_id);';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', $publication_id);
+		$this->db->bindValue(':citation_id', $citation_id);
+		$this->db->execute();
+
+		return $this->db->lastInsertId();
+	}
+	
 
 	/**
 	 * @param $publication_id
@@ -148,6 +172,10 @@ VALUES
 			$data['study_field_id'] = $type->getId();
 			unset($data['study_field']);
 		}
+		/* If checkbox is unchecked, we do not get a value */
+		if (!isset($data['foreign']) ) {
+			$data['foreign'] = 0;
+		}
 
 		$old_db = new OldDatabase();
 
@@ -181,6 +209,11 @@ VALUES
 			$this->db->execute();
 
 			$query = 'DELETE FROM `publications_keywords` WHERE `publication_id` = :id;';
+			$this->db->prepare($query);
+			$this->db->bindValue(':id', (int)$id);
+			$this->db->execute();
+			
+			$query = 'DELETE FROM `citations` WHERE `publication_id` = :id;';
 			$this->db->prepare($query);
 			$this->db->bindValue(':id', (int)$id);
 			$this->db->execute();
@@ -224,6 +257,29 @@ VALUES
 
 		return $this->db->rowCount();
 	}
+	
+	/**
+	 * @param $publication_id
+	 * @param $citation_id
+	 *
+	 * @return int
+	 * @throws exceptions\DBDuplicateEntryException
+	 * @throws exceptions\DBForeignKeyException
+	 */
+	public function removeCitation($publication_id, $citation_id) {
+
+		if (!is_numeric($publication_id) || !is_numeric($citation_id)) {
+			throw new InvalidArgumentException('params should be numeric');
+		}
+
+		$query = 'DELETE FROM `citations` WHERE `publication_id` = :publication_id AND `id` = :citation_id;';
+		$this->db->prepare($query);
+		$this->db->bindValue(':publication_id', (int)$publication_id);
+		$this->db->bindValue(':citation_id', (int)$citation_id);
+		$this->db->execute();
+
+		return $this->db->rowCount();
+	}	
 
 
 	/**
@@ -286,6 +342,8 @@ VALUES
 		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
+		
+		$validator->addRule('foreign', 'number', false, 'Foreign is valid');
 
 		/* Overwrite rules with required rules depending on type */
 		switch ($type) {

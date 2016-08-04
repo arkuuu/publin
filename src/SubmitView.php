@@ -20,7 +20,7 @@ class SubmitView extends View {
 	 */
 	public function __construct(SubmitModel $model, $submit_mode, array $errors) {
 
-		if (in_array($submit_mode, array('start', 'import', 'form'))) {
+		if (in_array($submit_mode, array('start', 'import', 'bulkimport', 'bulkimportapi', 'form'))) {
 			$this->submit_mode = $submit_mode;
 		}
 		else {
@@ -58,6 +58,14 @@ class SubmitView extends View {
 			return false;
 		}
 	}
+	
+	
+	/**
+	 * @return bool
+	 */
+	public function isBulkImport() {
+		return ($this->submit_mode === 'bulkimport');
+	}
 
 
 	/**
@@ -71,6 +79,25 @@ class SubmitView extends View {
 		else {
 			return false;
 		}
+	}
+	
+
+	/**
+	 * 
+	 * @param string $format
+	 * @param string $name
+	 * @return string
+	 */
+	public function showImportFormat($format, $name) {
+		$string = '<option value="'.$format.'"';
+		if (isset($_SESSION['input_format'])) {
+			if ($format == $_SESSION['input_format']) {
+				$string .= ' selected';
+			}
+		}
+		$string .= '>'.$name.'</option>';
+		
+		return $string;
 	}
 
 
@@ -242,6 +269,46 @@ class SubmitView extends View {
 				</li>';
 		}
 
+		return $string;
+	}
+	
+
+	/**
+	 * @return string
+	 */
+	public function listCitations() {
+
+		$string = '';
+		$citations = $this->show('citations');
+		if ($citations) {
+			foreach ($citations as $key => $value) {
+				// TODO: insert ID for the value
+				$string .= '<li class="multi-field">
+				<input type="hidden" name="citations[]" value="'.$this->show('citations', $key).'" />
+				<em>'.$this->show('citations', $key).'</em>
+				<button type="button" class="remove-field">x</button>
+				</li>';
+			}
+		}
+
+		return $string;
+	}
+	
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function showBulkimportMessages() {
+		$string = '';
+		if (isset($_SESSION['bulkimport_msg'])) {
+			$string .= '<h3>Result</h3>';
+			$string .= '<ul>';
+			foreach ($_SESSION['bulkimport_msg'] as $msg) {
+				$string .= '<li>'.$msg.'</li>';
+			}
+			$string .= '</ul>';
+		}
 		return $string;
 	}
 }

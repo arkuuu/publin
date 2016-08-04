@@ -1,5 +1,5 @@
 <?php if ($this -> isForm()) { ?>
-<script type="text/javascript" src="./templates/modern/jquery.js"></script>
+<script type="text/javascript" src="./templates/modern/script/jquery.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
 
@@ -49,7 +49,8 @@
 	<textarea id="input" name="input" rows="10" cols="80"><?php echo $this->showImportInput() ?></textarea><br/>
 	<label for="format2">Format:</label>
 	<select id="format2" name="format">
-		<option value="Bibtex">BibTeX</option>
+		<?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
+		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
 	</select>
 	<input type="hidden" name="action" value="import"/>
 	<input type="submit" value="Try import again"/>
@@ -146,7 +147,10 @@
 		<label for="abstract">Abstract:</label>
 		<textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->show('abstract') ?></textarea>
 		<br/>
-
+		<label for="foreign">Foreign publication:</label>
+		<input type="checkbox" name="foreign" id="foreign" value="1" />
+		<br />
+		
 		<h2>Authors</h2>
 
 		<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
@@ -157,6 +161,17 @@
 			</ul>
 			<button type="button" class="add-field">Add field</button>
 		</div>
+		
+		<h2>Citations</h2>
+		
+		<div class="multi-field-wrapper">
+			<ul class="multi-fields">
+				<?php echo $this -> listCitations() ?>
+			</ul>
+			<!-- TODO: may implement to add citations during submit
+			<button type="button" class="add-field">Add field</button>
+			-->
+		</div>		
 
 		<h2>Keywords</h2>
 
@@ -173,7 +188,7 @@
 		<h2>Files</h2>
 
 		<p>You can upload files through the publication's edit page after it has been submitted.</p>
-
+	
 		<h2>Submit
 			<?php
 			$count = $this -> numberOfRemainingImports();
@@ -181,7 +196,7 @@
 			echo ' and import next of the '.$count.' remaining publications';
 			}
 			?>
-		</h2>
+		</h2>	
 		<input type="hidden" name="action" value="submit"/>
 		<input type="submit" value="Submit"/>
 	</form>
@@ -205,11 +220,28 @@
 	<textarea name="input" rows="10" cols="80"></textarea><br/>
 	<label for="format">Format:</label>
 	<select id="format" name="format">
-		<option value="Bibtex">BibTeX</option>
+		<?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
+		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
 	</select>
 	<input type="hidden" name="action" value="import"/>
 	<input type="submit" value="Import"/>
 </form>
+
+
+<?php } else if ($this->isBulkImport()) { ?>
+<h1>Bulk import publication</h1>
+<p>You can automatically import multiple entries.</p>
+<form action="?p=submit&amp;m=bulkimport" method="post" accept-charset="utf-8">
+	<textarea name="input" rows="10" cols="80" placeholder="Enter SCF data directly or URL with SCF data"></textarea><br/>
+	<label for="format">Format:</label>
+	<select id="format" name="format">
+		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>	
+	</select>	
+	<input type="hidden" name="action" value="import"/>
+	<input type="hidden" name="bulkimport" value="true"/>
+	<input type="submit" value="Import"/>
+</form>
+<?php echo $this->showBulkimportMessages() ?>
 
 
 <?php } else { ?>
@@ -217,4 +249,5 @@
 <p>Here you can submit a publication.</p>
 <p><a href="?p=submit&amp;m=form">Submit via form</a></p>
 <p><a href="?p=submit&amp;m=import">Submit via import</a></p>
+<p><a href="?p=submit&amp;m=bulkimport">Bulk import</a></p>
 <?php } ?>
