@@ -4,6 +4,7 @@ namespace publin\src;
 
 use Exception;
 use publin\src\exceptions\NotFoundException;
+use publin\config\Config;
 
 /**
  * Class View
@@ -114,6 +115,18 @@ class View {
 		return $this->html($string);
 	}
 
+	/**
+	 * Returns the root URL of the application
+	 * specified in the Config class. This method
+	 * can be used to generate absolute URLs in
+	 * the templates.
+	 *
+	 * @return string
+	 */
+	public function getRootUrl() {
+
+	    return (Config::USE_SSL ? Config::ROOT_URL_SSL : Config::ROOT_URL);
+	}
 
 	/**
 	 * @param $input
