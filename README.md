@@ -8,6 +8,7 @@ Features
 * Submit publications, via web form or BibTeX import
 * Edit publication and author metadata
 * Display, add, modify and delete citations for a publication
+* Author-level metrics (h-index, tapered h-index, mf-index)
 * Browse and view publications, authors, journals etc
 * Basic search function
 * Full text file up- and download
@@ -18,13 +19,13 @@ Features
 * OAI-PMH interface for being able to register as OAI Data Provider
 * User authentication and authorization system with assignable roles and permissions
 * Template system for easy customization of the user interface (using HTML&CSS)
-* ...
 
 
 
 Live Demo
 ======
 A live demo of version v1.0.0 is available at [arkuuu.de/publin](http://arkuuu.de/publin/).
+A demo of the newer versions is currently not available.
 
 A live demo of the OAI-PMH interface is available at [arkuuu.de/publin/oai](http://arkuuu.de/publin/oai/?verb=Identify).
 
