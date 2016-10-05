@@ -65,7 +65,7 @@ class RoleModel extends Model {
 		}
 
 		$repo = new PermissionRepository($this->db);
-		$old_permissions = $repo->select()->where('role_id', '=', $role_id)->order('name', 'ASC')->find();
+		$old_permissions = $repo->where('role_id', '=', $role_id)->order('name', 'ASC')->find();
 
 		$old = array();
 		foreach ($old_permissions as $old_permission) {

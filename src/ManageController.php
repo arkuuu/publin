@@ -238,7 +238,7 @@ class ManageController extends Controller {
 		}
 
 		$repo = new UserRepository($this->db);
-		$user = $repo->select()->where('id', '=', $user_id)->findSingle();
+		$user = $repo->where('id', '=', $user_id)->findSingle();
 
 		$password = $this->auth->generatePassword();
 		//print_r('new pw is '.$password); // TODO remove this

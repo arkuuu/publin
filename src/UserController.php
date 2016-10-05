@@ -60,7 +60,7 @@ class UserController extends Controller {
 		}
 
 		$repo = new UserRepository($this->db);
-		$user = $repo->select()->where('id', '=', $this->user->getId())->findSingle(true);
+		$user = $repo->where('id', '=', $this->user->getId())->findSingle(true);
 		if (!$user) {
 			throw new NotFoundException('user not found');
 		}

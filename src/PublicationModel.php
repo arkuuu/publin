@@ -27,7 +27,7 @@ class PublicationModel extends Model {
 		}
 		else {
 			$repo = new TypeRepository($this->db);
-			$type = $repo->select()->where('name', '=', $publication->getTypeName())->findSingle();
+			$type = $repo->where('name', '=', $publication->getTypeName())->findSingle();
 			$type_id = $type->getId();
 		}
 
@@ -36,7 +36,7 @@ class PublicationModel extends Model {
 		}
 		else {
 			$repo = new StudyFieldRepository($this->db);
-			$type = $repo->select()->where('name', '=', $publication->getStudyField())->findSingle();
+			$type = $repo->where('name', '=', $publication->getStudyField())->findSingle();
 			$study_field_id = $type->getId();
 		}
 
@@ -70,7 +70,7 @@ VALUES
 		$this->db->bindValue(':howpublished', $publication->getHowpublished());
 		$this->db->bindValue(':abstract', $publication->getAbstract());
 		$this->db->bindValue(':copyright', $publication->getCopyright());
-		$this->db->bindValue(':foreign', $publication->getForeign());		
+		$this->db->bindValue(':foreign', $publication->getForeign());
 		$this->db->execute();
 
 		return $this->db->lastInsertId();
@@ -101,7 +101,7 @@ VALUES
 
 		return $this->db->lastInsertId();
 	}
-	
+
 	/**
 	 * @param $publication_id
 	 * @param $citation_id
@@ -124,7 +124,7 @@ VALUES
 
 		return $this->db->lastInsertId();
 	}
-	
+
 
 	/**
 	 * @param $publication_id
@@ -161,14 +161,14 @@ VALUES
 		/* Fetches the type */
 		if (isset($data['type'])) {
 			$repo = new TypeRepository($this->db);
-			$type = $repo->select()->where('name', '=', $data['type'])->findSingle();
+			$type = $repo->where('name', '=', $data['type'])->findSingle();
 			$data['type_id'] = $type->getId();
 			unset($data['type']);
 		}
 		/* Fetches the study field */
 		if (isset($data['study_field'])) {
 			$repo = new StudyFieldRepository($this->db);
-			$type = $repo->select()->where('name', '=', $data['study_field'])->findSingle();
+			$type = $repo->where('name', '=', $data['study_field'])->findSingle();
 			$data['study_field_id'] = $type->getId();
 			unset($data['study_field']);
 		}
@@ -212,7 +212,7 @@ VALUES
 			$this->db->prepare($query);
 			$this->db->bindValue(':id', (int)$id);
 			$this->db->execute();
-			
+
 			$query = 'DELETE FROM `citations` WHERE `publication_id` = :id;';
 			$this->db->prepare($query);
 			$this->db->bindValue(':id', (int)$id);
@@ -257,7 +257,7 @@ VALUES
 
 		return $this->db->rowCount();
 	}
-	
+
 	/**
 	 * @param $publication_id
 	 * @param $citation_id
@@ -279,7 +279,7 @@ VALUES
 		$this->db->execute();
 
 		return $this->db->rowCount();
-	}	
+	}
 
 
 	/**
@@ -342,7 +342,7 @@ VALUES
 		$validator->addRule('study_field', 'text', true, 'Field of Study is required but invalid');
 		$validator->addRule('type', 'text', true, 'Type is required but invalid');
 		$validator->addRule('abstract', 'text', false, 'Abstract is invalid');
-		
+
 		$validator->addRule('foreign', 'number', false, 'Foreign is valid');
 
 		/* Overwrite rules with required rules depending on type */

@@ -11,16 +11,14 @@ namespace publin\src;
 class TypeRepository extends Repository {
 
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `types` self';
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `types` self';
-
-		return $this;
-	}
+        return $this;
+    }
 
 
 	/**
@@ -44,7 +42,9 @@ class TypeRepository extends Repository {
 	 */
 	public function findSingle() {
 
-		if ($result = parent::findSingle()) {
+        $result = parent::findSingle();
+
+		if ($result) {
 			return new Type($result);
 		}
 		else {

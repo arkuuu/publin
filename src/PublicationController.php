@@ -64,7 +64,7 @@ class PublicationController extends Controller {
 		}
 
 		$repo = new PublicationRepository($this->db);
-		$publication = $repo->select()->where('id', '=', $request->get('id'))->findSingle(true);
+		$publication = $repo->where('id', '=', $request->get('id'))->findSingle(true);
 		if (!$publication) {
 			throw new NotFoundException('publication not found');
 		}
@@ -72,8 +72,8 @@ class PublicationController extends Controller {
 		if ($request->get('m') === 'edit') {
 			// To add a citation all publication names are required
 			$repo = new PublicationRepository($this->db);
-			$all_publications = $repo->select()->order('title', 'ASC')->find();
-			
+			$all_publications = $repo->order('title', 'ASC')->find();
+
 			$view = new PublicationView($publication, $this->errors, true, $all_publications);
 		}
 		else {
@@ -100,7 +100,7 @@ class PublicationController extends Controller {
 		}
 
 		$repo = new FileRepository($this->db);
-		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
+		$file = $repo->where('id', '=', $file_id)->findSingle();
 		if (!$file) {
 			throw new NotFoundException('file not found');
 		}
@@ -211,7 +211,7 @@ class PublicationController extends Controller {
 
 		return $this->model->removeAuthor($id, $author_id);
 	}
-	
+
 	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
 	 *
@@ -278,7 +278,7 @@ class PublicationController extends Controller {
 			return false;
 		}
 	}
-	
+
 	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
 	 *
@@ -321,7 +321,7 @@ class PublicationController extends Controller {
 			return false;
 		}
 	}
-	
+
 
 	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
@@ -463,7 +463,7 @@ class PublicationController extends Controller {
 		}
 
 		$repo = new FileRepository($this->db);
-		$file = $repo->select()->where('id', '=', $file_id)->findSingle();
+		$file = $repo->where('id', '=', $file_id)->findSingle();
 		try {
 			FileHandler::delete($file->getName());
 		}

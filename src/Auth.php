@@ -76,7 +76,7 @@ class Auth {
 
 		if ($this->validateLogin($username, $password) === true) {
 			$repo = new UserRepository($this->db);
-			$user = $repo->select()->where('name', '=', $username)->findSingle(true);
+			$user = $repo->where('name', '=', $username)->findSingle(true);
 
 			$this->db->query('UPDATE `users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';');
 

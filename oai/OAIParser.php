@@ -352,7 +352,7 @@ class OAIParser {
 
 		$repo = new KeywordRepository($this->db);
 
-		return $repo->select()->order('name', 'ASC')->count();
+		return $repo->order('name', 'ASC')->count();
 	}
 
 
@@ -364,7 +364,7 @@ class OAIParser {
 	private function fetchSets($offset = 0) {
 
 		$repo = new KeywordRepository($this->db);
-		$keywords = $repo->select()->order('name', 'ASC')->limit($this->sets_per_request, $offset)->find();
+		$keywords = $repo->order('name', 'ASC')->limit($this->sets_per_request, $offset)->find();
 		$sets = array();
 
 		foreach ($keywords as $keyword) {
@@ -494,7 +494,7 @@ class OAIParser {
 	private function countRecords($from = null, $until = null, $set = null) {
 
 		$repo = new PublicationRepository($this->db);
-		$repo->select();
+
 		if ($from) {
 			$repo->where('date_added', '>=', $from.' 00:00:00');
 		}
@@ -534,7 +534,7 @@ class OAIParser {
 	private function fetchRecords($from = null, $until = null, $set = null, $offset = 0) {
 
 		$repo = new PublicationRepository($this->db);
-		$repo->select();
+
 		if ($from) {
 			$repo->where('date_added', '>=', $from.' 00:00:00');
 		}
@@ -761,7 +761,7 @@ class OAIParser {
 		}
 		$identifier = $identifier[2];
 
-		$publications = $repo->select()->where('id', '=', $identifier)->find(true);
+		$publications = $repo->where('id', '=', $identifier)->find(true);
 
 		if (count($publications) == 0) {
 			throw new IdDoesNotExistException;

@@ -11,16 +11,14 @@ namespace publin\src;
 class CitationRepository extends Repository {
 
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `citations` self';
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `citations` self';
-		
-		return $this;
-	}
+        return $this;
+    }
 
 
 	/**
@@ -33,10 +31,10 @@ class CitationRepository extends Repository {
 
 		foreach ($result as $row) {
 			$citation = new Citation($row);
-			
+
 			$repo = new PublicationRepository($this->db);
-			$citation->setCitationPublication($repo->select()->where('id', '=', $citation->getCitationId())->findSingle());
-			
+			$citation->setCitationPublication($repo->where('id', '=', $citation->getCitationId())->findSingle());
+
 			$citations[] = $citation;
 
 		}
@@ -51,10 +49,10 @@ class CitationRepository extends Repository {
 
 		if ($result = parent::findSingle()) {
 			$citation = new Citation($result);
-			
+
 			$repo = new PublicationRepository($this->db);
 			$citation->setCitationPublication($repo->select()->where('publication_id', '=', $citation->getCitation())->findSingle());
-			
+
 			return $citation;
 		}
 		else {

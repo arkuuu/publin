@@ -44,27 +44,27 @@ class BrowseModel {
 				case 'recent':
 					$this->is_result = true;
 					$repo = new PublicationRepository($this->db);
-					$this->result = $repo->select()->where('foreign', '=', 0)->order('date_added', 'DESC')->limit(20)->find();
+					$this->result = $repo->where('foreign', '=', 0)->order('date_added', 'DESC')->limit(20)->find();
 					break;
 
 				case 'author':
 					$repo = new AuthorRepository($this->db);
-					$this->browse_list = $repo->select()->order('family', 'ASC')->find();
+					$this->browse_list = $repo->order('family', 'ASC')->find();
 					break;
 
 				case 'keyword':
 					$repo = new KeywordRepository($this->db);
-					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
+					$this->browse_list = $repo->order('name', 'ASC')->find();
 					break;
 
 				case 'study_field':
 					$repo = new StudyFieldRepository($this->db);
-					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
+					$this->browse_list = $repo->order('name', 'ASC')->find();
 					break;
 
 				case 'type':
 					$repo = new TypeRepository($this->db);
-					$this->browse_list = $repo->select()->order('name', 'ASC')->find();
+					$this->browse_list = $repo->order('name', 'ASC')->find();
 					break;
 
 				case 'year':
@@ -72,7 +72,7 @@ class BrowseModel {
 
 						$this->is_result = true;
 						$repo = new PublicationRepository($this->db);
-						$this->result = $repo->select()->where('date_published', '=', $id, 'YEAR')->order('date_published', 'DESC')->find();
+						$this->result = $repo->where('date_published', '=', $id, 'YEAR')->order('date_published', 'DESC')->find();
 					}
 					else {
 						$this->browse_list = $this->fetchYears();

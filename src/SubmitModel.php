@@ -72,7 +72,7 @@ class SubmitModel extends Model {
 
 		$repo = new TypeRepository($this->db);
 
-		return $repo->select()->order('name', 'ASC')->find();
+		return $repo->order('name', 'ASC')->find();
 	}
 
 
@@ -83,6 +83,6 @@ class SubmitModel extends Model {
 
 		$repo = new StudyFieldRepository($this->db);
 
-		return $repo->select()->order('name', 'ASC')->find();
+		return $repo->order('name', 'ASC')->find();
 	}
 }

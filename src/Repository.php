@@ -34,10 +34,14 @@ class Repository {
 	}
 
 
-	/**
-	 *
-	 */
-	public function reset() {
+    /**
+     * Resets the repository to its defaults.
+     *
+     * Overwrite this if you need to select special fields every time.
+     *
+     * @return $this
+     */
+    public function reset() {
 
 		$this->select = '';
 		$this->join = '';
@@ -46,6 +50,8 @@ class Repository {
 		$this->limit = '';
 		$this->values_to_bind = array();
 		$this->columns_to_bind = array();
+
+        return $this;
 	}
 
 

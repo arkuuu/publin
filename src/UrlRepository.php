@@ -10,16 +10,15 @@ namespace publin\src;
  */
 class UrlRepository extends Repository {
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `urls` self';
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `urls` self';
 
-		return $this;
-	}
+        return $this;
+    }
 
 
 	/**
@@ -43,7 +42,9 @@ class UrlRepository extends Repository {
 	 */
 	public function findSingle() {
 
-		if ($result = parent::findSingle()) {
+        $result = parent::findSingle();
+
+		if ($result) {
 			return new Url($result);
 		}
 		else {

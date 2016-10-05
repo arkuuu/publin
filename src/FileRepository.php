@@ -10,16 +10,15 @@ namespace publin\src;
  */
 class FileRepository extends Repository {
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `files` self';
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `files` self';
 
-		return $this;
-	}
+        return $this;
+    }
 
 
 	/**
@@ -43,7 +42,9 @@ class FileRepository extends Repository {
 	 */
 	public function findSingle() {
 
-		if ($result = parent::findSingle()) {
+        $result = parent::findSingle();
+
+        if ($result) {
 			return new File($result);
 		}
 		else {

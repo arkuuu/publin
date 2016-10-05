@@ -65,13 +65,13 @@ class AuthorController extends Controller {
 		}
 
 		$repo = new AuthorRepository($this->db);
-		$author = $repo->select()->where('id', '=', $request->get('id'))->findSingle();
+		$author = $repo->where('id', '=', $request->get('id'))->findSingle();
 		if (!$author) {
 			throw new NotFoundException('author not found');
 		}
 
 		$repo = new PublicationRepository($this->db);
-		$publications = $repo->select()->where('author_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
+		$publications = $repo->where('author_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
 
 		/*
 		 * The configuration of the index parameters and the selection
@@ -105,6 +105,48 @@ class AuthorController extends Controller {
 
 		return $view->display();
 	}
+
+
+	/**
+	 * Configures the indices by setting the values for the index parameters.
+	 *
+	 * @param array $parameters Contains the index parameters.
+	 * @param Request $request Contains some input data like the author id
+	 * which is necessary for the configuration of the indices.
+	 */
+	private function configureIndices(array $parameters, Request $request) {
+	    $parameters['authorId'] = intval($request->get('id'));
+
+	    $this->indexFactory->setParameters($parameters);
+	}
+
+
+	/**
+	 * Fetches the requested indices.
+	 *
+	 * The method parameter $requestedIndices allows to control if all indices
+	 * or only a subset of the implemented indices should be returned.
+	 *
+	 * @param array|null $requestedIndices The parameter is either an array
+	 * containing the case-sensitive names of the requested indices or null,
+	 * if all implemented indices should be returned.
+	 *
+	 * @return array The keys of the array represent the name of the index,
+	 * the value stands for the instance of the index.
+	 */
+	private function fetchIndices(array $requestedIndices = null) {
+	    if (is_null($requestedIndices)) {
+	        return $this->indexFactory->getAllIndices();
+	    }
+
+	    $indices = array();
+	    foreach ($requestedIndices as $indexName) {
+	        $indices[$indexName] = $this->indexFactory->getIndex($indexName);
+	    }
+
+	    return $indices;
+	}
+
 
 	/** @noinspection PhpUnusedPrivateMethodInspection
 	 * @param Request $request
@@ -167,44 +209,5 @@ class AuthorController extends Controller {
 
 			return false;
 		}
-	}
-
-	/**
-	 * Configures the indices by setting the values for the index parameters.
-	 *
-	 * @param array $parameters Contains the index parameters.
-	 * @param Request $request Contains some input data like the author id
-	 * which is necessary for the configuration of the indices.
-	 */
-	private function configureIndices(array $parameters, Request $request) {
-	    $parameters['authorId'] = intval($request->get('id'));
-
-	    $this->indexFactory->setParameters($parameters);
-	}
-
-	/**
-	 * Fetches the requested indices.
-	 *
-	 * The method parameter $requestedIndices allows to control if all indices
-	 * or only a subset of the implemented indices should be returned.
-	 *
-	 * @param array|null $requestedIndices The parameter is either an array
-	 * containing the case-sensitive names of the requested indices or null,
-	 * if all implemented indices should be returned.
-	 *
-	 * @return array The keys of the array represent the name of the index,
-	 * the value stands for the instance of the index.
-	 */
-	private function fetchIndices(array $requestedIndices = null) {
-	    if (is_null($requestedIndices)) {
-	        return $this->indexFactory->getAllIndices();
-	    }
-
-	    $indices = array();
-	    foreach ($requestedIndices as $indexName) {
-	        $indices[$indexName] = $this->indexFactory->getIndex($indexName);
-	    }
-
-	    return $indices;
 	}
 }

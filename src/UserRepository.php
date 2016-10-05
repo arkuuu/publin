@@ -11,16 +11,14 @@ namespace publin\src;
 class UserRepository extends Repository {
 
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `users` self';
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `users` self';
-
-		return $this;
-	}
+        return $this;
+    }
 
 
 	/**
@@ -38,10 +36,10 @@ class UserRepository extends Repository {
 
 			if ($full === true) {
 				$repo = new RoleRepository($this->db);
-				$user->setRoles($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+				$user->setRoles($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 
 				$repo = new PermissionRepository($this->db);
-				$user->setPermissions($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+				$user->setPermissions($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 			}
 			$users[] = $user;
 		}
@@ -57,15 +55,17 @@ class UserRepository extends Repository {
 	 */
 	public function findSingle($full = false) {
 
-		if ($result = parent::findSingle()) {
+        $result = parent::findSingle();
+
+		if ($result) {
 			$user = new User($result);
 
 			if ($full === true) {
 				$repo = new RoleRepository($this->db);
-				$user->setRoles($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+				$user->setRoles($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 
 				$repo = new PermissionRepository($this->db);
-				$user->setPermissions($repo->select()->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+				$user->setPermissions($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 			}
 
 			return $user;

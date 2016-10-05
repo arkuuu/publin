@@ -68,7 +68,6 @@ class SearchController extends Controller {
 		$search_words = explode(' ', $search);
 
 		$repo = new PublicationRepository($this->db);
-		$repo->select();
 
 		switch (true) {
 			case $field === 'title':
@@ -127,7 +126,6 @@ class SearchController extends Controller {
 		$search_words = explode(' ', $search);
 
 		$repo = new AuthorRepository($this->db);
-		$repo->select();
 
 		switch (true) {
 			case $field === 'given':

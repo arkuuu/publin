@@ -11,56 +11,55 @@ namespace publin\src;
 class AuthorRepository extends Repository {
 
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `authors` self';
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `authors` self';
 
-		return $this;
+        return $this;
 	}
 
 
-	/**
-	 * @param      $column
-	 * @param      $comparator
-	 * @param      $value
-	 * @param null $function
-	 *
-	 * @return $this
-	 */
-	public function where($column, $comparator, $value, $function = null) {
+    /**
+     * @param        $column
+     * @param        $comparator
+     * @param        $value
+     * @param null   $function
+     * @param string $table
+     *
+     * @return $this
+     */
+	public function where($column, $comparator, $value, $function = null, $table = 'self') {
 
 		if ($column === 'publication_id') {
 			$table = 'publications_authors';
 			$this->join($table, 'author_id', '=', 'id');
 		}
-		else {
-			$table = 'self';
-		}
 
-		return parent::where($column, $comparator, $value, $function, $table);
+		parent::where($column, $comparator, $value, $function, $table);
+
+        return $this;
 	}
 
 
-	/**
-	 * @param $column
-	 * @param $order
-	 *
-	 * @return $this
-	 */
-	public function order($column, $order) {
+    /**
+     * @param        $column
+     * @param        $order
+     * @param string $table
+     *
+     * @return $this
+     */
+	public function order($column, $order, $table = 'self') {
 
 		if ($column === 'priority') {
 			$table = 'publications_authors';
 		}
-		else {
-			$table = 'self';
-		}
 
-		return parent::order($column, $order, $table);
+		parent::order($column, $order, $table);
+
+        return $this;
 	}
 
 
@@ -85,7 +84,9 @@ class AuthorRepository extends Repository {
 	 */
 	public function findSingle() {
 
-		if ($result = parent::findSingle()) {
+        $result = parent::findSingle();
+
+        if ($result) {
 			return new Author($result);
 		}
 		else {

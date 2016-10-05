@@ -18,7 +18,7 @@ class ManageModel extends Model {
 
 		$repo = new PermissionRepository($this->db);
 
-		return $repo->select()->order('name', 'ASC')->find();
+		return $repo->order('name', 'ASC')->find();
 	}
 
 
@@ -53,7 +53,7 @@ class ManageModel extends Model {
 
 		$repo = new RoleRepository($this->db);
 
-		return $repo->select()->order('name', 'ASC')->find(true);
+		return $repo->order('name', 'ASC')->find(true);
 	}
 
 
@@ -64,6 +64,6 @@ class ManageModel extends Model {
 
 		$repo = new UserRepository($this->db);
 
-		return $repo->select()->order('name', 'ASC')->find(true);
+		return $repo->order('name', 'ASC')->find(true);
 	}
 }

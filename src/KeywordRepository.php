@@ -11,38 +11,36 @@ namespace publin\src;
 class KeywordRepository extends Repository {
 
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `keywords` self';
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `keywords` self';
-
-		return $this;
-	}
+        return $this;
+    }
 
 
-	/**
-	 * @param      $column
-	 * @param      $comparator
-	 * @param      $value
-	 * @param null $function
-	 *
-	 * @return $this
-	 */
-	public function where($column, $comparator, $value, $function = null) {
+    /**
+     * @param        $column
+     * @param        $comparator
+     * @param        $value
+     * @param null   $function
+     * @param string $table
+     *
+     * @return $this
+     */
+    public function where($column, $comparator, $value, $function = null, $table = 'self') {
 
-		if ($column === 'publication_id') {
-			$table = 'publications_keywords';
-			$this->join($table, 'keyword_id', '=', 'id');
-		}
-		else {
-			$table = 'self';
-		}
+        if ($column === 'publication_id') {
+            $table = 'publications_keywords';
+            $this->join($table, 'keyword_id', '=', 'id');
+        }
 
-		return parent::where($column, $comparator, $value, $function, $table);
-	}
+        parent::where($column, $comparator, $value, $function, $table);
+
+        return $this;
+    }
 
 
 	/**
@@ -66,7 +64,9 @@ class KeywordRepository extends Repository {
 	 */
 	public function findSingle() {
 
-		if ($result = parent::findSingle()) {
+	    $result = parent::findSingle();
+
+		if ($result) {
 			return new Keyword($result);
 		}
 		else {

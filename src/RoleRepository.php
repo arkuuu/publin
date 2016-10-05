@@ -11,37 +11,35 @@ namespace publin\src;
 class RoleRepository extends Repository {
 
 
-	/**
-	 * @return $this
-	 */
-	public function select() {
+    public function reset()
+    {
+        parent::reset();
+        $this->select = 'SELECT self.*';
+        $this->from = 'FROM `roles` self';
 
-		$this->select = 'SELECT self.*';
-		$this->from = 'FROM `roles` self';
-
-		return $this;
-	}
+        return $this;
+    }
 
 
-	/**
-	 * @param      $column
-	 * @param      $comparator
-	 * @param      $value
-	 * @param null $function
-	 *
-	 * @return $this
-	 */
-	public function where($column, $comparator, $value, $function = null) {
+    /**
+     * @param        $column
+     * @param        $comparator
+     * @param        $value
+     * @param null   $function
+     * @param string $table
+     *
+     * @return $this
+     */
+	public function where($column, $comparator, $value, $function = null, $table = 'self') {
 
 		if ($column === 'user_id') {
 			$table = 'users_roles';
 			$this->join($table, 'role_id', '=', 'id');
 		}
-		else {
-			$table = 'self';
-		}
 
-		return parent::where($column, $comparator, $value, $function, $table);
+		parent::where($column, $comparator, $value, $function, $table);
+
+        return $this;
 	}
 
 
@@ -60,7 +58,7 @@ class RoleRepository extends Repository {
 
 			if ($full === true) {
 				$repo = new PermissionRepository($this->db);
-				$role->setPermissions($repo->select()->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+				$role->setPermissions($repo->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
 			}
 			$roles[] = $role;
 		}
@@ -76,12 +74,14 @@ class RoleRepository extends Repository {
 	 */
 	public function findSingle($full = false) {
 
-		if ($result = parent::findSingle()) {
+        $result = parent::findSingle();
+
+		if ($result) {
 			$role = new Role($result);
 
 			if ($full === true) {
 				$repo = new PermissionRepository($this->db);
-				$role->setPermissions($repo->select()->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+				$role->setPermissions($repo->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
 			}
 
 			return $role;
