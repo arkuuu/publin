@@ -52,3 +52,5 @@ Install
 About the Project
 ======
 This was a student project by Arne K. for his bachelor thesis at the University of Luebeck. View the task at [ifis.uni-luebeck.de](http://www.ifis.uni-luebeck.de/index.php?id=363) and the full thesis at [arkuuu.de/publin/?p=publication&id=67](http://arkuuu.de/publin/?p=publication&id=67)
+
+Publin has been extended by author-level metrics (h-index, tapered h-index, mf-index) during the bachelor thesis of Eric Oberesch (view [this link](http://www.ifis.uni-luebeck.de/index.php?id=427) for the task description).
