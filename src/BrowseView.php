@@ -12,7 +12,17 @@ class BrowseView extends View {
 	/**
 	 * @var    BrowseModel
 	 */
-	private $model;
+	protected $model;
+
+    /**
+     * @var array
+     */
+    protected $browse_type_list;
+
+    /**
+     * @var mixed
+     */
+    protected $browse_type;
 
 
 	/**
@@ -116,6 +126,10 @@ class BrowseView extends View {
 				}
 			}
 		}
+		else if (!empty($browse_type)) {
+		    // No results, but browse type is requested.
+		    $string .= '<li>Nothing found</li>';
+        }
 		else {
 			foreach ($this->browse_type_list as $browse_type) {
 				$string .= '<li><a href="'.$browse_type['url'].'">'.$browse_type['name'].'</a></li>'."\n";
