@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,7 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class FileRepository extends Repository {
+class FileRepository extends Repository
+{
 
 
     public function reset()
@@ -21,34 +21,33 @@ class FileRepository extends Repository {
     }
 
 
-	/**
-	 * @return File[]
-	 */
-	public function find() {
+    /**
+     * @return File[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $files = array();
 
-		$result = parent::find();
-		$files = array();
+        foreach ($result as $row) {
+            $files[] = new File($row);
+        }
 
-		foreach ($result as $row) {
-			$files[] = new File($row);
-		}
-
-		return $files;
-	}
+        return $files;
+    }
 
 
-	/**
-	 * @return File|false
-	 */
-	public function findSingle() {
-
+    /**
+     * @return File|false
+     */
+    public function findSingle()
+    {
         $result = parent::findSingle();
 
         if ($result) {
-			return new File($result);
-		}
-		else {
-			return false;
-		}
-	}
+            return new File($result);
+        } else {
+            return false;
+        }
+    }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,101 +7,94 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class File extends Entity {
+class File extends Entity
+{
 
-	protected $id;
-	protected $name;
-	protected $extension;
-	protected $size;
-	protected $title;
-	protected $full_text;
-	protected $restricted;
-	protected $hidden;
+    protected $id;
 
+    protected $name;
 
-	/**
-	 * @return string|null
-	 */
-	public function getId() {
+    protected $extension;
 
-		return $this->id;
-	}
+    protected $size;
 
+    protected $title;
 
-	/**
-	 * @return string|null
-	 */
-	public function getName() {
+    protected $full_text;
 
-		return $this->name;
-	}
+    protected $restricted;
+
+    protected $hidden;
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getExtension() {
-
-		return $this->extension;
-	}
-
-
-	/**
-	 * @return string|null
-	 */
-	public function getSize() {
-
-		return $this->size;
-	}
+    /**
+     * @return string|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getTitle() {
-
-		return $this->title;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isFullText() {
-
-		if ($this->full_text) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isRestricted() {
-
-		if ($this->restricted) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    /**
+     * @return string|null
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isHidden() {
+    /**
+     * @return string|null
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
 
-		if ($this->hidden) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+
+    /**
+     * @return string|null
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isFullText()
+    {
+        return (bool)$this->full_text;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isRestricted()
+    {
+        return (bool)$this->isRestricted();
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return (bool)$this->isHidden();
+    }
 }

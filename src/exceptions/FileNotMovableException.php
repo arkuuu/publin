@@ -1,8 +1,8 @@
 <?php
 
-
 namespace publin\src\exceptions;
 
-class FileNotMovableException extends FileHandlerException {
+class FileNotMovableException extends FileHandlerException
+{
 
 }

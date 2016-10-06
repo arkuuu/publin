@@ -10,30 +10,30 @@
 
 <h2>Publications</h2>
 <ul>
-	<?php echo $this->showPublications() ?>
+    <?php echo $this->showPublications() ?>
 </ul>
 
 <?php } else { ?>
 <p><a href="<?php echo $this->showLinkToSelf() ?>">Return to keyword</a></p>
 <h2>Edit this keyword</h2>
 <div class="form">
-	<form action="#" method="post" accept-charset="utf-8">
-		<label for="name">Name:</label>
-		<input type="text" name="name" id="name" value="<?php echo $this->showName() ?>"/>
-		<br/>
-		<input type="hidden" name="action" value="edit"/>
-		<input type="submit" value="Update"/>
-		<input type="reset" value="Reset changes"/>
-	</form>
+    <form action="#" method="post" accept-charset="utf-8">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" value="<?php echo $this->showName() ?>"/>
+        <br/>
+        <input type="hidden" name="action" value="edit"/>
+        <input type="submit" value="Update"/>
+        <input type="reset" value="Reset changes"/>
+    </form>
 </div>
 <br/>
 <h2>Delete this keyword</h2>
 <p>This will remove this keyword from any publications.</p>
 <form action="#" method="post" accept-charset="utf-8">
-	<input type="checkbox" name="delete" id="delete" value="yes"/>
-	<label for="delete">Delete the keyword <b><?php echo $this->showName() ?></b></label>
-	<br/>
-	<input type="hidden" name="action" value="delete"/>
-	<input type="submit" value="Delete">
+    <input type="checkbox" name="delete" id="delete" value="yes"/>
+    <label for="delete">Delete the keyword <b><?php echo $this->showName() ?></b></label>
+    <br/>
+    <input type="hidden" name="action" value="delete"/>
+    <input type="submit" value="Delete">
 </form>
 <?php } ?>

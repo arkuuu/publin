@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\modules;
 
 use DOMDocument;
@@ -14,117 +13,129 @@ use publin\src\Request;
  *
  * @package publin\modules
  */
-class DBLPXML extends Module {
+class DBLPXML extends Module
+{
 
-	/**
-	 * @param Publication[] $publications
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function exportMultiple(array $publications) {
+    /**
+     * @param Publication[] $publications
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function exportMultiple(array $publications)
+    {
+        $xml = new DOMDocument('1.0', 'utf-8');
+        $dblp = $xml->appendChild($xml->createElement('dblp'));
 
-		$xml = new DOMDocument('1.0', 'utf-8');
-		$dblp = $xml->appendChild($xml->createElement('dblp'));
+        foreach ($publications as $publication) {
 
-		foreach ($publications as $publication) {
+            if ($publication instanceof Publication) {
+                if (!$publication->getTypeName()) {
+                    throw new Exception('publication type missing');
+                }
 
-			if ($publication instanceof Publication) {
-				if (!$publication->getTypeName()) {
-					throw new Exception('publication type missing');
-				}
+                $entry = $xml->createElement($publication->getTypeName());
+                $entry->setAttribute('key', 'todo'); // TODO
+                $entry->setAttribute('mdate', 'todo'); // TODO
+                $dblp->appendChild($entry);
 
-				$entry = $xml->createElement($publication->getTypeName());
-				$entry->setAttribute('key', 'todo'); // TODO
-				$entry->setAttribute('mdate', 'todo'); // TODO
-				$dblp->appendChild($entry);
+                $fields = $this->createFields($publication);
+                foreach ($fields as $field) {
+                    if ($field[1]) {
+                        $element = $xml->createElement($field[0]);
+                        $element->appendChild($xml->createTextNode($field[1]));
+                        $entry->appendChild($element);
+                    }
+                }
+            } else {
+                throw new InvalidArgumentException('parameter must be Publication');
+            }
+        }
 
-				$fields = $this->createFields($publication);
-				foreach ($fields as $field) {
-					if ($field[1]) {
-						$element = $xml->createElement($field[0]);
-						$element->appendChild($xml->createTextNode($field[1]));
-						$entry->appendChild($element);
-					}
-				}
-			}
-			else {
-				throw new InvalidArgumentException('parameter must be Publication');
-			}
-		}
-
-		return $xml->saveXML();
-	}
-
-
-	/**
-	 * @param Publication $publication
-	 *
-	 * @return array
-	 */
-	private function createFields(Publication $publication) {
-
-		$fields = array();
-		foreach ($publication->getAuthors() as $author) {
-			if ($author->getFirstName() && $author->getLastName()) {
-				$fields[] = array('author', $author->getFirstName().' '.$author->getLastName());
-			}
-		}
-		$fields[] = array('title', $publication->getTitle());
-		$fields[] = array('journal', $publication->getJournal());
-		$fields[] = array('booktitle', $publication->getBooktitle());
-		$fields[] = array('volume', $publication->getVolume());
-		$fields[] = array('number', $publication->getNumber());
-		$fields[] = array('series', $publication->getSeries());
-		$fields[] = array('edition', $publication->getEdition());
-		$fields[] = array('pages', $publication->getPages('--'));
-		$fields[] = array('month', $publication->getDatePublished('F'));
-		$fields[] = array('year', $publication->getDatePublished('Y'));
-		if ($file = $publication->getFullTextFile()) {
-			$fields[] = array('url', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId(), 'file_id' => $file->getId()), true));
-		}
-		//$fields[] = array('issn', false); // TODO
-		$fields[] = array('isbn', $publication->getIsbn());
-		$fields[] = array('institution', $publication->getInstitution());
-		$fields[] = array('school', $publication->getSchool());
-		$fields[] = array('publisher', $publication->getPublisher());
-		$fields[] = array('ee', $publication->getDoi());
-		$fields[] = array('address', $publication->getAddress());
-		$fields[] = array('howpublished', $publication->getHowpublished());
-		$fields[] = array('note', $publication->getNote());
-		$fields[] = array('abstract', $publication->getAbstract());
-		$fields[] = array('biburl', Request::createUrl(array('p' => 'publication', 'id' => $publication->getId()), true));
-
-		return $fields;
-	}
+        return $xml->saveXML();
+    }
 
 
-	/**
-	 * @param Publication $publication
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function export(Publication $publication) {
+    /**
+     * @param Publication $publication
+     *
+     * @return array
+     */
+    private function createFields(Publication $publication)
+    {
+        $fields = array();
+        foreach ($publication->getAuthors() as $author) {
+            if ($author->getFirstName() && $author->getLastName()) {
+                $fields[] = array('author', $author->getFirstName().' '.$author->getLastName());
+            }
+        }
+        $fields[] = array('title', $publication->getTitle());
+        $fields[] = array('journal', $publication->getJournal());
+        $fields[] = array('booktitle', $publication->getBooktitle());
+        $fields[] = array('volume', $publication->getVolume());
+        $fields[] = array('number', $publication->getNumber());
+        $fields[] = array('series', $publication->getSeries());
+        $fields[] = array('edition', $publication->getEdition());
+        $fields[] = array('pages', $publication->getPages('--'));
+        $fields[] = array('month', $publication->getDatePublished('F'));
+        $fields[] = array('year', $publication->getDatePublished('Y'));
 
-		if (!$publication->getTypeName()) {
-			throw new Exception('publication type missing');
-		}
+        $file = $publication->getFullTextFile();
+        if ($file) {
+            $fields[] = array(
+                'url',
+                Request::createUrl(array(
+                    'p'       => 'publication',
+                    'id'      => $publication->getId(),
+                    'file_id' => $file->getId(),
+                ), true),
+            );
+        }
+        //$fields[] = array('issn', false); // TODO
+        $fields[] = array('isbn', $publication->getIsbn());
+        $fields[] = array('institution', $publication->getInstitution());
+        $fields[] = array('school', $publication->getSchool());
+        $fields[] = array('publisher', $publication->getPublisher());
+        $fields[] = array('ee', $publication->getDoi());
+        $fields[] = array('address', $publication->getAddress());
+        $fields[] = array('howpublished', $publication->getHowpublished());
+        $fields[] = array('note', $publication->getNote());
+        $fields[] = array('abstract', $publication->getAbstract());
+        $fields[] = array(
+            'biburl',
+            Request::createUrl(array('p' => 'publication', 'id' => $publication->getId()), true),
+        );
 
-		$xml = new DOMDocument('1.0', 'utf-8');
-		$dblp = $xml->appendChild($xml->createElement('dblp'));
-		$entry = $xml->createElement($publication->getTypeName());
-		$entry->setAttribute('key', 'todo'); // TODO
-		$entry->setAttribute('mdate', 'todo'); // TODO
-		$dblp->appendChild($entry);
+        return $fields;
+    }
 
-		$fields = $this->createFields($publication);
-		foreach ($fields as $field) {
-			if ($field[1]) {
-				$entry->appendChild($xml->createElement($field[0], htmlspecialchars($field[1])));
-			}
-		}
 
-		return $xml->saveXML();
-	}
+    /**
+     * @param Publication $publication
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function export(Publication $publication)
+    {
+        if (!$publication->getTypeName()) {
+            throw new Exception('publication type missing');
+        }
+
+        $xml = new DOMDocument('1.0', 'utf-8');
+        $dblp = $xml->appendChild($xml->createElement('dblp'));
+        $entry = $xml->createElement($publication->getTypeName());
+        $entry->setAttribute('key', 'todo'); // TODO
+        $entry->setAttribute('mdate', 'todo'); // TODO
+        $dblp->appendChild($entry);
+
+        $fields = $this->createFields($publication);
+        foreach ($fields as $field) {
+            if ($field[1]) {
+                $entry->appendChild($xml->createElement($field[0], htmlspecialchars($field[1])));
+            }
+        }
+
+        return $xml->saveXML();
+    }
 }

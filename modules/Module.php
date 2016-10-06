@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\modules;
 
 /**
@@ -8,6 +7,7 @@ namespace publin\modules;
  *
  * @package publin\modules
  */
-class Module {
+class Module
+{
 
 }

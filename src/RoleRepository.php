@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,7 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class RoleRepository extends Repository {
+class RoleRepository extends Repository
+{
 
 
     public function reset()
@@ -30,64 +30,63 @@ class RoleRepository extends Repository {
      *
      * @return $this
      */
-	public function where($column, $comparator, $value, $function = null, $table = 'self') {
+    public function where($column, $comparator, $value, $function = null, $table = 'self')
+    {
+        if ($column === 'user_id') {
+            $table = 'users_roles';
+            $this->join($table, 'role_id', '=', 'id');
+        }
 
-		if ($column === 'user_id') {
-			$table = 'users_roles';
-			$this->join($table, 'role_id', '=', 'id');
-		}
-
-		parent::where($column, $comparator, $value, $function, $table);
+        parent::where($column, $comparator, $value, $function, $table);
 
         return $this;
-	}
+    }
 
 
-	/**
-	 * @param bool $full
-	 *
-	 * @return Role[]
-	 */
-	public function find($full = false) {
+    /**
+     * @param bool $full
+     *
+     * @return Role[]
+     */
+    public function find($full = false)
+    {
+        $result = parent::find();
+        $roles = array();
 
-		$result = parent::find();
-		$roles = array();
+        foreach ($result as $row) {
+            $role = new Role($row);
 
-		foreach ($result as $row) {
-			$role = new Role($row);
+            if ($full === true) {
+                $repo = new PermissionRepository($this->db);
+                $role->setPermissions($repo->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+            }
+            $roles[] = $role;
+        }
 
-			if ($full === true) {
-				$repo = new PermissionRepository($this->db);
-				$role->setPermissions($repo->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
-			}
-			$roles[] = $role;
-		}
-
-		return $roles;
-	}
+        return $roles;
+    }
 
 
-	/**
-	 * @param bool $full
-	 *
-	 * @return Role|false
-	 */
-	public function findSingle($full = false) {
-
+    /**
+     * @param bool $full
+     *
+     * @return Role|false
+     */
+    public function findSingle($full = false)
+    {
         $result = parent::findSingle();
 
-		if ($result) {
-			$role = new Role($result);
+        if ($result) {
+            $role = new Role($result);
 
-			if ($full === true) {
-				$repo = new PermissionRepository($this->db);
-				$role->setPermissions($repo->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
-			}
+            if ($full === true) {
+                $repo = new PermissionRepository($this->db);
+                $role->setPermissions($repo->where('role_id', '=', $role->getId())->order('name', 'ASC')->find());
+            }
 
-			return $role;
-		}
-		else {
-			return false;
-		}
-	}
+            return $role;
+        } else {
+            return false;
+        }
+    }
 }

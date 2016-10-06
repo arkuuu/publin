@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,8 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class CitationRepository extends Repository {
-
+class CitationRepository extends Repository
+{
 
     public function reset()
     {
@@ -21,42 +20,23 @@ class CitationRepository extends Repository {
     }
 
 
-	/**
-	 * @return Citation[]
-	 */
-	public function find() {
+    /**
+     * @return Citation[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $citations = array();
 
-		$result = parent::find();
-		$citations = array();
+        foreach ($result as $row) {
+            $citation = new Citation($row);
 
-		foreach ($result as $row) {
-			$citation = new Citation($row);
+            $repo = new PublicationRepository($this->db);
+            $citation->setCitationPublication($repo->where('id', '=', $citation->getCitationId())->findSingle());
 
-			$repo = new PublicationRepository($this->db);
-			$citation->setCitationPublication($repo->where('id', '=', $citation->getCitationId())->findSingle());
+            $citations[] = $citation;
+        }
 
-			$citations[] = $citation;
-
-		}
-
-		return $citations;
-	}
-
-	/**
-	 * @return Citation|false
-	 */
-/*	public function findSingle() {
-
-		if ($result = parent::findSingle()) {
-			$citation = new Citation($result);
-
-			$repo = new PublicationRepository($this->db);
-			$citation->setCitationPublication($repo->select()->where('publication_id', '=', $citation->getCitation())->findSingle());
-
-			return $citation;
-		}
-		else {
-			return false;
-		}
-	}*/
+        return $citations;
+    }
 }

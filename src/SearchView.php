@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,52 +7,51 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class SearchView extends View {
+class SearchView extends View
+{
 
-	private $results;
-
-
-	/**
-	 * @param array $results
-	 * @param array $errors
-	 */
-	public function __construct(array $results, array $errors = array()) {
-
-		parent::__construct('search', $errors);
-		$this->results = $results;
-	}
+    private $results;
 
 
-	/**
-	 * @return string
-	 */
-	public function showTitle() {
+    /**
+     * @param array $results
+     * @param array $errors
+     */
+    public function __construct(array $results, array $errors = array())
+    {
+        parent::__construct('search', $errors);
+        $this->results = $results;
+    }
 
-		return 'Search';
-	}
+
+    /**
+     * @return string
+     */
+    public function showTitle()
+    {
+        return 'Search';
+    }
 
 
-	/**
-	 * @return bool|string
-	 */
-	public function showResults() {
+    /**
+     * @return bool|string
+     */
+    public function showResults()
+    {
+        $string = '';
+        $author_url = './?p=author&id=';
+        if (!empty($this->results)) {
+            foreach ($this->results as $result) {
+                if ($result instanceof Publication) {
+                    $string .= '<li>'.$this->showCitation($result).'</li>';
+                } else if ($result instanceof Author) {
+                    $string .= '<li><a href="'.$this->html($author_url.$result->getId()).'">'.$this->html($result->getLastName().', '.$result->getFirstName()).'</a></li>';
+                }
+            }
 
-		$string = '';
-		$author_url = './?p=author&id=';
-		if (!empty($this->results)) {
-			foreach ($this->results as $result) {
-				if ($result instanceof Publication) {
-					$string .= '<li>'.$this->showCitation($result).'</li>';
-				}
-				else if ($result instanceof Author) {
-					$string .= '<li><a href="'.$this->html($author_url.$result->getId()).'">'.$this->html($result->getLastName().', '.$result->getFirstName()).'</a></li>';
-				}
-			}
-
-			return '<ul>'.$string.'</ul>';
-		}
-		else {
-			return false;
-		}
-	}
+            return '<ul>'.$string.'</ul>';
+        } else {
+            return false;
+        }
+    }
 }

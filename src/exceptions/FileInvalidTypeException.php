@@ -1,8 +1,8 @@
 <?php
 
-
 namespace publin\src\exceptions;
 
-class FileInvalidTypeException extends FileHandlerException {
+class FileInvalidTypeException extends FileHandlerException
+{
 
 }

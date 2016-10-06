@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 use publin\src\exceptions\NotFoundException;
@@ -10,40 +9,42 @@ use publin\src\exceptions\NotFoundException;
  *
  * @package publin\src
  */
-class StudyFieldController extends Controller {
+class StudyFieldController extends Controller
+{
 
-	private $db;
-
-
-	/**
-	 * @param Database $db
-	 */
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
+    private $db;
 
 
-	/**
-	 * @param Request $request
-	 *
-	 * @return string
-	 * @throws NotFoundException
-	 * @throws \Exception
-	 */
-	public function run(Request $request) {
+    /**
+     * @param Database $db
+     */
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
+    }
 
-		$repo = new StudyFieldRepository($this->db);
-		$study_field = $repo->where('id', '=', $request->get('id'))->findSingle();
-		if (!$study_field) {
-			throw new NotFoundException('study field not found');
-		}
 
-		$repo = new PublicationRepository($this->db);
-		$publications = $repo->where('study_field_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
+    /**
+     * @param Request $request
+     *
+     * @return string
+     * @throws NotFoundException
+     * @throws \Exception
+     */
+    public function run(Request $request)
+    {
+        $repo = new StudyFieldRepository($this->db);
+        $study_field = $repo->where('id', '=', $request->get('id'))->findSingle();
+        if (!$study_field) {
+            throw new NotFoundException('study field not found');
+        }
 
-		$view = new StudyFieldView($study_field, $publications);
+        $repo = new PublicationRepository($this->db);
+        $publications = $repo->where('study_field_id', '=', $request->get('id'))->order('date_published',
+            'DESC')->find();
 
-		return $view->display();
-	}
+        $view = new StudyFieldView($study_field, $publications);
+
+        return $view->display();
+    }
 }

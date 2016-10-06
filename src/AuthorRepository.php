@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,8 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class AuthorRepository extends Repository {
-
+class AuthorRepository extends Repository
+{
 
 
     public function reset()
@@ -19,7 +18,7 @@ class AuthorRepository extends Repository {
         $this->from = 'FROM `authors` self';
 
         return $this;
-	}
+    }
 
 
     /**
@@ -31,17 +30,17 @@ class AuthorRepository extends Repository {
      *
      * @return $this
      */
-	public function where($column, $comparator, $value, $function = null, $table = 'self') {
+    public function where($column, $comparator, $value, $function = null, $table = 'self')
+    {
+        if ($column === 'publication_id') {
+            $table = 'publications_authors';
+            $this->join($table, 'author_id', '=', 'id');
+        }
 
-		if ($column === 'publication_id') {
-			$table = 'publications_authors';
-			$this->join($table, 'author_id', '=', 'id');
-		}
-
-		parent::where($column, $comparator, $value, $function, $table);
+        parent::where($column, $comparator, $value, $function, $table);
 
         return $this;
-	}
+    }
 
 
     /**
@@ -51,46 +50,45 @@ class AuthorRepository extends Repository {
      *
      * @return $this
      */
-	public function order($column, $order, $table = 'self') {
+    public function order($column, $order, $table = 'self')
+    {
+        if ($column === 'priority') {
+            $table = 'publications_authors';
+        }
 
-		if ($column === 'priority') {
-			$table = 'publications_authors';
-		}
-
-		parent::order($column, $order, $table);
+        parent::order($column, $order, $table);
 
         return $this;
-	}
+    }
 
 
-	/**
-	 * @return Author[]
-	 */
-	public function find() {
+    /**
+     * @return Author[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $authors = array();
 
-		$result = parent::find();
-		$authors = array();
+        foreach ($result as $row) {
+            $authors[] = new Author($row);
+        }
 
-		foreach ($result as $row) {
-			$authors[] = new Author($row);
-		}
-
-		return $authors;
-	}
+        return $authors;
+    }
 
 
-	/**
-	 * @return Author|false
-	 */
-	public function findSingle() {
-
+    /**
+     * @return Author|false
+     */
+    public function findSingle()
+    {
         $result = parent::findSingle();
 
         if ($result) {
-			return new Author($result);
-		}
-		else {
-			return false;
-		}
-	}
+            return new Author($result);
+        } else {
+            return false;
+        }
+    }
 }

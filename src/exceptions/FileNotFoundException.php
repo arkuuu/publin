@@ -1,8 +1,8 @@
 <?php
 
-
 namespace publin\src\exceptions;
 
-class FileNotFoundException extends FileHandlerException {
+class FileNotFoundException extends FileHandlerException
+{
 
 }

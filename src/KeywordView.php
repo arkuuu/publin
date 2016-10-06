@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,74 +7,75 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class KeywordView extends ViewWithPublications {
+class KeywordView extends ViewWithPublications
+{
 
-	/**
-	 * @var Keyword
-	 */
-	private $keyword;
-	/**
-	 * @var bool
-	 */
-	private $edit_mode;
+    /**
+     * @var Keyword
+     */
+    private $keyword;
 
-
-	/**
-	 * @param Keyword $keyword
-	 * @param array   $publications
-	 * @param array   $errors
-	 * @param bool    $edit_mode
-	 */
-	public function __construct(Keyword $keyword, array $publications, array $errors, $edit_mode = false) {
-
-		parent::__construct($publications, 'keyword', $errors);
-		$this->keyword = $keyword;
-		$this->edit_mode = $edit_mode;
-	}
+    /**
+     * @var bool
+     */
+    private $edit_mode;
 
 
-	/**
-	 * @return string
-	 */
-	public function showPageTitle() {
-
-		return $this->html($this->showName());
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function showName() {
-
-		return $this->html($this->keyword->getName());
-	}
+    /**
+     * @param Keyword $keyword
+     * @param array   $publications
+     * @param array   $errors
+     * @param bool    $edit_mode
+     */
+    public function __construct(Keyword $keyword, array $publications, array $errors, $edit_mode = false)
+    {
+        parent::__construct($publications, 'keyword', $errors);
+        $this->keyword = $keyword;
+        $this->edit_mode = $edit_mode;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isEditMode() {
+    /**
+     * @return string
+     */
+    public function showPageTitle()
+    {
+        return $this->html($this->showName());
+    }
 
-		return $this->edit_mode;
-	}
+
+    /**
+     * @return string
+     */
+    public function showName()
+    {
+        return $this->html($this->keyword->getName());
+    }
 
 
-	/**
-	 * @param string $mode
-	 *
-	 * @return string
-	 */
-	public function showLinkToSelf($mode = '') {
+    /**
+     * @return bool
+     */
+    public function isEditMode()
+    {
+        return $this->edit_mode;
+    }
 
-		$url = '?p=keyword&id=';
-		$mode_url = '&m='.$mode;
 
-		if (empty($mode)) {
-			return $this->html($url.$this->keyword->getId());
-		}
-		else {
-			return $this->html($url.$this->keyword->getId().$mode_url);
-		}
-	}
+    /**
+     * @param string $mode
+     *
+     * @return string
+     */
+    public function showLinkToSelf($mode = '')
+    {
+        $url = '?p=keyword&id=';
+        $mode_url = '&m='.$mode;
+
+        if (empty($mode)) {
+            return $this->html($url.$this->keyword->getId());
+        } else {
+            return $this->html($url.$this->keyword->getId().$mode_url);
+        }
+    }
 }

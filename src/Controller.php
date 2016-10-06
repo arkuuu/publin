@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,19 +7,20 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Controller {
+class Controller
+{
 
-	/**
-	 * @param $destination
-	 */
-	public static function redirect($destination) {
+    /**
+     * @param $destination
+     */
+    public static function redirect($destination)
+    {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $_SESSION['referrer'] = Request::getUrl();
 
-		if (!isset($_SESSION)) {
-			session_start();
-		}
-		$_SESSION['referrer'] = Request::getUrl();
-
-		header('Location: '.$destination, true);
-		exit();
-	}
+        header('Location: '.$destination, true);
+        exit();
+    }
 }

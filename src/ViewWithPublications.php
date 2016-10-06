@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,51 +7,51 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class ViewWithPublications extends View {
+class ViewWithPublications extends View
+{
 
-	/**
-	 * @var Publication[]
-	 */
-	protected $publications;
-
-
-	/**
-	 * @param array $publications
-	 * @param array $type
-	 * @param array $errors
-	 */
-	public function __construct(array $publications, $type, array $errors = array()) {
-
-		parent::__construct($type, $errors);
-		$this->publications = $publications;
-	}
+    /**
+     * @var Publication[]
+     */
+    protected $publications;
 
 
-	/**
-	 * @return string
-	 */
-	public function showPublications() {
-
-		$string = '';
-
-		foreach ($this->publications as $publication) {
-			$string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
-		}
-
-		if (!empty($string)) {
-			return $string;
-		}
-		else {
-			return '<li>No publications found</li>';
-		}
-	}
+    /**
+     * @param array $publications
+     * @param array $type
+     * @param array $errors
+     */
+    public function __construct(array $publications, $type, array $errors = array())
+    {
+        parent::__construct($type, $errors);
+        $this->publications = $publications;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function showPublicationsNum() {
+    /**
+     * @return string
+     */
+    public function showPublications()
+    {
+        $string = '';
 
-		return count($this->publications);
-	}
+        foreach ($this->publications as $publication) {
+            $string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
+        }
+
+        if (!empty($string)) {
+            return $string;
+        } else {
+            return '<li>No publications found</li>';
+        }
+    }
+
+
+    /**
+     * @return int
+     */
+    public function showPublicationsNum()
+    {
+        return count($this->publications);
+    }
 }

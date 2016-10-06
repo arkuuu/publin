@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 use DateTime;
@@ -11,338 +10,318 @@ use UnexpectedValueException;
  *
  * @package publin\src
  */
-class Validator {
+class Validator
+{
 
-	private $errors;
-	private $rules;
-	private $result;
+    private $errors;
 
+    private $rules;
 
-	/**
-	 *
-	 */
-	public function __construct() {
-
-		$this->reset();
-	}
+    private $result;
 
 
-	/**
-	 *
-	 */
-	public function reset() {
-
-		$this->rules = array();
-		$this->result = array();
-		$this->errors = array();
-	}
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
 
 
-	/**
-	 * @return mixed
-	 */
-	public function getErrors() {
-
-		return $this->errors;
-	}
-
-
-	/**
-	 * @return mixed
-	 */
-	public function getSanitizedResult() {
-
-		return $this->result;
-	}
+    /**
+     *
+     */
+    public function reset()
+    {
+        $this->rules = array();
+        $this->result = array();
+        $this->errors = array();
+    }
 
 
-	/**
-	 * @param $field
-	 * @param $type
-	 * @param $required
-	 * @param $error_msg
-	 */
-	public function addRule($field, $type, $required, $error_msg) {
-
-		$this->rules[$field] = array('type'      => $type,
-									 'required'  => $required,
-									 'error_msg' => $error_msg);
-	}
+    /**
+     * @return mixed
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
 
 
-	/**
-	 * @param array $input
-	 *
-	 * @return bool
-	 */
-	public function validate(array $input) {
-
-		$this->result = array();
-		$this->errors = array();
-
-		$result = array();
-
-		foreach ($this->rules as $field => $rule) {
-
-			if (isset($input[$field])) {
-				$value = $input[$field];
-
-				switch ($rule['type']) {
-
-					case 'number':
-						if ($this->sanitizeNumber($value)) {
-							$result[$field] = $this->sanitizeNumber($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					case 'text':
-						if ($this->sanitizeText($value)) {
-							$result[$field] = $this->sanitizeText($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					case 'date':
-						if ($this->sanitizeDate($value)) {
-							$result[$field] = $this->sanitizeDate($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					case 'url':
-						if ($this->sanitizeUrl($value)) {
-							$result[$field] = $this->sanitizeUrl($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					case 'email':
-						if ($this->sanitizeEmail($value)) {
-							$result[$field] = $this->sanitizeEmail($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					case 'boolean':
-						if ($this->sanitizeBoolean($value)) {
-							$result[$field] = $this->sanitizeBoolean($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					case 'doi':
-						if ($this->sanitizeDOI($value)) {
-							$result[$field] = $this->sanitizeDOI($value);
-						}
-						else if ($rule['required'] == true) {
-							$this->errors[] = $rule['error_msg'];
-						}
-						else {
-							$result[$field] = null;
-						}
-						break;
-
-					default:
-						throw new UnexpectedValueException('unknown validation rule '.$rule['type']);
-						break;
-				}
-			}
-			else if ($rule['required'] == true) {
-				$this->errors[] = $rule['error_msg'];
-			}
-		}
-
-		if (empty($this->errors)) {
-			$this->result = $result;
-
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    /**
+     * @return mixed
+     */
+    public function getSanitizedResult()
+    {
+        return $this->result;
+    }
 
 
-	/**
-	 * @param $input
-	 *
-	 * @return bool|string
-	 */
-	public static function sanitizeNumber($input) {
-
-		if (is_string($input)) {
-			$input = trim($input);
-		}
-		if (is_numeric($input) && $input >= 0) {
-			return $input;
-		}
-		else {
-			return false;
-		}
-	}
+    /**
+     * @param $field
+     * @param $type
+     * @param $required
+     * @param $error_msg
+     */
+    public function addRule($field, $type, $required, $error_msg)
+    {
+        $this->rules[$field] = array(
+            'type'      => $type,
+            'required'  => $required,
+            'error_msg' => $error_msg,
+        );
+    }
 
 
-	/**
-	 * @param $input
-	 *
-	 * @return bool|string
-	 */
-	public static function sanitizeText($input) {
+    /**
+     * @param array $input
+     *
+     * @return bool
+     */
+    public function validate(array $input)
+    {
+        $this->result = array();
+        $this->errors = array();
 
-		if (is_string($input)) {
-			$input = trim($input);
-			$input = strip_tags($input);
+        $result = array();
 
-			return $input;
-		}
-		else {
-			return false;
-		}
-	}
+        foreach ($this->rules as $field => $rule) {
 
+            if (isset($input[$field])) {
+                $value = $input[$field];
 
-	/**
-	 * @param        $input
-	 * @param string $format
-	 *
-	 * @return bool|string
-	 */
-	public static function sanitizeDate($input, $format = 'Y-m-d') {
+                switch ($rule['type']) {
 
-		if (is_string($input)) {
-			$input = trim($input);
-			$date = DateTime::createFromFormat($format, $input);
+                    case 'number':
+                        if ($this->sanitizeNumber($value)) {
+                            $result[$field] = $this->sanitizeNumber($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
-			if ($date && $date->format($format) == $input) {
-				return $input;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-	}
+                    case 'text':
+                        if ($this->sanitizeText($value)) {
+                            $result[$field] = $this->sanitizeText($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
+                    case 'date':
+                        if ($this->sanitizeDate($value)) {
+                            $result[$field] = $this->sanitizeDate($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
-	/**
-	 * @param $input
-	 *
-	 * @return bool|string
-	 */
-	public static function sanitizeUrl($input) {
+                    case 'url':
+                        if ($this->sanitizeUrl($value)) {
+                            $result[$field] = $this->sanitizeUrl($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
-		if (is_string($input)) {
-			$input = trim($input);
+                    case 'email':
+                        if ($this->sanitizeEmail($value)) {
+                            $result[$field] = $this->sanitizeEmail($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
-			$scheme = parse_url($input, PHP_URL_SCHEME);
-			if ($scheme !== false && !($scheme == 'http' || $scheme == 'https')) {
-				$input = 'http://'.$input;
-			}
+                    case 'boolean':
+                        if ($this->sanitizeBoolean($value)) {
+                            $result[$field] = $this->sanitizeBoolean($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
-			return filter_var($input, FILTER_VALIDATE_URL);
-		}
-		else {
-			return false;
-		}
-	}
+                    case 'doi':
+                        if ($this->sanitizeDOI($value)) {
+                            $result[$field] = $this->sanitizeDOI($value);
+                        } else if ($rule['required'] == true) {
+                            $this->errors[] = $rule['error_msg'];
+                        } else {
+                            $result[$field] = null;
+                        }
+                        break;
 
+                    default:
+                        throw new UnexpectedValueException('unknown validation rule '.$rule['type']);
+                        break;
+                }
+            } else if ($rule['required'] == true) {
+                $this->errors[] = $rule['error_msg'];
+            }
+        }
 
-	/**
-	 * @param $input
-	 *
-	 * @return bool|string
-	 */
-	public static function sanitizeEmail($input) {
+        if (empty($this->errors)) {
+            $this->result = $result;
 
-		if (is_string($input)) {
-			$input = trim($input);
-
-			// TODO maybe also use http://php.net/manual/en/function.checkdnsrr.php
-			return filter_var($input, FILTER_VALIDATE_EMAIL);
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	/**
-	 * @param $input
-	 *
-	 * @return bool
-	 */
-	public static function sanitizeBoolean($input) {
-
-		if (is_string($input)) {
-			$input = trim($input);
-			$input = strtolower($input);
-
-			switch ($input) {
-				case '1':
-				case 'true':
-				case 'yes':
-				case 'y':
-				case 'on':
-					return true;
-				default:
-					return false;
-			}
-		}
-		else {
-			return (bool)$input;
-		}
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
-	public static function sanitizeDOI($input) {
+    /**
+     * @param $input
+     *
+     * @return bool|string
+     */
+    public static function sanitizeNumber($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+        }
+        if (is_numeric($input) && $input >= 0) {
+            return $input;
+        } else {
+            return false;
+        }
+    }
 
-		if (is_string($input)) {
-			$input = trim($input);
 
-			$regex = '#\b(10[.][0-9]{3,}(?:[.][0-9]+)*/(?:(?!["&\'])\S)+)\b#';
+    /**
+     * @param $input
+     *
+     * @return bool|string
+     */
+    public static function sanitizeText($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+            $input = strip_tags($input);
 
-			if (preg_match($regex, $input, $doi) == true && !empty($doi[0])) {
-				return $doi[0];
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-	}
+            return $input;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * @param        $input
+     * @param string $format
+     *
+     * @return bool|string
+     */
+    public static function sanitizeDate($input, $format = 'Y-m-d')
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+            $date = DateTime::createFromFormat($format, $input);
+
+            if ($date && $date->format($format) == $input) {
+                return $input;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * @param $input
+     *
+     * @return bool|string
+     */
+    public static function sanitizeUrl($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+
+            $scheme = parse_url($input, PHP_URL_SCHEME);
+            if ($scheme !== false && !($scheme == 'http' || $scheme == 'https')) {
+                $input = 'http://'.$input;
+            }
+
+            return filter_var($input, FILTER_VALIDATE_URL);
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * @param $input
+     *
+     * @return bool|string
+     */
+    public static function sanitizeEmail($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+
+            // TODO maybe also use http://php.net/manual/en/function.checkdnsrr.php
+            return filter_var($input, FILTER_VALIDATE_EMAIL);
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * @param $input
+     *
+     * @return bool
+     */
+    public static function sanitizeBoolean($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+            $input = strtolower($input);
+
+            switch ($input) {
+                case '1':
+                case 'true':
+                case 'yes':
+                case 'y':
+                case 'on':
+                    return true;
+                default:
+                    return false;
+            }
+        } else {
+            return (bool)$input;
+        }
+    }
+
+
+    public static function sanitizeDOI($input)
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+
+            $regex = '#\b(10[.][0-9]{3,}(?:[.][0-9]+)*/(?:(?!["&\'])\S)+)\b#';
+
+            if (preg_match($regex, $input, $doi) == true && !empty($doi[0])) {
+                return $doi[0];
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 use publin\src\exceptions\NotFoundException;
@@ -10,42 +9,44 @@ use publin\src\exceptions\NotFoundException;
  *
  * @package publin\src
  */
-class TypeController extends Controller {
+class TypeController extends Controller
+{
 
-	private $db;
-	private $model;
+    private $db;
 
-
-	/**
-	 * @param Database $db
-	 */
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-		$this->model = new TypeModel($db);
-	}
+    private $model;
 
 
-	/**
-	 * @param Request $request
-	 *
-	 * @return string
-	 * @throws NotFoundException
-	 * @throws \Exception
-	 */
-	public function run(Request $request) {
+    /**
+     * @param Database $db
+     */
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
+        $this->model = new TypeModel($db);
+    }
 
-		$repo = new TypeRepository($this->db);
-		$type = $repo->where('id', '=', $request->get('id'))->findSingle();
-		if (!$type) {
-			throw new NotFoundException('type not found');
-		}
 
-		$repo = new PublicationRepository($this->db);
-		$publications = $repo->where('type_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
+    /**
+     * @param Request $request
+     *
+     * @return string
+     * @throws NotFoundException
+     * @throws \Exception
+     */
+    public function run(Request $request)
+    {
+        $repo = new TypeRepository($this->db);
+        $type = $repo->where('id', '=', $request->get('id'))->findSingle();
+        if (!$type) {
+            throw new NotFoundException('type not found');
+        }
 
-		$view = new TypeView($type, $publications);
+        $repo = new PublicationRepository($this->db);
+        $publications = $repo->where('type_id', '=', $request->get('id'))->order('date_published', 'DESC')->find();
 
-		return $view->display();
-	}
+        $view = new TypeView($type, $publications);
+
+        return $view->display();
+    }
 }

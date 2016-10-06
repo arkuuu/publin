@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,19 +7,20 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Model {
+class Model
+{
 
-	/**
-	 * @var Database
-	 */
-	protected $db;
+    /**
+     * @var Database
+     */
+    protected $db;
 
 
-	/**
-	 * @param Database $db
-	 */
-	public function __construct(Database $db) {
-
-		$this->db = $db;
-	}
+    /**
+     * @param Database $db
+     */
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
+    }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,26 +7,27 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Entity {
+class Entity
+{
 
-	/**
-	 * @param array $data
-	 */
-	public function __construct(array $data) {
+    /**
+     * @param array $data
+     */
+    public function __construct(array $data)
+    {
+        foreach ($data as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->$property = $value;
+            }
+        }
+    }
 
-		foreach ($data as $property => $value) {
-			if (property_exists($this, $property)) {
-				$this->$property = $value;
-			}
-		}
-	}
 
-
-	/**
-	 * @return array
-	 */
-	public function getData() {
-
-		return get_object_vars($this);
-	}
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return get_object_vars($this);
+    }
 }

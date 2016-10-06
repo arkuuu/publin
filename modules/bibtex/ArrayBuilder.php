@@ -10,77 +10,81 @@ namespace publin\modules\bibtex;
  *
  * @package publin\modules\bibtex
  */
-class ArrayBuilder {
+class ArrayBuilder
+{
 
-	private $all_entries = array();
-	private $current_entry;
+    private $all_entries = array();
 
-
-	/**
-	 *
-	 */
-	public function beginFile() {
-	}
+    private $current_entry;
 
 
-	/**
-	 *
-	 */
-	public function endFile() {
-	}
+    /**
+     *
+     */
+    public function beginFile()
+    {
+    }
 
 
-	/**
-	 * @param $final_key
-	 * @param $entry_value
-	 */
-	public function setEntryField($final_key, $entry_value) {
-
-		$this->current_entry[$final_key] = $entry_value;
-	}
+    /**
+     *
+     */
+    public function endFile()
+    {
+    }
 
 
-	/**
-	 * @param $entry_type
-	 */
-	public function setEntryType($entry_type) {
-
-		$this->current_entry['type'] = $entry_type;
-	}
-
-
-	/**
-	 * @param $entry_key
-	 */
-	public function setEntryKey($entry_key) {
-
-		$this->current_entry['cite_key'] = $entry_key;
-	}
+    /**
+     * @param $final_key
+     * @param $entry_value
+     */
+    public function setEntryField($final_key, $entry_value)
+    {
+        $this->current_entry[$final_key] = $entry_value;
+    }
 
 
-	/**
-	 *
-	 */
-	public function beginEntry() {
-
-		$this->current_entry = array();
-	}
-
-
-	/**
-	 *
-	 */
-	public function endEntry() {
-
-		$this->all_entries[] = $this->current_entry;
-	}
+    /**
+     * @param $entry_type
+     */
+    public function setEntryType($entry_type)
+    {
+        $this->current_entry['type'] = $entry_type;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getAllEntries() {
+    /**
+     * @param $entry_key
+     */
+    public function setEntryKey($entry_key)
+    {
+        $this->current_entry['cite_key'] = $entry_key;
+    }
 
-		return $this->all_entries;
-	}
+
+    /**
+     *
+     */
+    public function beginEntry()
+    {
+        $this->current_entry = array();
+    }
+
+
+    /**
+     *
+     */
+    public function endEntry()
+    {
+        $this->all_entries[] = $this->current_entry;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getAllEntries()
+    {
+        return $this->all_entries;
+    }
 }

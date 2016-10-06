@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,36 +7,37 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class StudyFieldView extends ViewWithPublications {
+class StudyFieldView extends ViewWithPublications
+{
 
-	private $study_field;
-
-
-	/**
-	 * @param StudyField $study_field
-	 * @param array      $publications
-	 */
-	public function __construct(StudyField $study_field, array $publications) {
-
-		parent::__construct($publications, 'studyfield');
-		$this->study_field = $study_field;
-	}
+    private $study_field;
 
 
-	/**
-	 * @return string
-	 */
-	public function showPageTitle() {
+    /**
+     * @param StudyField $study_field
+     * @param array      $publications
+     */
+    public function __construct(StudyField $study_field, array $publications)
+    {
+        parent::__construct($publications, 'studyfield');
+        $this->study_field = $study_field;
+    }
 
-		return $this->html($this->showName());
-	}
+
+    /**
+     * @return string
+     */
+    public function showPageTitle()
+    {
+        return $this->html($this->showName());
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function showName() {
-
-		return $this->html($this->study_field->getName());
-	}
+    /**
+     * @return string
+     */
+    public function showName()
+    {
+        return $this->html($this->study_field->getName());
+    }
 }

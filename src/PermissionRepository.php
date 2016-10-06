@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,7 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class PermissionRepository extends Repository {
+class PermissionRepository extends Repository
+{
 
     public function reset()
     {
@@ -29,53 +29,51 @@ class PermissionRepository extends Repository {
      *
      * @return $this
      */
-	public function where($column, $comparator, $value, $function = null, $table = 'self') {
-
-		if ($column === 'role_id') {
-			$table = 'roles_permissions';
-			$this->join .= ' LEFT JOIN `roles_permissions` ON (`roles_permissions`.`permission_id` = self.`id`)';
-		}
-		else if ($column === 'user_id') {
+    public function where($column, $comparator, $value, $function = null, $table = 'self')
+    {
+        if ($column === 'role_id') {
+            $table = 'roles_permissions';
+            $this->join .= ' LEFT JOIN `roles_permissions` ON (`roles_permissions`.`permission_id` = self.`id`)';
+        } else if ($column === 'user_id') {
             $this->select = 'SELECT DISTINCT self.*';
-			$table = 'users_roles';
-			$this->join .= ' LEFT JOIN `roles_permissions` ON (`roles_permissions`.`permission_id` = self.`id`)';
-			$this->join .= ' LEFT JOIN `users_roles` ON (`users_roles`.`role_id` = `roles_permissions`.`role_id`)';
-		}
+            $table = 'users_roles';
+            $this->join .= ' LEFT JOIN `roles_permissions` ON (`roles_permissions`.`permission_id` = self.`id`)';
+            $this->join .= ' LEFT JOIN `users_roles` ON (`users_roles`.`role_id` = `roles_permissions`.`role_id`)';
+        }
 
-		parent::where($column, $comparator, $value, $function, $table);
+        parent::where($column, $comparator, $value, $function, $table);
 
         return $this;
-	}
+    }
 
 
-	/**
-	 * @return Permission[]
-	 */
-	public function find() {
+    /**
+     * @return Permission[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $permissions = array();
 
-		$result = parent::find();
-		$permissions = array();
+        foreach ($result as $row) {
+            $permissions[] = new Permission($row);
+        }
 
-		foreach ($result as $row) {
-			$permissions[] = new Permission($row);
-		}
-
-		return $permissions;
-	}
+        return $permissions;
+    }
 
 
-	/**
-	 * @return Permission|false
-	 */
-	public function findSingle() {
-
+    /**
+     * @return Permission|false
+     */
+    public function findSingle()
+    {
         $result = parent::findSingle();
 
-		if ($result) {
-			return new Permission($result);
-		}
-		else {
-			return false;
-		}
-	}
+        if ($result) {
+            return new Permission($result);
+        } else {
+            return false;
+        }
+    }
 }

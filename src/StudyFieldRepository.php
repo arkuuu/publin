@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,8 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class StudyFieldRepository extends Repository {
-
+class StudyFieldRepository extends Repository
+{
 
     public function reset()
     {
@@ -21,34 +20,33 @@ class StudyFieldRepository extends Repository {
     }
 
 
-	/**
-	 * @return StudyField[]
-	 */
-	public function find() {
+    /**
+     * @return StudyField[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $study_fields = array();
 
-		$result = parent::find();
-		$study_fields = array();
+        foreach ($result as $row) {
+            $study_fields[] = new StudyField($row);
+        }
 
-		foreach ($result as $row) {
-			$study_fields[] = new StudyField($row);
-		}
-
-		return $study_fields;
-	}
+        return $study_fields;
+    }
 
 
-	/**
-	 * @return StudyField|false
-	 */
-	public function findSingle() {
-
+    /**
+     * @return StudyField|false
+     */
+    public function findSingle()
+    {
         $result = parent::findSingle();
 
-		if ($result) {
-			return new StudyField($result);
-		}
-		else {
-			return false;
-		}
-	}
+        if ($result) {
+            return new StudyField($result);
+        } else {
+            return false;
+        }
+    }
 }

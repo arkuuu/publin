@@ -13,237 +13,242 @@ require_once 'password_compat.php';
  *
  * @package publin\src
  */
-class Auth {
+class Auth
+{
 
-	const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
-	const ACCESS_HIDDEN_FILES = 'access_hidden_files';
-	const SUBMIT_PUBLICATION = 'publication_submit';
-	const EDIT_PUBLICATION = 'publication_edit';
-	const DELETE_PUBLICATION = 'publication_delete';
-	const EDIT_AUTHOR = 'author_edit';
-	const DELETE_AUTHOR = 'author_delete';
-	const EDIT_KEYWORD = 'keyword_edit';
-	const DELETE_KEYWORD = 'keyword_delete';
-	const MANAGE = 'manage';
+    const ACCESS_RESTRICTED_FILES = 'access_restricted_files';
 
-	const ALGORITHM = PASSWORD_BCRYPT;
-	const ALGORITHM_COST = 10;
-	const SESSION_EXPIRE_TIME = 1000;
+    const ACCESS_HIDDEN_FILES = 'access_hidden_files';
 
-	private $db;
+    const SUBMIT_PUBLICATION = 'publication_submit';
 
+    const EDIT_PUBLICATION = 'publication_edit';
 
-	/**
-	 * @param Database $db
-	 */
-	public function __construct(Database $db) {
+    const DELETE_PUBLICATION = 'publication_delete';
 
-		$this->db = $db;
+    const EDIT_AUTHOR = 'author_edit';
 
-		if (!isset($_SESSION)) {
-			session_start();
-		}
-	}
+    const DELETE_AUTHOR = 'author_delete';
 
+    const EDIT_KEYWORD = 'keyword_edit';
 
-	/**
-	 * @param int $length
-	 *
-	 * @return string
-	 */
-	public static function generatePassword($length = 10) {
+    const DELETE_KEYWORD = 'keyword_delete';
 
-		$chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-		$password = '';
+    const MANAGE = 'manage';
 
-		for ($i = 0; $i < $length; $i++) {
-			$n = rand(0, strlen($chars) - 1);
-			$password .= $chars[$n];
-		}
+    const ALGORITHM = PASSWORD_BCRYPT;
 
-		return $password;
-	}
+    const ALGORITHM_COST = 10;
+
+    const SESSION_EXPIRE_TIME = 1000;
+
+    private $db;
 
 
-	/**
-	 * @param $username
-	 * @param $password
-	 *
-	 * @return bool
-	 * @throws exceptions\DBException
-	 */
-	public function login($username, $password) {
+    /**
+     * @param Database $db
+     */
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
 
-		if ($this->validateLogin($username, $password) === true) {
-			$repo = new UserRepository($this->db);
-			$user = $repo->where('name', '=', $username)->findSingle(true);
-
-			$this->db->query('UPDATE `users` SET `date_last_login` = NOW() WHERE `id` = '.$user->getId().';');
-
-			session_regenerate_id(true);
-			$_SESSION['user'] = $user;
-			$_SESSION['last_activity'] = time();
-
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+    }
 
 
-	/**
-	 * @param $username
-	 * @param $password
-	 *
-	 * @return bool
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function validateLogin($username, $password) {
+    /**
+     * @param int $length
+     *
+     * @return string
+     */
+    public static function generatePassword($length = 10)
+    {
+        $chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $password = '';
 
-		$query = 'SELECT `password` FROM `users` WHERE `name` = :name LIMIT 1;';
-		$this->db->prepare($query);
-		$this->db->bindValue(':name', $username);
-		$this->db->execute();
+        for ($i = 0; $i < $length; $i++) {
+            $n = rand(0, strlen($chars) - 1);
+            $password .= $chars[$n];
+        }
 
-		$hash = $this->db->fetchColumn();
-
-		if (password_verify($password, $hash)) {
-			if (password_needs_rehash($hash, self::ALGORITHM, array('cost' => self::ALGORITHM_COST))) {
-				$this->setPassword($username, $password);
-			}
-
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+        return $password;
+    }
 
 
-	/**
-	 * @param $username
-	 * @param $password
-	 *
-	 * @return bool
-	 * @throws Exception
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function setPassword($username, $password) {
+    /**
+     * @param $username
+     * @param $password
+     *
+     * @return bool
+     * @throws exceptions\DBException
+     */
+    public function login($username, $password)
+    {
+        if ($this->validateLogin($username, $password) === true) {
+            $repo = new UserRepository($this->db);
+            $user = $repo->where('name', '=', $username)->findSingle(true);
 
-		$hash = $this->hashPassword($password);
+            $this->db->query('UPDATE users SET date_last_login = NOW() WHERE id = '.$user->getId().';');
 
-		$query = 'UPDATE `users` SET `password` = :hash WHERE `name` = :name;';
-		$this->db->prepare($query);
-		$this->db->bindValue(':hash', $hash);
-		$this->db->bindValue(':name', $username);
+            session_regenerate_id(true);
+            $_SESSION['user'] = $user;
+            $_SESSION['last_activity'] = time();
 
-		return $this->db->execute();
-	}
-
-
-	/**
-	 * @param $password
-	 *
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public static function hashPassword($password) {
-
-		$hash = password_hash($password, self::ALGORITHM, array('cost' => self::ALGORITHM_COST));
-
-		if ($hash !== false) {
-			return $hash;
-		}
-		else {
-			throw new Exception('Something wrong with hashPassword');
-		}
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
-	/**
-	 * @param      $permission_name
-	 *
-	 * @param null $user_id
-	 *
-	 * @return bool
-	 * @throws LoginRequiredException
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function checkPermission($permission_name, $user_id = null) {
+    /**
+     * @param $username
+     * @param $password
+     *
+     * @return bool
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function validateLogin($username, $password)
+    {
+        $query = 'SELECT password FROM users WHERE name = :name LIMIT 1;';
+        $this->db->prepare($query);
+        $this->db->bindValue(':name', $username);
+        $this->db->execute();
 
-		if (is_null($user_id)) {
-			$user = $this->getCurrentUser();
-			$user_id = $user->getId();
-		}
-		$query = 'SELECT COUNT(*) FROM `permissions` r
-			LEFT JOIN `roles_permissions` rrp ON (rrp.`permission_id` = r.`id`)
-			LEFT JOIN `users_roles` rur ON (rur.`role_id` = rrp.`role_id`)
-			WHERE r.`name` = :permission_name AND rur.`user_id` = :user_id;';
-		$this->db->prepare($query);
-		$this->db->bindValue(':permission_name', $permission_name);
-		$this->db->bindValue(':user_id', $user_id);
-		$this->db->execute();
+        $hash = $this->db->fetchColumn();
 
-		$count = $this->db->fetchColumn();
+        if (password_verify($password, $hash)) {
+            if (password_needs_rehash($hash, self::ALGORITHM, array('cost' => self::ALGORITHM_COST))) {
+                $this->setPassword($username, $password);
+            }
 
-		if ($count > 0) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
-	/**
-	 * @return bool|User
-	 * @throws LoginRequiredException
-	 */
-	public static function getCurrentUser() {
+    /**
+     * @param $username
+     * @param $password
+     *
+     * @return bool
+     * @throws Exception
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function setPassword($username, $password)
+    {
+        $hash = $this->hashPassword($password);
 
-		if (isset($_SESSION['user'])) {
-			return $_SESSION['user'];
-		}
-		else {
-			throw new LoginRequiredException();
-		}
-	}
+        $query = 'UPDATE users SET password = :hash WHERE name = :name;';
+        $this->db->prepare($query);
+        $this->db->bindValue(':hash', $hash);
+        $this->db->bindValue(':name', $username);
 
-
-	/**
-	 * @return bool
-	 */
-	public function checkLoginStatus() {
-
-		if (isset($_SESSION['user']) && isset($_SESSION['last_activity'])) {
-			if (time() - $_SESSION['last_activity'] > self::SESSION_EXPIRE_TIME) {
-				$this->logout();
-
-				return false;
-			}
-			else {
-				$_SESSION['last_activity'] = time();
-
-				return true;
-			}
-		}
-		else {
-			return false;
-		}
-	}
+        return $this->db->execute();
+    }
 
 
-	/**
-	 *
-	 */
-	public function logout() {
+    /**
+     * @param $password
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public static function hashPassword($password)
+    {
+        $hash = password_hash($password, self::ALGORITHM, array('cost' => self::ALGORITHM_COST));
 
-		session_unset();
-		session_destroy();
-		session_start();
-	}
+        if ($hash !== false) {
+            return $hash;
+        } else {
+            throw new Exception('Something wrong with hashPassword');
+        }
+    }
+
+
+    /**
+     * @param      $permission_name
+     *
+     * @param null $user_id
+     *
+     * @return bool
+     * @throws LoginRequiredException
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function checkPermission($permission_name, $user_id = null)
+    {
+        if (is_null($user_id)) {
+            $user = $this->getCurrentUser();
+            $user_id = $user->getId();
+        }
+        $query = 'SELECT COUNT(*) FROM permissions r
+            LEFT JOIN roles_permissions rrp ON (rrp.permission_id = r.id)
+            LEFT JOIN users_roles rur ON (rur.role_id = rrp.role_id)
+            WHERE r.name = :permission_name AND rur.user_id = :user_id;';
+        $this->db->prepare($query);
+        $this->db->bindValue(':permission_name', $permission_name);
+        $this->db->bindValue(':user_id', $user_id);
+        $this->db->execute();
+
+        $count = $this->db->fetchColumn();
+
+        if ($count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * @return bool|User
+     * @throws LoginRequiredException
+     */
+    public static function getCurrentUser()
+    {
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        } else {
+            throw new LoginRequiredException();
+        }
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function checkLoginStatus()
+    {
+        if (isset($_SESSION['user']) && isset($_SESSION['last_activity'])) {
+            if (time() - $_SESSION['last_activity'] > self::SESSION_EXPIRE_TIME) {
+                $this->logout();
+
+                return false;
+            } else {
+                $_SESSION['last_activity'] = time();
+
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     *
+     */
+    public function logout()
+    {
+        session_unset();
+        session_destroy();
+        session_start();
+    }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,36 +7,39 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Url extends Entity {
+class Url extends Entity
+{
 
-	protected $id;
-	protected $name;
-	protected $url;
+    protected $id;
 
+    protected $name;
 
-	/**
-	 * @return string|null
-	 */
-	public function getId() {
-
-		return $this->id;
-	}
+    protected $url;
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getName() {
+    /**
+     * @return string|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-		return $this->name;
-	}
+
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getUrl() {
-
-		return $this->url;
-	}
+    /**
+     * @return string|null
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }

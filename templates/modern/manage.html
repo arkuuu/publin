@@ -1,28 +1,28 @@
 <style type="text/css" scoped="scoped">
-	table, th, td {
-		border: 1px solid black;
-		border-collapse: collapse;
-	}
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
 
-	th, td {
-		text-align: left;
-		vertical-align: top;
-		padding: 5px;
-	}
+    th, td {
+        text-align: left;
+        vertical-align: top;
+        padding: 5px;
+    }
 
-	td.green {
-		background: lightgreen;
-		text-align: center;
-	}
+    td.green {
+        background: lightgreen;
+        text-align: center;
+    }
 
-	td.red {
-		background: lightcoral;
-		text-align: center;
-	}
+    td.red {
+        background: lightcoral;
+        text-align: center;
+    }
 
-	table input {
-		margin: 0;
-	}
+    table input {
+        margin: 0;
+    }
 </style>
 <h1>Manage</h1>
 
@@ -31,10 +31,10 @@
 
 <h2>Roles</h2>
 <form action="#" method="post" accept-charset="utf8">
-	<label for="role_name">Create a new role:</label>
-	<input type="text" name="name" id="role_name">
-	<input type="hidden" name="action" value="addRole">
-	<input type="submit" value="Create Role">
+    <label for="role_name">Create a new role:</label>
+    <input type="text" name="name" id="role_name">
+    <input type="hidden" name="action" value="addRole">
+    <input type="submit" value="Create Role">
 </form>
 <p>Delete existing roles:</p>
 <?php echo $this->showRoles() ?>
@@ -44,16 +44,16 @@
 
 <h2>Register new user</h2>
 <div class="form">
-	<form action="#" method="post" accept-charset="utf8">
-		<label for="user_name">Username:</label>
-		<input type="text" name="name" id="user_name"><br/>
-		<label for="mail">E-mail:</label>
-		<input type="text" name="mail" id="mail">
+    <form action="#" method="post" accept-charset="utf8">
+        <label for="user_name">Username:</label>
+        <input type="text" name="name" id="user_name"><br/>
+        <label for="mail">E-mail:</label>
+        <input type="text" name="mail" id="mail">
 
-		<p>A password will be generated randomly and can be changed by the user later. The user will be notified via
-		   email.</p>
-		<input type="hidden" name="action" value="registerUser">
-		<input type="submit" value="Register User">
-	</form>
+        <p>A password will be generated randomly and can be changed by the user later. The user will be notified via
+            email.</p>
+        <input type="hidden" name="action" value="registerUser">
+        <input type="submit" value="Register User">
+    </form>
 </div>
 

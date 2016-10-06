@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,8 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class UserRepository extends Repository {
-
+class UserRepository extends Repository
+{
 
     public function reset()
     {
@@ -21,57 +20,56 @@ class UserRepository extends Repository {
     }
 
 
-	/**
-	 * @param bool $full
-	 *
-	 * @return User[]
-	 */
-	public function find($full = false) {
+    /**
+     * @param bool $full
+     *
+     * @return User[]
+     */
+    public function find($full = false)
+    {
+        $result = parent::find();
+        $users = array();
 
-		$result = parent::find();
-		$users = array();
+        foreach ($result as $row) {
+            $user = new User($row);
 
-		foreach ($result as $row) {
-			$user = new User($row);
+            if ($full === true) {
+                $repo = new RoleRepository($this->db);
+                $user->setRoles($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 
-			if ($full === true) {
-				$repo = new RoleRepository($this->db);
-				$user->setRoles($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+                $repo = new PermissionRepository($this->db);
+                $user->setPermissions($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+            }
+            $users[] = $user;
+        }
 
-				$repo = new PermissionRepository($this->db);
-				$user->setPermissions($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
-			}
-			$users[] = $user;
-		}
-
-		return $users;
-	}
+        return $users;
+    }
 
 
-	/**
-	 * @param bool $full
-	 *
-	 * @return User|false
-	 */
-	public function findSingle($full = false) {
-
+    /**
+     * @param bool $full
+     *
+     * @return User|false
+     */
+    public function findSingle($full = false)
+    {
         $result = parent::findSingle();
 
-		if ($result) {
-			$user = new User($result);
+        if ($result) {
+            $user = new User($result);
 
-			if ($full === true) {
-				$repo = new RoleRepository($this->db);
-				$user->setRoles($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+            if ($full === true) {
+                $repo = new RoleRepository($this->db);
+                $user->setRoles($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
 
-				$repo = new PermissionRepository($this->db);
-				$user->setPermissions($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
-			}
+                $repo = new PermissionRepository($this->db);
+                $user->setPermissions($repo->where('user_id', '=', $user->getId())->order('name', 'ASC')->find());
+            }
 
-			return $user;
-		}
-		else {
-			return false;
-		}
-	}
+            return $user;
+        } else {
+            return false;
+        }
+    }
 }

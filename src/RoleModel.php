@@ -9,145 +9,144 @@ use InvalidArgumentException;
  *
  * @package publin\src
  */
-class RoleModel extends Model {
+class RoleModel extends Model
+{
+
+    /**
+     * @param Role $role
+     *
+     * @return string
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function store(Role $role)
+    {
+        $query = 'INSERT INTO roles (name) VALUES (:name);';
+        $this->db->prepare($query);
+        $this->db->bindValue(':name', $role->getName());
+        $this->db->execute();
+
+        return $this->db->lastInsertId();
+    }
 
 
-	/**
-	 * @param Role $role
-	 *
-	 * @return string
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function store(Role $role) {
+    /**
+     * @param $id
+     *
+     * @return int
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function delete($id)
+    {
+        if (!is_numeric($id)) {
+            throw new InvalidArgumentException('param should be numeric');
+        }
 
-		$query = 'INSERT INTO `roles` (`name`) VALUES (:name);';
-		$this->db->prepare($query);
-		$this->db->bindValue(':name', $role->getName());
-		$this->db->execute();
+        $query = 'DELETE FROM roles WHERE id = :id;';
+        $this->db->prepare($query);
+        $this->db->bindValue(':id', (int)$id);
+        $this->db->execute();
 
-		return $this->db->lastInsertId();
-	}
-
-
-	/**
-	 * @param $id
-	 *
-	 * @return int
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function delete($id) {
-
-		if (!is_numeric($id)) {
-			throw new InvalidArgumentException('param should be numeric');
-		}
-
-		$query = 'DELETE FROM `roles` WHERE `id` = :id;';
-		$this->db->prepare($query);
-		$this->db->bindValue(':id', (int)$id);
-		$this->db->execute();
-
-		return $this->db->rowCount();
-	}
+        return $this->db->rowCount();
+    }
 
 
-	/**
-	 * @param       $role_id
-	 * @param array $permission_ids
-	 *
-	 * @return bool
-	 */
-	public function updatePermissions($role_id, array $permission_ids) {
+    /**
+     * @param       $role_id
+     * @param array $permission_ids
+     *
+     * @return bool
+     */
+    public function updatePermissions($role_id, array $permission_ids)
+    {
+        if (!is_numeric($role_id)) {
+            throw new InvalidArgumentException('params should be numeric');
+        }
 
-		if (!is_numeric($role_id)) {
-			throw new InvalidArgumentException('params should be numeric');
-		}
+        $repo = new PermissionRepository($this->db);
+        $old_permissions = $repo->where('role_id', '=', $role_id)->order('name', 'ASC')->find();
 
-		$repo = new PermissionRepository($this->db);
-		$old_permissions = $repo->where('role_id', '=', $role_id)->order('name', 'ASC')->find();
+        $old = array();
+        foreach ($old_permissions as $old_permission) {
+            $old[] = $old_permission->getId();
+        }
 
-		$old = array();
-		foreach ($old_permissions as $old_permission) {
-			$old[] = $old_permission->getId();
-		}
+        if (empty($permission_ids)) {
+            $to_add = array();
+            $to_delete = $old;
+        } else {
+            $to_add = array_diff($permission_ids, $old);
+            $to_delete = array_diff($old, $permission_ids);
+        }
 
-		if (empty($permission_ids)) {
-			$to_add = array();
-			$to_delete = $old;
-		}
-		else {
-			$to_add = array_diff($permission_ids, $old);
-			$to_delete = array_diff($old, $permission_ids);
-		}
+        foreach ($to_add as $permission_id) {
+            $this->addPermission($role_id, $permission_id);
+        }
+        foreach ($to_delete as $permission_id) {
+            $this->removePermission($role_id, $permission_id);
+        }
 
-		foreach ($to_add as $permission_id) {
-			$this->addPermission($role_id, $permission_id);
-		}
-		foreach ($to_delete as $permission_id) {
-			$this->removePermission($role_id, $permission_id);
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * @param $role_id
-	 * @param $permission_id
-	 *
-	 * @return string
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function addPermission($role_id, $permission_id) {
-
-		if (!is_numeric($role_id) || !is_numeric($permission_id)) {
-			throw new InvalidArgumentException('params should be numeric');
-		}
-
-		$query = 'INSERT INTO `roles_permissions` (`role_id`, `permission_id`) VALUES (:role_id, :permission_id);';
-		$this->db->prepare($query);
-		$this->db->bindValue(':role_id', (int)$role_id);
-		$this->db->bindValue(':permission_id', (int)$permission_id);
-		$this->db->execute();
-
-		return $this->db->lastInsertId();
-	}
+        return true;
+    }
 
 
-	/**
-	 * @param $role_id
-	 * @param $permission_id
-	 *
-	 * @return int
-	 * @throws exceptions\DBDuplicateEntryException
-	 * @throws exceptions\DBForeignKeyException
-	 */
-	public function removePermission($role_id, $permission_id) {
+    /**
+     * @param $role_id
+     * @param $permission_id
+     *
+     * @return string
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function addPermission($role_id, $permission_id)
+    {
+        if (!is_numeric($role_id) || !is_numeric($permission_id)) {
+            throw new InvalidArgumentException('params should be numeric');
+        }
 
-		if (!is_numeric($role_id) || !is_numeric($permission_id)) {
-			throw new InvalidArgumentException('params should be numeric');
-		}
+        $query = 'INSERT INTO roles_permissions (role_id, permission_id) VALUES (:role_id, :permission_id);';
+        $this->db->prepare($query);
+        $this->db->bindValue(':role_id', (int)$role_id);
+        $this->db->bindValue(':permission_id', (int)$permission_id);
+        $this->db->execute();
 
-		$query = 'DELETE FROM `roles_permissions` WHERE `role_id` = :role_id AND `permission_id` = :permission_id;';
-		$this->db->prepare($query);
-		$this->db->bindValue(':role_id', (int)$role_id);
-		$this->db->bindValue(':permission_id', (int)$permission_id);
-		$this->db->execute();
-
-		return $this->db->rowCount();
-	}
+        return $this->db->lastInsertId();
+    }
 
 
-	/**
-	 * @return Validator
-	 */
-	public function getValidator() {
+    /**
+     * @param $role_id
+     * @param $permission_id
+     *
+     * @return int
+     * @throws exceptions\DBDuplicateEntryException
+     * @throws exceptions\DBForeignKeyException
+     */
+    public function removePermission($role_id, $permission_id)
+    {
+        if (!is_numeric($role_id) || !is_numeric($permission_id)) {
+            throw new InvalidArgumentException('params should be numeric');
+        }
 
-		$validator = new Validator();
-		$validator->addRule('name', 'text', true, 'Role name is required but invalid');
+        $query = 'DELETE FROM roles_permissions WHERE role_id = :role_id AND permission_id = :permission_id;';
+        $this->db->prepare($query);
+        $this->db->bindValue(':role_id', (int)$role_id);
+        $this->db->bindValue(':permission_id', (int)$permission_id);
+        $this->db->execute();
 
-		return $validator;
-	}
+        return $this->db->rowCount();
+    }
+
+
+    /**
+     * @return Validator
+     */
+    public function getValidator()
+    {
+        $validator = new Validator();
+        $validator->addRule('name', 'text', true, 'Role name is required but invalid');
+
+        return $validator;
+    }
 }

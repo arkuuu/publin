@@ -1,8 +1,8 @@
 <?php
 
-
 namespace publin\src\exceptions;
 
-class DBForeignKeyException extends DBException {
+class DBForeignKeyException extends DBException
+{
 
 }

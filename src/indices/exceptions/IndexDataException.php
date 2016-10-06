@@ -12,6 +12,7 @@ use Exception;
  *
  * @package publin\src\indices\exceptions
  */
-class IndexDataException extends Exception {
+class IndexDataException extends Exception
+{
 
 }

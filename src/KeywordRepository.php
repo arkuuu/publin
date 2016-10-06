@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,8 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class KeywordRepository extends Repository {
-
+class KeywordRepository extends Repository
+{
 
     public function reset()
     {
@@ -30,8 +29,8 @@ class KeywordRepository extends Repository {
      *
      * @return $this
      */
-    public function where($column, $comparator, $value, $function = null, $table = 'self') {
-
+    public function where($column, $comparator, $value, $function = null, $table = 'self')
+    {
         if ($column === 'publication_id') {
             $table = 'publications_keywords';
             $this->join($table, 'keyword_id', '=', 'id');
@@ -43,34 +42,33 @@ class KeywordRepository extends Repository {
     }
 
 
-	/**
-	 * @return Keyword[]
-	 */
-	public function find() {
+    /**
+     * @return Keyword[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $keywords = array();
 
-		$result = parent::find();
-		$keywords = array();
+        foreach ($result as $row) {
+            $keywords[] = new Keyword($row);
+        }
 
-		foreach ($result as $row) {
-			$keywords[] = new Keyword($row);
-		}
-
-		return $keywords;
-	}
+        return $keywords;
+    }
 
 
-	/**
-	 * @return Keyword|false
-	 */
-	public function findSingle() {
+    /**
+     * @return Keyword|false
+     */
+    public function findSingle()
+    {
+        $result = parent::findSingle();
 
-	    $result = parent::findSingle();
-
-		if ($result) {
-			return new Keyword($result);
-		}
-		else {
-			return false;
-		}
-	}
+        if ($result) {
+            return new Keyword($result);
+        } else {
+            return false;
+        }
+    }
 }

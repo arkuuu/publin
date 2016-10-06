@@ -7,26 +7,28 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class Keyword extends Entity {
+class Keyword extends Entity
+{
 
-	protected $id;
-	protected $name;
+    protected $id;
 
-
-	/**
-	 * @return string|null
-	 */
-	public function getId() {
-
-		return $this->id;
-	}
+    protected $name;
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getName() {
+    /**
+     * @return string|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-		return $this->name;
-	}
+
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }

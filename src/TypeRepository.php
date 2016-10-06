@@ -1,6 +1,5 @@
 <?php
 
-
 namespace publin\src;
 
 /**
@@ -8,8 +7,8 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class TypeRepository extends Repository {
-
+class TypeRepository extends Repository
+{
 
     public function reset()
     {
@@ -21,34 +20,33 @@ class TypeRepository extends Repository {
     }
 
 
-	/**
-	 * @return Type[]
-	 */
-	public function find() {
+    /**
+     * @return Type[]
+     */
+    public function find()
+    {
+        $result = parent::find();
+        $types = array();
 
-		$result = parent::find();
-		$types = array();
+        foreach ($result as $row) {
+            $types[] = new Type($row);
+        }
 
-		foreach ($result as $row) {
-			$types[] = new Type($row);
-		}
-
-		return $types;
-	}
+        return $types;
+    }
 
 
-	/**
-	 * @return Type|false
-	 */
-	public function findSingle() {
-
+    /**
+     * @return Type|false
+     */
+    public function findSingle()
+    {
         $result = parent::findSingle();
 
-		if ($result) {
-			return new Type($result);
-		}
-		else {
-			return false;
-		}
-	}
+        if ($result) {
+            return new Type($result);
+        } else {
+            return false;
+        }
+    }
 }

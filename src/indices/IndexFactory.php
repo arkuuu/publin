@@ -2,9 +2,9 @@
 
 namespace publin\src\indices;
 
+use publin\config\Config;
 use publin\src\Database;
 use publin\src\indices\exceptions\IndexException;
-use publin\config\Config;
 use SplFileInfo;
 
 /**
@@ -14,7 +14,8 @@ use SplFileInfo;
  *
  * @package publin\src\indices
  */
-class IndexFactory {
+class IndexFactory
+{
 
     /**
      * This is an instance of the Publin database class.
@@ -47,30 +48,34 @@ class IndexFactory {
      * @var array
      */
     private $dataTypeMapping = array(
-        'bool' => 'boolean',
-        'int' => 'integer',
+        'bool'  => 'boolean',
+        'int'   => 'integer',
         'float' => 'double',
-        'Array' => 'array'
+        'Array' => 'array',
     );
+
 
     /**
      * Constructs the index factory and creates all
      * available indices.
      *
      * @param Database $db An instance of the Publin
-     * database class.
+     *                     database class.
      */
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
         $this->createIndices();
     }
+
 
     /**
      * Searches the src/indices/implementations directory
      * for available indices and saves the created instances
      * of the found indices in the $indices variable.
      */
-    private function createIndices() {
+    private function createIndices()
+    {
         $filePath = Config::ROOT_PATH.'src/indices/implementations';
         $fileNames = scandir($filePath);
         foreach ($fileNames as $fileName) {
@@ -79,12 +84,15 @@ class IndexFactory {
             if ($fileExtension == 'php') {
                 $fileNameWithoutExtension = $fileInfo->getBasename('.'.$fileExtension);
                 $className = '\publin\src\indices\implementations\\'.$fileNameWithoutExtension;
+
+                /** @var Index $index */
                 $index = new $className($this->db);
                 $indexName = $index->getName();
                 $this->indices[$indexName] = $index;
             }
         }
     }
+
 
     /**
      * Sets the parameters of all indices.
@@ -94,10 +102,11 @@ class IndexFactory {
      * for this index.
      *
      * @param array $parameters The keys of the array represent the
-     * name of the parameter, the array values represent the value
-     * of the parameter.
+     *                          name of the parameter, the array values represent the value
+     *                          of the parameter.
      */
-    public function setParameters(array $parameters) {
+    public function setParameters(array $parameters)
+    {
         foreach ($this->indices as $index) {
             $possibleParameters = array();
             $availableParameters = $index->getAvailableParameters();
@@ -132,18 +141,20 @@ class IndexFactory {
         }
     }
 
+
     /**
      * Returns a single index.
      *
      * @param string $name The case-sensitive name of
-     * the requested index.
+     *                     the requested index.
      *
      * @return Index
      *
      * @throws IndexException If the provided index name
      * cannot be resolved to an existing index.
      */
-    public function getIndex($name) {
+    public function getIndex($name)
+    {
         if (array_key_exists($name, $this->indices)) {
             return $this->indices[$name];
         } else {
@@ -152,6 +163,7 @@ class IndexFactory {
         }
     }
 
+
     /**
      * Returns all existing indices.
      *
@@ -159,7 +171,8 @@ class IndexFactory {
      * name of the index, the value stands for the instance
      * of the index.
      */
-    public function getAllIndices() {
+    public function getAllIndices()
+    {
         return $this->indices;
     }
 }

@@ -2,13 +2,17 @@
 
 namespace publin\src\indices;
 
+use publin\src\indices\exceptions\IndexDataException;
+use publin\src\indices\exceptions\IndexParameterException;
+
 /**
  * This is a basic interface for indices and has to be implemented
  * by each concrete index.
  *
  * @package publin\src\indices
  */
-interface Index {
+interface Index
+{
 
     /**
      * Returns the name of the index.
@@ -17,18 +21,20 @@ interface Index {
      */
     public function getName();
 
+
     /**
      * Sets the parameters of the index.
      *
      * @param array $parameters The keys of the array represent the
-     * name of the parameter, the array values represent the value
-     * of the parameter.
+     *                          name of the parameter, the array values represent the value
+     *                          of the parameter.
      *
      * @throws IndexParameterException If the provided parameter names
      * don't exist or if the provided values don't meet the criteria
      * for the data type, the lower bound or the upper bound.
      */
     public function setParameters(array $parameters);
+
 
     /**
      * Returns an array which contains all parameters that can be
@@ -44,6 +50,7 @@ interface Index {
      */
     public function getAvailableParameters();
 
+
     /**
      * Sets the data which should be used by the index to calculate
      * the value.
@@ -54,15 +61,16 @@ interface Index {
      * calculate the value.
      *
      * @param array $data The data array should contain the information
-     * required by the index. Furthermore the data should match the
-     * rules of the index for the data format. To obtain these rules,
-     * the method getDataFormat() can be used.
+     *                    required by the index. Furthermore the data should match the
+     *                    rules of the index for the data format. To obtain these rules,
+     *                    the method getDataFormat() can be used.
      *
      * @throws IndexDataException If one tries to set the data of the index
      * without that the format of the provided data matches the data format
      * of the index.
      */
     public function setData(array $data);
+
 
     /**
      * Returns an array to show the data format of the index.
@@ -72,6 +80,7 @@ interface Index {
      * of the array keys and the data types of the entries.
      */
     public function getDataFormat();
+
 
     /**
      * Returns a numeric value which is the calculated index

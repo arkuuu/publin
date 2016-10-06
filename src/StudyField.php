@@ -7,36 +7,39 @@ namespace publin\src;
  *
  * @package publin\src
  */
-class StudyField extends Entity {
+class StudyField extends Entity
+{
 
-	protected $id;
-	protected $name;
-	protected $description;
+    protected $id;
 
+    protected $name;
 
-	/**
-	 * @return string|null
-	 */
-	public function getId() {
-
-		return $this->id;
-	}
+    protected $description;
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getName() {
+    /**
+     * @return string|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-		return $this->name;
-	}
+
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getDescription() {
-
-		return $this->description;
-	}
+    /**
+     * @return string|null
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 }

@@ -9,79 +9,81 @@ use InvalidArgumentException;
  *
  * @package publin\src
  */
-class Role extends Entity {
+class Role extends Entity
+{
 
-	protected $id;
-	protected $name;
-	/**
-	 * @var Permission[]
-	 */
-	protected $permissions = array();
+    protected $id;
 
+    protected $name;
 
-	/**
-	 * @return string|null
-	 */
-	public function getId() {
-
-		return $this->id;
-	}
+    /**
+     * @var Permission[]
+     */
+    protected $permissions = array();
 
 
-	/**
-	 * @return string|null
-	 */
-	public function getName() {
-
-		return $this->name;
-	}
-
-
-	/**
-	 * @return Permission[]
-	 */
-	public function getPermissions() {
-
-		return $this->permissions;
-	}
+    /**
+     * @return string|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @param Permission[] $permissions
-	 *
-	 * @return bool
-	 */
-	public function setPermissions(array $permissions) {
-
-		$this->permissions = array();
-
-		foreach ($permissions as $permission) {
-
-			if ($permission instanceof Permission) {
-				$this->permissions[] = $permission;
-			}
-			else {
-				throw new InvalidArgumentException('must be array with Permission objects');
-			}
-		}
-
-		return true;
-	}
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
-	/**
-	 * @param $permission_id
-	 *
-	 * @return bool
-	 */
-	public function hasPermission($permission_id) {
+    /**
+     * @return Permission[]
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
 
-		foreach ($this->permissions as $permission) {
-			if ($permission->getId() == $permission_id) {
-				return true;
-			}
-		}
 
-		return false;
-	}
+    /**
+     * @param Permission[] $permissions
+     *
+     * @return bool
+     */
+    public function setPermissions(array $permissions)
+    {
+        $this->permissions = array();
+
+        foreach ($permissions as $permission) {
+
+            if ($permission instanceof Permission) {
+                $this->permissions[] = $permission;
+            } else {
+                throw new InvalidArgumentException('must be array with Permission objects');
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * @param $permission_id
+     *
+     * @return bool
+     */
+    public function hasPermission($permission_id)
+    {
+        foreach ($this->permissions as $permission) {
+            if ($permission->getId() == $permission_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

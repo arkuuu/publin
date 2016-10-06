@@ -3,8 +3,8 @@
 namespace publin\src\indices;
 
 use publin\src\Database;
-use publin\src\indices\exceptions\IndexParameterException;
 use publin\src\indices\exceptions\IndexDataException;
+use publin\src\indices\exceptions\IndexParameterException;
 use publin\src\indices\other\IndexHelper;
 
 /**
@@ -13,7 +13,8 @@ use publin\src\indices\other\IndexHelper;
  *
  * @package publin\src\indices
  */
-abstract class AbstractIndex implements Index {
+abstract class AbstractIndex implements Index
+{
 
     /**
      * This is an instance of the Publin database class.
@@ -52,11 +53,11 @@ abstract class AbstractIndex implements Index {
     protected $parameters = array(
         'authorId' => array(
             'dataType' => 'int',
-            'from' => 1,
-            'to' => PHP_INT_MAX,
+            'from'     => 1,
+            'to'       => PHP_INT_MAX,
             'required' => true,
-            'value' => null
-        )
+            'value'    => null,
+        ),
     );
 
     /**
@@ -96,27 +97,33 @@ abstract class AbstractIndex implements Index {
      */
     protected $value;
 
+
     /**
      * Constructs the index.
      *
      * @param Database $db An instance of the Publin
-     * database class.
+     *                     database class.
      */
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName() {
-        return $this->name;
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function setParameters(array $parameters) {
+    public function getName()
+    {
+        return $this->name;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParameters(array $parameters)
+    {
         foreach ($parameters as $name => $value) {
             if (array_key_exists($name, $this->parameters)) {
                 try {
@@ -151,24 +158,30 @@ abstract class AbstractIndex implements Index {
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function getAvailableParameters() {
+    public function getAvailableParameters()
+    {
         return $this->parameters;
     }
+
 
     /**
      * {@inheritDoc}
      */
-    public function getDataFormat() {
+    public function getDataFormat()
+    {
         return $this->dataFormat;
     }
+
 
     /**
      * {@inheritdoc}
      */
-    public function getValue() {
+    public function getValue()
+    {
         try {
             $this->fetchData();
         } catch (IndexDataException $e) {
@@ -211,15 +224,16 @@ abstract class AbstractIndex implements Index {
              * If it has another code (e.g. the default value 0), we pass
              * the exception.
              */
-             if ($e->getCode() != 1) {
-                 throw $e;
-             }
+            if ($e->getCode() != 1) {
+                throw $e;
+            }
         }
 
         $this->calculateValue();
 
         return $this->value;
     }
+
 
     /**
      * Fetches the data for the calculation of the index
@@ -234,7 +248,8 @@ abstract class AbstractIndex implements Index {
      * outside. Throwing this exception prevents that the data from outside
      * is overridden with the data from the database.
      */
-    protected function fetchData() {
+    protected function fetchData()
+    {
         $this->checkRequiredParameters();
 
         if (!is_null($this->data)) {
@@ -259,13 +274,15 @@ abstract class AbstractIndex implements Index {
         }
     }
 
+
     /**
      * Checks if all required index parameters have a value.
      *
      * @throws IndexParameterException If a required parameter was not
      * set during the index configuration.
      */
-    private function checkRequiredParameters() {
+    private function checkRequiredParameters()
+    {
         $missingParameters = array();
 
         foreach ($this->parameters as $name => $properties) {
@@ -283,33 +300,36 @@ abstract class AbstractIndex implements Index {
         }
     }
 
+
     /**
      * Calculates the value of the index and saves the value in the
      * $value attribute.
      */
     abstract protected function calculateValue();
 
+
     /**
      * Defines an index parameter by using the provided
      * method parameters.
      *
-     * @param string $name The name of the parameter.
+     * @param string $name     The name of the parameter.
      * @param string $dataType The data type of the parameter.
-     * @param mixed $from The start of the range where the parameter
-     * is defined.
-     * @param mixed $to The end of the range where the parameter
-     * is defined.
-     * @param bool $required Indicates if the parameter is
-     * required for the index calculation.
-     * @param mixed $value The value of the parameter.
+     * @param mixed  $from     The start of the range where the parameter
+     *                         is defined.
+     * @param mixed  $to       The end of the range where the parameter
+     *                         is defined.
+     * @param bool   $required Indicates if the parameter is
+     *                         required for the index calculation.
+     * @param mixed  $value    The value of the parameter.
      */
-    protected function defineParameter($name, $dataType, $from, $to, $required, $value) {
+    protected function defineParameter($name, $dataType, $from, $to, $required, $value)
+    {
         $this->parameters[$name] = array(
             'dataType' => $dataType,
-            'from' => $from,
-            'to' => $to,
+            'from'     => $from,
+            'to'       => $to,
             'required' => $required,
-            'value' => $value
+            'value'    => $value,
         );
     }
 }

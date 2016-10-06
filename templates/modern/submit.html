@@ -1,44 +1,44 @@
 <?php if ($this -> isForm()) { ?>
 <script type="text/javascript" src="<?php echo $this -> getRootUrl() ?>templates/modern/script/jquery.js"></script>
 <script type="text/javascript">
-	$(document).ready(function () {
+    $(document).ready(function () {
 
-		$('.multi-field-wrapper').each(function () {
-			var $wrapper = $('.multi-fields', this);
-			$('.add-field', $(this)).click(function (e) {
-				e.preventDefault();
-				$('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required').focus();
-			});
-			$('.multi-field .remove-field', $wrapper).click(function (e) {
-				e.preventDefault();
-				if ($('.multi-field', $wrapper).length > 1)
-					$(this).parent('.multi-field').remove();
-			});
-		});
+        $('.multi-field-wrapper').each(function () {
+            var $wrapper = $('.multi-fields', this);
+            $('.add-field', $(this)).click(function (e) {
+                e.preventDefault();
+                $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').removeAttr('required').focus();
+            });
+            $('.multi-field .remove-field', $wrapper).click(function (e) {
+                e.preventDefault();
+                if ($('.multi-field', $wrapper).length > 1)
+                    $(this).parent('.multi-field').remove();
+            });
+        });
 
-		/*var showFormFields = function (show_time) {
-		 var type = $('.type-selector').find(':selected').val();
+        /*var showFormFields = function (show_time) {
+         var type = $('.type-selector').find(':selected').val();
 
-		 if (type) {
-		 $('.' + type).show(show_time);
-		 }
-		 };
+         if (type) {
+         $('.' + type).show(show_time);
+         }
+         };
 
-		 var hideFormFields = function (hide_time) {
-		 $('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(hide_time);
-		 };
-
-
-		 hideFormFields(0);
-		 showFormFields(0);
-
-		 $('.type-selector').change(function () {
-		 hideFormFields(200);
-		 showFormFields(400);
-		 });*/
+         var hideFormFields = function (hide_time) {
+         $('.article, .book, .incollection, .inproceedings, .masterthesis, .misc, .phdthesis, .techreport, .unpublished').hide(hide_time);
+         };
 
 
-	});
+         hideFormFields(0);
+         showFormFields(0);
+
+         $('.type-selector').change(function () {
+         hideFormFields(200);
+         showFormFields(400);
+         });*/
+
+
+    });
 </script>
 
 <h1>Submit publication</h1>
@@ -46,170 +46,170 @@
 <?php if ($this->showImportInput()) { ?>
 <label for="input">Your input was:</label><br/>
 <form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
-	<textarea id="input" name="input" rows="10" cols="80"><?php echo $this->showImportInput() ?></textarea><br/>
-	<label for="format2">Format:</label>
-	<select id="format2" name="format">
-		<?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
-		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
-	</select>
-	<input type="hidden" name="action" value="import"/>
-	<input type="submit" value="Try import again"/>
+    <textarea id="input" name="input" rows="10" cols="80"><?php echo $this->showImportInput() ?></textarea><br/>
+    <label for="format2">Format:</label>
+    <select id="format2" name="format">
+        <?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
+        <?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
+    </select>
+    <input type="hidden" name="action" value="import"/>
+    <input type="submit" value="Try import again"/>
 </form>
 <?php } ?>
 
 <div class="form">
 
-	<form action="#" method="post" accept-charset="utf-8">
+    <form action="#" method="post" accept-charset="utf-8">
 
-		<h2>Details</h2>
-		<label for="type">Type:</label>
-		<select class="type-selector" name="type" id="type" size="1">
-			<?php echo $this -> listTypeOptions() ?>
-		</select><br/>
-		<label for="study_field">Field of Study:</label>
-		<select name="study_field" id="study_field" size="1">
-			<?php echo $this -> listStudyFieldOptions() ?>
-		</select><br/>
-		<label for="title">Title:</label>
-		<input type="text" name="title" id="title" maxlength="200" value="<?php echo $this->show('title') ?>"/>
-		<br/>
-		<label for="date_published">Date:</label>
-		<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
-			   value="<?php echo $this->show('date_published') ?>"/>
-		<br/>
-		<label for="journal">Journal:</label>
-		<input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this->show('journal') ?>"/>
-		<br/>
-		<label for="volume">Volume:</label>
-		<input type="number" name="volume" id="volume" min="0" value="<?php echo $this->show('volume') ?>"/>
-		<br/>
-		<label for="number">Number:</label>
-		<input type="number" name="number" id="number" min="0" value="<?php echo $this->show('number') ?>"/>
-		<br/>
-		<label for="booktitle">Book Title:</label>
-		<input type="text" name="booktitle" id="booktitle" maxlength="200"
-			   value="<?php echo $this->show('booktitle') ?>"/>
-		<br/>
-		<label for="series">Series:</label>
-		<input type="text" name="series" id="series" min="0" value="<?php echo $this->show('series') ?>"/>
-		<br/>
-		<label for="edition">Edition:</label>
-		<input type="text" name="edition" id="edition" value="<?php echo $this->show('edition') ?>"/>
-		<br/>
-		<label for="pages_from">Pages:</label>
-		<input type="number" name="pages_from" id="pages_from" min="0"
-			   value="<?php echo $this->show('pages_from') ?>"/>
-		<span style="float: left">to&nbsp;</span>
-		<input type="number" name="pages_to" id="pages_to" min="0"
-			   value="<?php echo $this->show('pages_to') ?>"/>
-		<br/>
-		<label for="note">Note:</label>
-		<input type="text" name="note" id="note" maxlength="200" value="<?php echo $this->show('note') ?>"/>
-		<br/>
-		<label for="location">Conference location:</label>
-		<input type="text" name="location" id="location" maxlength="200" value="<?php echo $this->show('location') ?>"/>
-		<br/>
-		<label for="publisher">Publisher:</label>
-		<input type="text" name="publisher" id="publisher" maxlength="200"
-			   value="<?php echo $this->show('publisher') ?>"/>
-		<br/>
-		<label for="institution">Institution:</label>
-		<input type="text" name="institution" id="institution" maxlength="200"
-			   value="<?php echo $this->show('institution') ?>"/>
-		<br/>
-		<label for="school">School:</label>
-		<input type="text" name="school" id="school" maxlength="200" value="<?php echo $this->show('school') ?>"/>
-		<br/>
-		<label for="address">Publisher address:</label>
-		<input type="text" name="address" id="address" maxlength="200" value="<?php echo $this->show('address') ?>"/>
-		<br/>
-		<label for="howpublished">How published:</label>
-		<input type="text" name="howpublished" id="howpublished" maxlength="200"
-			   value="<?php echo $this->show('howpublished') ?>"/>
-		<br/>
-		<label for="copyright">Copyright:</label>
-		<input type="text" name="copyright" id="copyright" maxlength="200"
-			   value="<?php echo $this->show('copyright') ?>"/>
-		<br/>
-		<label for="url">External URL:</label>
-		<input type="text" name="url" id="url" maxlength="200"
-			   value="<?php	echo $this->show('url'); ?>"/>
-		<br/>
-		<span>More urls can be added on the publication's edit page after it has been submitted.</span>
-		<br/>
-		<br/>
-		<label for="doi">DOI:</label>
-		<input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->show('doi') ?>"/>
-		<br/>
-		<label for="isbn">ISBN:</label>
-		<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->show('isbn') ?>"/>
-		<br/>
-		<label for="abstract">Abstract:</label>
-		<textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->show('abstract') ?></textarea>
-		<br/>
-		<label for="foreign">Foreign publication:</label>
-		<input type="checkbox" name="foreign" id="foreign" value="1" />
-		<br />
-		
-		<h2>Authors</h2>
+        <h2>Details</h2>
+        <label for="type">Type:</label>
+        <select class="type-selector" name="type" id="type" size="1">
+            <?php echo $this -> listTypeOptions() ?>
+        </select><br/>
+        <label for="study_field">Field of Study:</label>
+        <select name="study_field" id="study_field" size="1">
+            <?php echo $this -> listStudyFieldOptions() ?>
+        </select><br/>
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" maxlength="200" value="<?php echo $this->show('title') ?>"/>
+        <br/>
+        <label for="date_published">Date:</label>
+        <input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
+               value="<?php echo $this->show('date_published') ?>"/>
+        <br/>
+        <label for="journal">Journal:</label>
+        <input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this->show('journal') ?>"/>
+        <br/>
+        <label for="volume">Volume:</label>
+        <input type="number" name="volume" id="volume" min="0" value="<?php echo $this->show('volume') ?>"/>
+        <br/>
+        <label for="number">Number:</label>
+        <input type="number" name="number" id="number" min="0" value="<?php echo $this->show('number') ?>"/>
+        <br/>
+        <label for="booktitle">Book Title:</label>
+        <input type="text" name="booktitle" id="booktitle" maxlength="200"
+               value="<?php echo $this->show('booktitle') ?>"/>
+        <br/>
+        <label for="series">Series:</label>
+        <input type="text" name="series" id="series" min="0" value="<?php echo $this->show('series') ?>"/>
+        <br/>
+        <label for="edition">Edition:</label>
+        <input type="text" name="edition" id="edition" value="<?php echo $this->show('edition') ?>"/>
+        <br/>
+        <label for="pages_from">Pages:</label>
+        <input type="number" name="pages_from" id="pages_from" min="0"
+               value="<?php echo $this->show('pages_from') ?>"/>
+        <span style="float: left;">to&nbsp;</span>
+        <input type="number" name="pages_to" id="pages_to" min="0"
+               value="<?php echo $this->show('pages_to') ?>"/>
+        <br/>
+        <label for="note">Note:</label>
+        <input type="text" name="note" id="note" maxlength="200" value="<?php echo $this->show('note') ?>"/>
+        <br/>
+        <label for="location">Conference location:</label>
+        <input type="text" name="location" id="location" maxlength="200" value="<?php echo $this->show('location') ?>"/>
+        <br/>
+        <label for="publisher">Publisher:</label>
+        <input type="text" name="publisher" id="publisher" maxlength="200"
+               value="<?php echo $this->show('publisher') ?>"/>
+        <br/>
+        <label for="institution">Institution:</label>
+        <input type="text" name="institution" id="institution" maxlength="200"
+               value="<?php echo $this->show('institution') ?>"/>
+        <br/>
+        <label for="school">School:</label>
+        <input type="text" name="school" id="school" maxlength="200" value="<?php echo $this->show('school') ?>"/>
+        <br/>
+        <label for="address">Publisher address:</label>
+        <input type="text" name="address" id="address" maxlength="200" value="<?php echo $this->show('address') ?>"/>
+        <br/>
+        <label for="howpublished">How published:</label>
+        <input type="text" name="howpublished" id="howpublished" maxlength="200"
+               value="<?php echo $this->show('howpublished') ?>"/>
+        <br/>
+        <label for="copyright">Copyright:</label>
+        <input type="text" name="copyright" id="copyright" maxlength="200"
+               value="<?php echo $this->show('copyright') ?>"/>
+        <br/>
+        <label for="url">External URL:</label>
+        <input type="text" name="url" id="url" maxlength="200"
+               value="<?php	echo $this->show('url'); ?>"/>
+        <br/>
+        <span>More urls can be added on the publication's edit page after it has been submitted.</span>
+        <br/>
+        <br/>
+        <label for="doi">DOI:</label>
+        <input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->show('doi') ?>"/>
+        <br/>
+        <label for="isbn">ISBN:</label>
+        <input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->show('isbn') ?>"/>
+        <br/>
+        <label for="abstract">Abstract:</label>
+        <textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->show('abstract') ?></textarea>
+        <br/>
+        <label for="foreign">Foreign publication:</label>
+        <input type="checkbox" name="foreign" id="foreign" value="1" />
+        <br />
 
-		<p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
+        <h2>Authors</h2>
 
-		<div class="multi-field-wrapper">
-			<ul class="multi-fields">
-				<?php echo $this -> listAuthors() ?>
-			</ul>
-			<button type="button" class="add-field">Add field</button>
-		</div>
-		
-		<h2>Citations</h2>
-		
-		<div class="multi-field-wrapper">
-			<ul class="multi-fields">
-				<?php echo $this -> listCitations() ?>
-			</ul>
-			<!-- TODO: may implement to add citations during submit
-			<button type="button" class="add-field">Add field</button>
-			-->
-		</div>		
+        <p>More information to come here. <a href="?p=browse&amp;by=author" target="_blank">Show list of authors</a></p>
 
-		<h2>Keywords</h2>
+        <div class="multi-field-wrapper">
+            <ul class="multi-fields">
+                <?php echo $this -> listAuthors() ?>
+            </ul>
+            <button type="button" class="add-field">Add field</button>
+        </div>
 
-		<p>More information to come here. <a href="?p=browse&amp;by=keyword" target="_blank">Show list of keywords</a>
-		</p>
+        <h2>Citations</h2>
 
-		<div class="multi-field-wrapper">
-			<ul class="multi-fields">
-				<?php echo $this -> listKeywords() ?>
-			</ul>
-			<button type="button" class="add-field">Add field</button>
-		</div>
+        <div class="multi-field-wrapper">
+            <ul class="multi-fields">
+                <?php echo $this -> listCitations() ?>
+            </ul>
+            <!-- TODO: may implement to add citations during submit
+            <button type="button" class="add-field">Add field</button>
+            -->
+        </div>
 
-		<h2>Files</h2>
+        <h2>Keywords</h2>
 
-		<p>You can upload files through the publication's edit page after it has been submitted.</p>
-	
-		<h2>Submit
-			<?php
-			$count = $this -> numberOfRemainingImports();
-			if($count>0){
-			echo ' and import next of the '.$count.' remaining publications';
-			}
-			?>
-		</h2>	
-		<input type="hidden" name="action" value="submit"/>
-		<input type="submit" value="Submit"/>
-	</form>
-	<?php if($count>0){ ?>
-	<p>
+        <p>More information to come here. <a href="?p=browse&amp;by=keyword" target="_blank">Show list of keywords</a>
+        </p>
 
-	<form action="#" method="post">
-		<h2 style="color:red">Do not Submit</h2>
-		<input type="hidden" name="action" value="next"/>
-		<input type="submit" value="Import next Publication" style="color:red"/>
-	</form>
-	</p>
-	<?php } ?>
+        <div class="multi-field-wrapper">
+            <ul class="multi-fields">
+                <?php echo $this -> listKeywords() ?>
+            </ul>
+            <button type="button" class="add-field">Add field</button>
+        </div>
+
+        <h2>Files</h2>
+
+        <p>You can upload files through the publication's edit page after it has been submitted.</p>
+
+        <h2>Submit
+            <?php
+            $count = $this -> numberOfRemainingImports();
+            if($count>0){
+            echo ' and import next of the '.$count.' remaining publications';
+            }
+            ?>
+        </h2>
+        <input type="hidden" name="action" value="submit"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    <?php if($count>0){ ?>
+    <p>
+
+    <form action="#" method="post">
+        <h2 style="color:red;">Do not Submit</h2>
+        <input type="hidden" name="action" value="next"/>
+        <input type="submit" value="Import next Publication" style="color:red;"/>
+    </form>
+    </p>
+    <?php } ?>
 </div>
 
 
@@ -217,14 +217,14 @@
 <h1>Submit publication</h1>
 <p>You can input multiple entries here. They will be imported and can be checked and modified one by one later.</p>
 <form action="?p=submit&amp;m=form" method="post" accept-charset="utf-8">
-	<textarea name="input" rows="10" cols="80"></textarea><br/>
-	<label for="format">Format:</label>
-	<select id="format" name="format">
-		<?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
-		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
-	</select>
-	<input type="hidden" name="action" value="import"/>
-	<input type="submit" value="Import"/>
+    <textarea name="input" rows="10" cols="80"></textarea><br/>
+    <label for="format">Format:</label>
+    <select id="format" name="format">
+        <?php echo $this->showImportFormat('Bibtex', 'BibTex') ?>
+        <?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
+    </select>
+    <input type="hidden" name="action" value="import"/>
+    <input type="submit" value="Import"/>
 </form>
 
 
@@ -232,14 +232,14 @@
 <h1>Bulk import publication</h1>
 <p>You can automatically import multiple entries.</p>
 <form action="?p=submit&amp;m=bulkimport" method="post" accept-charset="utf-8">
-	<textarea name="input" rows="10" cols="80" placeholder="Enter SCF data directly or URL with SCF data"></textarea><br/>
-	<label for="format">Format:</label>
-	<select id="format" name="format">
-		<?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>	
-	</select>	
-	<input type="hidden" name="action" value="import"/>
-	<input type="hidden" name="bulkimport" value="true"/>
-	<input type="submit" value="Import"/>
+    <textarea name="input" rows="10" cols="80" placeholder="Enter SCF data directly or URL with SCF data"></textarea><br/>
+    <label for="format">Format:</label>
+    <select id="format" name="format">
+        <?php echo $this->showImportFormat('SCF', 'SCF-JSON') ?>
+    </select>
+    <input type="hidden" name="action" value="import"/>
+    <input type="hidden" name="bulkimport" value="true"/>
+    <input type="submit" value="Import"/>
 </form>
 <?php echo $this->showBulkimportMessages() ?>
 
