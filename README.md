@@ -38,16 +38,32 @@ A web server with:
   * extension `fileinfo`
 * MySQL >= 5.5.38
 
+Please note: PHP 5.3 has reached its end of life long ago. It is highly recommended to use the current version 5.6! See [this link](https://secure.php.net/supported-versions.php) for more information.
 
-Install
+Support for PHP 7 has not been tested yet, it *may* work.
+
+Installation
 =====
+* Download the [current release](https://github.com/arkuuu/publin/releases)
 * Change the `config/Config.php` file according to your needs
 * Create a new folder called `publin` on your web server
 * Copy all files into this folder
 * Open the `install/` directory in your web browser and follow the instructions.
-* Important: Remove the `install/` folder after the installation.
+* **Important**: Remove the `install/` folder after the installation.
 
 
+Update
+======
+* Download the [current release](https://github.com/arkuuu/publin/releases)
+* Replace the files on your server with the new ones.
+* See the release notes for any database changes that you need to execute.
+
+An update script may be available in the future.
+
+
+Support
+======
+If you encounter any problems or have any questions, feel free to open a new issue [here](https://github.com/arkuuu/publin/issues).
 
 About the Project
 ======
