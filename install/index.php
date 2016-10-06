@@ -8,17 +8,7 @@ use publin\config\Config;
 use publin\src\Auth;
 use publin\src\MailHandler;
 
-spl_autoload_register(function ($class) {
-
-	$path = str_replace('\\', '/', $class);
-	$root = substr(__DIR__, 0, -(strlen(__NAMESPACE__)));
-	$file = $root.$path.'.php';
-
-	if (file_exists($file)) {
-		/** @noinspection PhpIncludeInspection */
-		require $file;
-	}
-});
+require_once '../autoload.php';
 
 Config::setup();
 
@@ -53,50 +43,54 @@ function db_connect() {
 
 function db_import($sql_dump_file) {
 
-	if ($pdo = db_connect()) {
-		$sql = file_get_contents($sql_dump_file);
-		try {
-			$pdo->beginTransaction();
-			$pdo->exec($sql);
-			// ISI study fields
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Not Categorized');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Agricultural Sciences');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Biology & Biochemistry');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Chemistry');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Clinical Medicine');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Computer Science');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Economics & Business');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Engineering');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Environment/Ecology');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Geosciences');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Immunology');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Materials Science');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Mathematics');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Microbiology');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Molecular Biology & Genetics');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Neuroscience & Behavior');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Pharmacology & Toxicology');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Physics');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Plant & Animal Science');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Psychiatry/Psychology');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Social Sciences, general');");
-			$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Space Science');");
-			// Other
-			$pdo->exec("INSERT INTO `types` VALUES (1,'article',NULL),(2,'book',NULL),(3,'inproceedings',NULL),(4,'incollection',NULL),(5,'inbook',NULL),(6,'techreport',NULL),(7,'mastersthesis',NULL),(8,'phdthesis',NULL),(9,'unpublished',NULL),(10,'misc',NULL);");
-			$pdo->exec("INSERT INTO `permissions` VALUES (1,'access_hidden_files'),(2,'access_restricted_files'),(3,'author_delete'),(4,'author_edit'),(5,'keyword_delete'),(6,'keyword_edit'),(7,'manage'),(8,'publication_delete'),(9,'publication_edit'),(10,'publication_submit');");
-			$pdo->exec("INSERT INTO `roles` VALUES (1,'Admin'),(2,'Editor'),(3,'Member'),(4,'Guest');");
+	$pdo = db_connect();
 
-			$pdo->exec("INSERT INTO `roles_permissions` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9),(10,1,10);");
-			$pdo->commit();
+	if (!$pdo) {
+		return false;
+	}
 
-			return true;
-		}
-		catch (PDOException $e) {
-			$pdo->rollBack();
-			echo '<p class="error">'.$e->getMessage().'</p>';
+	$sql = file_get_contents($sql_dump_file);
+	try {
+		$pdo->beginTransaction();
+		$pdo->exec($sql);
+		// ISI study fields
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Not Categorized');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Agricultural Sciences');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Biology & Biochemistry');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Chemistry');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Clinical Medicine');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Computer Science');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Economics & Business');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Engineering');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Environment/Ecology');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Geosciences');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Immunology');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Materials Science');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Mathematics');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Microbiology');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Molecular Biology & Genetics');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Neuroscience & Behavior');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Pharmacology & Toxicology');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Physics');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Plant & Animal Science');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Psychiatry/Psychology');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Social Sciences, general');");
+		$pdo->exec("INSERT INTO `study_fields` (name) VALUES ('Space Science');");
+		// Other
+		$pdo->exec("INSERT INTO `types` VALUES (1,'article',NULL),(2,'book',NULL),(3,'inproceedings',NULL),(4,'incollection',NULL),(5,'inbook',NULL),(6,'techreport',NULL),(7,'mastersthesis',NULL),(8,'phdthesis',NULL),(9,'unpublished',NULL),(10,'misc',NULL);");
+		$pdo->exec("INSERT INTO `permissions` VALUES (1,'access_hidden_files'),(2,'access_restricted_files'),(3,'author_delete'),(4,'author_edit'),(5,'keyword_delete'),(6,'keyword_edit'),(7,'manage'),(8,'publication_delete'),(9,'publication_edit'),(10,'publication_submit');");
+		$pdo->exec("INSERT INTO `roles` VALUES (1,'Admin'),(2,'Editor'),(3,'Member'),(4,'Guest');");
 
-			return false;
-		}
+		$pdo->exec("INSERT INTO `roles_permissions` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9),(10,1,10);");
+		$pdo->commit();
+
+		return true;
+	}
+	catch (PDOException $e) {
+		$pdo->rollBack();
+		echo '<p class="error">'.$e->getMessage().'</p>';
+
+		return false;
 	}
 }
 
