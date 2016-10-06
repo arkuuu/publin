@@ -13,7 +13,7 @@ class Controller
     /**
      * @param $destination
      */
-    public static function redirect($destination)
+    public function redirect($destination)
     {
         if (!isset($_SESSION)) {
             session_start();

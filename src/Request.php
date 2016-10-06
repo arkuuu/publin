@@ -53,7 +53,7 @@ class Request
      *
      * @return bool|array
      */
-    public static function post($name = '')
+    public function post($name = '')
     {
         if (!empty($name) && isset($_POST[$name])) {
 
@@ -71,7 +71,7 @@ class Request
      *
      * @return bool
      */
-    public static function get($name = '')
+    public function get($name = '')
     {
         if (!empty($name) && !empty($_GET[$name])) {
 
