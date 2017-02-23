@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  web:
+    build: ./docker/web
+    volumes:
+        - ./docker/web/publin.dev.conf:/etc/apache2/sites-enabled/publin.dev.conf
+        - ./:/var/www/publin
+    ports:
+        - 80:80
+
+  db:
+    image: mysql:latest
+    volumes:
+        - dbdata:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: mysql
+        MYSQL_DATABASE: publin
+        MYSQL_USER: publin
+        MYSQL_PASSWORD: mysql
+
+volumes:
+
+  dbdata:
