@@ -8,7 +8,7 @@ use publin\config\Config;
 use publin\src\Auth;
 use publin\src\MailHandler;
 
-require_once '../autoload.php';
+require_once '../vendor/autoload.php';
 
 Config::setup();
 

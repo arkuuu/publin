@@ -6,7 +6,7 @@ use publin\config\Config;
 use publin\src\MainController;
 use publin\src\Request;
 
-require_once 'autoload.php';
+require_once 'vendor/autoload.php';
 
 Config::setup();
 

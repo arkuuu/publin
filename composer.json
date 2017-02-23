@@ -1,0 +1,19 @@
+{
+  "name": "arkuuu/publin",
+  "description": "Publin allows to upload, manage and expose scholarly publications.",
+  "type": "project",
+  "homepage": "https://github.com/arkuuu/publin",
+  "license": "MIT",
+  "authors": [
+	{
+	  "name": "Arne K.",
+	  "email": "arkuuu@users.noreply.github.com"
+	}
+  ],
+  "autoload": {
+	"psr-4": {
+	  "publin\\": ""
+	}
+  },
+  "minimum-stability": "stable"
+}

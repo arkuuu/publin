@@ -5,7 +5,7 @@ namespace publin\oai;
 use publin\config\Config;
 use publin\src\Request;
 
-require_once '../autoload.php';
+require_once '../vendor/autoload.php';
 
 Config::setup();
 
