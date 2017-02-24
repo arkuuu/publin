@@ -33,14 +33,12 @@ A live demo of the OAI-PMH interface is available at [arkuuu.de/publin/oai](http
 Requirements
 ======
 A web server with:
-* PHP >= 5.3.14
+* PHP between 5.6 and 7.1
   * extension `mbstring`
   * extension `fileinfo`
 * MySQL >= 5.5.38
 
-Please note: PHP 5.3 has reached its end of life long ago. It is highly recommended to use the current version 5.6! See [this link](https://secure.php.net/supported-versions.php) for more information.
-
-Support for PHP 7 has not been tested yet, it *may* work.
+It is recommend to use PHP 7.1. See [this link](https://secure.php.net/supported-versions.php) for more information.
 
 Installation
 =====
