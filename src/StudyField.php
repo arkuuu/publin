@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class StudyField
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class StudyField extends Entity
 {

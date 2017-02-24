@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class PermissionRepository
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class PermissionRepository extends Repository
 {

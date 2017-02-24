@@ -1,13 +1,15 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use InvalidArgumentException;
 
 /**
  * Class FileModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class FileModel extends Model
 {
@@ -17,8 +19,8 @@ class FileModel extends Model
      * @param      $publication_id
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(File $file, $publication_id)
     {
@@ -46,8 +48,8 @@ class FileModel extends Model
      * @param $id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete($id)
     {

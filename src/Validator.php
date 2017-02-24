@@ -1,6 +1,6 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 use DateTime;
 use UnexpectedValueException;
@@ -8,7 +8,7 @@ use UnexpectedValueException;
 /**
  * Class Validator
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Validator
 {

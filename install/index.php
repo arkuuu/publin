@@ -1,12 +1,12 @@
 <?php
 
-namespace publin\install;
+namespace arkuuu\Publin\install;
 
+use arkuuu\Publin\Auth;
+use arkuuu\Publin\Config\Config;
+use arkuuu\Publin\MailHandler;
 use PDO;
 use PDOException;
-use publin\config\Config;
-use publin\src\Auth;
-use publin\src\MailHandler;
 
 require_once '../vendor/autoload.php';
 
@@ -233,6 +233,7 @@ if ($page == 1) {
             $name = $_POST['username'];
             $mail = $_POST['email'];
             $password = Auth::generatePassword();
+            var_dump($password);
             $hash = Auth::hashPassword($password);
 
             try {

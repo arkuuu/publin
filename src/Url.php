@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class Url
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Url extends Entity
 {

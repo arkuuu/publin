@@ -1,18 +1,18 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Config\Config;
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use PDO;
 use PDOException;
 use PDOStatement;
-use publin\config\Config;
-use publin\src\exceptions\DBDuplicateEntryException;
-use publin\src\exceptions\DBForeignKeyException;
 
 /**
  * Class Database
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Database
 {

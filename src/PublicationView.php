@@ -1,13 +1,13 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 use Exception;
 
 /**
  * Class PublicationView
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class PublicationView extends View
 {

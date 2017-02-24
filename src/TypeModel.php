@@ -1,11 +1,14 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
+
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 
 /**
  * Class TypeModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class TypeModel extends Model
 {
@@ -14,8 +17,8 @@ class TypeModel extends Model
      * @param Type $type
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(Type $type)
     {
@@ -33,8 +36,8 @@ class TypeModel extends Model
      * @param $id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete($id)
     {

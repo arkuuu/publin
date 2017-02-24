@@ -1,14 +1,16 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use InvalidArgumentException;
 use PDOException;
 
 /**
  * Class KeywordModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class KeywordModel extends Model
 {
@@ -17,8 +19,8 @@ class KeywordModel extends Model
      * @param Keyword $keyword
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(Keyword $keyword)
     {
@@ -49,8 +51,8 @@ class KeywordModel extends Model
      * @param $id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete($id)
     {

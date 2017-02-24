@@ -1,13 +1,13 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
-use publin\src\exceptions\NotFoundException;
+use arkuuu\Publin\Exceptions\NotFoundException;
 
 /**
  * Class StudyFieldController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class StudyFieldController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 abstract class BibLink
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class ViewWithPublications
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class ViewWithPublications extends View
 {

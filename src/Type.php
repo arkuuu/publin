@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class Type
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Type extends Entity
 {

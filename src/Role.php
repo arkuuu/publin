@@ -1,13 +1,13 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 use InvalidArgumentException;
 
 /**
  * Class Role
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Role extends Entity
 {

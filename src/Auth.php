@@ -1,9 +1,12 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
+use arkuuu\Publin\Exceptions\LoginRequiredException;
 use Exception;
-use publin\src\exceptions\LoginRequiredException;
 
 require_once 'password_compat.php';
 
@@ -11,7 +14,7 @@ require_once 'password_compat.php';
 /**
  * Class Auth
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Auth
 {
@@ -82,7 +85,7 @@ class Auth
      * @param $password
      *
      * @return bool
-     * @throws exceptions\DBException
+     * @throws DBException
      */
     public function login($username, $password)
     {
@@ -108,8 +111,8 @@ class Auth
      * @param $password
      *
      * @return bool
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function validateLogin($username, $password)
     {
@@ -138,8 +141,8 @@ class Auth
      *
      * @return bool
      * @throws Exception
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function setPassword($username, $password)
     {
@@ -179,8 +182,8 @@ class Auth
      *
      * @return bool
      * @throws LoginRequiredException
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function checkPermission($permission_name, $user_id = null)
     {

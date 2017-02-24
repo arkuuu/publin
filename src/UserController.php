@@ -1,15 +1,17 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\LoginRequiredException;
+use arkuuu\Publin\Exceptions\NotFoundException;
 use BadMethodCallException;
-use publin\src\exceptions\DBDuplicateEntryException;
-use publin\src\exceptions\NotFoundException;
+use Exception;
 
 /**
  * Class UserController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class UserController extends Controller
 {
@@ -32,7 +34,7 @@ class UserController extends Controller
      * @param Database $db
      * @param Auth     $auth
      *
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     public function __construct(Database $db, Auth $auth)
     {
@@ -48,8 +50,8 @@ class UserController extends Controller
      * @param Request $request
      *
      * @return string
-     * @throws \Exception
-     * @throws exceptions\NotFoundException
+     * @throws Exception
+     * @throws NotFoundException
      */
     public function run(Request $request)
     {

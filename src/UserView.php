@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class UserView
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class UserView extends View
 {

@@ -1,14 +1,16 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use Exception;
 use InvalidArgumentException;
 
 /**
  * Class PublicationModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class PublicationModel extends Model
 {
@@ -17,8 +19,8 @@ class PublicationModel extends Model
      * @param Publication $publication
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(Publication $publication)
     {
@@ -81,8 +83,8 @@ VALUES
      * @param $priority
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function addAuthor($publication_id, $author_id, $priority)
     {
@@ -106,8 +108,8 @@ VALUES
      * @param $citation_id
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function addCitation($publication_id, $citation_id)
     {
@@ -130,8 +132,8 @@ VALUES
      * @param $keyword_id
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function addKeyword($publication_id, $keyword_id)
     {
@@ -238,8 +240,8 @@ VALUES
      * @param $author_id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function removeAuthor($publication_id, $author_id)
     {
@@ -262,8 +264,8 @@ VALUES
      * @param $citation_id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function removeCitation($publication_id, $citation_id)
     {
@@ -286,8 +288,8 @@ VALUES
      * @param $keyword_id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function removeKeyword($publication_id, $keyword_id)
     {

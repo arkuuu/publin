@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class ManageView
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class ManageView extends View
 {

@@ -1,13 +1,15 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\NotFoundException;
+use Exception;
 use UnexpectedValueException;
 
 /**
  * Class SearchController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class SearchController extends Controller
 {
@@ -34,8 +36,8 @@ class SearchController extends Controller
      * @param Request $request
      *
      * @return string
-     * @throws \Exception
-     * @throws exceptions\NotFoundException
+     * @throws Exception
+     * @throws NotFoundException
      */
     public function run(Request $request)
     {

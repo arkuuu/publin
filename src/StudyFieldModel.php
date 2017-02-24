@@ -1,13 +1,15 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use InvalidArgumentException;
 
 /**
  * Class StudyFieldModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class StudyFieldModel extends Model
 {
@@ -16,8 +18,8 @@ class StudyFieldModel extends Model
      * @param StudyField $study_field
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(StudyField $study_field)
     {
@@ -35,8 +37,8 @@ class StudyFieldModel extends Model
      * @param $id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete($id)
     {

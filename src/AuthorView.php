@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class AuthorView
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class AuthorView extends ViewWithPublications
 {

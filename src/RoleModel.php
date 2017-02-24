@@ -1,13 +1,15 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use InvalidArgumentException;
 
 /**
  * Class RoleModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class RoleModel extends Model
 {
@@ -16,8 +18,8 @@ class RoleModel extends Model
      * @param Role $role
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(Role $role)
     {
@@ -34,8 +36,8 @@ class RoleModel extends Model
      * @param $id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete($id)
     {
@@ -96,8 +98,8 @@ class RoleModel extends Model
      * @param $permission_id
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function addPermission($role_id, $permission_id)
     {
@@ -120,8 +122,8 @@ class RoleModel extends Model
      * @param $permission_id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function removePermission($role_id, $permission_id)
     {

@@ -1,20 +1,20 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Config\Config;
+use arkuuu\Publin\Exceptions\FileHandlerException;
+use arkuuu\Publin\Exceptions\FileInvalidTypeException;
+use arkuuu\Publin\Exceptions\FileNotFoundException;
+use arkuuu\Publin\Exceptions\FileNotMovableException;
+use arkuuu\Publin\Exceptions\FileTooBigException;
 use finfo;
 use InvalidArgumentException;
-use publin\config\Config;
-use publin\src\exceptions\FileHandlerException;
-use publin\src\exceptions\FileInvalidTypeException;
-use publin\src\exceptions\FileNotFoundException;
-use publin\src\exceptions\FileNotMovableException;
-use publin\src\exceptions\FileTooBigException;
 
 /**
  * Class FileHandler
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class FileHandler
 {

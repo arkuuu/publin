@@ -1,14 +1,16 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use InvalidArgumentException;
 use PDOException;
 
 /**
  * Class UserModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class UserModel extends Model
 {
@@ -17,8 +19,8 @@ class UserModel extends Model
      * @param User $user
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function store(User $user)
     {
@@ -51,8 +53,8 @@ class UserModel extends Model
      * @param $role_id
      *
      * @return string
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function addRole($user_id, $role_id)
     {
@@ -75,8 +77,8 @@ class UserModel extends Model
      * @param $role_id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function removeRole($user_id, $role_id)
     {
@@ -98,8 +100,8 @@ class UserModel extends Model
      * @param $id
      *
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete($id)
     {

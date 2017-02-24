@@ -1,6 +1,6 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 use BadMethodCallException;
 use DomainException;
@@ -8,7 +8,7 @@ use DomainException;
 /**
  * Class FormatHandler
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class FormatHandler
 {
@@ -21,7 +21,7 @@ class FormatHandler
      */
     public static function export(Publication $publication, $format)
     {
-        $class = '\\publin\\modules\\'.$format;
+        $class = 'arkuuu\\Publin\\Modules\\'.$format;
 
         if (class_exists($class)) {
             $module = new $class();
@@ -46,7 +46,7 @@ class FormatHandler
      */
     public static function exportMultiple(array $publications, $format)
     {
-        $class = '\\publin\\modules\\'.$format;
+        $class = 'arkuuu\\Publin\\Modules\\'.$format;
 
         if (class_exists($class)) {
             $module = new $class();
@@ -71,7 +71,7 @@ class FormatHandler
      */
     public static function import($data, $format)
     {
-        $class = '\\publin\\modules\\'.$format;
+        $class = 'arkuuu\\Publin\\Modules\\'.$format;
 
         if (class_exists($class)) {
             $module = new $class();

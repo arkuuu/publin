@@ -12,7 +12,8 @@
   ],
   "autoload": {
 	"psr-4": {
-	  "publin\\": ""
+	  "arkuuu\\Publin\\": "src/",
+	  "arkuuu\\Publin\\Config\\": "config/"
 	}
   },
   "minimum-stability": "stable"

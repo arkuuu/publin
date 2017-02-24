@@ -1,6 +1,5 @@
-<?php use publin\src\Request; ?>
 <h1>Login</h1>
-<form action="<?php echo Request::createUrl(array('p' => 'login'), true); ?>" method="post" accept-charset="utf-8">
+<form action="<?php echo arkuuu\Publin\Request::createUrl(array('p' => 'login'), true); ?>" method="post" accept-charset="utf-8">
     <input type="text" name="username" id="user" placeholder="Username"/>
     <br/>
     <input type="password" name="password" id="password" placeholder="Password"/>

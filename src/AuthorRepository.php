@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class AuthorRepository
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class AuthorRepository extends Repository
 {

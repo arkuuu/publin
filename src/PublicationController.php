@@ -1,21 +1,22 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
+use arkuuu\Publin\Exceptions\FileHandlerException;
+use arkuuu\Publin\Exceptions\FileNotFoundException;
+use arkuuu\Publin\Exceptions\LoginRequiredException;
+use arkuuu\Publin\Exceptions\NotFoundException;
+use arkuuu\Publin\Exceptions\PermissionRequiredException;
 use BadMethodCallException;
 use Exception;
-use publin\src\exceptions\DBDuplicateEntryException;
-use publin\src\exceptions\DBForeignKeyException;
-use publin\src\exceptions\FileHandlerException;
-use publin\src\exceptions\FileNotFoundException;
-use publin\src\exceptions\NotFoundException;
-use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
 /**
  * Class PublicationController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class PublicationController extends Controller
 {
@@ -47,7 +48,7 @@ class PublicationController extends Controller
      *
      * @return string
      * @throws Exception
-     * @throws exceptions\NotFoundException
+     * @throws NotFoundException
      */
     public function run(Request $request)
     {
@@ -128,7 +129,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function removeKeyword(Request $request)
     {
@@ -151,7 +152,7 @@ class PublicationController extends Controller
      *
      * @return bool|mixed
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function addKeyword(Request $request)
     {
@@ -193,7 +194,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function removeAuthor(Request $request)
     {
@@ -216,7 +217,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function removeCitation(Request $request)
     {
@@ -240,7 +241,7 @@ class PublicationController extends Controller
      *
      * @return bool|mixed
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function addAuthor(Request $request)
     {
@@ -283,7 +284,7 @@ class PublicationController extends Controller
      *
      * @return bool|mixed
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function addCitation(Request $request)
     {
@@ -325,7 +326,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function edit(Request $request)
     {
@@ -359,7 +360,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function delete(Request $request)
     {
@@ -397,7 +398,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function addFile(Request $request)
     {
@@ -442,7 +443,7 @@ class PublicationController extends Controller
      * @return bool
      * @throws FileHandlerException
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function removeFile(Request $request)
     {
@@ -474,7 +475,7 @@ class PublicationController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function removeUrl(Request $request)
     {
@@ -498,7 +499,7 @@ class PublicationController extends Controller
      *
      * @return bool|mixed
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function addUrl(Request $request)
     {

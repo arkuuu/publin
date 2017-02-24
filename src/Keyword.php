@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class Keyword
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Keyword extends Entity
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class Permission
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Permission extends Entity
 {

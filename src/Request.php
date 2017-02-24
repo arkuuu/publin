@@ -1,13 +1,13 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
-use publin\config\Config;
+use arkuuu\Publin\Config\Config;
 
 /**
  * Class Request
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Request
 {

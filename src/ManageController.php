@@ -1,18 +1,18 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Config\Config;
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
+use arkuuu\Publin\Exceptions\PermissionRequiredException;
 use BadMethodCallException;
-use publin\config\Config;
-use publin\src\exceptions\DBDuplicateEntryException;
-use publin\src\exceptions\DBForeignKeyException;
-use publin\src\exceptions\PermissionRequiredException;
 use UnexpectedValueException;
 
 /**
  * Class ManageController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class ManageController extends Controller
 {
@@ -42,7 +42,7 @@ class ManageController extends Controller
      * @return string
      * @throws PermissionRequiredException
      * @throws \Exception
-     * @throws exceptions\NotFoundException
+     * @throws Exceptions\NotFoundException
      */
     public function run(Request $request)
     {

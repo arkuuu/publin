@@ -1,13 +1,13 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 use InvalidArgumentException;
 
 /**
  * Class User
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class User extends Entity
 {

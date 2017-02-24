@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class SearchView
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class SearchView extends View
 {

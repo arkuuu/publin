@@ -1,19 +1,21 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Config\Config;
+use arkuuu\Publin\Exceptions\LoginRequiredException;
+use arkuuu\Publin\Exceptions\NotFoundException;
+use arkuuu\Publin\Exceptions\PermissionRequiredException;
+use arkuuu\Publin\Indices\IndexFactory;
+use arkuuu\Publin\Indices\Other\IndexHelper;
 use BadMethodCallException;
-use publin\config\Config;
-use publin\src\exceptions\NotFoundException;
-use publin\src\exceptions\PermissionRequiredException;
-use publin\src\indices\IndexFactory;
-use publin\src\indices\other\IndexHelper;
+use Exception;
 use UnexpectedValueException;
 
 /**
  * Class AuthorController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class AuthorController extends Controller
 {
@@ -53,8 +55,8 @@ class AuthorController extends Controller
      * @param Request $request
      *
      * @return string
-     * @throws \Exception
-     * @throws exceptions\NotFoundException
+     * @throws Exception
+     * @throws NotFoundException
      */
     public function run(Request $request)
     {
@@ -157,7 +159,7 @@ class AuthorController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function delete(Request $request)
     {
@@ -188,7 +190,7 @@ class AuthorController extends Controller
      *
      * @return bool|int
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function edit(Request $request)
     {

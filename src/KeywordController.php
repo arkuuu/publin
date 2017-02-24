@@ -1,16 +1,18 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\LoginRequiredException;
+use arkuuu\Publin\Exceptions\NotFoundException;
+use arkuuu\Publin\Exceptions\PermissionRequiredException;
 use BadMethodCallException;
-use publin\src\exceptions\NotFoundException;
-use publin\src\exceptions\PermissionRequiredException;
+use Exception;
 use UnexpectedValueException;
 
 /**
  * Class KeywordController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class KeywordController extends Controller
 {
@@ -42,9 +44,9 @@ class KeywordController extends Controller
      *
      * @return string
      * @throws PermissionRequiredException
-     * @throws \Exception
-     * @throws exceptions\LoginRequiredException
-     * @throws exceptions\NotFoundException
+     * @throws Exception
+     * @throws LoginRequiredException
+     * @throws NotFoundException
      */
     public function run(Request $request)
     {
@@ -81,7 +83,7 @@ class KeywordController extends Controller
      *
      * @return bool
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function delete(Request $request)
     {
@@ -112,7 +114,7 @@ class KeywordController extends Controller
      *
      * @return bool|int
      * @throws PermissionRequiredException
-     * @throws exceptions\LoginRequiredException
+     * @throws LoginRequiredException
      */
     private function edit(Request $request)
     {

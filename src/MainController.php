@@ -1,16 +1,16 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\LoginRequiredException;
+use arkuuu\Publin\Exceptions\NotFoundException;
+use arkuuu\Publin\Exceptions\PermissionRequiredException;
 use Exception;
-use publin\src\exceptions\LoginRequiredException;
-use publin\src\exceptions\NotFoundException;
-use publin\src\exceptions\PermissionRequiredException;
 
 /**
  * Class MainController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class MainController extends Controller
 {

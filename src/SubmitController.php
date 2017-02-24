@@ -1,16 +1,17 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\NotFoundException;
+use arkuuu\Publin\Exceptions\PermissionRequiredException;
 use BadMethodCallException;
 use Exception;
-use publin\src\exceptions\DBDuplicateEntryException;
-use publin\src\exceptions\PermissionRequiredException;
 
 /**
  * Class SubmitController
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class SubmitController extends Controller
 {
@@ -45,8 +46,8 @@ class SubmitController extends Controller
      * @param Request $request
      *
      * @return string
-     * @throws \Exception
-     * @throws exceptions\NotFoundException
+     * @throws Exception
+     * @throws NotFoundException
      */
     public function run(Request $request)
     {

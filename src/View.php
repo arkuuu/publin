@@ -1,15 +1,15 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Config\Config;
+use arkuuu\Publin\Exceptions\NotFoundException;
 use Exception;
-use publin\config\Config;
-use publin\src\exceptions\NotFoundException;
 
 /**
  * Class View
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class View
 {
@@ -43,7 +43,7 @@ class View
      */
     public function displayContentOnly()
     {
-        $content = './templates/'.$this->template.'/'.$this->content.'.html';
+        $content = Config::ROOT_PATH.'templates/'.$this->template.'/'.$this->content.'.html';
 
         if (file_exists($content)) {
 
@@ -70,10 +70,10 @@ class View
     {
         header('Content-Type: text/html; charset=UTF-8');
 
-        $header = './templates/'.$this->template.'/header.html';
-        $menu = './templates/'.$this->template.'/menu.html';
-        $content = './templates/'.$this->template.'/'.$this->content.'.html';
-        $footer = './templates/'.$this->template.'/footer.html';
+        $header = Config::ROOT_PATH.'templates/'.$this->template.'/header.html';
+        $menu = Config::ROOT_PATH.'templates/'.$this->template.'/menu.html';
+        $content = Config::ROOT_PATH.'templates/'.$this->template.'/'.$this->content.'.html';
+        $footer = Config::ROOT_PATH.'templates/'.$this->template.'/footer.html';
 
         if (file_exists($header) && file_exists($menu) && file_exists($footer)) {
             if (file_exists($content)) {

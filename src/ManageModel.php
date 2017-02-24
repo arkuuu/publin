@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class ManageModel
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class ManageModel extends Model
 {

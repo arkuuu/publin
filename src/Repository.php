@@ -1,14 +1,16 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
+use arkuuu\Publin\Exceptions\DBDuplicateEntryException;
+use arkuuu\Publin\Exceptions\DBForeignKeyException;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
 /**
  * Class Repository
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class Repository
 {
@@ -257,8 +259,8 @@ class Repository
 
     /**
      * @return array
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function find()
     {
@@ -276,8 +278,8 @@ class Repository
 
     /**
      * @return array|false
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function findSingle()
     {
@@ -295,8 +297,8 @@ class Repository
 
     /**
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function count()
     {
@@ -346,8 +348,8 @@ class Repository
 
     /**
      * @return int
-     * @throws exceptions\DBDuplicateEntryException
-     * @throws exceptions\DBForeignKeyException
+     * @throws DBDuplicateEntryException
+     * @throws DBForeignKeyException
      */
     public function delete()
     {

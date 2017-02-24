@@ -1,11 +1,11 @@
 <?php
 
-namespace publin\src;
+namespace arkuuu\Publin;
 
 /**
  * Class StudyFieldView
  *
- * @package publin\src
+ * @package arkuuu\Publin
  */
 class StudyFieldView extends ViewWithPublications
 {
