@@ -13,7 +13,7 @@ use InvalidArgumentException;
  *
  * @package arkuuu\Publin\Modules
  */
-class DBLPXML extends Module
+class DBLPXML implements ModuleInterface
 {
 
     /**

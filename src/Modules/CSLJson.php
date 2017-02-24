@@ -11,7 +11,7 @@ use Exception;
  *
  * @package arkuuu\Publin\Modules
  */
-class CSLJson extends Module
+class CSLJson implements ModuleInterface
 {
 
     /**

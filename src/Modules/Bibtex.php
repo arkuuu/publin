@@ -11,7 +11,7 @@ use Exception;
 /**
  * Class Bibtex
  */
-class Bibtex extends Module
+class Bibtex implements ModuleInterface
 {
 
     /**

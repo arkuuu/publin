@@ -10,7 +10,7 @@ use DOMDocument;
  *
  * @package arkuuu\Publin\Modules
  */
-class DublinCoreXML extends Module
+class DublinCoreXML implements ModuleInterface
 {
 
     /**

@@ -10,7 +10,7 @@ use arkuuu\Publin\Request;
  *
  * @package arkuuu\Publin\Modules
  */
-class HighwirePressTags extends Module
+class HighwirePressTags implements ModuleInterface
 {
 
     /**

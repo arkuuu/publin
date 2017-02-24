@@ -11,7 +11,7 @@ use Exception;
  *
  * @package arkuuu\Publin\Modules
  */
-class RIS extends Module
+class RIS implements ModuleInterface
 {
 
     /**

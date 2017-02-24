@@ -10,7 +10,7 @@ use arkuuu\Publin\Request;
  *
  * @package arkuuu\Publin\Modules
  */
-class PRISMTags extends Module
+class PRISMTags implements ModuleInterface
 {
 
     /**

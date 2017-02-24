@@ -7,7 +7,7 @@ namespace arkuuu\Publin\Modules;
  *
  * @package arkuuu\Publin\Modules
  */
-class SCF extends Module
+class SCF implements ModuleInterface
 {
 
     /**

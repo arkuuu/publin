@@ -10,7 +10,7 @@ use arkuuu\Publin\Request;
  *
  * @package arkuuu\Publin\Modules
  */
-class DublinCoreTags extends Module
+class DublinCoreTags implements ModuleInterface
 {
 
     /**
