@@ -36,13 +36,13 @@ class ViewWithPublications extends View
         $string = '';
 
         foreach ($this->publications as $publication) {
-            $string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
+            $string .= '<li class="list-group-item">'.$this->showCitation($publication).'</li>'."\n";
         }
 
         if (!empty($string)) {
             return $string;
         } else {
-            return '<li>No publications found</li>';
+            return '<li class="list-group-item disabled">No publications found</li>';
         }
     }
 

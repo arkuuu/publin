@@ -3,9 +3,18 @@
 	<h1><?php echo $this -> showName() ?></h1>
 	<p>Field of Study</p>
 
-	<h2>Publications</h2>
-	<ul>
-		<?php echo $this -> showPublications() ?>
-	</ul>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					Publications
+					<span class="badge badge-default"><?php echo $this->showPublicationsNum() ?></span>
+				</div>
+				<ul class="list-group">
+					<?php echo $this->showPublications() ?>
+				</ul>
+			</div>
+		</div>
+	</div>
 
 </div>

@@ -7,19 +7,40 @@ Light grey: #e4e4e4
 */
 
 
+.row {
+    margin-bottom: 2rem;
+}
+.spacer-xs {
+    margin-bottom: 1rem;
+}
+.spacer-sm {
+    margin-bottom: 1.5rem;
+}
 
 .navbar {
     background-color: #004b5a;
-}
-
-#navWrapper {
-    margin-bottom: 25px;
 }
 
 #loginForm {
     /* Center horizontally */
     max-width: 200px;
     margin: 0 auto;
+}
+
+.card-block :last-child {
+    margin-bottom: 0;
+}
+
+.card > .list-group .list-group-item {
+    border-left-width: 0;
+    border-right-width: 0;
+}
+.card > .list-group .list-group-item:last-child {
+    border-bottom-width: 0;
+}
+
+.card > .list-group .list-group-item:first-child {
+    border-top-width: 0;
 }
 
 div.clearBoth {
@@ -107,10 +128,6 @@ div.error li {
 }
 
 /* Citation stuff */
-div.citation {
-    padding-bottom: 10px;
-}
-
 div.citation .title {
     /* can't change stuff already defined by the a element */
     font-weight: bold;

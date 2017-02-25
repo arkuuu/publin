@@ -28,11 +28,19 @@
 		<?php echo $this->showIndices() ?>
 	</ul>
 
-	<h2>Publications</h2>
-	<ul>
-		<?php echo $this->showPublications() ?>
-	</ul>
-	<p class="notice">This list may be incomplete. <a href="#">Find out why.</a></p>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					Publications
+					<span class="badge badge-default"><?php echo $this->showPublicationsNum() ?></span>
+				</div>
+				<ul class="list-group">
+					<?php echo $this->showPublications() ?>
+				</ul>
+			</div>
+		</div>
+	</div>
 
 	<h2>Search this author in</h2>
 	<ul>

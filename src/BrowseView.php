@@ -100,7 +100,7 @@ class BrowseView extends View
      */
     public function showBrowseType()
     {
-        return 'Browse '.$this->browse_type['name'];
+        return $this->browse_type['name'] ?: 'Browse';
     }
 
 
@@ -118,25 +118,25 @@ class BrowseView extends View
         if (!empty($browse_list)) {
             if ($browse_type == 'year') {
                 foreach ($browse_list as $year) {
-                    $string .= '<li><a href="'.$this->browse_type['result_url'].$year.'">'.$year.'</a></li>'."\n";
+                    $string .= '<a class="list-group-item list-group-item-action" href="'.$this->browse_type['result_url'].$year.'">'.$year.'</a>'."\n";
                 }
             } else if ($browse_type == 'author') {
                 /* @var $author Author */
                 foreach ($browse_list as $author) {
-                    $string .= '<li><a href="'.$this->browse_type['result_url'].$author->getId().'">'.$author->getLastName().', '.$author->getFirstName().'</a></li>'."\n";
+                    $string .= '<a class="list-group-item list-group-item-action" href="'.$this->browse_type['result_url'].$author->getId().'">'.$author->getLastName().', '.$author->getFirstName().'</a>'."\n";
                 }
             } else {
                 /* @var $object Object */
                 foreach ($browse_list as $object) {
-                    $string .= '<li><a href="'.$this->browse_type['result_url'].$object->getId().'">'.$object->getName().'</a></li>'."\n";
+                    $string .= '<a class="list-group-item list-group-item-action" href="'.$this->browse_type['result_url'].$object->getId().'">'.$object->getName().'</a>'."\n";
                 }
             }
         } else if (!empty($browse_type)) {
             // No results, but browse type is requested.
-            $string .= '<li>Nothing found</li>';
+            $string .= '<span class="list-group-item disabled">Nothing found</span>';
         } else {
             foreach ($this->browse_type_list as $browse_type) {
-                $string .= '<li><a href="'.$browse_type['url'].'">'.$browse_type['name'].'</a></li>'."\n";
+                $string .= '<a class="list-group-item list-group-item-action" href="'.$browse_type['url'].'">'.$browse_type['name'].'</a>'."\n";
             }
         }
 
@@ -169,7 +169,7 @@ class BrowseView extends View
 
         foreach ($this->model->getBrowseResult() as $publication) {
 
-            $string .= '<li>'.$this->showCitation($publication).'</li>'."\n";
+            $string .= '<li class="list-group-item">'.$this->showCitation($publication).'</li>'."\n";
         }
 
         return $string;

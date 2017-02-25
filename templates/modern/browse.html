@@ -1,16 +1,20 @@
 <div class="container">
+	<div class="row">
+		<div class="col-md-12">
 
-	<h1><?php echo $this -> showBrowseType() ?></h1>
-	<?php if (!($this -> isBrowseResult())) { ?>
-	<ul>
-		<?php echo $this -> showBrowseList() ?>
-	</ul>
-	<?php } ?>
-	<?php if ($this -> isBrowseResult()) { ?>
-	<p>Found entries: </p>
-	<ul>
-		<?php echo $this -> showBrowseResult() ?>
-	</ul>
-	<?php } ?>
+			<h1><?php echo $this -> showBrowseType() ?></h1>
+			<div class="spacer-xs"></div>
+			<?php if (!($this -> isBrowseResult())) { ?>
+			<div class="list-group">
+				<?php echo $this -> showBrowseList() ?>
+			</div>
+			<?php } ?>
+			<?php if ($this -> isBrowseResult()) { ?>
+			<ul class="list-group">
+				<?php echo $this -> showBrowseResult() ?>
+			</ul>
+			<?php } ?>
 
+		</div>
+	</div>
 </div>

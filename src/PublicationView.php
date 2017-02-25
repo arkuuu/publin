@@ -167,9 +167,9 @@ class PublicationView extends View
         $citations = $this->publication->getCitations();
         $num = count($citations);
         if ($num > 0) {
-            $result .= '<ul>';
+            $result .= '<ul class="list-group">';
             foreach ($citations as $citation) {
-                $result .= '<li>'.$this->showCitation($citation->getCitationPublication()).'</li>'."\n";
+                $result .= '<li class="list-group-item">'.$this->showCitation($citation->getCitationPublication()).'</li>'."\n";
             }
             $result .= '</ul>';
         }
@@ -434,7 +434,7 @@ class PublicationView extends View
 
         foreach (BibLink::getServices() as $service) {
             $url = BibLink::getPublicationsLink($this->publication, $service);
-            $string .= '<li><a href="'.$this->html($url).'" target="_blank">'.$this->html($service).'</a></li>';
+            $string .= '<a class="list-group-item list-group-item-action" href="'.$this->html($url).'" target="_blank">'.$this->html($service).'</a>';
         }
 
         return $string;
@@ -451,6 +451,40 @@ class PublicationView extends View
     public function showExport($format)
     {
         return FormatHandler::export($this->publication, $format);
+    }
+
+
+    /**
+     * @param string $format
+     * @param string $title
+     *
+     * @return string
+     */
+    public function renderExportModal($format, $title)
+    {
+        $id = $this->html('cite'.ucfirst($format));
+        $title = $this->html($title);
+        $content = ($this->html(trim(FormatHandler::export($this->publication, $format))));
+
+        return <<<HTML
+<div class="modal fade" id="{$id}" tabindex="-1" role="dialog" aria-labelledby="{$id}Title"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="{$id}Title">{$title}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<pre><code>{$content}</code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+HTML;
+
     }
 
 

@@ -1,17 +1,7 @@
 <div class="container">
 
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$('.export textarea').hide();
-			$('.export a').click(function (e) {
-				e.preventDefault();
-				var textarea = $(this).attr('class');
-				$('textarea.' + textarea).toggle(400);
-			});
-		});
-	</script>
-
-	<h1><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h1>
+	<h2><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h2>
+	<p>by <?php echo $this -> showAuthors();?></p>
 	<?php if (!$this->isEditMode()) { ?>
 
 	<?php if ($this->hasPermission('publication_edit')) { ?>
@@ -24,150 +14,168 @@
 	</p>
 	<?php } ?>
 
-	<h2>Details</h2>
-	<table class="publicationDetails">
-		<?php
-    echo $this -> showAuthors() ? '
-		<tr>
-			<th>Authors</th>
-			<td>'.$this -> showAuthors().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showJournal() ? '
-		<tr>
-			<th>Journal</th>
-			<td>'.$this -> showJournal().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showVolume() ? '
-		<tr>
-			<th>Volume</th>
-			<td>'.$this -> showVolume().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showNumber() ? '
-		<tr>
-			<th>Number</th>
-			<td>'.$this -> showNumber().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showBooktitle() ? '
-		<tr>
-			<th>Booktitle</th>
-			<td>'.$this -> showBooktitle().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showSeries() ? '
-		<tr>
-			<th>Series</th>
-			<td>'.$this -> showSeries().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showEdition() ? '
-		<tr>
-			<th>Edition</th>
-			<td>'.$this -> showEdition().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showPages() ? '
-		<tr>
-			<th>Pages</th>
-			<td>'.$this -> showPages().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showNote() ? '
-		<tr>
-			<th>Note</th>
-			<td>'.$this -> showNote().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showLocation() ? '
-		<tr>
-			<th>Location</th>
-			<td>'.$this -> showLocation().'</td>
-		</tr>
-				  ' : '';
+	<div class="row">
+		<div class="col-md-9 col-xs-12">
+			<table class="publicationDetails">
+				<?php echo $this -> showJournal() ? '
+				<tr>
+					<th>Journal</th>
+					<td>'.$this -> showJournal().'</td>
+				</tr>
+									' : '';
+									echo $this -> showVolume() ? '
+				<tr>
+					<th>Volume</th>
+					<td>'.$this -> showVolume().'</td>
+				</tr>
+									' : '';
+									echo $this -> showNumber() ? '
+				<tr>
+					<th>Number</th>
+					<td>'.$this -> showNumber().'</td>
+				</tr>
+									' : '';
+									echo $this -> showBooktitle() ? '
+				<tr>
+					<th>Booktitle</th>
+					<td>'.$this -> showBooktitle().'</td>
+				</tr>
+									' : '';
+									echo $this -> showSeries() ? '
+				<tr>
+					<th>Series</th>
+					<td>'.$this -> showSeries().'</td>
+				</tr>
+									' : '';
+									echo $this -> showEdition() ? '
+				<tr>
+					<th>Edition</th>
+					<td>'.$this -> showEdition().'</td>
+				</tr>
+									' : '';
+									echo $this -> showPages() ? '
+				<tr>
+					<th>Pages</th>
+					<td>'.$this -> showPages().'</td>
+				</tr>
+									' : '';
+									echo $this -> showNote() ? '
+				<tr>
+					<th>Note</th>
+					<td>'.$this -> showNote().'</td>
+				</tr>
+									' : '';
+									echo $this -> showLocation() ? '
+				<tr>
+					<th>Location</th>
+					<td>'.$this -> showLocation().'</td>
+				</tr>
+									' : '';
 
-				  echo $this -> showDatePublished() ? '
-		<tr>
-			<th>Date</th>
-			<td>'.$this -> showDatePublished().'</td>
-		</tr>
-				  ' : '';
+									echo $this -> showDatePublished() ? '
+				<tr>
+					<th>Date</th>
+					<td>'.$this -> showDatePublished().'</td>
+				</tr>
+									' : '';
 
-				  echo $this -> showPublisher() ? '
-		<tr>
-			<th>Publisher</th>
-			<td>'.$this -> showPublisher().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showInstitution() ? '
-		<tr>
-			<th>Institution</th>
-			<td>'.$this -> showInstitution().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showSchool() ? '
-		<tr>
-			<th>School</th>
-			<td>'.$this -> showSchool().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showAddress() ? '
-		<tr>
-			<th>Address</th>
-			<td>'.$this -> showAddress().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showHowpublished() ? '
-		<tr>
-			<th>Howpublished</th>
-			<td>'.$this -> showHowpublished().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showCopyright() ? '
-		<tr>
-			<th>Copyright</th>
-			<td>'.$this -> showCopyright().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showDoi() ? '
-		<tr>
-			<th>DOI</th>
-			<td><a href="http://dx.doi.org/'.$this -> showDoi().'" target="_blank">'.$this -> showDoi().'</a></td>
-		</tr>
-				  ' : '';
-				  echo $this -> showIsbn() ? '
-		<tr>
-			<th>ISBN</th>
-			<td>'.$this -> showIsbn().'</td>
-		</tr>
-				  ' : '';
+									echo $this -> showPublisher() ? '
+				<tr>
+					<th>Publisher</th>
+					<td>'.$this -> showPublisher().'</td>
+				</tr>
+									' : '';
+									echo $this -> showInstitution() ? '
+				<tr>
+					<th>Institution</th>
+					<td>'.$this -> showInstitution().'</td>
+				</tr>
+									' : '';
+									echo $this -> showSchool() ? '
+				<tr>
+					<th>School</th>
+					<td>'.$this -> showSchool().'</td>
+				</tr>
+									' : '';
+									echo $this -> showAddress() ? '
+				<tr>
+					<th>Address</th>
+					<td>'.$this -> showAddress().'</td>
+				</tr>
+									' : '';
+									echo $this -> showHowpublished() ? '
+				<tr>
+					<th>Howpublished</th>
+					<td>'.$this -> showHowpublished().'</td>
+				</tr>
+									' : '';
+									echo $this -> showCopyright() ? '
+				<tr>
+					<th>Copyright</th>
+					<td>'.$this -> showCopyright().'</td>
+				</tr>
+									' : '';
+									echo $this -> showDoi() ? '
+				<tr>
+					<th>DOI</th>
+					<td><a href="http://dx.doi.org/'.$this -> showDoi().'" target="_blank">'.$this ->
+																						   showDoi().'</a>
+					</td>
+				</tr>
+									' : '';
+									echo $this -> showIsbn() ? '
+				<tr>
+					<th>ISBN</th>
+					<td>'.$this -> showIsbn().'</td>
+				</tr>
+									' : '';
 
-				  echo $this -> showStudyField() ? '
-		<tr>
-			<th>Field of Study</th>
-			<td>'.$this -> showStudyField().'</td>
-		</tr>
-				  ' : '';
-				  echo $this -> showType() ? '
-		<tr>
-			<th>Type</th>
-			<td>'.$this -> showType().'</td>
-		</tr>
-				  ' : '';
-				  ?>
-	</table>
+									echo $this -> showStudyField() ? '
+				<tr>
+					<th>Field of Study</th>
+					<td>'.$this -> showStudyField().'</td>
+				</tr>
+									' : '';
+									echo $this -> showType() ? '
+				<tr>
+					<th>Type</th>
+					<td>'.$this -> showType().'</td>
+				</tr>
+									' : '';
+									?>
+			</table>
 
-	<?php if ($this -> showAbstract()) { ?>
-	<h2>Abstract</h2>
-	<p><?php echo $this -> showAbstract() ?></p>
-	<?php } ?>
+		</div>
+		<div class="col-md-3 col-xs-12">
+			<?php if ($this -> showKeywords()) { ?>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">Keywords</div>
+						<div class="card-block">
+							<p><?php echo $this -> showKeywords() ?></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php } ?>
+		</div>
+	</div>
 
-	<?php if ($this -> showKeywords()) { ?>
-	<h2>Keywords</h2>
-	<p><?php echo $this -> showKeywords() ?></p>
-	<?php } ?>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">Summary</div>
+				<div class="card-block">
+					<h3>Keywords</h3>
+					<p><?php echo $this -> showKeywords() ?: 'None assigned yet' ?></p>
+					<h3>Abstract</h3>
+					<p><?php echo $this->showAbstract() ?: 'None' ?></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 	<?php if ($this -> showFiles()) { ?>
 	<h2>Downloads</h2>
@@ -177,8 +185,14 @@
 	<?php } ?>
 
 	<?php if ($this -> showCitations()) { ?>
-	<h2>Citations</h2>
-	<?php echo $this -> showCitations() ?>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">Citations</div>
+				<?php echo $this -> showCitations() ?>
+			</div>
+		</div>
+	</div>
 	<?php } ?>
 
 	<?php if ($this -> showUrls()) { ?>
@@ -189,52 +203,35 @@
 	<?php } ?>
 
 
-	<h2>Cite this publication</h2>
-	<ul>
-		<li>
-			<div class="export">
-				<a href="#" class="bibtex">BibTeX</a><br/>
-				<textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this->
-					showExport('Bibtex') ?></textarea>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="card">
+				<div class="card-header">Cite this publication</div>
+				<?php echo $this->renderExportModal('Bibtex', 'BibTeX') ?>
+				<?php echo $this->renderExportModal('RIS', 'RIS') ?>
+				<?php echo $this->renderExportModal('DBLPXML', 'DBLP XML') ?>
+				<?php echo $this->renderExportModal('DublinCoreXML', 'DublinCore XML') ?>
+				<?php echo $this->renderExportModal('CSLJson', 'CSL Json') ?>
+				<div class="list-group">
+					<a class="list-group-item list-group-item-action" href="#" data-toggle="modal" data-target="#citeBibtex">BibTeX</a>
+					<a class="list-group-item list-group-item-action" href="#" data-toggle="modal" data-target="#citeRIS">RIS</a>
+					<a class="list-group-item list-group-item-action" href="#" data-toggle="modal" data-target="#citeDBLPXML">DBLP XML</a>
+					<a class="list-group-item list-group-item-action" href="#" data-toggle="modal" data-target="#citeDublinCoreXML">DublinCoreXML</a>
+					<a class="list-group-item list-group-item-action" href="#" data-toggle="modal" data-target="#citeCSLJson">CSL Json</a>
+					<a class="list-group-item list-group-item-action" href="http://www.mendeley.com/import/?url=<?php echo $this->showPublinUrl()?>"
+						   target="_blank">Mendeley</a>
+				</div>
 			</div>
-		</li>
-		<li>
-			<div class="export">
-				<a href="#" class="ris">RIS</a><br/>
-				<textarea class="ris" rows="10" cols="80" readonly><?php echo $this->showExport('RIS') ?></textarea>
+		</div>
+		<div class="col-md-3">
+			<div class="card">
+				<div class="card-header">Search this publication</div>
+					<div class="list-group">
+						<?php echo $this -> showBibLinks() ?>
+					</div>
 			</div>
-		</li>
-		<li>
-			<div class="export">
-				<a href="#" class="dblp-xml">DBLP XML</a><br/>
-				<textarea class="dblp-xml" rows="10" cols="80" readonly><?php echo $this->
-					showExport('DBLPXML') ?></textarea>
-			</div>
-		</li>
-		<li>
-			<div class="export">
-				<a href="#" class="dc-xml">DublinCore XML</a><br/>
-				<textarea class="dc-xml" rows="10" cols="80" readonly><?php echo $this->
-					showExport('DublinCoreXML') ?></textarea>
-			</div>
-		</li>
-		<li>
-			<div class="export">
-				<a href="#" class="csl-json">CSL Json</a><br/>
-				<textarea class="csl-json" rows="10" cols="80" readonly><?php echo $this->
-					showExport('CSLJson') ?></textarea>
-			</div>
-		</li>
-		<li>
-			<a href="http://www.mendeley.com/import/?url=<?php echo $this->showPublinUrl()?>" target="_blank">Add to
-																											  your
-																											  Mendeley
-																											  library</a>
-		</li>
-	</ul>
-
-	<h2>Search this publication in</h2>
-	<ul><?php echo $this -> showBibLinks() ?></ul>
+		</div>
+	</div>
 
 
 	<?php } else { ?>
