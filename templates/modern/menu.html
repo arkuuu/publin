@@ -1,34 +1,41 @@
-<div id="top">
-    <div class="contentWrapper">
-        <div id="logo"></div>
-        <div id="nav">
-            <ul>
-                <li><?php echo $this->showLink('search', 'Search') ?></li>
-                <li><?php echo $this->showLink('browse', 'Browse') ?></li>
-                <li><?php echo $this->showLink('about', 'About') ?></li>
-            </ul>
+<nav class="navbar navbar-inverse navbar-toggleable-md">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+            <img src="assets/img/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+            Publin
+        </a>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <div class="navbar-nav mr-auto">
+                <?php echo $this->renderNavItem('search', 'Search') ?>
+                <?php echo $this->renderNavItem('browse', 'Browse') ?>
+                <?php echo $this->renderNavItem('about', 'About') ?>
+            </div>
+            <div class="navbar-nav">
+                <?php if ($this->showUserName()) { ?>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $this->showUserName() ?>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userMenu">
+                        <?php echo $this->hasPermission('publication_submit') ? $this->renderDropdownItem('submit', 'Submit') : '' ?>
+                        <?php echo $this->hasPermission('manage') ? $this->renderDropdownItem('manage', 'Manage') : ''?>
+                        <?php echo $this->renderDropdownItem('user', 'Settings') ?>
+                        <?php echo $this->renderDropdownItem('logout', 'Logout') ?>
+                    </div>
+                </div>
+                <?php } else { echo $this->renderNavItem('login', 'Login'); }?>
+            </div>
         </div>
-        <div id="login">
-            <ul>
-                <?php if ($this->showUserName()) {echo '
-                <li>'.$this->showLink('user', $this->showUserName()).'</li>
-                ';}?>
-                <?php if ($this->hasPermission('publication_submit')) {echo '
-                <li>'.$this->showLink('submit', 'Submit').'</li>
-                ';}?>
-                <?php if ($this->hasPermission('manage')) {echo '
-                <li>'.$this->showLink('manage', 'Manage').'</li>
-                ';}?>
-                <?php if ($this->showUserName()) {echo '
-                <li>'.$this->showLink('logout', 'Logout').'</li>
-                ';} else {echo '
-                <li>'.$this->showLink('login', 'Login').'</li>
-                ';}?>
-            </ul>
-        </div>
-        <div class="clearBoth"></div>
     </div>
-</div>
+</nav>
+
+
 <div class="contentWrapper">
     <div id="pageContent">
         <?php echo $this->showErrors() ?>

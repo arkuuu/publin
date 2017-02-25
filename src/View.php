@@ -30,7 +30,7 @@ class View
      * @param       $content
      * @param array $errors
      */
-    public function __construct($content, $errors = array())
+    public function __construct($content, $errors = [])
     {
         $this->content = $content;
         $this->errors = $errors;
@@ -188,20 +188,37 @@ class View
 
 
     /**
-     * @param $page
-     * @param $title
+     * Renders a nav item for bootstrap nav bar.
+     *
+     * @param string $page
+     * @param string $title
      *
      * @return string
      */
-    public function showLink($page, $title)
+    public function renderNavItem($page, $title)
     {
-        $url = Request::createUrl(array('p' => $page));
+        $active = $this->content == $page ? 'active' : '';
+        $url = $this->html(Request::createUrl(['p' => $page]));
+        $title = $this->html($title);
 
-        if ($this->content == $page) {
-            return '<a href="'.$this->html($url).'" class="active">'.$this->html($title).'</a>';
-        } else {
-            return '<a href="'.$this->html($url).'">'.$this->html($title).'</a>';
-        }
+        return '<a class="nav-item nav-link '.$active.'" href="'.$url.'">'.$title.'</a>';
+    }
+
+
+    /**
+     * Renders an item for bootstrap dropdown in nav bar.
+     *
+     * @param string $page
+     * @param string $title
+     *
+     * @return string
+     */
+    public function renderDropdownItem($page, $title)
+    {
+        $url = $this->html(Request::createUrl(['p' => $page]));
+        $title = $this->html($title);
+
+        return '<a class="dropdown-item" href="'.$url.'">'.$title.'</a>';
     }
 
 
@@ -216,7 +233,7 @@ class View
         $citation = '<div class="citation">';
 
         /* shows the title and links to the publication page */
-        $url = Request::createUrl(array('p' => 'publication', 'id' => $publication->getId()));
+        $url = Request::createUrl(['p' => 'publication', 'id' => $publication->getId()]);
         $citation .= '<a href="'.$this->html($url).'" class="title">'.$this->html($publication->getTitle()).'</a><br/>';
 
         /* creates list of authors */
@@ -275,16 +292,16 @@ class View
             }
         }
 
-        $links = array();
+        $links = [];
         /* shows full text link */
-        $file  = $publication->getFullTextFile();
+        $file = $publication->getFullTextFile();
         if ($file) {
             $title = $file->getExtension() == '.pdf' ? 'PDF' : 'FULLTEXT';
-            $url = Request::createUrl(array(
+            $url = Request::createUrl([
                 'p'       => 'publication',
                 'id'      => $publication->getId(),
                 'file_id' => $file->getId(),
-            ));
+            ]);
             $links[] = '<a href="'.$this->html($url).'" target="_blank">'.$this->html($title).'</a>';
         }
         /* shows DOI link */

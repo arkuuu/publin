@@ -8,10 +8,7 @@ Light grey: #e4e4e4
 
 
 
-div#top {
-    width: 100%;
-    height: auto;
-    /*padding-top: 50px;*/
+.navbar {
     background-color: #004b5a;
 }
 
@@ -24,56 +21,6 @@ div.contentWrapper {
     min-width: 300px;
     max-width: 800px;
     margin: auto;
-    /*background-color: red;*/
-}
-
-div#nav {
-    float: left;
-    /*background-color: green;*/
-}
-
-div#login {
-    float: right;
-    /*background-color: red;*/
-}
-
-div#nav ul, div#login ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-div#nav li {
-    padding-right: 15px;
-    float: left;
-}
-
-div#login li {
-    padding-left: 15px;
-    float: left;
-}
-
-div#nav a, div#login a {
-    display: block;
-    padding: 5px;
-    color: white;
-    text-decoration: none;
-}
-
-div#nav a:hover,
-div#nav a.active,
-div#login a:hover,
-div#login a.active {
-    color: #004b5a;
-    background-color: white;
-}
-
-div#logo {
-    height: 80px;
-    width: 209px;
-    background: url(../img/logo.svg) no-repeat left;
-    background-size: contain;
     /*background-color: red;*/
 }
 
