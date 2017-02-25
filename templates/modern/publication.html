@@ -1,358 +1,366 @@
+<div class="container">
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.export textarea').hide();
-        $('.export a').click(function (e) {
-            e.preventDefault();
-            var textarea = $(this).attr('class');
-            $('textarea.' + textarea).toggle(400);
-        });
-    });
-</script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.export textarea').hide();
+			$('.export a').click(function (e) {
+				e.preventDefault();
+				var textarea = $(this).attr('class');
+				$('textarea.' + textarea).toggle(400);
+			});
+		});
+	</script>
 
-<h1><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h1>
-<?php if (!$this->isEditMode()) { ?>
+	<h1><?php echo $this -> showTitle() ? $this -> showTitle() : 'Unknown Title' ?></h1>
+	<?php if (!$this->isEditMode()) { ?>
 
-<?php if ($this->hasPermission('publication_edit')) { ?>
-<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit publication</a></p>
-<?php } ?>
+	<?php if ($this->hasPermission('publication_edit')) { ?>
+	<p><a href="<?php echo $this->showLinkToSelf('edit') ?>">Edit publication</a></p>
+	<?php } ?>
 
-<?php if ($this -> showFullTextFile()) { ?>
-<p>
-    <?php echo $this -> showFullTextFile() ?>
-</p>
-<?php } ?>
+	<?php if ($this -> showFullTextFile()) { ?>
+	<p>
+		<?php echo $this -> showFullTextFile() ?>
+	</p>
+	<?php } ?>
 
-<h2>Details</h2>
-<table class="publicationDetails">
-    <?php
+	<h2>Details</h2>
+	<table class="publicationDetails">
+		<?php
     echo $this -> showAuthors() ? '
-    <tr>
-        <th>Authors</th>
-        <td>'.$this -> showAuthors().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showJournal() ? '
-    <tr>
-        <th>Journal</th>
-        <td>'.$this -> showJournal().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showVolume() ? '
-    <tr>
-        <th>Volume</th>
-        <td>'.$this -> showVolume().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showNumber() ? '
-    <tr>
-        <th>Number</th>
-        <td>'.$this -> showNumber().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showBooktitle() ? '
-    <tr>
-        <th>Booktitle</th>
-        <td>'.$this -> showBooktitle().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showSeries() ? '
-    <tr>
-        <th>Series</th>
-        <td>'.$this -> showSeries().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showEdition() ? '
-    <tr>
-        <th>Edition</th>
-        <td>'.$this -> showEdition().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showPages() ? '
-    <tr>
-        <th>Pages</th>
-        <td>'.$this -> showPages().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showNote() ? '
-    <tr>
-        <th>Note</th>
-        <td>'.$this -> showNote().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showLocation() ? '
-    <tr>
-        <th>Location</th>
-        <td>'.$this -> showLocation().'</td>
-    </tr>
-    ' : '';
+		<tr>
+			<th>Authors</th>
+			<td>'.$this -> showAuthors().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showJournal() ? '
+		<tr>
+			<th>Journal</th>
+			<td>'.$this -> showJournal().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showVolume() ? '
+		<tr>
+			<th>Volume</th>
+			<td>'.$this -> showVolume().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showNumber() ? '
+		<tr>
+			<th>Number</th>
+			<td>'.$this -> showNumber().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showBooktitle() ? '
+		<tr>
+			<th>Booktitle</th>
+			<td>'.$this -> showBooktitle().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showSeries() ? '
+		<tr>
+			<th>Series</th>
+			<td>'.$this -> showSeries().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showEdition() ? '
+		<tr>
+			<th>Edition</th>
+			<td>'.$this -> showEdition().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showPages() ? '
+		<tr>
+			<th>Pages</th>
+			<td>'.$this -> showPages().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showNote() ? '
+		<tr>
+			<th>Note</th>
+			<td>'.$this -> showNote().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showLocation() ? '
+		<tr>
+			<th>Location</th>
+			<td>'.$this -> showLocation().'</td>
+		</tr>
+				  ' : '';
 
-    echo $this -> showDatePublished() ? '
-    <tr>
-        <th>Date</th>
-        <td>'.$this -> showDatePublished().'</td>
-    </tr>
-    ' : '';
+				  echo $this -> showDatePublished() ? '
+		<tr>
+			<th>Date</th>
+			<td>'.$this -> showDatePublished().'</td>
+		</tr>
+				  ' : '';
 
-    echo $this -> showPublisher() ? '
-    <tr>
-        <th>Publisher</th>
-        <td>'.$this -> showPublisher().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showInstitution() ? '
-    <tr>
-        <th>Institution</th>
-        <td>'.$this -> showInstitution().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showSchool() ? '
-    <tr>
-        <th>School</th>
-        <td>'.$this -> showSchool().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showAddress() ? '
-    <tr>
-        <th>Address</th>
-        <td>'.$this -> showAddress().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showHowpublished() ? '
-    <tr>
-        <th>Howpublished</th>
-        <td>'.$this -> showHowpublished().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showCopyright() ? '
-    <tr>
-        <th>Copyright</th>
-        <td>'.$this -> showCopyright().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showDoi() ? '
-    <tr>
-        <th>DOI</th>
-        <td><a href="http://dx.doi.org/'.$this -> showDoi().'" target="_blank">'.$this -> showDoi().'</a></td>
-    </tr>
-    ' : '';
-    echo $this -> showIsbn() ? '
-    <tr>
-        <th>ISBN</th>
-        <td>'.$this -> showIsbn().'</td>
-    </tr>
-    ' : '';
+				  echo $this -> showPublisher() ? '
+		<tr>
+			<th>Publisher</th>
+			<td>'.$this -> showPublisher().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showInstitution() ? '
+		<tr>
+			<th>Institution</th>
+			<td>'.$this -> showInstitution().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showSchool() ? '
+		<tr>
+			<th>School</th>
+			<td>'.$this -> showSchool().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showAddress() ? '
+		<tr>
+			<th>Address</th>
+			<td>'.$this -> showAddress().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showHowpublished() ? '
+		<tr>
+			<th>Howpublished</th>
+			<td>'.$this -> showHowpublished().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showCopyright() ? '
+		<tr>
+			<th>Copyright</th>
+			<td>'.$this -> showCopyright().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showDoi() ? '
+		<tr>
+			<th>DOI</th>
+			<td><a href="http://dx.doi.org/'.$this -> showDoi().'" target="_blank">'.$this -> showDoi().'</a></td>
+		</tr>
+				  ' : '';
+				  echo $this -> showIsbn() ? '
+		<tr>
+			<th>ISBN</th>
+			<td>'.$this -> showIsbn().'</td>
+		</tr>
+				  ' : '';
 
-    echo $this -> showStudyField() ? '
-    <tr>
-        <th>Field of Study</th>
-        <td>'.$this -> showStudyField().'</td>
-    </tr>
-    ' : '';
-    echo $this -> showType() ? '
-    <tr>
-        <th>Type</th>
-        <td>'.$this -> showType().'</td>
-    </tr>
-    ' : '';
-    ?>
-</table>
+				  echo $this -> showStudyField() ? '
+		<tr>
+			<th>Field of Study</th>
+			<td>'.$this -> showStudyField().'</td>
+		</tr>
+				  ' : '';
+				  echo $this -> showType() ? '
+		<tr>
+			<th>Type</th>
+			<td>'.$this -> showType().'</td>
+		</tr>
+				  ' : '';
+				  ?>
+	</table>
 
-<?php if ($this -> showAbstract()) { ?>
-<h2>Abstract</h2>
-<p><?php echo $this -> showAbstract() ?></p>
-<?php } ?>
+	<?php if ($this -> showAbstract()) { ?>
+	<h2>Abstract</h2>
+	<p><?php echo $this -> showAbstract() ?></p>
+	<?php } ?>
 
-<?php if ($this -> showKeywords()) { ?>
-<h2>Keywords</h2>
-<p><?php echo $this -> showKeywords() ?></p>
-<?php } ?>
+	<?php if ($this -> showKeywords()) { ?>
+	<h2>Keywords</h2>
+	<p><?php echo $this -> showKeywords() ?></p>
+	<?php } ?>
 
-<?php if ($this -> showFiles()) { ?>
-<h2>Downloads</h2>
-<ul>
-    <?php echo $this -> showFiles() ?>
-</ul>
-<?php } ?>
+	<?php if ($this -> showFiles()) { ?>
+	<h2>Downloads</h2>
+	<ul>
+		<?php echo $this -> showFiles() ?>
+	</ul>
+	<?php } ?>
 
-<?php if ($this -> showCitations()) { ?>
-<h2>Citations</h2>
-<?php echo $this -> showCitations() ?>
-<?php } ?>
+	<?php if ($this -> showCitations()) { ?>
+	<h2>Citations</h2>
+	<?php echo $this -> showCitations() ?>
+	<?php } ?>
 
-<?php if ($this -> showUrls()) { ?>
-<h2>Links</h2>
-<ul>
-    <?php echo $this -> showUrls() ?>
-</ul>
-<?php } ?>
-
-
-<h2>Cite this publication</h2>
-<ul>
-    <li>
-        <div class="export">
-            <a href="#" class="bibtex">BibTeX</a><br/>
-            <textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this->showExport('Bibtex') ?></textarea>
-        </div>
-    </li>
-    <li>
-        <div class="export">
-            <a href="#" class="ris">RIS</a><br/>
-            <textarea class="ris" rows="10" cols="80" readonly><?php echo $this->showExport('RIS') ?></textarea>
-        </div>
-    </li>
-    <li>
-        <div class="export">
-            <a href="#" class="dblp-xml">DBLP XML</a><br/>
-            <textarea class="dblp-xml" rows="10" cols="80" readonly><?php echo $this->
-                showExport('DBLPXML') ?></textarea>
-        </div>
-    </li>
-    <li>
-        <div class="export">
-            <a href="#" class="dc-xml">DublinCore XML</a><br/>
-            <textarea class="dc-xml" rows="10" cols="80" readonly><?php echo $this->
-                showExport('DublinCoreXML') ?></textarea>
-        </div>
-    </li>
-    <li>
-        <div class="export">
-            <a href="#" class="csl-json">CSL Json</a><br/>
-            <textarea class="csl-json" rows="10" cols="80" readonly><?php echo $this->
-                showExport('CSLJson') ?></textarea>
-        </div>
-    </li>
-    <li>
-        <a href="http://www.mendeley.com/import/?url=<?php echo $this->showPublinUrl()?>" target="_blank">Add to your
-            Mendeley
-            library</a>
-    </li>
-</ul>
-
-<h2>Search this publication in</h2>
-<ul><?php echo $this -> showBibLinks() ?></ul>
+	<?php if ($this -> showUrls()) { ?>
+	<h2>Links</h2>
+	<ul>
+		<?php echo $this -> showUrls() ?>
+	</ul>
+	<?php } ?>
 
 
-<?php } else { ?>
-<p><a href="<?php echo $this->showLinkToSelf() ?>">Return to publication</a></p>
-<h2>Edit this publication</h2>
-<div class="form">
-    <form action="#" method="post" accept-charset="utf-8">
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" maxlength="200" value="<?php echo $this->showTitle() ?>"/>
-        <br/>
-        <label for="date_published">Date:</label>
-        <input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
-               value="<?php echo $this->showDatePublished('Y-m-d') ?>"/>
-        <br/>
-        <label for="journal">Journal:</label>
-        <input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this->showJournal() ?>"/>
-        <br/>
-        <label for="volume">Volume:</label>
-        <input type="number" name="volume" id="volume" min="0" value="<?php echo $this->showVolume() ?>"/>
-        <br/>
-        <label for="number">Number:</label>
-        <input type="number" name="number" id="number" min="0" value="<?php echo $this->showNumber() ?>"/>
-        <br/>
-        <label for="booktitle">Book Title:</label>
-        <input type="text" name="booktitle" id="booktitle" maxlength="200"
-               value="<?php echo $this->showBooktitle() ?>"/>
-        <br/>
-        <label for="series">Series:</label>
-        <input type="text" name="series" id="series" value="<?php echo $this->showSeries() ?>"/>
-        <br/>
-        <label for="edition">Edition:</label>
-        <input type="text" name="edition" id="edition" value="<?php echo $this->showEdition() ?>"/>
-        <br/>
-        <label for="pages_from">Pages:</label>
-        <input type="number" name="pages_from" id="pages_from" min="0" value="<?php echo $this->showFirstPage() ?>"/>
-        <span style="float: left;">to&nbsp;</span>
-        <input type="number" name="pages_to" id="pages_to" min="0" value="<?php echo $this->showLastPage() ?>"/>
-        <br/>
-        <label for="note">Note:</label>
-        <input type="text" name="note" id="note" maxlength="200" value="<?php echo $this->showNote() ?>"/>
-        <br/>
-        <label for="location">Conference location:</label>
-        <input type="text" name="location" id="location" maxlength="200" value="<?php echo $this->showLocation() ?>"/>
-        <br/>
-        <label for="publisher">Publisher:</label>
-        <input type="text" name="publisher" id="publisher" maxlength="200"
-               value="<?php echo $this->showPublisher() ?>"/>
-        <br/>
-        <label for="institution">Institution:</label>
-        <input type="text" name="institution" id="institution" maxlength="200"
-               value="<?php echo $this->showInstitution() ?>"/>
-        <br/>
-        <label for="school">School:</label>
-        <input type="text" name="school" id="school" maxlength="200" value="<?php echo $this->showSchool() ?>"/>
-        <br/>
-        <label for="address">Publisher address:</label>
-        <input type="text" name="address" id="address" maxlength="200" value="<?php echo $this->showAddress() ?>"/>
-        <br/>
-        <label for="howpublished">How published:</label>
-        <input type="text" name="howpublished" id="howpublished" maxlength="200"
-               value="<?php echo $this->showHowpublished() ?>"/>
-        <br/>
-        <label for="copyright">Copyright:</label>
-        <input type="text" name="copyright" id="copyright" maxlength="200"
-               value="<?php echo $this->showCopyright() ?>"/>
-        <br/>
-        <label for="doi">DOI:</label>
-        <input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->showDoi() ?>"/>
-        <br/>
-        <label for="isbn">ISBN:</label>
-        <input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->showIsbn() ?>"/>
-        <br/>
-        <label for="abstract">Abstract:</label>
-        <textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->showAbstract(false) ?></textarea>
-        <br/>
-        <label for="foreign">Foreign publication:</label>
-        <input type="checkbox" name="foreign" id="foreign" value="1" <?php echo $this->showForeign(false) ?>/>
-        <br/>
-        <input type="hidden" name="action" value="edit"/>
-        <input type="hidden" name="type" value="<?php echo $this->showType(false) ?>"/>
-        <input type="hidden" name="study_field" value="<?php echo $this->showStudyField(false) ?>"/>
-        <input type="submit" value="Update"/>
-        <input type="reset" value="Reset changes"/>
-    </form>
+	<h2>Cite this publication</h2>
+	<ul>
+		<li>
+			<div class="export">
+				<a href="#" class="bibtex">BibTeX</a><br/>
+				<textarea class="bibtex" rows="10" cols="80" readonly><?php echo $this->
+					showExport('Bibtex') ?></textarea>
+			</div>
+		</li>
+		<li>
+			<div class="export">
+				<a href="#" class="ris">RIS</a><br/>
+				<textarea class="ris" rows="10" cols="80" readonly><?php echo $this->showExport('RIS') ?></textarea>
+			</div>
+		</li>
+		<li>
+			<div class="export">
+				<a href="#" class="dblp-xml">DBLP XML</a><br/>
+				<textarea class="dblp-xml" rows="10" cols="80" readonly><?php echo $this->
+					showExport('DBLPXML') ?></textarea>
+			</div>
+		</li>
+		<li>
+			<div class="export">
+				<a href="#" class="dc-xml">DublinCore XML</a><br/>
+				<textarea class="dc-xml" rows="10" cols="80" readonly><?php echo $this->
+					showExport('DublinCoreXML') ?></textarea>
+			</div>
+		</li>
+		<li>
+			<div class="export">
+				<a href="#" class="csl-json">CSL Json</a><br/>
+				<textarea class="csl-json" rows="10" cols="80" readonly><?php echo $this->
+					showExport('CSLJson') ?></textarea>
+			</div>
+		</li>
+		<li>
+			<a href="http://www.mendeley.com/import/?url=<?php echo $this->showPublinUrl()?>" target="_blank">Add to
+																											  your
+																											  Mendeley
+																											  library</a>
+		</li>
+	</ul>
+
+	<h2>Search this publication in</h2>
+	<ul><?php echo $this -> showBibLinks() ?></ul>
+
+
+	<?php } else { ?>
+	<p><a href="<?php echo $this->showLinkToSelf() ?>">Return to publication</a></p>
+	<h2>Edit this publication</h2>
+	<div class="form">
+		<form action="#" method="post" accept-charset="utf-8">
+			<label for="title">Title:</label>
+			<input type="text" name="title" id="title" maxlength="200" value="<?php echo $this->showTitle() ?>"/>
+			<br/>
+			<label for="date_published">Date:</label>
+			<input type="text" name="date_published" id="date_published" placeholder="YYYY-MM-DD"
+				   value="<?php echo $this->showDatePublished('Y-m-d') ?>"/>
+			<br/>
+			<label for="journal">Journal:</label>
+			<input type="text" name="journal" id="journal" maxlength="200" value="<?php echo $this->showJournal() ?>"/>
+			<br/>
+			<label for="volume">Volume:</label>
+			<input type="number" name="volume" id="volume" min="0" value="<?php echo $this->showVolume() ?>"/>
+			<br/>
+			<label for="number">Number:</label>
+			<input type="number" name="number" id="number" min="0" value="<?php echo $this->showNumber() ?>"/>
+			<br/>
+			<label for="booktitle">Book Title:</label>
+			<input type="text" name="booktitle" id="booktitle" maxlength="200"
+				   value="<?php echo $this->showBooktitle() ?>"/>
+			<br/>
+			<label for="series">Series:</label>
+			<input type="text" name="series" id="series" value="<?php echo $this->showSeries() ?>"/>
+			<br/>
+			<label for="edition">Edition:</label>
+			<input type="text" name="edition" id="edition" value="<?php echo $this->showEdition() ?>"/>
+			<br/>
+			<label for="pages_from">Pages:</label>
+			<input type="number" name="pages_from" id="pages_from" min="0"
+				   value="<?php echo $this->showFirstPage() ?>"/>
+			<span style="float: left;">to&nbsp;</span>
+			<input type="number" name="pages_to" id="pages_to" min="0" value="<?php echo $this->showLastPage() ?>"/>
+			<br/>
+			<label for="note">Note:</label>
+			<input type="text" name="note" id="note" maxlength="200" value="<?php echo $this->showNote() ?>"/>
+			<br/>
+			<label for="location">Conference location:</label>
+			<input type="text" name="location" id="location" maxlength="200"
+				   value="<?php echo $this->showLocation() ?>"/>
+			<br/>
+			<label for="publisher">Publisher:</label>
+			<input type="text" name="publisher" id="publisher" maxlength="200"
+				   value="<?php echo $this->showPublisher() ?>"/>
+			<br/>
+			<label for="institution">Institution:</label>
+			<input type="text" name="institution" id="institution" maxlength="200"
+				   value="<?php echo $this->showInstitution() ?>"/>
+			<br/>
+			<label for="school">School:</label>
+			<input type="text" name="school" id="school" maxlength="200" value="<?php echo $this->showSchool() ?>"/>
+			<br/>
+			<label for="address">Publisher address:</label>
+			<input type="text" name="address" id="address" maxlength="200" value="<?php echo $this->showAddress() ?>"/>
+			<br/>
+			<label for="howpublished">How published:</label>
+			<input type="text" name="howpublished" id="howpublished" maxlength="200"
+				   value="<?php echo $this->showHowpublished() ?>"/>
+			<br/>
+			<label for="copyright">Copyright:</label>
+			<input type="text" name="copyright" id="copyright" maxlength="200"
+				   value="<?php echo $this->showCopyright() ?>"/>
+			<br/>
+			<label for="doi">DOI:</label>
+			<input type="text" name="doi" id="doi" maxlength="200" value="<?php echo $this->showDoi() ?>"/>
+			<br/>
+			<label for="isbn">ISBN:</label>
+			<input type="text" name="isbn" id="isbn" maxlength="200" value="<?php echo $this->showIsbn() ?>"/>
+			<br/>
+			<label for="abstract">Abstract:</label>
+			<textarea name="abstract" id="abstract" rows="5" cols="50"><?php echo $this->
+				showAbstract(false) ?></textarea>
+			<br/>
+			<label for="foreign">Foreign publication:</label>
+			<input type="checkbox" name="foreign" id="foreign" value="1" <?php echo $this->showForeign(false) ?>/>
+			<br/>
+			<input type="hidden" name="action" value="edit"/>
+			<input type="hidden" name="type" value="<?php echo $this->showType(false) ?>"/>
+			<input type="hidden" name="study_field" value="<?php echo $this->showStudyField(false) ?>"/>
+			<input type="submit" value="Update"/>
+			<input type="reset" value="Reset changes"/>
+		</form>
+	</div>
+	<br/>
+
+	<h2>Add or remove authors</h2>
+	<ul>
+		<?php echo $this->showEditAuthors(); ?>
+	</ul>
+
+	<h2>Add or remove keywords</h2>
+	<ul>
+		<?php echo $this->showEditKeywords(); ?>
+	</ul>
+
+	<h2>Add or remove files</h2>
+	<ul>
+		<?php echo $this->showEditFiles(); ?>
+	</ul>
+
+	<h2>Add or remove citations</h2>
+	<ul>
+		<?php echo $this->showEditCitations(); ?>
+	</ul>
+
+
+	<h2>Add or remove links</h2>
+	<ul>
+		<?php echo $this->showEditUrls(); ?>
+	</ul>
+
+
+	<h2>Delete this publication</h2>
+	<p>This will permanently delete this publication.</p>
+	<form action="#" method="post" accept-charset="utf-8">
+		<input type="checkbox" name="delete" id="delete" value="yes"/>
+		<label for="delete">Delete the publication <b><?php echo $this->showTitle() ?></b></label>
+		<br/>
+		<input type="hidden" name="action" value="delete"/>
+		<input type="submit" value="Delete">
+	</form>
+	<?php } ?>
+
 </div>
-<br/>
-
-<h2>Add or remove authors</h2>
-<ul>
-    <?php echo $this->showEditAuthors(); ?>
-</ul>
-
-<h2>Add or remove keywords</h2>
-<ul>
-    <?php echo $this->showEditKeywords(); ?>
-</ul>
-
-<h2>Add or remove files</h2>
-<ul>
-    <?php echo $this->showEditFiles(); ?>
-</ul>
-
-<h2>Add or remove citations</h2>
-<ul>
-    <?php echo $this->showEditCitations(); ?>
-</ul>
-
-
-<h2>Add or remove links</h2>
-<ul>
-    <?php echo $this->showEditUrls(); ?>
-</ul>
-
-
-<h2>Delete this publication</h2>
-<p>This will permanently delete this publication.</p>
-<form action="#" method="post" accept-charset="utf-8">
-    <input type="checkbox" name="delete" id="delete" value="yes"/>
-    <label for="delete">Delete the publication <b><?php echo $this->showTitle() ?></b></label>
-    <br/>
-    <input type="hidden" name="action" value="delete"/>
-    <input type="submit" value="Delete">
-</form>
-<?php } ?>

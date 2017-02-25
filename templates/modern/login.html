@@ -1,8 +1,13 @@
-<h1>Login</h1>
-<form action="<?php echo arkuuu\Publin\Request::createUrl(array('p' => 'login'), true); ?>" method="post" accept-charset="utf-8">
-    <input type="text" name="username" id="user" placeholder="Username"/>
-    <br/>
-    <input type="password" name="password" id="password" placeholder="Password"/>
-    <br/>
-    <input type="submit" value="Login">
-</form>
+<div class="container">
+
+	<form id="loginForm" action="<?php echo arkuuu\Publin\Request::createUrl(array('p' => 'login'), true); ?>" method="post"
+		  accept-charset="utf-8">
+		<h1>Login</h1>
+		<input type="text" name="username" id="user" placeholder="Username"/>
+		<br/>
+		<input type="password" name="password" id="password" placeholder="Password"/>
+		<br/>
+		<input type="submit" value="Login">
+	</form>
+
+</div>

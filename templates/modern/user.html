@@ -1,52 +1,56 @@
-<h1>Hello <?php echo $this->showName() ?>!</h1>
+<div class="container">
 
-<h2>Change email</h2>
-<p>Your current email address is: <?php echo $this->showMail() ?></p>
-<div class="form">
-    <form action="#" method="post" accept-charset="utf-8">
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password"/>
-        <br/>
-        <label for="mail">New email:</label>
-        <input type="text" name="mail" id="mail"/>
-        <br/>
-        <label for="mail_confirm">Confirm new email:</label>
-        <input type="text" name="mail_confirm" id="mail_confirm"/>
-        <br/>
-        <input type="hidden" name="action" value="changeMail"/>
-        <input type="submit" value="Change email"/>
-        <br/>
-    </form>
+	<h1>Hello <?php echo $this->showName() ?>!</h1>
+
+	<h2>Change email</h2>
+	<p>Your current email address is: <?php echo $this->showMail() ?></p>
+	<div class="form">
+		<form action="#" method="post" accept-charset="utf-8">
+			<label for="password">Password:</label>
+			<input type="password" name="password" id="password"/>
+			<br/>
+			<label for="mail">New email:</label>
+			<input type="text" name="mail" id="mail"/>
+			<br/>
+			<label for="mail_confirm">Confirm new email:</label>
+			<input type="text" name="mail_confirm" id="mail_confirm"/>
+			<br/>
+			<input type="hidden" name="action" value="changeMail"/>
+			<input type="submit" value="Change email"/>
+			<br/>
+		</form>
+	</div>
+
+	<h2>Change password</h2>
+	<div class="form">
+		<form action="#" method="post" accept-charset="utf-8">
+			<label for="password_old">Password:</label>
+			<input type="password" name="password" id="password_old"/>
+			<br/>
+			<label for="password_new">New password:</label>
+			<input type="password" name="password_new" id="password_new"/>
+			<br/>
+			<label for="password_confirm">Confirm new password:</label>
+			<input type="password" name="password_confirm" id="password_confirm"/>
+			<br/>
+			<input type="hidden" name="action" value="changePassword"/>
+			<input type="submit" value="Change password"/>
+			<br/>
+		</form>
+	</div>
+
+	<h2>You have these roles:</h2>
+	<ul>
+		<?php echo $this->showRoles() ?>
+	</ul>
+
+	<h2>Delete account</h2>
+	<form action="#" method="post" accept-charset="utf-8">
+		<input type="checkbox" name="delete" id="delete" value="yes"/>
+		<label for="delete">I am sure I want to do delete my account</label>
+		<br/>
+		<input type="hidden" name="action" value="delete"/>
+		<input type="submit" value="Delete">
+	</form>
+
 </div>
-
-<h2>Change password</h2>
-<div class="form">
-    <form action="#" method="post" accept-charset="utf-8">
-        <label for="password_old">Password:</label>
-        <input type="password" name="password" id="password_old"/>
-        <br/>
-        <label for="password_new">New password:</label>
-        <input type="password" name="password_new" id="password_new"/>
-        <br/>
-        <label for="password_confirm">Confirm new password:</label>
-        <input type="password" name="password_confirm" id="password_confirm"/>
-        <br/>
-        <input type="hidden" name="action" value="changePassword"/>
-        <input type="submit" value="Change password"/>
-        <br/>
-    </form>
-</div>
-
-<h2>You have these roles:</h2>
-<ul>
-    <?php echo $this->showRoles() ?>
-</ul>
-
-<h2>Delete account</h2>
-<form action="#" method="post" accept-charset="utf-8">
-    <input type="checkbox" name="delete" id="delete" value="yes"/>
-    <label for="delete">I am sure I want to do delete my account</label>
-    <br/>
-    <input type="hidden" name="action" value="delete"/>
-    <input type="submit" value="Delete">
-</form>
