@@ -21,6 +21,9 @@ class DublinCoreXML implements ModuleInterface
     public function export(Publication $publication)
     {
         $xml = new DOMDocument('1.0', 'utf-8');
+        $xml->preserveWhiteSpace = false;
+        $xml->formatOutput = true;
+
         $metadata = $xml->createElement('metadata');
         $metadata->setAttribute('xmlns:dc', 'http://purl.org/dc/elements/1.1/');
         $metadata->setAttribute('xmlns:dcterms', 'http://purl.org/dc/terms/');

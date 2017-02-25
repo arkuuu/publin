@@ -25,6 +25,9 @@ class DBLPXML implements ModuleInterface
     public function exportMultiple(array $publications)
     {
         $xml = new DOMDocument('1.0', 'utf-8');
+        $xml->preserveWhiteSpace = false;
+        $xml->formatOutput = true;
+
         $dblp = $xml->appendChild($xml->createElement('dblp'));
 
         foreach ($publications as $publication) {
@@ -123,6 +126,9 @@ class DBLPXML implements ModuleInterface
         }
 
         $xml = new DOMDocument('1.0', 'utf-8');
+        $xml->preserveWhiteSpace = false;
+        $xml->formatOutput = true;
+
         $dblp = $xml->appendChild($xml->createElement('dblp'));
         $entry = $xml->createElement($publication->getTypeName());
         $entry->setAttribute('key', 'todo'); // TODO

@@ -28,8 +28,7 @@ class CSLJson implements ModuleInterface
             }
         }
 
-        //return json_encode(array($fields), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); // TODO: needs PHP>5.4
-        return json_encode(array($fields));
+        return json_encode(array($fields), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
 
