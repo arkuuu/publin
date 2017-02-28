@@ -144,7 +144,7 @@ class Bibtex implements ModuleInterface
                 ), true),
             );
         } else if ($urls && isset($urls[0])) {
-            $fields[] = array('url', $urls[0]);
+            $fields[] = array('url', $urls[0]->getUrl());
         }
         //$fields[] = array('issn', false);
         $fields[] = array('publisher', $publication->getPublisher());
